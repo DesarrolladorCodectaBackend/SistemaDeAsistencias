@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('salones', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('descripcion');
+            $table->string('nombre', 100);
+            $table->string('descripcion', 400);
             $table->timestamps();
         });
     }
