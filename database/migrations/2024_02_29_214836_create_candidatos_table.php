@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('ciclo_de_estudiante');
             $table->boolean('estado')->default(True);
             $table->unSignedBigInteger('institucion_id');
-            $table->foreign('institucion_id')->references('id')->on('institucions');
+            $table->foreign('institucion_id')->references('id')->on('institucion');
             $table->unSignedBigInteger('carrera_id');
             $table->foreign('carrera_id')->references('id')->on('carreras');
             $table->timestamps();

@@ -13,9 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('institucions', function (Blueprint $table) {
+        Schema::create('horario_de_clases', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 100);
+            $table->unsignedBigInteger('colaborador_id');
+            $table->foreign('colaborador_id')->references('id')->on('colaboradores');
+            $table->string('hora_inicial');
+            $table->string('hora_final');
+            $table->string('dia');
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('institucions');
+        Schema::dropIfExists('horario_de_clases');
     }
 };

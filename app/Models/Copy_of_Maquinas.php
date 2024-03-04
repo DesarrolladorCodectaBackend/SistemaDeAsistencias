@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Area extends Model
+class Copy_of_Maquinas extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'especializacion',
-        'color_hex'
+        'horario_presencial_id',
+        'maquina_id'
     ];
 }

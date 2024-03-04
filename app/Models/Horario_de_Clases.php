@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Area extends Model
+class Horario_de_Clases extends Model
 {
     use HasFactory;
-
+    
     protected $fillable = [
-        'especializacion',
-        'color_hex'
+        'colaborador_id',
+        'hora_inicial',
+        'hora_final',
+        'dia'
     ];
+
 }

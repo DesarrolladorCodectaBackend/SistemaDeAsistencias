@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Area extends Model
+class Horario_Virtual_Colaborador extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'especializacion',
-        'color_hex'
+        'horario_virtual_id',
+        'colaborador_id'
     ];
+
 }
