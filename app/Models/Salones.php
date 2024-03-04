@@ -13,4 +13,10 @@ class Salones extends Model
         'nombre',
         'descripcion'
     ];
+
+
+    public function maquinas(){
+        return $this->hasMany(Maquinas::class, 'salon_id', 'id');
+    }
+
 }

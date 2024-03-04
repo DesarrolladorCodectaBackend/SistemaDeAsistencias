@@ -14,4 +14,13 @@ class Horario_Virtual_Colaborador extends Model
         'colaborador_id'
     ];
 
+
+    public function horarios_virtuales(){
+        return $this->belongsTo(Horarios_Virtuales::class, 'horario_virtual_id', 'id');
+    }
+
+    public function colaboradores(){
+        return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
+    }
+
 }

@@ -14,4 +14,9 @@ class Horarios_Virtuales extends Model
         'hora_final'
     ];
 
+
+    public function horario_virtual_colaborador(){
+        return $this->hasMany(Horario_Virtual_Colaborador::class, 'horario_virtual_id', 'id');
+    }
+
 }

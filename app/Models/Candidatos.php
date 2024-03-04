@@ -21,4 +21,16 @@ class Candidatos extends Model
         'carrera_id'
     ];
 
+    public function institucion(){
+        return $this->belongsTo(Institucion::class, 'institucion_id', 'id');
+    }
+
+    public function carrera(){
+        return $this->belongsTo(Carrera::class, 'carrera_id', 'id');
+    }
+
+    public function colaboradores(){
+        return $this->hasOne(Colaboradores::class, 'candidato_id', 'id');
+    }
+
 }

@@ -16,4 +16,14 @@ class Maquinas extends Model
         'num_identificador',
         'salon_id'
     ];
+
+
+    public function salones(){
+        return $this->belongsTo(Salones::class, 'salon_id', 'id');
+    }
+
+    public function copy_of_maquinas(){
+        return $this->hasMany(Copy_of_Maquinas::class, 'maquina_id', 'id');
+    }
+
 }
