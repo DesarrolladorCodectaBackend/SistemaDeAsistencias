@@ -3,84 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Models\Institucion;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreInstitucionRequest;
 use App\Http\Requests\UpdateInstitucionRequest;
 
 class InstitucionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $instituciones = Institucion::get();
+        return response()->json(["data"=>$instituciones, "conteo"=> count($instituciones)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Institucion::create([
+            "nombre" => $request->nombre,
+        ]);
+
+        return response()->json(["resp" => "Institución creada con nombre ".$request->nombre]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreInstitucionRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreInstitucionRequest $request)
+    
+    public function show($institucion_id)
     {
-        //
+        $institucion = Institucion::find($institucion_id);
+
+        return response()->json(["data"=>$institucion]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Institucion  $institucion
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Institucion $institucion)
+    
+    public function update(Request $request, $institucion_id)
     {
-        //
+        $institucion = Institucion::find($institucion_id);
+
+        $institucion->fill([
+            "nombre" => $request->nombre
+        ])->save();
+        
+        return response()->json(["resp" => "Institución con id ".$institucion_id." fue editada"]);
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Institucion  $institucion
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Institucion $institucion)
+    
+    public function destroy($institucion_id)
     {
-        //
-    }
+        $institucion = Institucion::find($institucion_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateInstitucionRequest  $request
-     * @param  \App\Models\Institucion  $institucion
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateInstitucionRequest $request, Institucion $institucion)
-    {
-        //
-    }
+        $institucion->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Institucion  $institucion
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Institucion $institucion)
-    {
-        //
+        return response()->json(["resp" => "Institución con id ".$institucion_id." y nombre ".$institucion->nombre." eliminada"]);
     }
 }
