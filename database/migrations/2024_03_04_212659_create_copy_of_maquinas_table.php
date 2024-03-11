@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('copy_of_maquinas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('horario_presencial_id');
-            $table->foreign('horario_presencial_id')->references('id')->on('horarios_presenciales');
+            $table->foreign('horario_presencial_id')->references('id')->on('horarios__presenciales');
             $table->unsignedBigInteger('maquina_id');
             $table->foreign('maquina_id')->references('id')->on('maquinas');
             $table->timestamps();

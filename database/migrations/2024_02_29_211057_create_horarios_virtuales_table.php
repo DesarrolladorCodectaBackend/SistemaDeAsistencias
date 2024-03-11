@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('horarios_virtuales', function (Blueprint $table) {
+        Schema::create('horarios__virtuales', function (Blueprint $table) {
             $table->id();
             $table->string('hora_inicial');
             $table->string('hora_final');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('horarios_virtuales');
+        Schema::dropIfExists('horarios__virtuales');
     }
 };
