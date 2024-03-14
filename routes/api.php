@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\HorariosPresencialesController;
 use App\Http\Controllers\HorariosVirtualesController;
@@ -70,6 +71,13 @@ Route::post('programa/create', [ProgramasController::class,'create']);
 Route::get('programa/show/{programa_id}', [ProgramasController::class,'show']);
 Route::put('programa/update/{programa_id}', [ProgramasController::class,'update']);
 Route::delete('programa/delete/{programa_id}', [ProgramasController::class,'destroy']);
+
+//CANDIDATOS
+Route::get('candidato/get', [CandidatosController::class,'index']);
+Route::post('candidato/create', [CandidatosController::class,'create']);
+Route::get('candidato/show/{candidato_id}', [CandidatosController::class,'show']);
+Route::put('candidato/update/{candidato_id}', [CandidatosController::class,'update']);
+Route::delete('candidato/delete/{candidato_id}', [CandidatosController::class,'destroy']);
 
 
 
