@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('computadora_colaborador', function (Blueprint $table) {
+        Schema::create('computadora_colaboradors', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('colaborador_id');
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('computadora_colaborador');
+        Schema::dropIfExists('computadora_colaboradors');
     }
 };

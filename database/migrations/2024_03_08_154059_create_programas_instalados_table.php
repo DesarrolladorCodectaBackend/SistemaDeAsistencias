@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('programas_instalados', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('computadora_id');
-            $table->foreign('computadora_id')->references('id')->on('computadora_colaborador');
+            $table->foreign('computadora_id')->references('id')->on('computadora_colaboradors');
             $table->unsignedBigInteger('programa_id');
             $table->foreign('programa_id')->references('id')->on('programas');
             $table->timestamps();

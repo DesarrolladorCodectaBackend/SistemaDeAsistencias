@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('colaboradores', function (Blueprint $table) {
             $table->id();
-            $table->boolean('estado');
+            $table->boolean('estado')->default(true);
             $table->unSignedBigInteger('candidato_id');
             $table->foreign('candidato_id')->references('id')->on('candidatos');
             $table->timestamps();

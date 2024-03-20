@@ -3,84 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Models\Colaboradores;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreColaboradoresRequest;
 use App\Http\Requests\UpdateColaboradoresRequest;
 
 class ColaboradoresController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $colaboradores = Colaboradores::with('candidatos')->where('estado', true)->get();
+
+        return response()->json(["data" => $colaboradores, "conteo" => count($colaboradores)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Colaboradores::create([
+            "candidato_id" => $request->candidato_id
+        ]);
+
+        return response()->json(["resp" => "Colaborador creado correctamente"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreColaboradoresRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreColaboradoresRequest $request)
+    
+    public function show($colaborador_id)
     {
-        //
+        $colaborador = Colaboradores::find($colaborador_id);
+
+        return response()->json(["data" => $colaborador]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Colaboradores  $colaboradores
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Colaboradores $colaboradores)
+    
+    public function update(Request $request, $colaborador_id)
     {
-        //
+        $colaborador = Colaboradores::find($colaborador_id);
+
+        $colaborador->fill([
+            "candidato_id" => $request->candidato_id
+        ])->save();
+
+        return response()->json(["resp" => "Colaborador actualizado correctamente"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Colaboradores  $colaboradores
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Colaboradores $colaboradores)
+    
+    public function destroy($colaborador_id)
     {
-        //
-    }
+        $colaborador = Colaboradores::find($colaborador_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateColaboradoresRequest  $request
-     * @param  \App\Models\Colaboradores  $colaboradores
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateColaboradoresRequest $request, Colaboradores $colaboradores)
-    {
-        //
-    }
+        $colaborador->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Colaboradores  $colaboradores
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Colaboradores $colaboradores)
-    {
-        //
+        return response()->json(["resp" => "Colaborador eliminado correctamente"]);
     }
 }

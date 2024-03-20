@@ -3,84 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Horario_Virtual_Colaborador;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreHorario_Virtual_ColaboradorRequest;
 use App\Http\Requests\UpdateHorario_Virtual_ColaboradorRequest;
 
 class HorarioVirtualColaboradorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $horarios_virtuales_colaborador = Horario_Virtual_Colaborador::with([
+            'horarios_virtuales' => function($query) {$query->select('id', 'hora_inicial', 'hora_final');},
+            'colaboradores' => function($query) {$query->select('id', 'candidato_id');}])->get();
+
+        return response()->json(["data" => $horarios_virtuales_colaborador, "conteo" => count($horarios_virtuales_colaborador)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Horario_Virtual_Colaborador::create([
+            "horario_virtual_id" => $request->horario_virtual_id,
+            "colaborador_id" => $request->colaborador_id
+        ]);
+
+        return response()->json(["resp" => "Registro creado correctamente"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreHorario_Virtual_ColaboradorRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreHorario_Virtual_ColaboradorRequest $request)
+    
+    public function show($horario_virtual_colaborador_id)
     {
-        //
+        $horario_virtual_colaborador = Horario_Virtual_Colaborador::with([
+            'horarios_virtuales' => function($query) {$query->select('id', 'hora_inicial', 'hora_final');},
+            'colaboradores' => function($query) {$query->select('id', 'candidato_id');}])->find($horario_virtual_colaborador_id);
+        
+        return response()->json(["data" => $horario_virtual_colaborador]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Horario_Virtual_Colaborador  $horario_Virtual_Colaborador
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Horario_Virtual_Colaborador $horario_Virtual_Colaborador)
+    
+    public function update(Request $request, $horario_virtual_colaborador_id)
     {
-        //
+        $horario_virtual_colaborador = Horario_Virtual_Colaborador::find($horario_virtual_colaborador_id);
+
+        $horario_virtual_colaborador->fill([
+            "horario_virtual_id" => $request->horario_virtual_id,
+            "colaborador_id" => $request->colaborador_id
+        ])->save();
+
+        return response()->json(["resp" => "Registro actualizado correctamente"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Horario_Virtual_Colaborador  $horario_Virtual_Colaborador
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Horario_Virtual_Colaborador $horario_Virtual_Colaborador)
+    
+    public function destroy($horario_virtual_colaborador_id)
     {
-        //
-    }
+        $horario_virtual_colaborador = Horario_Virtual_Colaborador::find($horario_virtual_colaborador_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateHorario_Virtual_ColaboradorRequest  $request
-     * @param  \App\Models\Horario_Virtual_Colaborador  $horario_Virtual_Colaborador
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateHorario_Virtual_ColaboradorRequest $request, Horario_Virtual_Colaborador $horario_Virtual_Colaborador)
-    {
-        //
-    }
+        $horario_virtual_colaborador->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Horario_Virtual_Colaborador  $horario_Virtual_Colaborador
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Horario_Virtual_Colaborador $horario_Virtual_Colaborador)
-    {
-        //
+        return response()->json(["resp" => "Registro eliminado correctamente"]);
     }
 }

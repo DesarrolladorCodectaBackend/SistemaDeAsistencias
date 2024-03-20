@@ -3,84 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Horario_de_Clases;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreHorario_de_ClasesRequest;
 use App\Http\Requests\UpdateHorario_de_ClasesRequest;
 
 class HorarioDeClasesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $horario_de_clases = Horario_de_Clases::with('colaboradores')->get();
+
+        return response()->json(["data" => $horario_de_clases, "conteo" => count($horario_de_clases)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Horario_de_Clases::create([
+            "colaborador_id" => $request->colaborador_id,
+            "hora_inicial" => $request->hora_inicial,
+            "hora_final" => $request->hora_final,
+            "dia" => $request->dia
+        ]);
+
+        return response()->json(["resp" => "Registro creado correctamente"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreHorario_de_ClasesRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreHorario_de_ClasesRequest $request)
+    
+    public function show($horario_de_clases_id)
     {
-        //
+        $horario_de_clases = Horario_de_Clases::with('colaboradores')->find($horario_de_clases_id);
+
+        return response()->json(["data" => $horario_de_clases]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Horario_de_Clases  $horario_de_Clases
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Horario_de_Clases $horario_de_Clases)
+    
+    public function update(Request $request, $horario_de_clases_id)
     {
-        //
+        $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
+
+        $horario_de_clases->fill([
+            "colaborador_id" => $request->colaborador_id,
+            "hora_inicial" => $request->hora_inicial,
+            "hora_final" => $request->hora_final,
+            "dia" => $request->dia
+        ])->save();
+
+        return response()->json(["resp" => "Registro actualizado correctamente"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Horario_de_Clases  $horario_de_Clases
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Horario_de_Clases $horario_de_Clases)
+    
+    public function destroy($horario_de_clases_id)
     {
-        //
-    }
+        $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateHorario_de_ClasesRequest  $request
-     * @param  \App\Models\Horario_de_Clases  $horario_de_Clases
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateHorario_de_ClasesRequest $request, Horario_de_Clases $horario_de_Clases)
-    {
-        //
-    }
+        $horario_de_clases->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Horario_de_Clases  $horario_de_Clases
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Horario_de_Clases $horario_de_Clases)
-    {
-        //
+        return response()->json(["resp" => "Registro eliminado correctamente"]);
     }
 }

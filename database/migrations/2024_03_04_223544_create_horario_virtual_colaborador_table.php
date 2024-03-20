@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('horario_virtual_colaborador', function (Blueprint $table) {
+        Schema::create('horario__virtual__colaboradors', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('horario_virtual_id');
             $table->foreign('horario_virtual_id')->references('id')->on('horarios__virtuales');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('horario_virtual_colaborador');
+        Schema::dropIfExists('horario__virtual__colaboradors');
     }
 };

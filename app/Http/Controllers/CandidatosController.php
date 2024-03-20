@@ -9,14 +9,15 @@ use App\Http\Requests\UpdateCandidatosRequest;
 
 class CandidatosController extends Controller
 {
-    
+
     public function index()
     {
-        $candidatos = Candidatos::with('institucion', 'carrera')->where('estado', 1)->get();
-        return response()->json(["data"=>$candidatos, "conteo"=>count($candidatos)]);
+        $candidatos = Candidatos::with(['institucion' => function ($query) {$query->select('id', 'nombre');},
+            'carrera' => function ($query) {$query->select('id', 'nombre');}])->where('estado', 1)->get();
+        return response()->json(["data" => $candidatos, "conteo" => count($candidatos)]);
     }
 
-    
+
     public function create(Request $request)
     {
         Candidatos::create([
@@ -30,14 +31,15 @@ class CandidatosController extends Controller
             "carrera_id" => $request->carrera_id
         ]);
 
-        return response()->json(["resp" => "Candidato creato exitosamente"]);
+        return response()->json(["resp" => "Candidato creado exitosamente"]);
     }
 
 
     public function show($candidato_id)
     {
-        $candidato = Candidatos::with('institucion', 'carrera')->find($candidato_id);
-        return response()->json(["Data"=>$candidato]);
+        $candidato = Candidatos::with(['institucion' => function ($query) {$query->select('id', 'nombre');},
+        'carrera' => function ($query) {$query->select('id', 'nombre');}])->find($candidato_id);
+        return response()->json(["Data" => $candidato]);
     }
 
 

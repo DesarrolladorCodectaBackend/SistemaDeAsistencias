@@ -3,10 +3,19 @@
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\ColaboradoresController;
+use App\Http\Controllers\ColaboradoresPorAreaController;
+use App\Http\Controllers\Computadora_colaboradorController;
+use App\Http\Controllers\Copy_of_maquinasController;
+use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\HorariosPresencialesController;
 use App\Http\Controllers\HorariosVirtualesController;
+use App\Http\Controllers\HorarioVirtualColaboradorController;
+use App\Http\Controllers\MaquinasController;
+use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
 use App\Http\Controllers\SalonesController;
+use App\Http\Controllers\DisponibilidadPresencialController;
 use App\Models\Salones;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -79,8 +88,68 @@ Route::get('candidato/show/{candidato_id}', [CandidatosController::class,'show']
 Route::put('candidato/update/{candidato_id}', [CandidatosController::class,'update']);
 Route::delete('candidato/delete/{candidato_id}', [CandidatosController::class,'destroy']);
 
+//MAQUINAS
+Route::get('maquina/get', [MaquinasController::class,'index']);
+Route::post('maquina/create', [MaquinasController::class,'create']);
+Route::get('maquina/show/{maquina_id}', [MaquinasController::class,'show']);
+Route::put('maquina/update/{maquina_id}', [MaquinasController::class,'update']);
+Route::delete('maquina/delete/{maquina_id}', [MaquinasController::class,'destroy']);
 
+//COLABORADOR
+Route::get('colaborador/get', [ColaboradoresController::class,'index']);
+Route::post('colaborador/create', [ColaboradoresController::class,'create']);
+Route::get('colaborador/show/{colaborador_id}', [ColaboradoresController::class,'show']);
+Route::put('colaborador/update/{colaborador_id}', [ColaboradoresController::class,'update']);
+Route::delete('colaborador/delete/{colaborador_id}', [ColaboradoresController::class,'destroy']);
 
+//COPY_OF_MAQUINAS  
+Route::get('copy_of_maquinas/get', [Copy_of_maquinasController::class,'index']);
+Route::post('copy_of_maquinas/create', [Copy_of_maquinasController::class,'create']);
+Route::get('copy_of_maquinas/show/{copy_of_maquinas_id}', [Copy_of_maquinasController::class,'show']);
+Route::put('copy_of_maquinas/update/{copy_of_maquinas_id}', [Copy_of_maquinasController::class,'update']);
+Route::delete('copy_of_maquinas/delete/{copy_of_maquinas_id}', [Copy_of_maquinasController::class,'destroy']);
+
+//DISPONIBILIDAD PRESENCIAL
+Route::get('disponibilidad_presencial/get', [DisponibilidadPresencialController::class,'index']);
+Route::post('disponibilidad_presencial/create', [DisponibilidadPresencialController::class,'create']);
+Route::get('disponibilidad_presencial/show/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class,'show']);
+Route::put('disponibilidad_presencial/update/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class,'update']);
+Route::delete('disponibilidad_presencial/delete/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class,'destroy']);
+
+//COLABORADORES POR AREA
+Route::get('colaborador_por_area/get', [ColaboradoresPorAreaController::class,'index']);
+Route::post('colaborador_por_area/create', [ColaboradoresPorAreaController::class,'create']);
+Route::get('colaborador_por_area/show/{colaborador_por_area_id}', [ColaboradoresPorAreaController::class,'show']);
+Route::put('colaborador_por_area/update/{colaborador_por_area_id}', [ColaboradoresPorAreaController::class,'update']);
+Route::delete('colaborador_por_area/delete/{colaborador_por_area_id}', [ColaboradoresPorAreaController::class,'destroy']);
+
+//HORARIO DE CLASES
+Route::get('horario_de_clase/get', [HorarioDeClasesController::class,'index']);
+Route::post('horario_de_clase/create', [HorarioDeClasesController::class,'create']);
+Route::get('horario_de_clase/show/{horario_de_clase_id}', [HorarioDeClasesController::class,'show']);
+Route::put('horario_de_clase/update/{horario_de_clase_id}', [HorarioDeClasesController::class,'update']);
+Route::delete('horario_de_clase/delete/{horario_de_clase_id}', [HorarioDeClasesController::class,'destroy']);
+
+//HORARIO VIRTUAL COLABORADOR
+Route::get('horario_virtual_colaborador/get', [HorarioVirtualColaboradorController::class,'index']);
+Route::post('horario_virtual_colaborador/create', [HorarioVirtualColaboradorController::class,'create']);
+Route::get('horario_virtual_colaborador/show/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'show']);
+Route::put('horario_virtual_colaborador/update/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'update']);
+Route::delete('horario_virtual_colaborador/delete/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'destroy']);
+
+//COMPUTADORA COLABORADOR
+Route::get('computadora_colaborador/get', [Computadora_colaboradorController::class,'index']);
+Route::post('computadora_colaborador/create', [Computadora_colaboradorController::class,'create']);
+Route::get('computadora_colaborador/show/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'show']);
+Route::put('computadora_colaborador/update/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'update']);
+Route::delete('computadora_colaborador/delete/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'destroy']);
+
+//PROGRAMAS INSTALADOS
+Route::get('programas_instalados/get', [Programas_instaladosController::class,'index']);
+Route::post('programas_instalados/create', [Programas_instaladosController::class,'create']);
+Route::get('programas_instalados/show/{programas_instalados_id}', [Programas_instaladosController::class,'show']);
+Route::put('programas_instalados/update/{programas_instalados_id}', [Programas_instaladosController::class,'update']);
+Route::delete('programas_instalados/delete/{programas_instalados_id}', [Programas_instaladosController::class,'destroy']);
 
 //Route::get('departamentos/get', [DepartamentosController::class, 'mostrarTodo']);
 

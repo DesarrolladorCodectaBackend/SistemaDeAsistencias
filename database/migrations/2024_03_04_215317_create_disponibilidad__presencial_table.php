@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('disponibilidad_presencial', function (Blueprint $table) {
+        Schema::create('disponibilidad__presencials', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('colaborador_id');
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('disponibilidad_presencial');
+        Schema::dropIfExists('disponibilidad__presencials');
     }
 };

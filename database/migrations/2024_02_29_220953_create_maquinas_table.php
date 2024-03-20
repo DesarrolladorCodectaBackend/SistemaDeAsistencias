@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('maquinas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 100);
-            $table->boolean('estado');
+            $table->boolean('estado')->default(True);
             $table->string('detalles_tecnicos', 400);
             $table->integer('num_identificador')->unique();
             $table->unSignedBigInteger('salon_id');
