@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('horarios_presenciales', function (Blueprint $table) {
+        Schema::create('horarios__presenciales', function (Blueprint $table) {
             $table->id();
             $table->string('horario_inicial');
             $table->string('horario_final');
@@ -25,10 +25,10 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      *
-     * @return void
+     * @return void 
      */
     public function down()
     {
-        Schema::dropIfExists('horarios_presenciales');
+        Schema::dropIfExists('horarios__presenciales');
     }
 };

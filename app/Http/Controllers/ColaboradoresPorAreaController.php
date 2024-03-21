@@ -3,84 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\Colaboradores_por_Area;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreColaboradores_por_AreaRequest;
 use App\Http\Requests\UpdateColaboradores_por_AreaRequest;
 
 class ColaboradoresPorAreaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $Colabs_Area = Colaboradores_por_Area::with([
+            'colaboradores' => function($query){$query->select('id', 'candidato_id');},
+            'area' => function($query){$query->select('id', 'especializacion', 'color_hex');}])->get();
+        
+        return response()->json(["data" => $Colabs_Area, "conteo" => count($Colabs_Area)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Colaboradores_por_Area::create([
+            "colaborador_id" => $request->colaborador_id,
+            "area_id" => $request->area_id
+        ]);
+
+        return response()->json(["resp" => "Registro creado correctamente"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreColaboradores_por_AreaRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreColaboradores_por_AreaRequest $request)
+    
+    public function show($colaborador_por_area_id)
     {
-        //
+        $colaborador_por_area = Colaboradores_por_Area::with([
+            'colaboradores' => function($query){$query->select('id', 'candidato_id');},
+            'area' => function($query){$query->select('id', 'especializacion', 'color_hex');}])
+            ->find($colaborador_por_area_id);
+
+        return response()->json(["data" => $colaborador_por_area]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Colaboradores_por_Area  $colaboradores_por_Area
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Colaboradores_por_Area $colaboradores_por_Area)
+    
+    public function update(Request $request, $colaborador_por_area_id)
     {
-        //
+        $colaborador_por_area = Colaboradores_por_Area::find($colaborador_por_area_id);
+
+        $colaborador_por_area->fill([
+            "colaborador_id" => $request->colaborador_id,
+            "area_id" => $request->area_id
+        ])->save();
+
+        return response()->json(["resp" => "Registro actualizado correctamente"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Colaboradores_por_Area  $colaboradores_por_Area
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Colaboradores_por_Area $colaboradores_por_Area)
+    
+    public function destroy($colaborador_por_area_id)
     {
-        //
-    }
+        $colaborador_por_area = Colaboradores_por_Area::find($colaborador_por_area_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateColaboradores_por_AreaRequest  $request
-     * @param  \App\Models\Colaboradores_por_Area  $colaboradores_por_Area
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateColaboradores_por_AreaRequest $request, Colaboradores_por_Area $colaboradores_por_Area)
-    {
-        //
-    }
+        $colaborador_por_area->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Colaboradores_por_Area  $colaboradores_por_Area
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Colaboradores_por_Area $colaboradores_por_Area)
-    {
-        //
+        return response()->json(["resp" => "Registro eliminado correctamente"]);
     }
 }

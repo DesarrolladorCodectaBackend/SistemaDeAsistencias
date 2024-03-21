@@ -3,84 +3,58 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
 
 class AreaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $Areas = Area::get();
+
+        return response()->json(["data" => $Areas, "conteo" => count($Areas)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Area::create([
+            "especializacion" => $request->especializacion,
+            "color_hex" => $request->color_hex
+        ]);
+
+        return response()->json(["resp" => "Área creada"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreareaRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreareaRequest $request)
+    
+    public function show($area_id)
     {
-        //
+        $area = Area::find($area_id);
+
+        return response()->json(["data" => $area]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\area  $area
-     * @return \Illuminate\Http\Response
-     */
-    public function show(area $area)
+    
+    public function update(Request $request, $area_id)
     {
-        //
+        $area = Area::find($area_id);
+
+        $area->fill([
+            "especializacion" => $request->especializacion,
+            "color_hex" => $request->color_hex
+        ])->save();
+
+        return response()->json(["resp" => "Área con id ".$area_id." actualizada"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\area  $area
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(area $area)
+    
+    public function destroy($area_id)
     {
-        //
-    }
+        $area = Area::find($area_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateareaRequest  $request
-     * @param  \App\Models\area  $area
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateareaRequest $request, area $area)
-    {
-        //
-    }
+        $area->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\area  $area
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(area $area)
-    {
-        //
+        return response()->json(["resp" => "Área con id ".$area_id." eliminada"]);
     }
 }
