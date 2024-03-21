@@ -56,4 +56,9 @@ class ColaboradoresController extends Controller
 
         return response()->json(["resp" => "Colaborador eliminado correctamente"]);
     }
+
+    public function ShowByName($colaborador_name)
+    {
+
+    }
 }
