@@ -3,84 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Models\Horarios_Presenciales;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreHorarios_PresencialesRequest;
 use App\Http\Requests\UpdateHorarios_PresencialesRequest;
 
 class HorariosPresencialesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $horarios_presenciales = Horarios_Presenciales::get();
+
+        return response()->json(["data"=>$horarios_presenciales, "conteo"=>count($horarios_presenciales)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Horarios_Presenciales::create([
+            "horario_inicial" => $request->horario_inicial,
+            "horario_final" => $request->horario_final,
+            "dia" => $request->dia
+        ]);
+
+        return response()->json(["resp" => "Horario presencial creado"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreHorarios_PresencialesRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreHorarios_PresencialesRequest $request)
+    
+    public function show($horario_presencial_id)
     {
-        //
+        $horario = Horarios_Presenciales::find($horario_presencial_id);
+
+        return response()->json(["data" => $horario]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Horarios_Presenciales  $horarios_Presenciales
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Horarios_Presenciales $horarios_Presenciales)
+    
+    public function update(Request $request, $horario_presencial_id)
     {
-        //
+        $horario = Horarios_Presenciales::find($horario_presencial_id);
+
+        $horario->fill([
+            "horario_inicial" => $request->horario_inicial,
+            "horario_final" => $request->horario_final,
+            "dia" => $request->dia
+        ])->save();
+
+        return response()->json(["resp" => "Horario presencial con id ".$horario_presencial_id." editado"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Horarios_Presenciales  $horarios_Presenciales
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Horarios_Presenciales $horarios_Presenciales)
+    
+    public function destroy($horario_presencial_id)
     {
-        //
-    }
+        $horario = Horarios_Presenciales::find($horario_presencial_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateHorarios_PresencialesRequest  $request
-     * @param  \App\Models\Horarios_Presenciales  $horarios_Presenciales
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateHorarios_PresencialesRequest $request, Horarios_Presenciales $horarios_Presenciales)
-    {
-        //
-    }
+        $horario->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Horarios_Presenciales  $horarios_Presenciales
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Horarios_Presenciales $horarios_Presenciales)
-    {
-        //
+        return response()->json(["resp"=>"Horario presencial con id ".$horario_presencial_id." eliminado"]);
     }
 }

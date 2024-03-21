@@ -3,84 +3,56 @@
 namespace App\Http\Controllers;
 
 use App\Models\Carrera;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreCarreraRequest;
 use App\Http\Requests\UpdateCarreraRequest;
 
 class CarreraController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $carreras = Carrera::get();
+        return response()->json(["data" => $carreras, "conteo" => count($carreras)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function create(Request $request)
     {
-        //
+        Carrera::create([
+            "nombre" => $request->nombre
+        ]);
+        return response()->json(["resp" => "Carrera creada con nombre " . $request->nombre]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreCarreraRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreCarreraRequest $request)
+
+    public function show($carrera_id)
     {
-        //
+        $carrera = Carrera::find($carrera_id);
+
+        return response()->json(["data" => $carrera]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Carrera  $carrera
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Carrera $carrera)
+
+    public function update(Request $request, $carrera_id)
     {
-        //
+        $carrera = Carrera::find($carrera_id);
+
+        $carrera->fill([
+            "nombre" => $request->nombre
+        ])->save();
+
+        return response()->json(["resp" => "Carrera con id " . $carrera_id . " fue editada"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Carrera  $carrera
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Carrera $carrera)
+
+    public function destroy($carrera_id)
     {
-        //
+        $carrera = Carrera::find($carrera_id);
+
+        $carrera->delete();
+
+        return response()->json(["resp" => "Carrera con id " . $carrera_id . " y nombre " . $carrera->nombre . " ha sido eliminada."]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateCarreraRequest  $request
-     * @param  \App\Models\Carrera  $carrera
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateCarreraRequest $request, Carrera $carrera)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Carrera  $carrera
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Carrera $carrera)
-    {
-        //
-    }
 }

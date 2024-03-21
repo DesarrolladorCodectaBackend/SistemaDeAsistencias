@@ -3,84 +3,59 @@
 namespace App\Http\Controllers;
 
 use App\Models\Salones;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreSalonesRequest;
 use App\Http\Requests\UpdateSalonesRequest;
 
 class SalonesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $Salones = Salones::get();
+
+        return response()->json(["data" => $Salones, "conteo" => count($Salones)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Salones::create([
+            "nombre" => $request->nombre,
+            "descripcion" => $request->descripcion
+        ]);
+
+        return response()->json(["resp" => "Salón creado"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreSalonesRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreSalonesRequest $request)
+    
+    public function show($salon_id)
     {
-        //
+        $salon = Salones::find($salon_id);
+
+        return response()->json(["data" => $salon]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Salones  $salones
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Salones $salones)
+    
+    public function update(Request $request, $salon_id)
     {
-        //
+        $salon = Salones::find($salon_id);
+
+        $salon->fill([
+            "nombre" => $request->nombre,
+            "descripcion" => $request->descripcion
+        ])->save();
+
+        return response()->json(["resp" => "Salón con id ".$salon_id." actualizado"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Salones  $salones
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Salones $salones)
+    
+    public function destroy($salon_id)
     {
-        //
-    }
+        $salon = Salones::find($salon_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateSalonesRequest  $request
-     * @param  \App\Models\Salones  $salones
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateSalonesRequest $request, Salones $salones)
-    {
-        //
-    }
+        $salon->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Salones  $salones
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Salones $salones)
-    {
-        //
+        return response()->json(["resp" => "Salón con id ".$salon_id." eliminado"]);
     }
 }

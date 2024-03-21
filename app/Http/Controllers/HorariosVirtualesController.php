@@ -3,84 +3,59 @@
 namespace App\Http\Controllers;
 
 use App\Models\Horarios_Virtuales;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreHorarios_VirtualesRequest;
 use App\Http\Requests\UpdateHorarios_VirtualesRequest;
 
 class HorariosVirtualesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $horarios_virtuales = Horarios_Virtuales::get();
+
+        return response()->json(["data" => $horarios_virtuales, "conteo" => count($horarios_virtuales)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    
+    public function create(Request $request)
     {
-        //
+        Horarios_Virtuales::create([
+            "hora_inicial" => $request->hora_inicial,
+            "hora_final" => $request->hora_final
+        ]);
+
+        return response()->json(["resp" => "Horario virtual creado"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreHorarios_VirtualesRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreHorarios_VirtualesRequest $request)
+    
+    public function show($horario_virtual_id)
     {
-        //
+        $horario = Horarios_Virtuales::find($horario_virtual_id);
+
+        return response()->json(["data"=>$horario]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Horarios_Virtuales  $horarios_Virtuales
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Horarios_Virtuales $horarios_Virtuales)
+    
+    public function update(Request $request, $horario_virtual_id)
     {
-        //
+        $horario = Horarios_Virtuales::find($horario_virtual_id);
+
+        $horario->fill([
+            "hora_inicial" => $request->hora_inicial,
+            "hora_final" => $request->hora_final
+        ]);
+
+        return response()->json(["resp" => "Horario virtual con id ".$horario_virtual_id." editado"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Horarios_Virtuales  $horarios_Virtuales
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Horarios_Virtuales $horarios_Virtuales)
+    
+    public function destroy($horario_virtual_id)
     {
-        //
-    }
+        $horario = Horarios_Virtuales::find($horario_virtual_id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateHorarios_VirtualesRequest  $request
-     * @param  \App\Models\Horarios_Virtuales  $horarios_Virtuales
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateHorarios_VirtualesRequest $request, Horarios_Virtuales $horarios_Virtuales)
-    {
-        //
-    }
+        $horario->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Horarios_Virtuales  $horarios_Virtuales
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Horarios_Virtuales $horarios_Virtuales)
-    {
-        //
+        return response()->json(["resp" => "Horario virtual con id ".$horario_virtual_id." eliminado"]);
     }
 }

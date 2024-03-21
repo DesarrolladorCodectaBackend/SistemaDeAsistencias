@@ -12,4 +12,9 @@ class Carrera extends Model
     protected $fillable = [
         'nombre'
     ];
+
+    public function candidatos(){
+        return $this->hasMany(Candidatos::class, 'carrera_id', 'id');
+    }
+
 }

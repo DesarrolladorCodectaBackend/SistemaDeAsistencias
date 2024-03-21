@@ -3,84 +3,72 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidatos;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreCandidatosRequest;
 use App\Http\Requests\UpdateCandidatosRequest;
 
 class CandidatosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $candidatos = Candidatos::with(['institucion' => function ($query) {$query->select('id', 'nombre');},
+            'carrera' => function ($query) {$query->select('id', 'nombre');}])->where('estado', 1)->get();
+        return response()->json(["data" => $candidatos, "conteo" => count($candidatos)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function create(Request $request)
     {
-        //
+        Candidatos::create([
+            "nombre" => $request->nombre,
+            "apellido" => $request->apellido,
+            "dni" => $request->dni,
+            "direccion" => $request->direccion,
+            "fecha_nacimiento" => $request->fecha_nacimiento,
+            "ciclo_de_estudiante" => $request->ciclo_de_estudiante,
+            "institucion_id" => $request->institucion_id,
+            "carrera_id" => $request->carrera_id
+        ]);
+
+        return response()->json(["resp" => "Candidato creado exitosamente"]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreCandidatosRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreCandidatosRequest $request)
+
+    public function show($candidato_id)
     {
-        //
+        $candidato = Candidatos::with(['institucion' => function ($query) {$query->select('id', 'nombre');},
+        'carrera' => function ($query) {$query->select('id', 'nombre');}])->find($candidato_id);
+        return response()->json(["Data" => $candidato]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Candidatos  $candidatos
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Candidatos $candidatos)
+
+    public function update(Request $request, $candidato_id)
     {
-        //
+        $candidato = Candidatos::find($candidato_id);
+
+        $candidato->fill([
+            "nombre" => $request->nombre,
+            "apellido" => $request->apellido,
+            "dni" => $request->dni,
+            "direccion" => $request->direccion,
+            "fecha_nacimiento" => $request->fecha_nacimiento,
+            "ciclo_de_estudiante" => $request->ciclo_de_estudiante,
+            "institucion_id" => $request->institucion_id,
+            "carrera_id" => $request->carrera_id
+        ])->save();
+
+        return response()->json(["resp" => "Candidato actualizado correctamente"]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Candidatos  $candidatos
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Candidatos $candidatos)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateCandidatosRequest  $request
-     * @param  \App\Models\Candidatos  $candidatos
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateCandidatosRequest $request, Candidatos $candidatos)
+    public function destroy($candidato_id)
     {
-        //
-    }
+        $candidato = Candidatos::find($candidato_id);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Candidatos  $candidatos
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Candidatos $candidatos)
-    {
-        //
+        $candidato->delete();
+
+        return response()->json(["resp" => "Candidato eliminado correctamente"]);
+
     }
 }
