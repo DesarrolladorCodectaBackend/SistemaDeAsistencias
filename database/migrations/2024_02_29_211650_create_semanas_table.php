@@ -13,13 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('programas', function (Blueprint $table) {
+        Schema::create('semanas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('descripcion', 500);
-            $table->integer('memoria_grafica');
-            $table->integer('ram');
-            $table->integer('almacenamiento');
+            $table->dateTime('fecha_lunes');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('programas');
+        Schema::dropIfExists('semanas');
     }
 };

@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('programas', function (Blueprint $table) {
+        Schema::create('responsabilidades_semanales', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('descripcion', 500);
-            $table->integer('memoria_grafica');
-            $table->integer('ram');
-            $table->integer('almacenamiento');
+            $table->string('porcentaje_peso');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('programas');
+        Schema::dropIfExists('responsabilidades_semanales');
     }
 };

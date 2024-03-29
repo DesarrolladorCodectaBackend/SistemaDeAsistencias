@@ -11,7 +11,8 @@ class Horarios_Virtuales extends Model
 
     protected $fillable = [
         'hora_inicial',
-        'hora_final'
+        'hora_final',
+        'dia'
     ];
 
 

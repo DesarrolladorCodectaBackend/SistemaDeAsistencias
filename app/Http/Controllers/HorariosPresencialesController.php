@@ -32,29 +32,29 @@ class HorariosPresencialesController extends Controller
         try {
             //Existencia
             if (!$request->horario_inicial) {
-                return response()->json(["resp" => "Ingrese el horario inicial"]);
+                return response()->json(["resp" => "Ingrese la hora inicial"]);
             }
             if (!$request->horario_final) {
-                return response()->json(["resp" => "Ingrese el horario final"]);
+                return response()->json(["resp" => "Ingrese la hora final"]);
             }
             if (!$request->dia) {
-                return response()->json(["resp" => "Ingrese el dia final"]);
+                return response()->json(["resp" => "Ingrese el dia"]);
             }
 
             //Tipo de dato
             if (!is_string($request->horario_inicial)) {
-                return response()->json(["resp" => "El horario inicial debe ser una cadena de texto"]);
+                return response()->json(["resp" => "La hora inicial debe ser una cadena de texto"]);
             }
             if (!is_string($request->horario_final)) {
-                return response()->json(["resp" => "El horario final debe ser una cadena de texto"]);
+                return response()->json(["resp" => "La hora final debe ser una cadena de texto"]);
             }
             if (!is_string($request->dia)) {
                 return response()->json(["resp" => "El dia debe ser una cadena de texto"]);
             }
 
             Horarios_Presenciales::create([
-                "horario_inicial" => $request->horario_inicial,
-                "horario_final" => $request->horario_final,
+                "hora_inicial" => $request->hora_inicial,
+                "hora_final" => $request->hora_final,
                 "dia" => $request->dia
             ]);
 
@@ -96,29 +96,29 @@ class HorariosPresencialesController extends Controller
             }
 
             if (!$request->horario_inicial) {
-                return response()->json(["resp" => "Ingrese el horario inicial"]);
+                return response()->json(["resp" => "Ingrese la hora inicial"]);
             }
             if (!$request->horario_final) {
-                return response()->json(["resp" => "Ingrese el horario final"]);
+                return response()->json(["resp" => "Ingrese la hora final"]);
             }
             if (!$request->dia) {
-                return response()->json(["resp" => "Ingrese el dia final"]);
+                return response()->json(["resp" => "Ingrese el dia"]);
             }
 
             //Tipo de dato
             if (!is_string($request->horario_inicial)) {
-                return response()->json(["resp" => "El horario inicial debe ser una cadena de texto"]);
+                return response()->json(["resp" => "La hora inicial debe ser una cadena de texto"]);
             }
             if (!is_string($request->horario_final)) {
-                return response()->json(["resp" => "El horario final debe ser una cadena de texto"]);
+                return response()->json(["resp" => "La hora final debe ser una cadena de texto"]);
             }
             if (!is_string($request->dia)) {
                 return response()->json(["resp" => "El dia debe ser una cadena de texto"]);
             }
 
             $horario->fill([
-                "horario_inicial" => $request->horario_inicial,
-                "horario_final" => $request->horario_final,
+                "hora_inicial" => $request->hora_inicial,
+                "hora_final" => $request->hora_final,
                 "dia" => $request->dia
             ])->save();
 

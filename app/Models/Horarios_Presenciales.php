@@ -10,8 +10,8 @@ class Horarios_Presenciales extends Model
     use HasFactory;
 
     protected $fillable= [
-        'horario_inicial',
-        'horario_final',
+        'hora_inicial',
+        'hora_final',
         'dia'
     ];
 

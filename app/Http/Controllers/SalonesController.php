@@ -16,7 +16,7 @@ class SalonesController extends Controller
 
         return response()->json(["data" => $Salones, "conteo" => count($Salones)]);
     }
-
+    
     
     public function create(Request $request)
     {

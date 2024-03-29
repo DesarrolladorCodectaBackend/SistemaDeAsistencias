@@ -87,6 +87,7 @@ Route::post('candidato/create', [CandidatosController::class,'create']);
 Route::get('candidato/show/{candidato_id}', [CandidatosController::class,'show']);
 Route::put('candidato/update/{candidato_id}', [CandidatosController::class,'update']);
 Route::delete('candidato/delete/{candidato_id}', [CandidatosController::class,'destroy']);
+Route::get('candidato/ShowByName', [CandidatosController::class, 'ShowByName']);
 
 //MAQUINAS
 Route::get('maquina/get', [MaquinasController::class,'index']);
@@ -101,6 +102,7 @@ Route::post('colaborador/create', [ColaboradoresController::class,'create']);
 Route::get('colaborador/show/{colaborador_id}', [ColaboradoresController::class,'show']);
 Route::put('colaborador/update/{colaborador_id}', [ColaboradoresController::class,'update']);
 Route::delete('colaborador/delete/{colaborador_id}', [ColaboradoresController::class,'destroy']);
+Route::get('colaborador/ShowByName', [ColaboradoresController::class, 'ShowByName']);
 
 //COPY_OF_MAQUINAS  
 Route::get('copy_of_maquinas/get', [Copy_of_maquinasController::class,'index']);
