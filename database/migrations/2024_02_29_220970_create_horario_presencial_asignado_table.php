@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('copy_of__maquinas', function (Blueprint $table) {
+        Schema::create('horario_presencial_asignado', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('horario_presencial_id');
             $table->foreign('horario_presencial_id')->references('id')->on('horarios__presenciales');
-            $table->unsignedBigInteger('maquina_id');
-            $table->foreign('maquina_id')->references('id')->on('maquinas');
+            $table->unsignedBigInteger('area_id');
+            $table->foreign('area_id')->references('id')->on('areas');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('copy_of__maquinas');
+        Schema::dropIfExists('horario_presencial_asignado');
     }
 };
