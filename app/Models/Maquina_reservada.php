@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Copy_of_Maquinas extends Model
+class Maquina_reservada extends Model
 {
     use HasFactory;
 
@@ -21,5 +21,4 @@ class Copy_of_Maquinas extends Model
     public function horarios_presenciales(){
         return $this->belongsTo(Horarios_Presenciales::class, 'horario_presencial_id', 'id');
     }
-
 }

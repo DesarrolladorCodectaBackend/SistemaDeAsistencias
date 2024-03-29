@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Copy_of_Maquinas;
+use App\Models\Maquina_reservada;
 use Illuminate\Http\Request;
 
-class Copy_of_maquinasController extends Controller
+class MaquinaReservadaController extends Controller
 {
     public function index()
     {
-        $copy_of_maquinas = Copy_of_Maquinas::with([
+        $copy_of_maquinas = Maquina_reservada::with([
             'horarios_presenciales' => function($query) {$query->select('id', 'horario_inicial', 'horario_final', 'dia');},
             'maquinas' => function($query) {$query->select('id', 'nombre');}])->get();
         
@@ -18,7 +18,7 @@ class Copy_of_maquinasController extends Controller
 
     public function create(Request $request)
     {
-        Copy_of_Maquinas::create([
+        Maquina_reservada::create([
             "horario_presencial_id" => $request->horario_presencial_id,
             "maquina_id" => $request->maquina_id
         ]);
@@ -28,7 +28,7 @@ class Copy_of_maquinasController extends Controller
 
     public function show($copy_of_maquinas_id)
     {
-        $copy_of_maquinas = Copy_of_Maquinas::with([
+        $copy_of_maquinas = Maquina_reservada::with([
             'horarios_presenciales' => function($query) {$query->select('id', 'horario_inicial', 'horario_final', 'dia');},
             'maquinas' => function($query) {$query->select('id', 'nombre');}])->find($copy_of_maquinas_id);
 
@@ -37,7 +37,7 @@ class Copy_of_maquinasController extends Controller
 
     public function update(Request $request, $copy_of_maquinas_id)
     {
-        $copy_of_maquinas = Copy_of_Maquinas::find($copy_of_maquinas_id);
+        $copy_of_maquinas = Maquina_reservada::find($copy_of_maquinas_id);
 
         $copy_of_maquinas->fill([
             "horario_presencial_id" => $request->horario_presencial_id,
@@ -49,7 +49,7 @@ class Copy_of_maquinasController extends Controller
 
     public function destroy($copy_of_maquinas_id)
     {
-        $copy_of_maquinas = Copy_of_Maquinas::find($copy_of_maquinas_id);
+        $copy_of_maquinas = Maquina_reservada::find($copy_of_maquinas_id);
 
         $copy_of_maquinas->delete();
 

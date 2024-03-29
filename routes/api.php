@@ -6,7 +6,7 @@ use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\ColaboradoresPorAreaController;
 use App\Http\Controllers\Computadora_colaboradorController;
-use App\Http\Controllers\Copy_of_maquinasController;
+use App\Http\Controllers\MaquinaReservadaController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\HorariosPresencialesController;
 use App\Http\Controllers\HorariosVirtualesController;
@@ -104,12 +104,12 @@ Route::put('colaborador/update/{colaborador_id}', [ColaboradoresController::clas
 Route::delete('colaborador/delete/{colaborador_id}', [ColaboradoresController::class,'destroy']);
 Route::get('colaborador/ShowByName', [ColaboradoresController::class, 'ShowByName']);
 
-//COPY_OF_MAQUINAS  
-Route::get('copy_of_maquinas/get', [Copy_of_maquinasController::class,'index']);
-Route::post('copy_of_maquinas/create', [Copy_of_maquinasController::class,'create']);
-Route::get('copy_of_maquinas/show/{copy_of_maquinas_id}', [Copy_of_maquinasController::class,'show']);
-Route::put('copy_of_maquinas/update/{copy_of_maquinas_id}', [Copy_of_maquinasController::class,'update']);
-Route::delete('copy_of_maquinas/delete/{copy_of_maquinas_id}', [Copy_of_maquinasController::class,'destroy']);
+//MAQUINA RESERVADA  
+Route::get('copy_of_maquinas/get', [MaquinaReservadaController::class,'index']);
+Route::post('copy_of_maquinas/create', [MaquinaReservadaController::class,'create']);
+Route::get('copy_of_maquinas/show/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'show']);
+Route::put('copy_of_maquinas/update/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'update']);
+Route::delete('copy_of_maquinas/delete/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'destroy']);
 
 //DISPONIBILIDAD PRESENCIAL
 Route::get('disponibilidad_presencial/get', [DisponibilidadPresencialController::class,'index']);
