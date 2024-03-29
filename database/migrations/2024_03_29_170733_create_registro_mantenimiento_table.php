@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('asistentes_clase', function (Blueprint $table) {
+        Schema::create('registro_mantenimiento', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('colaborador_id');
-            $table->foreign('colaborador_id')->references('id')->on('colaboradores');
-            $table->unsignedBigInteger('clase_id');
-            $table->foreign('clase_id')->references('id')->on('clase');
-            $table->boolean('asistio');
+            $table->unsignedBigInteger('computadora_id');
+            $table->foreign('computadora_id')->references('id')->on('computadora_colaboradors');
+            $table->dateTime('fecha');
+            $table->string('registro_incidencia');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('asistentes_clase');
+        Schema::dropIfExists('registro_mantenimiento');
     }
 };
