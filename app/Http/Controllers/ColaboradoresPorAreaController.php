@@ -24,7 +24,8 @@ class ColaboradoresPorAreaController extends Controller
     {
         Colaboradores_por_Area::create([
             "colaborador_id" => $request->colaborador_id,
-            "area_id" => $request->area_id
+            "area_id" => $request->area_id,
+            "semana_inicio_id" => $request->semana_inicio_id
         ]);
 
         return response()->json(["resp" => "Registro creado correctamente"]);
@@ -48,7 +49,8 @@ class ColaboradoresPorAreaController extends Controller
 
         $colaborador_por_area->fill([
             "colaborador_id" => $request->colaborador_id,
-            "area_id" => $request->area_id
+            "area_id" => $request->area_id,
+            "semana_inicio_id" => $request->semana_inicio_id
         ])->save();
 
         return response()->json(["resp" => "Registro actualizado correctamente"]);

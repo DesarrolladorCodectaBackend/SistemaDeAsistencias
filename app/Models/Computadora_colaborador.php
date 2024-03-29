@@ -13,6 +13,7 @@ class Computadora_colaborador extends Model
         'colaborador_id',
         'procesador',
         'tarjeta_grafica',
+        'memoria_grafica',
         'ram',
         'almacenamiento',
         'es_laptop',

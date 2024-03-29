@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('colaboradores_por__areas', function (Blueprint $table) {
+        Schema::create('asistentes_clase', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('colaborador_id');
+            $table->unsignedSmallInteger('colaborador_id');
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
-            $table->unsignedBigInteger('area_id');
-            $table->foreign('area_id')->references('id')->on('areas');
-            $table->unsignedBigInteger('semana_inicio_id');
-            $table->foreign('semana_inicio_id')->references('id')->on('semanas');
+            $table->unsignedBigInteger('clase_id');
+            $table->foreign('clase_id')->references('id')->on('clase');
+            $table->boolean('asistio');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('colaboradores_por__areas');
+        Schema::dropIfExists('asistentes_clase');
     }
 };
