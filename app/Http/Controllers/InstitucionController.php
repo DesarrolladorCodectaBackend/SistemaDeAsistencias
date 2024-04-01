@@ -21,7 +21,7 @@ class InstitucionController extends Controller
             }
             return response()->json(["data" => $instituciones, "conteo" => count($instituciones)]);
         } catch (Exception $e) {
-            return response()->json(["resp" => $e]);
+            return response()->json(["error" => $e]);
         }
     }
 

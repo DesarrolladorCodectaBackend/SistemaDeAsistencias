@@ -3,6 +3,7 @@
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\ColaboradoresPorAreaController;
 use App\Http\Controllers\Computadora_colaboradorController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\DisponibilidadPresencialController;
 use App\Http\Controllers\SemanasController;
+use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Models\Salones;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -129,6 +131,27 @@ Route::post('maquina/create', [MaquinasController::class,'create']);
 Route::get('maquina/show/{maquina_id}', [MaquinasController::class,'show']);
 Route::put('maquina/update/{maquina_id}', [MaquinasController::class,'update']);
 Route::delete('maquina/delete/{maquina_id}', [MaquinasController::class,'destroy']);
+
+//HORARIO PRESENCIAL ASIGNADO
+Route::get('horario_presencial_asignado/get', [Horario_Presencial_AsignadoController::class,'index']);
+Route::post('horario_presencial_asignado/create', [Horario_Presencial_AsignadoController::class,'create']);
+Route::get('horario_presencial_asignado/show/{horario_presencial_asignado_id}', [Horario_Presencial_AsignadoController::class,'show']);
+Route::put('horario_presencial_asignado/update/{horario_presencial_asignado_id}', [Horario_Presencial_AsignadoController::class,'update']);
+Route::delete('horario_presencial_asignado/delete/{horario_presencial_asignado_id}', [Horario_Presencial_AsignadoController::class,'destroy']);
+
+//HORARIO VIRTUAL COLABORADOR
+Route::get('horario_virtual_colaborador/get', [HorarioVirtualColaboradorController::class,'index']);
+Route::post('horario_virtual_colaborador/create', [HorarioVirtualColaboradorController::class,'create']);
+Route::get('horario_virtual_colaborador/show/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'show']);
+Route::put('horario_virtual_colaborador/update/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'update']);
+Route::delete('horario_virtual_colaborador/delete/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'destroy']);
+
+//CLASE
+Route::get('clase/get', [ClaseController::class,'index']);
+Route::post('clase/create', [ClaseController::class,'create']);
+Route::get('clase/show/{clase_id}', [ClaseController::class,'show']);
+Route::put('clase/update/{clase_id}', [ClaseController::class,'update']);
+Route::delete('clase/delete/{clase_id}', [ClaseController::class,'destroy']);
 
 /*
 ------------------------------

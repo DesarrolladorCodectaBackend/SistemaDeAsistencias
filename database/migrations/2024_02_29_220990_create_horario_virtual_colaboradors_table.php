@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('horario_presencial_asignado', function (Blueprint $table) {
+        Schema::create('horario_virtual_colaboradors', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('horario_presencial_id');
-            $table->foreign('horario_presencial_id')->references('id')->on('horarios__presenciales');
+            $table->unsignedBigInteger('horario_virtual_id');
+            $table->foreign('horario_virtual_id')->references('id')->on('horarios__virtuales');
+            $table->unsignedBigInteger('semana_id');
+            $table->foreign('semana_id')->references('id')->on('semanas');
             $table->unsignedBigInteger('area_id');
             $table->foreign('area_id')->references('id')->on('areas');
             $table->timestamps();
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('horario_presencial_asignado');
+        Schema::dropIfExists('horario_virtual_colaboradors');
     }
 };

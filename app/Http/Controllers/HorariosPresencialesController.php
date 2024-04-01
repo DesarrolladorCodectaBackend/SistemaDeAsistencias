@@ -21,7 +21,7 @@ class HorariosPresencialesController extends Controller
             }
             return response()->json(["data" => $horarios_presenciales, "conteo" => count($horarios_presenciales)]);
         } catch (Exception $e) {
-            return response()->json(["resp" => $e]);
+            return response()->json(["error" => $e]);
         }
     }
 

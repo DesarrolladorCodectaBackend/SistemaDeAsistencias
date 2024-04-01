@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('colaborador_id');
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
             $table->unsignedBigInteger('clase_id');
-            $table->foreign('clase_id')->references('id')->on('clase');
+            $table->foreign('clase_id')->references('id')->on('clases');
             $table->boolean('asistio');
             $table->timestamps();
         });

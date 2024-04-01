@@ -21,7 +21,7 @@ class HorariosVirtualesController extends Controller
             }
             return response()->json(["data" => $horarios_virtuales, "conteo" => count($horarios_virtuales)]);
         } catch (Exception $e) {
-            return response()->json(["resp" => $e]);
+            return response()->json(["error" => $e]);
         }
     }
 

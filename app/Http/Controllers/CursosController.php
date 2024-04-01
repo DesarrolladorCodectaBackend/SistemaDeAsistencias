@@ -18,7 +18,7 @@ class CursosController extends Controller
             }
             return response()->json(["data" => $cursos, "conteo" => count($cursos)]);
         } catch (Exception $e) {
-            return response()->json(["resp" => $e]);
+            return response()->json(["error" => $e]);
         }
     }
 

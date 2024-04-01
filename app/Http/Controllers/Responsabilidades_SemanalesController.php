@@ -18,7 +18,7 @@ class Responsabilidades_SemanalesController extends Controller
             }
             return response()->json(["data" => $responsabilidades_semanales, "conteo" => count($responsabilidades_semanales)]);
         } catch (Exception $e) {
-            return response()->json(["resp" => $e]);
+            return response()->json(["error" => $e]);
         }
     }
 

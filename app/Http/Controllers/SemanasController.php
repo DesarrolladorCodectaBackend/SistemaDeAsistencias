@@ -18,7 +18,7 @@ class SemanasController extends Controller
             }
             return response()->json(["data" => $semanas, "conteo" => count($semanas)]);
         } catch (Exception $e) {
-            return response()->json(["resp" => $e]);
+            return response()->json(["error" => $e]);
         }
     }
 
