@@ -13,7 +13,8 @@ class Programas extends Model
         'nombre',
         'descripcion',
         'memoria_grafica',
-        'ram'
+        'ram',
+        'almacenamiento'
     ];
 
     public function programas_instalados(){

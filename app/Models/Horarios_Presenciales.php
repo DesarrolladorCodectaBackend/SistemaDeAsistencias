@@ -21,6 +21,6 @@ class Horarios_Presenciales extends Model
     }
 
     public function copy_of_maquinas(){
-        return $this->hasMany(Copy_of_Maquinas::class, 'horario_presencial_id', 'id');
+        return $this->hasMany(Maquina_reservada::class, 'horario_presencial_id', 'id');
     }
 }

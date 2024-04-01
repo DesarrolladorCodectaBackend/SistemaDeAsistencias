@@ -6,6 +6,7 @@ use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\ColaboradoresPorAreaController;
 use App\Http\Controllers\Computadora_colaboradorController;
+use App\Http\Controllers\CursosController;
 use App\Http\Controllers\MaquinaReservadaController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\HorariosPresencialesController;
@@ -14,8 +15,10 @@ use App\Http\Controllers\HorarioVirtualColaboradorController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
+use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\DisponibilidadPresencialController;
+use App\Http\Controllers\SemanasController;
 use App\Models\Salones;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,7 +34,11 @@ use App\Http\Controllers\InstitucionController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+/*
+------------------------------
+        PRIMER ESCALÓN
+------------------------------
+*/
 //INSTITUCIONES 
 Route::get('institucion/get', [InstitucionController::class,'index']);
 Route::post('institucion/create', [InstitucionController::class,'create']);
@@ -81,6 +88,33 @@ Route::get('programa/show/{programa_id}', [ProgramasController::class,'show']);
 Route::put('programa/update/{programa_id}', [ProgramasController::class,'update']);
 Route::delete('programa/delete/{programa_id}', [ProgramasController::class,'destroy']);
 
+//SEMANAS
+Route::get('semana/get', [SemanasController::class,'index']);
+Route::post('semana/create', [SemanasController::class,'create']);
+Route::get('semana/show/{semana_id}', [SemanasController::class,'show']);
+Route::put('semana/update/{semana_id}', [SemanasController::class,'update']);
+Route::delete('semana/delete/{semana_id}', [SemanasController::class,'destroy']);
+
+//RESPONSABILIDADES SEMANALES
+Route::get('responsabilidad_semanal/get', [Responsabilidades_SemanalesController::class,'index']);
+Route::post('responsabilidad_semanal/create', [Responsabilidades_SemanalesController::class,'create']);
+Route::get('responsabilidad_semanal/show/{responsabilidad_semanal_id}', [Responsabilidades_SemanalesController::class,'show']);
+Route::put('responsabilidad_semanal/update/{responsabilidad_semanal_id}', [Responsabilidades_SemanalesController::class,'update']);
+Route::delete('responsabilidad_semanal/delete/{responsabilidad_semanal_id}', [Responsabilidades_SemanalesController::class,'destroy']);
+
+//CURSOS
+Route::get('curso/get', [CursosController::class,'index']);
+Route::post('curso/create', [CursosController::class,'create']);
+Route::get('curso/show/{curso_id}', [CursosController::class,'show']);
+Route::put('curso/update/{curso_id}', [CursosController::class,'update']);
+Route::delete('curso/delete/{curso_id}', [CursosController::class,'destroy']);
+
+/*
+-------------------------------
+        SEGUNDO ESCALÓN
+-------------------------------
+*/
+
 //CANDIDATOS
 Route::get('candidato/get', [CandidatosController::class,'index']);
 Route::post('candidato/create', [CandidatosController::class,'create']);
@@ -96,6 +130,12 @@ Route::get('maquina/show/{maquina_id}', [MaquinasController::class,'show']);
 Route::put('maquina/update/{maquina_id}', [MaquinasController::class,'update']);
 Route::delete('maquina/delete/{maquina_id}', [MaquinasController::class,'destroy']);
 
+/*
+------------------------------
+        TERCER ESCALÓN
+------------------------------
+*/
+
 //COLABORADOR
 Route::get('colaborador/get', [ColaboradoresController::class,'index']);
 Route::post('colaborador/create', [ColaboradoresController::class,'create']);
@@ -110,6 +150,12 @@ Route::post('copy_of_maquinas/create', [MaquinaReservadaController::class,'creat
 Route::get('copy_of_maquinas/show/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'show']);
 Route::put('copy_of_maquinas/update/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'update']);
 Route::delete('copy_of_maquinas/delete/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'destroy']);
+
+/*
+------------------------------
+        CUARTO ESCALÓN
+------------------------------
+*/
 
 //DISPONIBILIDAD PRESENCIAL
 Route::get('disponibilidad_presencial/get', [DisponibilidadPresencialController::class,'index']);
@@ -145,6 +191,12 @@ Route::post('computadora_colaborador/create', [Computadora_colaboradorController
 Route::get('computadora_colaborador/show/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'show']);
 Route::put('computadora_colaborador/update/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'update']);
 Route::delete('computadora_colaborador/delete/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'destroy']);
+
+/*
+------------------------------
+        QUINTO ESCALÓN
+------------------------------
+*/
 
 //PROGRAMAS INSTALADOS
 Route::get('programas_instalados/get', [Programas_instaladosController::class,'index']);
