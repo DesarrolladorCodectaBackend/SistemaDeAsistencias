@@ -3,63 +3,172 @@
 namespace App\Http\Controllers;
 
 use App\Models\Horario_de_Clases;
+use Exception;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreHorario_de_ClasesRequest;
-use App\Http\Requests\UpdateHorario_de_ClasesRequest;
+use Illuminate\Support\Facades\DB;
 
 class HorarioDeClasesController extends Controller
-{
-    
+{ 
     public function index()
     {
-        $horario_de_clases = Horario_de_Clases::with('colaboradores')->get();
+        try{
+            $horario_de_clases = Horario_de_Clases::with('colaboradores')->get();
 
-        return response()->json(["data" => $horario_de_clases, "conteo" => count($horario_de_clases)]);
+            if(count($horario_de_clases) == 0){
+                return response()->json(["resp" => "No hay registros insertados"]);
+            }
+
+            return response()->json(["data" => $horario_de_clases, "conteo" => count($horario_de_clases)]);
+        } catch(Exception $e){
+            return response()->json(["error" => $e]);
+        }
+
     }
 
     
     public function create(Request $request)
     {
-        Horario_de_Clases::create([
-            "colaborador_id" => $request->colaborador_id,
-            "hora_inicial" => $request->hora_inicial,
-            "hora_final" => $request->hora_final,
-            "dia" => $request->dia
-        ]);
+        DB::beginTransaction();
+        try{
+            if(!$request->colaborador_id){
+                return response()->json(["resp" => "Ingrese colaborador"]);
+            }
 
-        return response()->json(["resp" => "Registro creado correctamente"]);
+            if(!$request->hora_inicial){
+                return response()->json(["resp" => "Ingrese hora inicial"]);
+            }
+
+            if(!$request->hora_final){
+                return response()->json(["resp" => "Ingrese hora final"]);
+            }
+
+            if(!$request->dia){
+                return response()->json(["resp" => "Ingrese dia"]);
+            }
+
+            if(!is_integer($request->colaborador_id)){
+                return response()->json(["resp" => "El id del colaborador debe ser un número entero"]);
+            }
+
+            if(!is_string($request->hora_inicial)){
+                return response()->json(["resp" => "La hora inicial debe ser un texto"]);
+            }
+
+            if(!is_string($request->hora_final)){
+                return response()->json(["resp" => "La hora final debe ser un texto"]);
+            }
+
+            if(!is_string($request->dia)){
+                return response()->json(["resp" => "El dia debe ser un texto"]);
+            }
+
+            Horario_de_Clases::create([
+                "colaborador_id" => $request->colaborador_id,
+                "hora_inicial" => $request->hora_inicial,
+                "hora_final" => $request->hora_final,
+                "dia" => $request->dia
+            ]);
+            DB::commit();
+            return response()->json(["resp" => "Registro creado correctamente"]);
+        } catch (Exception $e){
+            DB::rollBack();
+            return response()->json(["error" => $e]);
+        }
     }
 
     
     public function show($horario_de_clases_id)
     {
-        $horario_de_clases = Horario_de_Clases::with('colaboradores')->find($horario_de_clases_id);
+        try{
+            $horario_de_clases = Horario_de_Clases::with('colaboradores')->find($horario_de_clases_id);
 
-        return response()->json(["data" => $horario_de_clases]);
+            if(!$horario_de_clases){
+                return response()->json(["resp" => "No existe un registro con ese id"]);
+            }
+
+            return response()->json(["data" => $horario_de_clases]);
+        } catch(Exception $e){
+            return response()->json(["error" => $e]);
+        }
+
     }
 
     
     public function update(Request $request, $horario_de_clases_id)
     {
-        $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
+        DB::beginTransaction();
+        try{
+            $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
 
-        $horario_de_clases->fill([
-            "colaborador_id" => $request->colaborador_id,
-            "hora_inicial" => $request->hora_inicial,
-            "hora_final" => $request->hora_final,
-            "dia" => $request->dia
-        ])->save();
+            if(!$horario_de_clases){
+                return response()->json(["resp" => "No existe un registro con ese id"]);
+            }
 
-        return response()->json(["resp" => "Registro actualizado correctamente"]);
+            if(!$request->colaborador_id){
+                return response()->json(["resp" => "Ingrese colaborador"]);
+            }
+
+            if(!$request->hora_inicial){
+                return response()->json(["resp" => "Ingrese hora inicial"]);
+            }
+
+            if(!$request->hora_final){
+                return response()->json(["resp" => "Ingrese hora final"]);
+            }
+
+            if(!$request->dia){
+                return response()->json(["resp" => "Ingrese dia"]);
+            }
+
+            if(!is_integer($request->colaborador_id)){
+                return response()->json(["resp" => "El id del colaborador debe ser un número entero"]);
+            }
+
+            if(!is_string($request->hora_inicial)){
+                return response()->json(["resp" => "La hora inicial debe ser un texto"]);
+            }
+
+            if(!is_string($request->hora_final)){
+                return response()->json(["resp" => "La hora final debe ser un texto"]);
+            }
+
+            if(!is_string($request->dia)){
+                return response()->json(["resp" => "El dia debe ser un texto"]);
+            }
+
+            $horario_de_clases->fill([
+                "colaborador_id" => $request->colaborador_id,
+                "hora_inicial" => $request->hora_inicial,
+                "hora_final" => $request->hora_final,
+                "dia" => $request->dia
+            ])->save();
+            DB::commit();
+            return response()->json(["resp" => "Registro actualizado correctamente"]);
+        } catch(Exception $e){
+            DB::rollBack();
+            return response()->json(["error" => $e]);
+        }
+
     }
 
     
     public function destroy($horario_de_clases_id)
     {
-        $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
+        DB::beginTransaction();
+        try{
+            $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
 
-        $horario_de_clases->delete();
+            if(!$horario_de_clases){
+                return response()->json(["resp" => "No existe un registro con ese id"]);
+            }
 
-        return response()->json(["resp" => "Registro eliminado correctamente"]);
+            $horario_de_clases->delete();
+            DB::commit();
+            return response()->json(["resp" => "Registro eliminado correctamente"]);
+        } catch(Exception $e){
+            DB::rollBack();
+            return response()->json(["error" => $e]);
+        }
+
     }
 }

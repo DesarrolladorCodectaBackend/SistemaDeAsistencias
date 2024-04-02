@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\Asistentes_ClaseController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ClaseController;
@@ -167,12 +168,12 @@ Route::put('colaborador/update/{colaborador_id}', [ColaboradoresController::clas
 Route::delete('colaborador/delete/{colaborador_id}', [ColaboradoresController::class,'destroy']);
 Route::get('colaborador/ShowByName', [ColaboradoresController::class, 'ShowByName']);
 
-//MAQUINA RESERVADA  
-Route::get('copy_of_maquinas/get', [MaquinaReservadaController::class,'index']);
-Route::post('copy_of_maquinas/create', [MaquinaReservadaController::class,'create']);
-Route::get('copy_of_maquinas/show/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'show']);
-Route::put('copy_of_maquinas/update/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'update']);
-Route::delete('copy_of_maquinas/delete/{copy_of_maquinas_id}', [MaquinaReservadaController::class,'destroy']);
+//MAQUINA RESERVADA
+Route::get('maquina_reservada/get', [MaquinaReservadaController::class,'index']);
+Route::post('maquina_reservada/create', [MaquinaReservadaController::class,'create']);
+Route::get('maquina_reservada/show/{maquina_reservada_id}', [MaquinaReservadaController::class,'show']);
+Route::put('maquina_reservada/update/{maquina_reservada_id}', [MaquinaReservadaController::class,'update']);
+Route::delete('maquina_reservada/delete/{maquina_reservada_id}', [MaquinaReservadaController::class,'destroy']);
 
 /*
 ------------------------------
@@ -202,11 +203,13 @@ Route::put('horario_de_clase/update/{horario_de_clase_id}', [HorarioDeClasesCont
 Route::delete('horario_de_clase/delete/{horario_de_clase_id}', [HorarioDeClasesController::class,'destroy']);
 
 //HORARIO VIRTUAL COLABORADOR
+/*
 Route::get('horario_virtual_colaborador/get', [HorarioVirtualColaboradorController::class,'index']);
 Route::post('horario_virtual_colaborador/create', [HorarioVirtualColaboradorController::class,'create']);
 Route::get('horario_virtual_colaborador/show/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'show']);
 Route::put('horario_virtual_colaborador/update/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'update']);
 Route::delete('horario_virtual_colaborador/delete/{horario_virtual_colaborador_id}', [HorarioVirtualColaboradorController::class,'destroy']);
+*/
 
 //COMPUTADORA COLABORADOR
 Route::get('computadora_colaborador/get', [Computadora_colaboradorController::class,'index']);
@@ -214,6 +217,14 @@ Route::post('computadora_colaborador/create', [Computadora_colaboradorController
 Route::get('computadora_colaborador/show/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'show']);
 Route::put('computadora_colaborador/update/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'update']);
 Route::delete('computadora_colaborador/delete/{computadora_colaborador_id}', [Computadora_colaboradorController::class,'destroy']);
+
+//ASISTENTES CLASE
+Route::get('asistente_clase/get', [Asistentes_ClaseController::class,'index']);
+Route::post('asistente_clase/create', [Asistentes_ClaseController::class,'create']);
+Route::get('asistente_clase/show/{asistente_clase_id}', [Asistentes_ClaseController::class,'show']);
+Route::put('asistente_clase/update/{asistente_clase_id}', [Asistentes_ClaseController::class,'update']);
+Route::delete('asistente_clase/delete/{asistente_clase_id}', [Asistentes_ClaseController::class,'destroy']);
+
 
 /*
 ------------------------------

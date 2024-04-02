@@ -66,6 +66,10 @@ class Computadora_colaboradorController extends Controller
     {
         $computadora_colaborador = Computadora_colaborador::find($computadora_colaborador_id);
 
+        if(!$computadora_colaborador){
+            return response()->json(["resp" => "No existe un registro con ese id"]);
+        }
+
         $computadora_colaborador->delete();
 
         return response()->json(["resp" => "Registro eliminado correctamente"]);
