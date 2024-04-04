@@ -42,7 +42,9 @@
                     <!--Continually expanded and constantly improved Inspinia Admin Them (IN+)-->
                 </p>
                 <p>Login in. To see it in action.</p>
+                <x-auth-session-status class="mb-4" :status="session('status')" />
                 <form class="m-t" role="form" action="index.html">
+                    @csrf
                     <div class="form-group">
                         <input type="email" class="form-control" placeholder="Username" required="">
                     </div>
