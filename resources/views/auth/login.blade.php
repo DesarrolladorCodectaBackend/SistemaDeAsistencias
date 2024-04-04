@@ -31,28 +31,26 @@
                 <!--Continually expanded and constantly improved Inspinia Admin Them (IN+)-->
             </p>
             <p>Login in. To see it in action.</p>
-            <form method="POST" action="{{ route('login') }}">
+            <form class="m-t" method="POST" action="{{ route('login') }}">
                 @csrf
 
                 <!-- Email Address -->
-                <div>
-                    <x-input-label for="email" :value="__('Email')" />
-                    <x-text-input id="email" class="block mt-1 w-full form-control" type="email" name="email"
+                <div class="form-group">
+                    <x-text-input id="email" class="form-control" placeholder="Username" type="email" name="email"
                         :value="old('email')" required autofocus autocomplete="username" />
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 
                 <!-- Password -->
-                <div class="mt-4">
-                    <x-input-label for="password" :value="__('Password')" />
+                <div class="form-group">
 
-                    <x-text-input id="password" class="block mt-1 w-full form-control" type="password" name="password" required
+                    <x-text-input id="password" class="form-control" placeholder="Password" type="password" name="password" required
                         autocomplete="current-password" />
 
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
 
-                <!-- Remember Me -->
+                <!-- Remember Me 
                 <div class="block mt-4">
                     <label for="remember_me" class="inline-flex items-center">
                         <input id="remember_me" type="checkbox"
@@ -60,27 +58,24 @@
                             name="remember">
                         <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                     </label>
-                </div>
+                </div>-->
 
-                <div class="flex items-center justify-end mt-4">
-                    <x-primary-button class="ml-3 btn btn-primary btn-block">
+                    <x-primary-button class="form-group btn btn-primary block full-width m-b">
                         {{ __('Log in') }}
                     </x-primary-button> 
                     @if (Route::has('password.request'))
                         <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            href="{{ route('password.request') }}">
-                            {{ __('Forgot your password?') }}
+                            href="{{ route('password.request') }}"><small>
+                            {{ __('Forgot your password?') }}</small>
                         </a>
+                        <p class="text-muted text-center"><small>Do not have an account?</small></p>
                     @endif
-                        <br>
+                        
                     
-                </div>
-                <div class="flex items-center justify-end mt-4">
-                    <a class="ml-3 btn btn-secondary btn-block"
+                    <a class="btn btn-sm btn-white btn-block"
                         href="{{ route('register') }}">
                         {{ __('Create account') }}
                     </a>                     
-                </div>
             </form>
             <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>
         </div>
