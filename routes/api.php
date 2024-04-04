@@ -8,6 +8,7 @@ use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\ColaboradoresPorAreaController;
 use App\Http\Controllers\Computadora_colaboradorController;
+use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
 use App\Http\Controllers\MaquinaReservadaController;
 use App\Http\Controllers\HorarioDeClasesController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\HorarioVirtualColaboradorController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
+use App\Http\Controllers\Registro_MantenimientoController;
 use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\DisponibilidadPresencialController;
@@ -239,8 +241,19 @@ Route::get('programas_instalados/show/{programas_instalados_id}', [Programas_ins
 Route::put('programas_instalados/update/{programas_instalados_id}', [Programas_instaladosController::class,'update']);
 Route::delete('programas_instalados/delete/{programas_instalados_id}', [Programas_instaladosController::class,'destroy']);
 
-//Route::get('departamentos/get', [DepartamentosController::class, 'mostrarTodo']);
+//REGISTRO MANTENIMIENTO
+Route::get('registro_mantenimiento/get', [Registro_MantenimientoController::class,'index']);
+Route::post('registro_mantenimiento/create', [Registro_MantenimientoController::class,'create']);
+Route::get('registro_mantenimiento/show/{registro_mantenimiento_id}', [Registro_MantenimientoController::class,'show']);
+Route::put('registro_mantenimiento/update/{registro_mantenimiento_id}', [Registro_MantenimientoController::class,'update']);
+Route::delete('registro_mantenimiento/delete/{registro_mantenimiento_id}', [Registro_MantenimientoController::class,'destroy']);
 
+//CUMPLIO RESPONSABILIDAD SEMANAL
+Route::get('cumplio_res_sem/get', [Cumplio_Responsabilidad_SemanalController::class,'index']);
+Route::post('cumplio_res_sem/create', [Cumplio_Responsabilidad_SemanalController::class,'create']);
+Route::get('cumplio_res_sem/show/{cumplio_res_sem_id}', [Cumplio_Responsabilidad_SemanalController::class,'show']);
+Route::put('cumplio_res_sem/update/{cumplio_res_sem_id}', [Cumplio_Responsabilidad_SemanalController::class,'update']);
+Route::delete('cumplio_res_sem/delete/{cumplio_res_sem_id}', [Cumplio_Responsabilidad_SemanalController::class,'destroy']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
