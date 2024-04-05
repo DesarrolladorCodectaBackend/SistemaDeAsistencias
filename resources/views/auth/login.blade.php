@@ -61,12 +61,12 @@
                 </div>-->
 
                     <x-primary-button class="form-group btn btn-primary block full-width m-b">
-                        {{ __('Log in') }}
+                        {{ __('Login') }}
                     </x-primary-button> 
                     @if (Route::has('password.request'))
                         <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             href="{{ route('password.request') }}"><small>
-                            {{ __('Forgot your password?') }}</small>
+                            {{ __('Forgot password?') }}</small>
                         </a>
                         <p class="text-muted text-center"><small>Do not have an account?</small></p>
                     @endif
@@ -74,7 +74,7 @@
                     
                     <a class="btn btn-sm btn-white btn-block"
                         href="{{ route('register') }}">
-                        {{ __('Create account') }}
+                        {{ __('Create an account') }}
                     </a>                     
             </form>
             <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>
