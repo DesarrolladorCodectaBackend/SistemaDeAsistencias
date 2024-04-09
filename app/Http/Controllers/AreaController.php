@@ -11,22 +11,42 @@ class AreaController extends Controller
 {
     public function index()
     {
-        $Areas = Area::get();
+        $areas = Area::all();
 
-        return response()->json(["data" => $Areas, "conteo" => count($Areas)]);
+        return view('areas.index', compact('areas'));
     }
 
+    public function create(){
+        return view('areas.create');
+    }
     
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        Area::create([
-            "especializacion" => $request->especializacion,
-            "color_hex" => $request->color_hex
+        $request->validate([
+            'especializacion' => 'required|string|min:1|max:100',
+            'color_hex' =>  'required|string|min:1|max:6',
+            'icono' => 'image|mimes:jpeg,png,jpg,gif'
         ]);
 
-        return response()->json(["resp" => "Área creada"]);
-    }
+        if ($request->hasFile('icono')) {
+            $icono = $request->file('icono');
+            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+            $icono->storeAs('public/areas', $nombreIcono);
+        }else {
+            $nombreIcono = 'Default.png'; 
+        }
+ 
+        //Area::create($request->all());
 
+        Area::create([
+            'especializacion' => $request->especializacion,
+            'color_hex' => $request->color_hex,
+            'icono' => $nombreIcono
+        ]);
+
+        
+        return redirect()->route('areas.index');
+    }
     
     public function show($area_id)
     {
@@ -35,26 +55,50 @@ class AreaController extends Controller
         return response()->json(["data" => $area]);
     }
 
+    public function edit($area_id){
+        $area = Area::findOrFail($area_id);
+
+        return view('areas.edit', compact('area'));
+    }
     
     public function update(Request $request, $area_id)
     {
-        $area = Area::find($area_id);
+        $request->validate([
+            'especializacion' => 'sometimes|string|min:1|max:100',
+            'color_hex' =>  'sometimes|string|min:1|max:6',
+            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif' 
+        ]);
+        
+        $area = Area::findOrFail($area_id);
+        
+        $datosActualizar = $request->except(['icono']);
 
-        $area->fill([
-            "especializacion" => $request->especializacion,
-            "color_hex" => $request->color_hex
-        ])->save();
+        if ($request->hasFile('icono')) {
+            $rutaPublica = public_path('storage/areas');
+            if ($area->icono && $area->icono != 'Default.png' && file_exists($rutaPublica . '/' . $area->icono)) {
+                unlink($rutaPublica . '/' . $area->icono);
+            }
+    
+            $icono = $request->file('icono');
+            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+    
+            $icono->move($rutaPublica, $nombreIcono);
+    
+            $datosActualizar['icono'] = $nombreIcono;
+        }
 
-        return response()->json(["resp" => "Área con id ".$area_id." actualizada"]);
+        $area->update($datosActualizar);
+
+        return redirect()->route('areas.index');
     }
 
     
     public function destroy($area_id)
     {
-        $area = Area::find($area_id);
+        $area = Area::findOrFail($area_id);
 
         $area->delete();
 
-        return response()->json(["resp" => "Área con id ".$area_id." eliminada"]);
+        return redirect()->route('areas.index');
     }
 }

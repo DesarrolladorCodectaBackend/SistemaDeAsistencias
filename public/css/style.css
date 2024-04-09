@@ -2594,7 +2594,7 @@ div.dt-button-info {
   padding-top: 10px;
   padding-bottom: 10px;
   border: 1px solid #ddd;
-  background-color: #eee !important;
+  background-color: #ffffff !important;
 }
 .show-grid {
   margin: 15px 0;
@@ -6500,10 +6500,10 @@ del {
 }
 .product-imitation {
   text-align: center;
-  padding: 90px 0;
+  padding: 40px 0;
   background-color: #f8f8f9;
   color: #bebec3;
-  font-weight: 600;
+  font-weight: 400;
 }
 .cart-product-imitation {
   text-align: center;
@@ -9596,3 +9596,4 @@ body.md-skin {
     margin: 0;
   }
 }
+

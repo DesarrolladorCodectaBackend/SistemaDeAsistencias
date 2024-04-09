@@ -7,6 +7,7 @@
 
     <link href="../../../css/animate.css" rel="stylesheet">
     <link href="../../../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
 </head>
 
 
@@ -292,6 +293,7 @@
 
 <!-- Mainly scripts -->
 <script src="js/jquery-3.1.1.min.js"></script>
+<script src="{{asset('js/alertify.min.js')}}"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
