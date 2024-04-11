@@ -63,7 +63,7 @@ class InstitucionController extends Controller
         
 
         
-        //return redirect()->route('institucion.index');
+        return redirect()->route('institucion.index');
 
     }
 
@@ -86,7 +86,7 @@ class InstitucionController extends Controller
 
         $institucion->update($request->all());
 
-        //return redirect()->route('institucion.index');
+        return redirect()->route('institucion.index');
 
     }
 
@@ -97,7 +97,7 @@ class InstitucionController extends Controller
 
         $institucion->delete();
 
-        //return redirect()->route('institucion.index');
+        return redirect()->route('institucion.index');
 
     }
 }

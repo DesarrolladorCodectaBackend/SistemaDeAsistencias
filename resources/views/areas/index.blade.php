@@ -177,6 +177,9 @@
 
         </div>
 
+
+        @include('components.inspinia.footer-inspinia')
+
         <!--
         <table>
             <thead>
