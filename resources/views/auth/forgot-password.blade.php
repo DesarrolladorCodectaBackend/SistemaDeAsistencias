@@ -33,12 +33,22 @@
                     <div class="row">
 
                         <div class="col-lg-12">
-                            <form class="m-t" role="form" action="index.html">
-                                <div class="form-group">
-                                    <input type="email" class="form-control" placeholder="Email address" required="">
-                                </div>
+                            <form method="POST" action="{{ route('register') }}">
+                                @csrf
 
-                                <button type="submit" class="btn btn-primary block full-width m-b">Send new password</button>
+                                <!-- Email Address -->
+                                <div>
+                                    <x-input-label for="email" :value="__('Email')" />
+                                    <x-text-input id="email" class="block mt-1 w-full form-control" type="email" name="email"
+                                       :value="old('email')" required autofocus autocomplete="username" />
+                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                                </div>
+                                <div class="flex items-center justify-end mt-4">
+                                    <a class="ml-3 btn btn-primary btn-block"
+                                        href="{{ route('register') }}">
+                                        {{ __('Send new password') }}
+                                    </a>                     
+                                </div>
 
                             </form>
                         </div>
