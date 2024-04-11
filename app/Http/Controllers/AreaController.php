@@ -24,14 +24,15 @@ class AreaController extends Controller
     {
         $request->validate([
             'especializacion' => 'required|string|min:1|max:100',
-            'color_hex' =>  'required|string|min:1|max:6',
+            'descripcion' => 'required|string|min:1|max:255',
+            'color_hex' =>  'required|string|min:1|max:7',
             'icono' => 'image|mimes:jpeg,png,jpg,gif'
         ]);
 
         if ($request->hasFile('icono')) {
             $icono = $request->file('icono');
             $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-            $icono->storeAs('public/areas', $nombreIcono);
+            $icono->move(public_path('storage/areas'), $nombreIcono);
         }else {
             $nombreIcono = 'Default.png'; 
         }
@@ -40,6 +41,7 @@ class AreaController extends Controller
 
         Area::create([
             'especializacion' => $request->especializacion,
+            'descripcion' => $request->descripcion,
             'color_hex' => $request->color_hex,
             'icono' => $nombreIcono
         ]);
@@ -65,7 +67,8 @@ class AreaController extends Controller
     {
         $request->validate([
             'especializacion' => 'sometimes|string|min:1|max:100',
-            'color_hex' =>  'sometimes|string|min:1|max:6',
+            'descripcion' => 'sometimes|string|min:1|max:255',
+            'color_hex' =>  'sometimes|string|min:1|max:7',
             'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif' 
         ]);
         

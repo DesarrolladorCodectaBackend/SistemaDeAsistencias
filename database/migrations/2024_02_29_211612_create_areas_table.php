@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
             $table->string('especializacion', 100);
-            $table->char('color_hex', 6);
+            $table->string('descripcion',255);
+            $table->char('color_hex', 7);
             $table->string('icono');
             $table->timestamps();
         });

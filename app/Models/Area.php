@@ -11,6 +11,7 @@ class Area extends Model
 
     protected $fillable = [
         'especializacion',
+        'descripcion',
         'color_hex',
         'icono'
     ];
