@@ -54,15 +54,16 @@ class InstitucionController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|min:1|max:100',
+
         ]);
 
         institucion::create([
             'nombre' => $request->nombre,
         ]);
 
-        
 
-        
+
+
         return redirect()->route('institucion.index');
 
     }
@@ -76,10 +77,11 @@ class InstitucionController extends Controller
     }
 
 
-    public function update(Request $request,$institucion_id)
+    public function update(Request $request, $institucion_id)
     {
         $request->validate([
-            'Nombre' => 'sometimes|string|min:1|max:100', 
+            'nombre' => 'sometimes|string|min:1|max:100',
+            'estado' => 'sometimes|boolean'
         ]);
 
         $institucion = Institucion::findOrFail($institucion_id);
@@ -99,5 +101,16 @@ class InstitucionController extends Controller
 
         return redirect()->route('institucion.index');
 
+    }
+
+    public function activarInactivar($institucion_id)
+    {
+        $institucion = Institucion::findOrFail($institucion_id);
+
+        $institucion->estado = !$institucion->estado;
+
+        $institucion->save();
+
+        return redirect()->route('institucion.index');
     }
 }

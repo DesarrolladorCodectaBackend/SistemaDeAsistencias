@@ -18,7 +18,10 @@ class Candidatos extends Model
         'ciclo_de_estudiante',
         'estado',
         'institucion_id',
-        'carrera_id'
+        'carrera_id',
+        'correo',
+        'celular',
+        'icono',
     ];
 
     public function institucion(){

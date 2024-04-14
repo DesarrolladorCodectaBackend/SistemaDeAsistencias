@@ -42,7 +42,8 @@
                     <li><a href="sidebar-inspinia">Dashboard v.3</a></li>
                     <li><a href="#">Dashboard v.4</a></li>
                     <li><a href="#">Dashboard v.5 </a></li>
-                    <li><a href="#">Áreas</a></li>
+                    <li><a href="../areas
+                        ">Áreas</a></li>
                 </ul>
             </li>
             <li>
@@ -106,13 +107,13 @@
 
             </li>
             <li class="active">
-                <a href="#"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
+                <a href="../areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
             <li>
                 <a href="#"><i class="fa fa-list-alt"></i> <span class="nav-label">Responsabilidades</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="#">Areas</a></li>
+                    <li><a href="../areas">Areas</a></li>
                     <li><a href="#">Semanas</a></li>
                     <li><a href="#">Asistencia</a></li>
                 </ul>
