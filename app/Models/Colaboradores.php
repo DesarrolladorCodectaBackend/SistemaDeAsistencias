@@ -15,7 +15,7 @@ class Colaboradores extends Model
     ];
 
 
-    public function candidatos(){
+    public function candidato(){
         return $this->belongsTo(Candidatos::class, 'candidato_id', 'id');
     }
 

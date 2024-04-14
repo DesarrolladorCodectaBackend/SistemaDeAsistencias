@@ -129,161 +129,166 @@
                                         {{ $candidato->nombre." ".$candidato->apellido}}
                                     </p>
                                     <p class="text-center">
-                                        <a class="btn btn-primary" href="form-candidatos-colab.html">Agregar
-                                            Colaborador</a>
+                                        @if ($candidato->estado == true)
+                                        <button class="btn btn-primary" type="button"
+                                            onclick="confirmColaborador({{ $candidato->id }})">
+                                            Agregar Colaborador
+                                        </button>
+                                        @else
+                                        <button class="btn btn-secondary" type="button" disabled
+                                        style="cursor: not-allowed">
+                                            Agregar Colaborador
+                                        </button>
+                                        @endif
+
                                     </p>
                                 </div>
                                 <div class="col-sm-6">
-                                    <form role="form">
-                                        <dl class="row mb-0">
-                                            <div class="col-sm-6 text-sm-left">
-                                                <dt>Carrera:</dt>
-                                                <dd class="sm-2"> {{$candidato->carrera->nombre}} </dd>
-                                            </div>
-                                        </dl>
-                                        <dl class="row mb-0">
-                                            <div class="col-sm-6 text-sm-left">
-                                                <dt>DNI:</dt>
-                                                <dd class="sm-2">{{$candidato->dni}}</dd>
-                                            </div>
-                                        </dl>
-                                        <dl class="row mb-0">
-                                            <div class="col-sm-6 text-sm-left">
-                                                <dt>Correo</dt>
-                                                <dd class="sm-2">{{$candidato->correo}}</dd>
-                                            </div>
-                                        </dl>
-                                        <dl class="row mb-0">
-                                            <div class="col-sm-6 text-sm-left">
-                                                <dt>Celular</dt>
-                                                <dd class="sm-2">{{$candidato->celular}}</dd>
-                                            </div>
-                                        </dl>
-                                        <div>
-                                            <div class="mb-4">
-                                                <button class="btn btn-danger float-right" type="button"
-                                                    onclick="confirmDelete({{ $candidato->id }})"><i
-                                                        class="fa fa-trash-o"></i></button>
-                                                <button class="btn btn-info float-right" type="button"
-                                                    href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
-                                                        class="fa fa-paste"></i></button>
-                                            </div>
-                                            <div id="modal-form{{$candidato->id}}" class="modal fade"
-                                                aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body">
-                                                            <form role="form" method="POST"
-                                                                action="{{ route('candidatos.update', $candidato->id) }}"
-                                                                enctype="multipart/form-data">
-                                                                @csrf
-                                                                @method('PUT')
-                                                                <div class="row">
-                                                                    <div class="col-sm-6 b-r">
-                                                                        <h3 class="m-t-none m-b">Ingrese los Datos</h3>
-                                                                        <div class="form-group">
-                                                                            <label>Nombre</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control" name="nombre"
-                                                                                id="nombre"
-                                                                                value="{{ old('nombre', $candidato->nombre) }}">
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label>Apellido</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control" name="apellido"
-                                                                                id="apellido"
-                                                                                value="{{ old('apellido', $candidato->apellido) }}">
-                                                                        </div>
-                                                                        <div class="form-group"><label>DNI</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control" name="dni" id="dni"
-                                                                                value="{{ old('dni', $candidato->dni) }}">
-                                                                        </div>
-                                                                        <div class="form-group"><label>Dirección</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control" name="direccion"
-                                                                                id="direccion"
-                                                                                value="{{ old('direccion', $candidato->direccion) }}">
-                                                                        </div>
-                                                                        <div class="form-group"><label>Fecha de
-                                                                                Nacimiento</label>
-                                                                            <input type="date" placeholder="....."
-                                                                                class="form-control"
-                                                                                name="fecha_nacimiento"
-                                                                                id="fecha_nacimiento"
-                                                                                value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}">
-                                                                        </div>
-                                                                        <div class="form-group"><label>Ciclo de
-                                                                                Estudiante</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control"
-                                                                                name="ciclo_de_estudiante"
-                                                                                id="ciclo_de_estudiante"
-                                                                                value="{{ old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante) }}">
-                                                                        </div>
 
+                                    <dl class="row mb-0">
+                                        <div class="col-sm-6 text-sm-left">
+                                            <dt>Carrera:</dt>
+                                            <dd class="sm-2"> {{$candidato->carrera->nombre}} </dd>
+                                        </div>
+                                    </dl>
+                                    <dl class="row mb-0">
+                                        <div class="col-sm-6 text-sm-left">
+                                            <dt>DNI:</dt>
+                                            <dd class="sm-2">{{$candidato->dni}}</dd>
+                                        </div>
+                                    </dl>
+                                    <dl class="row mb-0">
+                                        <div class="col-sm-6 text-sm-left">
+                                            <dt>Correo</dt>
+                                            <dd class="sm-2">{{$candidato->correo}}</dd>
+                                        </div>
+                                    </dl>
+                                    <dl class="row mb-0">
+                                        <div class="col-sm-6 text-sm-left">
+                                            <dt>Celular</dt>
+                                            <dd class="sm-2">{{$candidato->celular}}</dd>
+                                        </div>
+                                    </dl>
+                                    <div>
+                                        <div class="mb-4">
+                                            <button class="btn btn-danger float-right" type="button"
+                                                onclick="confirmDelete({{ $candidato->id }})"><i
+                                                    class="fa fa-trash-o"></i></button>
+                                            <button class="btn btn-info float-right" type="button"
+                                                href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
+                                                    class="fa fa-paste"></i></button>
+                                        </div>
+                                        <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <form role="form" method="POST"
+                                                            action="{{ route('candidatos.update', $candidato->id) }}"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="row">
+                                                                <div class="col-sm-6 b-r">
+                                                                    <h3 class="m-t-none m-b">Ingrese los Datos</h3>
+                                                                    <div class="form-group">
+                                                                        <label>Nombre</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="nombre"
+                                                                            id="nombre"
+                                                                            value="{{ old('nombre', $candidato->nombre) }}">
                                                                     </div>
-                                                                    <div class="col-sm-6">
-                                                                        <h4>Subir Icono</h4>
-                                                                        <input type="file" class="form-control-file"
-                                                                            id="icono-{{ $candidato->id }}" name="icono"
-                                                                            value="{{ old('icono', $candidato->icono) }}"
-                                                                            style="display: none;">
-                                                                        <button type="button" class="btn btn-link"
-                                                                            id="icon-upload-{{ $candidato->id }}">
-                                                                            <i
-                                                                                class="fa fa-cloud-download big-icon"></i>
-                                                                        </button>
-                                                                        <script>
-                                                                            document.getElementById('icon-upload-{{ $candidato->id }}').addEventListener('click', function() {
+                                                                    <div class="form-group">
+                                                                        <label>Apellido</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="apellido"
+                                                                            id="apellido"
+                                                                            value="{{ old('apellido', $candidato->apellido) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>DNI</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="dni" id="dni"
+                                                                            value="{{ old('dni', $candidato->dni) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>Dirección</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="direccion"
+                                                                            id="direccion"
+                                                                            value="{{ old('direccion', $candidato->direccion) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>Fecha de
+                                                                            Nacimiento</label>
+                                                                        <input type="date" placeholder="....."
+                                                                            class="form-control" name="fecha_nacimiento"
+                                                                            id="fecha_nacimiento"
+                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>Ciclo de
+                                                                            Estudiante</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control"
+                                                                            name="ciclo_de_estudiante"
+                                                                            id="ciclo_de_estudiante"
+                                                                            value="{{ old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante) }}">
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <h4>Subir Icono</h4>
+                                                                    <input type="file" class="form-control-file"
+                                                                        id="icono-{{ $candidato->id }}" name="icono"
+                                                                        value="{{ old('icono', $candidato->icono) }}"
+                                                                        style="display: none;">
+                                                                    <button type="button" class="btn btn-link"
+                                                                        id="icon-upload-{{ $candidato->id }}">
+                                                                        <i class="fa fa-cloud-download big-icon"></i>
+                                                                    </button>
+                                                                    <script>
+                                                                        document.getElementById('icon-upload-{{ $candidato->id }}').addEventListener('click', function() {
                                                                         document.getElementById('icono-{{ $candidato->id }}').click();
                                                                     });
-                                                                        </script>
-                                                                        <div class="form-group">
-                                                                            <label>Institucion</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control"
-                                                                                name="institucion_id"
-                                                                                id="institucion_id"
-                                                                                value="{{ old('institucion_id', $candidato->institucion_id) }}">
-                                                                        </div>
-                                                                        <div class="form-group"><label>Carrera</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control" name="carrera_id"
-                                                                                id="carrera_id"
-                                                                                value="{{ old('carrera_id', $candidato->carrera_id) }}">
-                                                                        </div>
-                                                                        <div class="form-group"><label>Correo</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control" name="correo"
-                                                                                id="correo"
-                                                                                value="{{ old('correo', $candidato->correo) }}">
-                                                                        </div>
-                                                                        <div class="form-group"><label>Celular</label>
-                                                                            <input type="text" placeholder="....."
-                                                                                class="form-control" name="celular"
-                                                                                id="celular"
-                                                                                value="{{ old('celular', $candidato->celular) }}">
-                                                                        </div>
-                                                                        <div>
-                                                                            <a href="candidatos"
-                                                                                class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
-                                                                            <button
-                                                                                class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                                                type="submit"><i
-                                                                                    class="fa fa-check"></i>&nbsp;Confirmar</button>
-                                                                        </div>
+                                                                    </script>
+                                                                    <div class="form-group">
+                                                                        <label>Institucion</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="institucion_id"
+                                                                            id="institucion_id"
+                                                                            value="{{ old('institucion_id', $candidato->institucion_id) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>Carrera</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="carrera_id"
+                                                                            id="carrera_id"
+                                                                            value="{{ old('carrera_id', $candidato->carrera_id) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>Correo</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="correo"
+                                                                            id="correo"
+                                                                            value="{{ old('correo', $candidato->correo) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>Celular</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="celular"
+                                                                            id="celular"
+                                                                            value="{{ old('celular', $candidato->celular) }}">
+                                                                    </div>
+                                                                    <div>
+                                                                        <a href="candidatos"
+                                                                            class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
+                                                                        <button
+                                                                            class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                                            type="submit"><i
+                                                                                class="fa fa-check"></i>&nbsp;Confirmar</button>
                                                                     </div>
                                                                 </div>
-                                                            </form>
-                                                        </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
-                                    </form>
+
+                                    </div>
                                 </div>
 
                             </div>
@@ -355,6 +360,43 @@
                 }
             });
         }
+
+        function confirmColaborador(id) {
+            alertify.confirm("¿Deseas agregar a este colaborador?", function(e) {
+                if (e) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/colaboradores`;
+
+                    // CSRF Token
+                    const csrfField = document.createElement('input');
+                    csrfField.type = 'hidden';
+                    csrfField.name = '_token';
+                    csrfField.value = '{{ csrf_token() }}'; // Use Laravel's helper to generate a CSRF token
+                    form.appendChild(csrfField);
+
+                    // HTTP Method
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'POST';
+                    form.appendChild(methodField);
+
+                    // Candidato ID
+                    const candidatoField = document.createElement('input');
+                    candidatoField.type = 'hidden';
+                    candidatoField.name = 'candidato_id';
+                    candidatoField.value = id;
+                    form.appendChild(candidatoField);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    return false;
+                }
+            });
+        }
+
     </script>
 
 </body>

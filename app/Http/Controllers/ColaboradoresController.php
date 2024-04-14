@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Candidatos;
 use App\Models\Colaboradores;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,44 +13,28 @@ class ColaboradoresController extends Controller
 
     public function index()
     {
-        try{
-            $colaboradores = Colaboradores::with([
-                'candidatos' => function ($query) {
-                    $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'institucion_id', 'carrera_id'); }
-            ])->where('estado', true)->get();
-            
-            if (count($colaboradores) == 0) {
-                return response()->json(["resp" => "No hay registros insertados"]);
-            }
-            
-            return response()->json(["data" => $colaboradores, "conteo" => count($colaboradores)]);
-        } catch(Exception $e){
-            return response()->json(["error" => $e]);
-        }
+        $colaboradores = Colaboradores::with('candidato')->get();
+
+        return view('colaboradores.index', compact('colaboradores'));
 
     }
 
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        DB::beginTransaction();
-        try{
-            if(!$request->candidato_id){
-                return response()->json(["resp" => "Ingrese el id del candidato"]);
-            }
+        $request->validate([
+            'candidato_id' => 'required|integer'
+        ]);
 
-            if(!is_integer($request->candidato_id)){
-                return response()->json(["resp" => "El id del candidato debe ser un número entero"]);
-            }
-            Colaboradores::create([
-                "candidato_id" => $request->candidato_id
-            ]);
-            DB::commit();
-            return response()->json(["resp" => "Colaborador creado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
+        $candidato = Candidatos::findOrFail($request->candidato_id);
+        if ($candidato->estado == true) {
+            Colaboradores::create($request->all());
+            $candidato->estado = !$candidato->estado;
+            $candidato->save();
         }
+
+    
+        return redirect()->route('candidatos.index');
 
     }
 
@@ -71,56 +56,43 @@ class ColaboradoresController extends Controller
 
     public function update(Request $request, $colaborador_id)
     {
-        DB::beginTransaction();
-        try{
-            $colaborador = Colaboradores::find($colaborador_id);
+        $request->validate([
+            'candidato_id' => 'required|integer'
+        ]);
+        
+        $colaborador = Colaboradores::findOrFail($colaborador_id);
+        
+        
 
-            if(!$colaborador){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $colaborador->update($request->all());
 
-            if(!$request->candidato_id){
-                return response()->json(["resp" => "Ingrese el id del candidato"]);
-            }
-
-            if(!is_integer($request->candidato_id)){
-                return response()->json(["resp" => "El id del candidato debe ser un número entero"]);
-            }
-
-            $colaborador->fill([
-                "candidato_id" => $request->candidato_id
-            ])->save();
-            
-            DB::commit();
-            return response()->json(["resp" => "Colaborador actualizado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('colaboradores.index');
 
     }
 
 
     public function destroy($colaborador_id)
     {
-        DB::beginTransaction();
-        try{
-            $colaborador = Colaboradores::find($colaborador_id);
+        $colaborador = Colaboradores::findOrFail($colaborador_id);
 
-            if(!$colaborador){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $colaborador->delete();
 
-            $colaborador->delete();
-
-            DB::commit();
-            return response()->json(["resp" => "Colaborador eliminado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('colaboradores.index');
 
     }
+
+
+    public function activarInactivar($colaborador_id)
+    {
+        $colaborador = Colaboradores::findOrFail($colaborador_id);
+
+        $colaborador->estado = !$colaborador->estado;
+
+        $colaborador->save();
+
+        return redirect()->route('colaboradores.index');
+    }
+
 
     public function ShowByName(Request $request)
     {

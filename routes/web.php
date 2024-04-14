@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
+use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -47,7 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('institucion', InstitucionController::class);
     Route::post('institucion/{institucion}/activar-inactivar', [InstitucionController::class,'activarInactivar'])->name('institucion.activarInactivar');
     Route::resource('candidatos', CandidatosController::class);
-
+    Route::resource('colaboradores', ColaboradoresController::class);
 
 });
 
