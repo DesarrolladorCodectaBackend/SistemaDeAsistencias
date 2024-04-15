@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('apellido', 100);
             $table->string('dni', 8);
             $table->string('direccion', 100);
-            $table->dateTime('fecha_nacimiento');
+            $table->date('fecha_nacimiento');
             $table->integer('ciclo_de_estudiante');
             $table->boolean('estado')->default(True);
             $table->unSignedBigInteger('institucion_id');

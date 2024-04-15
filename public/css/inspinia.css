@@ -1,0 +1,35 @@
+.max-min-h-200{
+    max-height: 200px;
+    min-height: 200px;
+}
+
+.max-min-h-w-200{
+    max-height: 200px;
+    min-height: 200px;
+    max-width: 200px;
+    min-width: 200px;
+}
+
+.max-min-h-150{
+    max-height: 150px;
+    min-height: 150px;
+}
+
+.max-min-h-w-150{
+    max-height: 150px;
+    min-height: 150px;
+    max-width: 150px;
+    min-width: 150;
+}
+
+.max-h-200{
+    max-height: 200px;
+}
+
+.p-a-10 {
+    padding: 10px;
+}
+
+.img-cover{
+    object-fit: cover;
+}

@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::post('institucion/{institucion}/activar-inactivar', [InstitucionController::class,'activarInactivar'])->name('institucion.activarInactivar');
     Route::resource('candidatos', CandidatosController::class);
     Route::resource('colaboradores', ColaboradoresController::class);
+    Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
 
 });
 

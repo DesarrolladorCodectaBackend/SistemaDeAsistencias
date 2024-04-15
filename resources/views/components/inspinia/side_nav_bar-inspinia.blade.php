@@ -79,13 +79,13 @@
                         <a href="#">Empleados<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
                             <li>
-                                <a href="#">Candidatos</a>
+                                <a href="../candidatos">Candidatos</a>
                             </li>
                             <li>
                                 <a href="#">Formulario</a>
                             </li>
                             <li>
-                                <a href="#">Colaboradores</a>
+                                <a href="../colaboradores">Colaboradores</a>
                             </li>
                         </ul>
                     </li>
@@ -129,7 +129,7 @@
                 <a href="#"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="#">Institucion</a></li>
+                    <li><a href="../institucion">Institucion</a></li>
                     <li><a href="#">Carrera</a></li>
                     <li><a href="#">Curso</a></li>
                     <li><a href="#">Programas</a></li>

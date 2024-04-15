@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Candidatos;
 use App\Models\Colaboradores;
+use App\Models\Candidatos;
+use App\Models\Institucion;
+use App\Models\Carrera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -14,8 +16,9 @@ class ColaboradoresController extends Controller
     public function index()
     {
         $colaboradores = Colaboradores::with('candidato')->get();
-
-        return view('colaboradores.index', compact('colaboradores'));
+        $instituciones = Institucion::all();
+        $carreras = Carrera::all();
+        return view('colaboradores.index', compact('colaboradores', 'instituciones', 'carreras'));
 
     }
 
@@ -54,18 +57,41 @@ class ColaboradoresController extends Controller
     }
 
 
-    public function update(Request $request, $colaborador_id)
+    public function update(Request $request, $candidato_id)
     {
         $request->validate([
-            'candidato_id' => 'required|integer'
+            'nombre' => 'sometimes|string|min:1|max:100',
+            'apellido' => 'sometimes|string|min:1|max:100',
+            'dni' => 'sometimes|string|min:1|max:8',
+            'direccion' => 'sometimes|string|min:1|max:100',
+            'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
+            'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
+            'institucion_id' => 'sometimes|integer|min:1|max:20',
+            'carrera_id' => 'sometimes|integer|min:1|max:20',
+            'correo' => 'sometimes|string|min:1|max:255',
+            'celular' => 'sometimes|string|min:1|max:20',
+            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
         ]);
         
-        $colaborador = Colaboradores::findOrFail($colaborador_id);
-        
-        
+        $candidato = Candidatos::findOrFail($candidato_id);
+        $datosActualizar = $request->except(['icono']);
 
-        $colaborador->update($request->all());
+        if ($request->hasFile('icono')) {
+            $rutaPublica = public_path('storage/candidatos');
+            if ($candidato->icono && $candidato->icono != 'Default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
+                unlink($rutaPublica . '/' . $candidato->icono);
+            }
+    
+            $icono = $request->file('icono');
+            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+    
+            $icono->move($rutaPublica, $nombreIcono);
+    
+            $datosActualizar['icono'] = $nombreIcono;
+        }
 
+        $candidato->update($datosActualizar);
+        
         return redirect()->route('colaboradores.index');
 
     }

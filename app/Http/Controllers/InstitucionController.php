@@ -14,7 +14,7 @@ class InstitucionController extends Controller
 
     public function index()
     {
-        $institucion = Institucion::all();
+        $institucion = Institucion::get();
 
         return view('institucion.index', compact('institucion'));
 

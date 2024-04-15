@@ -78,12 +78,24 @@
                                                 <i class="fa fa-cloud-download big-icon"></i>
                                             </button>
 
-                                            <div class="form-group"><label>Institucion</label> <input type="text"
-                                                    placeholder="Ingrese apellido" class="form-control"
-                                                    name="institucion_id">
+                                            <div class="form-group"><label>Institucion</label>
+                                                <select class="form-control" name="institucion_id">
+                                                    @foreach($instituciones as $institucion)
+                                                    <option value="{{ $institucion->id }}">{{ $institucion->nombre }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                            <div class="form-group"><label>Carrera</label> <input type="text"
-                                                    placeholder="....." class="form-control" name="carrera_id"></div>
+                                            <input type="hidden" name="institucion_id_hidden"
+                                                id="institucion_id_hidden">
+                                            <div class="form-group"><label>Carrera</label>
+                                                <select class="form-control" name="carrera_id">
+                                                    @foreach($carreras as $carrera)
+                                                    <option value="{{ $carrera->id }}">{{ $carrera->nombre }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <input type="hidden" name="carrera_id_hidden" id="carrera_id_hidden">
                                             <div class="form-group"><label>Correo</label> <input type="text"
                                                     placeholder="Ingrese un nombre" class="form-control" name="correo">
                                             </div>
@@ -136,7 +148,7 @@
                                         </button>
                                         @else
                                         <button class="btn btn-secondary" type="button" disabled
-                                        style="cursor: not-allowed">
+                                            style="cursor: not-allowed">
                                             Agregar Colaborador
                                         </button>
                                         @endif
@@ -249,16 +261,18 @@
                                                                     </script>
                                                                     <div class="form-group">
                                                                         <label>Institucion</label>
-                                                                        <input type="text" placeholder="....."
-                                                                            class="form-control" name="institucion_id"
-                                                                            id="institucion_id"
-                                                                            value="{{ old('institucion_id', $candidato->institucion_id) }}">
+                                                                        <select class="form-control" name="institucion_id">
+                                                                            @foreach($instituciones as $institucion)
+                                                                            <option value="{{ $institucion->id }}" @if($institucion->id == old('institucion_id', $candidato->institucion_id)) selected @endif>{{ $institucion->nombre }}</option>
+                                                                            @endforeach
+                                                                        </select>                                                                    
                                                                     </div>
                                                                     <div class="form-group"><label>Carrera</label>
-                                                                        <input type="text" placeholder="....."
-                                                                            class="form-control" name="carrera_id"
-                                                                            id="carrera_id"
-                                                                            value="{{ old('carrera_id', $candidato->carrera_id) }}">
+                                                                        <select class="form-control" name="carrera_id">
+                                                                            @foreach($carreras as $carrera)
+                                                                            <option value="{{ $carrera->id }}" @if($carrera->id == old('carrera_id', $candidato->carrera_id)) selected @endif>{{ $carrera->nombre }}</option>
+                                                                            @endforeach
+                                                                        </select>
                                                                     </div>
                                                                     <div class="form-group"><label>Correo</label>
                                                                         <input type="text" placeholder="....."

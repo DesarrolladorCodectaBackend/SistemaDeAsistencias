@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidatos;
+use App\Models\Institucion;
+use App\Models\Carrera;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCandidatosRequest;
 use App\Http\Requests\UpdateCandidatosRequest;
@@ -22,9 +24,11 @@ class CandidatosController extends Controller
         ])->where('estado', 1)->get();
         return response()->json(["data" => $candidatos, "conteo" => count($candidatos)]);
         */
-        $candidatos = Candidatos::with('carrera')->get();
+        $candidatos = Candidatos::with('carrera', 'institucion')->get();
+        $instituciones = Institucion::all();
+        $carreras = Carrera::all();
 
-        return view('candidatos.index', compact('candidatos'));
+        return view('candidatos.index', compact('candidatos', 'instituciones', 'carreras'));
     }
 
 
