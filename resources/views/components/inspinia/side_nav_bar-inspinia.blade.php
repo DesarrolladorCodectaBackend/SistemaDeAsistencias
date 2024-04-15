@@ -8,6 +8,7 @@
     <link href="../../../css/animate.css" rel="stylesheet">
     <link href="../../../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
+    <link href="../../../css/inspinia.css" rel="stylesheet">
 </head>
 
 
@@ -136,8 +137,14 @@
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="fa fa-sign-out"></i> <span class="nav-label">Cerrar
-                        Sesion</span></a>
+                <form id="logoutForm" method="POST" action="http://127.0.0.1:8000/logout">
+                    @csrf
+                </form>
+
+                <a href="#" onclick="document.getElementById('logoutForm').submit();">
+                    <i class="fa fa-sign-out"></i>
+                    <span class="nav-label">Cerrar Sesión</span>
+                </a>
             </li>
         </ul>
 
@@ -261,9 +268,11 @@
 
 
                 <li>
-                    <a href="#">
-                        <i class="fa fa-sign-out"></i> Log out
+
+                    <a href="#" onclick="document.getElementById('logoutForm').submit();">
+                        <i class="fa fa-sign-out"></i>Log Out
                     </a>
+
                 </li>
                 <li>
                     <a class="right-sidebar-toggle">
@@ -277,9 +286,9 @@
 
 
 
-<!--- Cambiar Imagen-->
-<script>
-    document.getElementById('inputGroupFile').addEventListener('change', function() {
+    <!--- Cambiar Imagen-->
+    <script>
+        document.getElementById('inputGroupFile').addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -290,51 +299,51 @@
                 document.querySelector('.custom-file-label').innerHTML = file.name;
             }
         });
-</script>
+    </script>
 
-<!-- Mainly scripts -->
-<script src="js/jquery-3.1.1.min.js"></script>
-<script src="{{asset('js/alertify.min.js')}}"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.js"></script>
-<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="{{asset('js/alertify.min.js')}}"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-<!-- Flot -->
-<script src="js/plugins/flot/jquery.flot.js"></script>
-<script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-<script src="js/plugins/flot/jquery.flot.spline.js"></script>
-<script src="js/plugins/flot/jquery.flot.resize.js"></script>
-<script src="js/plugins/flot/jquery.flot.pie.js"></script>
-<script src="js/plugins/flot/jquery.flot.symbol.js"></script>
-<script src="js/plugins/flot/jquery.flot.time.js"></script>
+    <!-- Flot -->
+    <script src="js/plugins/flot/jquery.flot.js"></script>
+    <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="js/plugins/flot/jquery.flot.spline.js"></script>
+    <script src="js/plugins/flot/jquery.flot.resize.js"></script>
+    <script src="js/plugins/flot/jquery.flot.pie.js"></script>
+    <script src="js/plugins/flot/jquery.flot.symbol.js"></script>
+    <script src="js/plugins/flot/jquery.flot.time.js"></script>
 
-<!-- Peity -->
-<script src="js/plugins/peity/jquery.peity.min.js"></script>
-<script src="js/demo/peity-demo.js"></script>
+    <!-- Peity -->
+    <script src="js/plugins/peity/jquery.peity.min.js"></script>
+    <script src="js/demo/peity-demo.js"></script>
 
-<!-- Custom and plugin javascript -->
-<script src="js/inspinia.js"></script>
-<script src="js/plugins/pace/pace.min.js"></script>
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
 
-<!-- jQuery UI -->
-<script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
 
-<!-- Jvectormap -->
-<script src="js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
-<script src="js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- Jvectormap -->
+    <script src="js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
+    <script src="js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
 
-<!-- EayPIE -->
-<script src="js/plugins/easypiechart/jquery.easypiechart.js"></script>
+    <!-- EayPIE -->
+    <script src="js/plugins/easypiechart/jquery.easypiechart.js"></script>
 
-<!-- Sparkline -->
-<script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <!-- Sparkline -->
+    <script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
 
-<!-- Sparkline demo data  -->
-<script src="js/demo/sparkline-demo.js"></script>
+    <!-- Sparkline demo data  -->
+    <script src="js/demo/sparkline-demo.js"></script>
 
-<script>
-    $(document).ready(function() {
+    <script>
+        $(document).ready(function() {
             $('.chart').easyPieChart({
                 barColor: '#f8ac59',
 //                scaleColor: false,
@@ -495,4 +504,4 @@
                 },
             });
         });
-</script>
+    </script>
