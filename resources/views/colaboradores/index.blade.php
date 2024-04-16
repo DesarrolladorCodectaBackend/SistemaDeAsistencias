@@ -50,7 +50,7 @@
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
-                @foreach($colaboradores as $index => $colaborador)
+                @foreach($colaboradoresConArea as $index => $colaborador)
                 <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -183,7 +183,7 @@
                                     <h3>Area:</h3>
                                 </small>
                                 <div class="small m-t-xs text-left">
-                                    <h5>Estructura</h5>
+                                    <h5>{{$colaborador->area}}</h5>
                                 </div>
                                 <small class="text-muted text-left">
                                     <h3>DN1:</h3>

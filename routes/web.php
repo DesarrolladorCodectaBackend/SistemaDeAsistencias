@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('candidatos', CandidatosController::class);
     Route::resource('colaboradores', ColaboradoresController::class);
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
-
+    
 });
 
 require __DIR__ . '/auth.php';

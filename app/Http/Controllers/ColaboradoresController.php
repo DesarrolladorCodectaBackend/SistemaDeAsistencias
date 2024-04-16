@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
+use App\Models\Colaboradores_por_Area;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use Illuminate\Http\Request;
@@ -18,10 +19,20 @@ class ColaboradoresController extends Controller
         $colaboradores = Colaboradores::with('candidato')->get();
         $instituciones = Institucion::all();
         $carreras = Carrera::all();
-        return view('colaboradores.index', compact('colaboradores', 'instituciones', 'carreras'));
+        $colaboradoresConArea = [];
 
+        foreach ($colaboradores as $colaborador) {
+            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->first();
+            if ($colaboradorArea) {
+                $colaborador->area = $colaboradorArea->area->especializacion;
+            } else {
+                $colaborador->area = 'Sin área asignada';
+            }
+            $colaboradoresConArea[] = $colaborador;
+        }
+
+        return view('colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras'));
     }
-
 
     public function store(Request $request)
     {
@@ -36,7 +47,7 @@ class ColaboradoresController extends Controller
             $candidato->save();
         }
 
-    
+
         return redirect()->route('candidatos.index');
 
     }
@@ -44,13 +55,13 @@ class ColaboradoresController extends Controller
 
     public function show($colaborador_id)
     {
-        try{
+        try {
             $colaborador = Colaboradores::with('candidatos')->find($colaborador_id);
-            if(!$colaborador){
+            if (!$colaborador) {
                 return response()->json(["resp" => "No existe un registro con ese id"]);
             }
             return response()->json(["data" => $colaborador]);
-        } catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(["error" => $e]);
         }
 
@@ -72,7 +83,7 @@ class ColaboradoresController extends Controller
             'celular' => 'sometimes|string|min:1|max:20',
             'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
         ]);
-        
+
         $candidato = Candidatos::findOrFail($candidato_id);
         $datosActualizar = $request->except(['icono']);
 
@@ -81,17 +92,17 @@ class ColaboradoresController extends Controller
             if ($candidato->icono && $candidato->icono != 'Default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
                 unlink($rutaPublica . '/' . $candidato->icono);
             }
-    
+
             $icono = $request->file('icono');
             $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-    
+
             $icono->move($rutaPublica, $nombreIcono);
-    
+
             $datosActualizar['icono'] = $nombreIcono;
         }
 
         $candidato->update($datosActualizar);
-        
+
         return redirect()->route('colaboradores.index');
 
     }
@@ -122,12 +133,12 @@ class ColaboradoresController extends Controller
 
     public function ShowByName(Request $request)
     {
-        try{
-            if(!$request->nombre){
+        try {
+            if (!$request->nombre) {
                 return response()->json(["resp" => "Ingrese el nombre del colaborador"]);
             }
 
-            if(!is_string($request->nombre)){
+            if (!is_string($request->nombre)) {
                 return response()->json(["resp" => "El nombre debe ser una cadena de texto"]);
             }
 
@@ -145,7 +156,7 @@ class ColaboradoresController extends Controller
                 ->get();
 
             return response()->json(["data" => $colaboradores, "conteo" => $colaboradores->count()]);
-        } catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(["error" => $e]);
         }
 
