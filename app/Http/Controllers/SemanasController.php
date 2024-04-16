@@ -30,7 +30,7 @@ class SemanasController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function storeOld(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -85,8 +85,8 @@ class SemanasController extends Controller
         ]);
 
         $semanas = Semanas::findOrFail($semana_id);
-
-        $semanas->update($datosActualizar);
+        
+        $semanas->update($request->all());
 
         return redirect()->route('semanas.index');
     }

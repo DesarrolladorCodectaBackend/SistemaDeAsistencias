@@ -30,6 +30,10 @@
     padding: 10px;
 }
 
+.p-a-25{
+    padding: 25px;
+}
+
 .img-cover {
     object-fit: cover;
 }

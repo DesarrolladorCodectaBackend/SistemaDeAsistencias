@@ -42,9 +42,19 @@ class ColaboradoresController extends Controller
 
         $candidato = Candidatos::findOrFail($request->candidato_id);
         if ($candidato->estado == true) {
-            Colaboradores::create($request->all());
+            $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
+
+            Colaboradores_por_Area::create([
+                "colaborador_id" => $colaborador->id,
+                "area_id" => $request->area_id,
+                "semana_inicio_id" => $request->semana_inicio_id
+            ]);
+
+            
             $candidato->estado = !$candidato->estado;
             $candidato->save();
+
+
         }
 
 

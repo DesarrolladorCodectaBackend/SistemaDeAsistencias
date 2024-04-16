@@ -31,6 +31,11 @@ class CandidatosController extends Controller
         return view('candidatos.index', compact('candidatos', 'instituciones', 'carreras'));
     }
 
+    public function getFormToColab($candidato_id){
+        $candidato = Candidatos::findOrFail($candidato_id);
+
+        return view('candidatos.form-candidatos', ['candidato' => $candidato]);
+    }
 
     public function store(Request $request)
     {

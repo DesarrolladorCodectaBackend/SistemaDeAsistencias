@@ -6,11 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Inspina|Candidatos</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../font-awesome/css/font-awesome.css" rel="stylesheet">
-
-    <link href="../../css/animate.css" rel="stylesheet">
-    <link href="../../css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -129,29 +124,129 @@
             </div>
             <div class="row">
                 @endif
+                <div id="modal-form-view{{$candidato->id}}" class="modal fade" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="row">
+
+                                    <div class="col-sm-6 b-r">
+                                        <h3 class="m-t-none m-b">Informacion Personal </h3>
+
+
+                                        <form role="form">
+                                            <style>
+                                                .form-group {
+                                                    margin-bottom: 0rem;
+                                                }
+                                            </style>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Nombres:</h5>
+                                                </label><label for="">{{$candidato->nombre}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Apellidos:</h5>
+                                                </label><label for="">{{$candidato->apellido}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Direccion:</h5>
+                                                </label><label for="">{{$candidato->direccion}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Institucion:</h5>
+                                                </label><label
+                                                    for="">{{$candidato->institucion->nombre}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Ciclo:</h5>
+                                                </label><label
+                                                    for="">{{$candidato->ciclo_de_estudiante}}°</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Correo:</h5>
+                                                </label><label for="">{{$candidato->correo}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">fecha de
+                                                        Nacimiento:</h5>
+                                                </label><label
+                                                    for="">{{$candidato->fecha_nacimiento}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">DNI:</h5>
+                                                </label><label for="">{{$candidato->dni}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Celular:</h5>
+                                                </label><label for="">{{$candidato->celular}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Carrera:</h5>
+                                                </label><label
+                                                    for="">{{$candidato->carrera->nombre}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Estado:</h5>
+                                                </label><label for="">
+                                                    @if ($candidato->estado == 1)
+                                                    <span style="color: green"><strong>Activo</strong></span>
+
+                                                    @else
+                                                    <span style="color: #F00"><strong>Inactivo</strong></span>
+                                                    @endif
+                                                </label></div>
+                                            <div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-sm-6 text-center text-danger">
+                                        <h2><strong> Candidato </strong></h2>
+                                        <a style="color: black;"><strong>{{$candidato->id}}</strong></a>
+                                        <div class="custom-file w-200 h-300 " style="padding: 20px 0px;">
+                                            <img src="{{asset('storage/candidatos/'.$candidato->icono)}}"
+                                                class="img-lg  max-min-h-w-200 img-cover">
+
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-6">
                     <div class="ibox ">
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-sm-6 b-r">
-                                    <p class="text-center">
-                                        <a href=""><i class="fa fa-user-circle big-icon"></i></a>
-                                    </p>
+                                    <div class="text-center rounded-circle">
+                                        <img src="{{asset('storage/candidatos/'.$candidato->icono)}}"
+                                            class="rounded-circle max-min-h-w-200 p-a-25 img-cover">
+                                    </div>
                                     <p class="text-center">
                                         {{ $candidato->nombre." ".$candidato->apellido}}
                                     </p>
                                     <p class="text-center">
                                         @if ($candidato->estado == true)
-                                        <button class="btn btn-primary" type="button"
+
+                                    <form class="text-center" method="GET"
+                                        action="{{ route('candidatos.form', $candidato->id) }}">
+                                        <button class="btn btn-primary" type="submit">
+                                            Agregar Colaborador
+                                        </button>
+                                    </form>
+
+
+                                    <!-- <button class="btn btn-primary" type="button"
                                             onclick="confirmColaborador({{ $candidato->id }})">
                                             Agregar Colaborador
-                                        </button>
-                                        @else
-                                        <button class="btn btn-secondary" type="button" disabled
-                                            style="cursor: not-allowed">
-                                            Agregar Colaborador
-                                        </button>
-                                        @endif
+                                        </button> -->
+                                    @else
+                                    <button class="btn btn-secondary" type="button" disabled
+                                        style="cursor: not-allowed">
+                                        Agregar Colaborador
+                                    </button>
+                                    @endif
 
                                     </p>
                                 </div>
@@ -183,10 +278,15 @@
                                     </dl>
                                     <div>
                                         <div class="mb-4">
-                                            <button class="btn btn-danger float-right" type="button"
+                                            <button class="btn btn-success float-right mx-2" type="button"
+                                            href="#modal-form-view{{$candidato->id}}" data-toggle="modal"><i
+                                                    class="fa fa-eye"></i></button>
+
+                                            <button class="btn btn-danger float-right mx-2" type="button"
                                                 onclick="confirmDelete({{ $candidato->id }})"><i
                                                     class="fa fa-trash-o"></i></button>
-                                            <button class="btn btn-info float-right" type="button"
+
+                                            <button class="btn btn-info float-right mx-2" type="button"
                                                 href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
                                                     class="fa fa-paste"></i></button>
                                         </div>
@@ -261,16 +361,25 @@
                                                                     </script>
                                                                     <div class="form-group">
                                                                         <label>Institucion</label>
-                                                                        <select class="form-control" name="institucion_id">
+                                                                        <select class="form-control"
+                                                                            name="institucion_id">
                                                                             @foreach($instituciones as $institucion)
-                                                                            <option value="{{ $institucion->id }}" @if($institucion->id == old('institucion_id', $candidato->institucion_id)) selected @endif>{{ $institucion->nombre }}</option>
+                                                                            <option value="{{ $institucion->id }}"
+                                                                                @if($institucion->id ==
+                                                                                old('institucion_id',
+                                                                                $candidato->institucion_id)) selected
+                                                                                @endif>{{ $institucion->nombre }}
+                                                                            </option>
                                                                             @endforeach
-                                                                        </select>                                                                    
+                                                                        </select>
                                                                     </div>
                                                                     <div class="form-group"><label>Carrera</label>
                                                                         <select class="form-control" name="carrera_id">
                                                                             @foreach($carreras as $carrera)
-                                                                            <option value="{{ $carrera->id }}" @if($carrera->id == old('carrera_id', $candidato->carrera_id)) selected @endif>{{ $carrera->nombre }}</option>
+                                                                            <option value="{{ $carrera->id }}"
+                                                                                @if($carrera->id == old('carrera_id',
+                                                                                $candidato->carrera_id)) selected
+                                                                                @endif>{{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
@@ -360,6 +469,31 @@
     </script>
 
     <script>
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+
+                // Remover el Backdrop
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.parentNode.removeChild(backdrop);
+                }
+            }
+        }
+
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add(' show');
+            }
+        }
+
+        function abrirModalEdicion(id) {
+            hideModal('modal-form-view' + id);
+            showModal('modal-form-update' + id);
+        }
+
         function confirmDelete(id) {
             alertify.confirm("¿Deseas eliminar este registro?", function(e) {
                 if (e) {

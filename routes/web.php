@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('institucion', InstitucionController::class);
     Route::post('institucion/{institucion}/activar-inactivar', [InstitucionController::class,'activarInactivar'])->name('institucion.activarInactivar');
     Route::resource('candidatos', CandidatosController::class);
+    Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
+    //Route::get('/candidatos/form-candidatos', function () {return view('candidatos.form-candidatos');})->name('candidatos.form');
     Route::resource('colaboradores', ColaboradoresController::class);
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
     

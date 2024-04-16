@@ -64,7 +64,7 @@ class HorariosPresencialesController extends Controller
         
         $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
 
-        $horarios_presenciales->update($datosActualizar);
+        $horarios_presenciales->update($request->all());
 
         return redirect()->route('horarios_presenciales.index');
     }
