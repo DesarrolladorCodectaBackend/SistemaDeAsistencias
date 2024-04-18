@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
+use App\Models\Horario_de_Clases;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use Illuminate\Http\Request;
@@ -37,7 +38,8 @@ class ColaboradoresController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'candidato_id' => 'required|integer'
+            'candidato_id' => 'required|integer',
+            'area_id' => "required|integer"
         ]);
 
         $candidato = Candidatos::findOrFail($request->candidato_id);
@@ -47,8 +49,16 @@ class ColaboradoresController extends Controller
             Colaboradores_por_Area::create([
                 "colaborador_id" => $colaborador->id,
                 "area_id" => $request->area_id,
-                "semana_inicio_id" => $request->semana_inicio_id
+                "semana_inicio_id" => null
             ]);
+            /*
+            Horario_de_Clases::create([
+                "colaborador_id" => $colaborador->id,
+                "hora_inicial" => $request->hora_inicial,
+                "hora_final" => $request->hora_final,
+                "dia" => $request->dia
+            ]);
+            */
 
             
             $candidato->estado = !$candidato->estado;

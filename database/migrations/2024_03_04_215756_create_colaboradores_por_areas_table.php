@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
             $table->unsignedBigInteger('area_id');
             $table->foreign('area_id')->references('id')->on('areas');
-            $table->unsignedBigInteger('semana_inicio_id');
-            $table->foreign('semana_inicio_id')->references('id')->on('semanas');
+            $table->unsignedBigInteger('semana_inicio_id')->nullable();
+            $table->foreign('semana_inicio_id')->references('id')->on('semanas')->nullable();
             $table->timestamps();
         });
     }
