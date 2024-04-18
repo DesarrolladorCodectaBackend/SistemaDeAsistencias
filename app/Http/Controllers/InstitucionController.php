@@ -14,15 +14,10 @@ class InstitucionController extends Controller
 
     public function index()
     {
-        try {
-            $instituciones = Institucion::get();
-            if (count($instituciones) == 0) {
-                return response()->json(["resp" => "No hay registros insertados"]);
-            }
-            return response()->json(["data" => $instituciones, "conteo" => count($instituciones)]);
-        } catch (Exception $e) {
-            return response()->json(["error" => $e]);
-        }
+        $institucion = Institucion::get();
+
+        return view('institucion.index', compact('institucion'));
+
     }
 
 
@@ -44,7 +39,7 @@ class InstitucionController extends Controller
             }
 
             Institucion::create([
-                "nombre" => $request->nombre,
+                "Nombre" => $request->nombre,
             ]);
 
             DB::commit();
@@ -55,80 +50,67 @@ class InstitucionController extends Controller
         }
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|min:1|max:100',
+
+        ]);
+
+        institucion::create([
+            'nombre' => $request->nombre,
+        ]);
+
+
+
+
+        return redirect()->route('institucion.index');
+
+    }
+
 
     public function show($institucion_id)
     {
-        try {
-            $institucion = Institucion::find($institucion_id);
+        $institucion = Institucion::find($institucion_id);
 
-            if ($institucion == null) {
-                return response()->json(["resp" => "No existe una institución con ese id"]);
-            }
-
-            return response()->json(["data" => $institucion]);
-        } catch (Exception $e) {
-            return response()->json(["error" => $e]);
-        }
-       
+        return response()->json(["data" => $institucion]);
     }
 
 
     public function update(Request $request, $institucion_id)
     {
-        DB::beginTransaction();
+        $request->validate([
+            'nombre' => 'sometimes|string|min:1|max:100',
+            'estado' => 'sometimes|boolean'
+        ]);
 
-        try {
-            $institucion = Institucion::find($institucion_id);
+        $institucion = Institucion::findOrFail($institucion_id);
 
-            if ($institucion == null) {
-                return response()->json(["resp" => "No existe una institución con ese id"]);
-            }
+        $institucion->update($request->all());
 
-            if (!$request->nombre) {
-                return response()->json(["resp" => "Ingrese el nombre de la institucion"]);
-            }
-
-            if (!is_string($request->nombre)) {
-                return response()->json(["resp" => "El nombre debe ser una cadena de texto"]);
-            }
-
-            if (strlen($request->nombre) > 100) {
-                return response()->json(["resp" => "El nombre es demasiado largo"]);
-            }
-
-            $institucion->fill([
-                "nombre" => $request->nombre
-            ])->save();
-
-            DB::commit();
-            return response()->json(["resp" => "Institución con id " . $institucion_id . " fue editada"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('institucion.index');
 
     }
 
 
     public function destroy($institucion_id)
     {
-        DB::beginTransaction();
+        $institucion = Institucion::findOrFail($institucion_id);
 
-        try {
-            $institucion = Institucion::find($institucion_id);
+        $institucion->delete();
 
-            if ($institucion == null) {
-                return response()->json(["resp" => "No existe una institución con ese id"]);
-            }
+        return redirect()->route('institucion.index');
 
-            $institucion->delete();
+    }
 
-            DB::commit();
-            return response()->json(["resp" => "Institución con id " . $institucion_id . " y nombre " . $institucion->nombre . " eliminada"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+    public function activarInactivar($institucion_id)
+    {
+        $institucion = Institucion::findOrFail($institucion_id);
 
+        $institucion->estado = !$institucion->estado;
+
+        $institucion->save();
+
+        return redirect()->route('institucion.index');
     }
 }

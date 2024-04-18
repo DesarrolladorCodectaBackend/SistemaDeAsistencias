@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Colaboradores;
+use App\Models\Candidatos;
+use App\Models\Colaboradores_por_Area;
+use App\Models\Institucion;
+use App\Models\Carrera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -12,124 +16,139 @@ class ColaboradoresController extends Controller
 
     public function index()
     {
-        try{
-            $colaboradores = Colaboradores::with([
-                'candidatos' => function ($query) {
-                    $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'institucion_id', 'carrera_id'); }
-            ])->where('estado', true)->get();
-            
-            if (count($colaboradores) == 0) {
-                return response()->json(["resp" => "No hay registros insertados"]);
+        $colaboradores = Colaboradores::with('candidato')->get();
+        $instituciones = Institucion::all();
+        $carreras = Carrera::all();
+        $colaboradoresConArea = [];
+
+        foreach ($colaboradores as $colaborador) {
+            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->first();
+            if ($colaboradorArea) {
+                $colaborador->area = $colaboradorArea->area->especializacion;
+            } else {
+                $colaborador->area = 'Sin área asignada';
             }
-            
-            return response()->json(["data" => $colaboradores, "conteo" => count($colaboradores)]);
-        } catch(Exception $e){
-            return response()->json(["error" => $e]);
+            $colaboradoresConArea[] = $colaborador;
         }
 
+        return view('colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras'));
     }
 
-
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        DB::beginTransaction();
-        try{
-            if(!$request->candidato_id){
-                return response()->json(["resp" => "Ingrese el id del candidato"]);
-            }
+        $request->validate([
+            'candidato_id' => 'required|integer'
+        ]);
 
-            if(!is_integer($request->candidato_id)){
-                return response()->json(["resp" => "El id del candidato debe ser un número entero"]);
-            }
-            Colaboradores::create([
-                "candidato_id" => $request->candidato_id
+        $candidato = Candidatos::findOrFail($request->candidato_id);
+        if ($candidato->estado == true) {
+            $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
+
+            Colaboradores_por_Area::create([
+                "colaborador_id" => $colaborador->id,
+                "area_id" => $request->area_id,
+                "semana_inicio_id" => $request->semana_inicio_id
             ]);
-            DB::commit();
-            return response()->json(["resp" => "Colaborador creado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
+
+            
+            $candidato->estado = !$candidato->estado;
+            $candidato->save();
+
+
         }
+
+
+        return redirect()->route('candidatos.index');
 
     }
 
 
     public function show($colaborador_id)
     {
-        try{
+        try {
             $colaborador = Colaboradores::with('candidatos')->find($colaborador_id);
-            if(!$colaborador){
+            if (!$colaborador) {
                 return response()->json(["resp" => "No existe un registro con ese id"]);
             }
             return response()->json(["data" => $colaborador]);
-        } catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(["error" => $e]);
         }
 
     }
 
 
-    public function update(Request $request, $colaborador_id)
+    public function update(Request $request, $candidato_id)
     {
-        DB::beginTransaction();
-        try{
-            $colaborador = Colaboradores::find($colaborador_id);
+        $request->validate([
+            'nombre' => 'sometimes|string|min:1|max:100',
+            'apellido' => 'sometimes|string|min:1|max:100',
+            'dni' => 'sometimes|string|min:1|max:8',
+            'direccion' => 'sometimes|string|min:1|max:100',
+            'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
+            'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
+            'institucion_id' => 'sometimes|integer|min:1|max:20',
+            'carrera_id' => 'sometimes|integer|min:1|max:20',
+            'correo' => 'sometimes|string|min:1|max:255',
+            'celular' => 'sometimes|string|min:1|max:20',
+            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
+        ]);
 
-            if(!$colaborador){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
+        $candidato = Candidatos::findOrFail($candidato_id);
+        $datosActualizar = $request->except(['icono']);
+
+        if ($request->hasFile('icono')) {
+            $rutaPublica = public_path('storage/candidatos');
+            if ($candidato->icono && $candidato->icono != 'Default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
+                unlink($rutaPublica . '/' . $candidato->icono);
             }
 
-            if(!$request->candidato_id){
-                return response()->json(["resp" => "Ingrese el id del candidato"]);
-            }
+            $icono = $request->file('icono');
+            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
 
-            if(!is_integer($request->candidato_id)){
-                return response()->json(["resp" => "El id del candidato debe ser un número entero"]);
-            }
+            $icono->move($rutaPublica, $nombreIcono);
 
-            $colaborador->fill([
-                "candidato_id" => $request->candidato_id
-            ])->save();
-            
-            DB::commit();
-            return response()->json(["resp" => "Colaborador actualizado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
+            $datosActualizar['icono'] = $nombreIcono;
         }
+
+        $candidato->update($datosActualizar);
+
+        return redirect()->route('colaboradores.index');
 
     }
 
 
     public function destroy($colaborador_id)
     {
-        DB::beginTransaction();
-        try{
-            $colaborador = Colaboradores::find($colaborador_id);
+        $colaborador = Colaboradores::findOrFail($colaborador_id);
 
-            if(!$colaborador){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $colaborador->delete();
 
-            $colaborador->delete();
-
-            DB::commit();
-            return response()->json(["resp" => "Colaborador eliminado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('colaboradores.index');
 
     }
 
+
+    public function activarInactivar($colaborador_id)
+    {
+        $colaborador = Colaboradores::findOrFail($colaborador_id);
+
+        $colaborador->estado = !$colaborador->estado;
+
+        $colaborador->save();
+
+        return redirect()->route('colaboradores.index');
+    }
+
+
     public function ShowByName(Request $request)
     {
-        try{
-            if(!$request->nombre){
+        try {
+            if (!$request->nombre) {
                 return response()->json(["resp" => "Ingrese el nombre del colaborador"]);
             }
 
-            if(!is_string($request->nombre)){
+            if (!is_string($request->nombre)) {
                 return response()->json(["resp" => "El nombre debe ser una cadena de texto"]);
             }
 
@@ -147,7 +166,7 @@ class ColaboradoresController extends Controller
                 ->get();
 
             return response()->json(["data" => $colaboradores, "conteo" => $colaboradores->count()]);
-        } catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(["error" => $e]);
         }
 

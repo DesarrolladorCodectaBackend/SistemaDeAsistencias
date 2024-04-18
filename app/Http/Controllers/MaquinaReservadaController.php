@@ -11,6 +11,7 @@ class MaquinaReservadaController extends Controller
 {
     public function index()
     {
+        /*
         try {
             $maquinas_reservadas = Maquina_reservada::with([
                 'horarios_presenciales' => function ($query) {
@@ -27,6 +28,7 @@ class MaquinaReservadaController extends Controller
         } catch (Exception $e) {
             return response()->json(["error" => $e]);
         }
+        */
     }
 
     public function create(){

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidatos;
+use App\Models\Institucion;
+use App\Models\Carrera;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCandidatosRequest;
 use App\Http\Requests\UpdateCandidatosRequest;
@@ -13,6 +15,7 @@ class CandidatosController extends Controller
 
     public function index()
     {
+        /*
         $candidatos = Candidatos::with([
             'institucion' => function ($query) {
                 $query->select('id', 'nombre'); },
@@ -20,23 +23,63 @@ class CandidatosController extends Controller
                 $query->select('id', 'nombre'); }
         ])->where('estado', 1)->get();
         return response()->json(["data" => $candidatos, "conteo" => count($candidatos)]);
+        */
+        $candidatos = Candidatos::with('carrera', 'institucion')->get();
+        $instituciones = Institucion::all();
+        $carreras = Carrera::all();
+
+        return view('candidatos.index', compact('candidatos', 'instituciones', 'carreras'));
     }
 
+    public function getFormToColab($candidato_id){
+        $candidato = Candidatos::findOrFail($candidato_id);
 
-    public function create(Request $request)
+        return view('candidatos.form-candidatos', ['candidato' => $candidato]);
+    }
+
+    public function store(Request $request)
     {
-        Candidatos::create([
-            "nombre" => $request->nombre,
-            "apellido" => $request->apellido,
-            "dni" => $request->dni,
-            "direccion" => $request->direccion,
-            "fecha_nacimiento" => $request->fecha_nacimiento,
-            "ciclo_de_estudiante" => $request->ciclo_de_estudiante,
-            "institucion_id" => $request->institucion_id,
-            "carrera_id" => $request->carrera_id
+        $request->validate([
+            'nombre' => 'required|string|min:1|max:100',
+            'apellido' => 'required|string|min:1|max:100',
+            'dni' => 'required|string|min:1|max:8',
+            'direccion' => 'required|string|min:1|max:100',
+            'fecha_nacimiento' => 'required|string|min:1|max:255',
+            'ciclo_de_estudiante' => 'required|string|min:1|max:50',
+            'institucion_id' => 'required|integer|min:1|max:20',
+            'carrera_id' => 'required|integer|min:1|max:20',
+            'correo' => 'required|string|min:1|max:255',
+            'celular' => 'required|string|min:1|max:20',
+            'icono' => 'image|mimes:jpeg,png,jpg,gif'
         ]);
 
-        return response()->json(["resp" => "Candidato creado exitosamente"]);
+        if ($request->hasFile('icono')) {
+            $icono = $request->file('icono');
+            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+            $icono->move(public_path('storage/candidatos'), $nombreIcono);
+        } else {
+            $nombreIcono = 'Default.png';
+        }
+
+        //Area::create($request->all());
+
+        Candidatos::create([
+            'nombre' => $request->nombre,
+            'apellido' => $request->apellido,
+            'dni' => $request->dni,
+            'direccion' => $request->direccion,
+            'fecha_nacimiento' => $request->fecha_nacimiento,
+            'ciclo_de_estudiante' => $request->ciclo_de_estudiante,
+            'institucion_id' => $request->institucion_id,
+            'carrera_id' => $request->carrera_id,
+            'correo' => $request->correo,
+            'celular' => $request->celular,
+            'icono' => $nombreIcono
+        ]);
+
+
+        return redirect()->route('candidatos.index');
+
     }
 
 
@@ -44,9 +87,11 @@ class CandidatosController extends Controller
     {
         $candidato = Candidatos::with([
             'institucion' => function ($query) {
-                $query->select('id', 'nombre'); },
+                $query->select('id', 'nombre');
+            },
             'carrera' => function ($query) {
-                $query->select('id', 'nombre'); }
+                $query->select('id', 'nombre');
+            }
         ])->find($candidato_id);
         return response()->json(["Data" => $candidato]);
     }
@@ -54,30 +99,57 @@ class CandidatosController extends Controller
 
     public function update(Request $request, $candidato_id)
     {
-        $candidato = Candidatos::find($candidato_id);
+        $request->validate([
+            'nombre' => 'sometimes|string|min:1|max:100',
+            'apellido' => 'sometimes|string|min:1|max:100',
+            'dni' => 'sometimes|string|min:1|max:8',
+            'direccion' => 'sometimes|string|min:1|max:100',
+            'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
+            'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
+            'institucion_id' => 'sometimes|integer|min:1|max:20',
+            'carrera_id' => 'sometimes|integer|min:1|max:20',
+            'correo' => 'sometimes|string|min:1|max:255',
+            'celular' => 'sometimes|string|min:1|max:20',
+            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
+        ]);
+        
+        $candidato = Candidatos::findOrFail($candidato_id);
+        $datosActualizar = $request->except(['icono']);
 
-        $candidato->fill([
-            "nombre" => $request->nombre,
-            "apellido" => $request->apellido,
-            "dni" => $request->dni,
-            "direccion" => $request->direccion,
-            "fecha_nacimiento" => $request->fecha_nacimiento,
-            "ciclo_de_estudiante" => $request->ciclo_de_estudiante,
-            "institucion_id" => $request->institucion_id,
-            "carrera_id" => $request->carrera_id
-        ])->save();
+        if ($request->hasFile('icono')) {
+            $rutaPublica = public_path('storage/candidatos');
+            if ($candidato->icono && $candidato->icono != 'Default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
+                unlink($rutaPublica . '/' . $candidato->icono);
+            }
+    
+            $icono = $request->file('icono');
+            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+    
+            $icono->move($rutaPublica, $nombreIcono);
+    
+            $datosActualizar['icono'] = $nombreIcono;
+        }
 
-        return response()->json(["resp" => "Candidato actualizado correctamente"]);
+        $candidato->update($datosActualizar);
+        
+        return redirect()->route('candidatos.index');
     }
 
 
     public function destroy($candidato_id)
     {
+        /*
         $candidato = Candidatos::find($candidato_id);
 
         $candidato->delete();
 
         return response()->json(["resp" => "Candidato eliminado correctamente"]);
+        */
+        $candidato = Candidatos::findOrFail($candidato_id);
+
+        $candidato->delete();
+
+        return redirect()->route('candidatos.index');
 
     }
 

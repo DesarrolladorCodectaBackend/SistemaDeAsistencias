@@ -25,49 +25,22 @@ class HorariosPresencialesController extends Controller
         }
     }
 
-    public function create(){
-        return view('horariospresenciales.create');
-    }
 
-
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        DB::beginTransaction();
-        try {
-            //Existencia
-            if (!$request->horario_inicial) {
-                return response()->json(["resp" => "Ingrese la hora inicial"]);
-            }
-            if (!$request->horario_final) {
-                return response()->json(["resp" => "Ingrese la hora final"]);
-            }
-            if (!$request->dia) {
-                return response()->json(["resp" => "Ingrese el dia"]);
-            }
 
-            //Tipo de dato
-            if (!is_string($request->horario_inicial)) {
-                return response()->json(["resp" => "La hora inicial debe ser una cadena de texto"]);
-            }
-            if (!is_string($request->horario_final)) {
-                return response()->json(["resp" => "La hora final debe ser una cadena de texto"]);
-            }
-            if (!is_string($request->dia)) {
-                return response()->json(["resp" => "El dia debe ser una cadena de texto"]);
-            }
+        $request->validate([
+            'hora_inicial' => 'required|string|min:1|max:100',
+            'hora_final' => 'required|string|min:1|max:255',
+            'dia' =>  'required|string|min:1|max:7',
+        ]);
 
-            Horarios_Presenciales::create([
+        Horarios_Presenciales::create([
                 "hora_inicial" => $request->hora_inicial,
                 "hora_final" => $request->hora_final,
                 "dia" => $request->dia
-            ]);
-
-            DB::commit();
-            return response()->json(["resp" => "Horario presencial creado"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        ]);
+ 
     }
 
 
@@ -89,57 +62,23 @@ class HorariosPresencialesController extends Controller
 
     public function update(Request $request, $horario_presencial_id)
     {
-        DB::beginTransaction();
+        $request->validate([
+            'hora_inicial' => 'required|string|min:1|max:100',
+            'hora_final' => 'required|string|min:1|max:255',
+            'dia' =>  'required|string|min:1|max:7',
+        ]);
+        
+        $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
 
-        try {
-            $horario = Horarios_Presenciales::find($horario_presencial_id);
+        $horarios_presenciales->update($request->all());
 
-            //Existencia
-            if ($horario == null) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
-
-            if (!$request->horario_inicial) {
-                return response()->json(["resp" => "Ingrese la hora inicial"]);
-            }
-            if (!$request->horario_final) {
-                return response()->json(["resp" => "Ingrese la hora final"]);
-            }
-            if (!$request->dia) {
-                return response()->json(["resp" => "Ingrese el dia"]);
-            }
-
-            //Tipo de dato
-            if (!is_string($request->horario_inicial)) {
-                return response()->json(["resp" => "La hora inicial debe ser una cadena de texto"]);
-            }
-            if (!is_string($request->horario_final)) {
-                return response()->json(["resp" => "La hora final debe ser una cadena de texto"]);
-            }
-            if (!is_string($request->dia)) {
-                return response()->json(["resp" => "El dia debe ser una cadena de texto"]);
-            }
-
-            $horario->fill([
-                "hora_inicial" => $request->hora_inicial,
-                "hora_final" => $request->hora_final,
-                "dia" => $request->dia
-            ])->save();
-
-            DB::commit();
-            return response()->json(["resp" => "Horario presencial con id " . $horario_presencial_id . " editado"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('horarios_presenciales.index');
     }
 
 
     public function destroy($horario_presencial_id)
     {
-        DB::beginTransaction();
-        try {
-            $horario = Horarios_Presenciales::find($horario_presencial_id);
+        $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
 
             if ($horario == null) {
                 return response()->json(["resp" => "No existe un registro con ese id"]);
@@ -148,9 +87,6 @@ class HorariosPresencialesController extends Controller
             $horario->delete();
             DB::commit();
             return response()->json(["resp" => "Horario presencial con id " . $horario_presencial_id . " eliminado"]);
-
-            return redirect()->route('horariospresenciales.index');
-
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(["error" => $e]);

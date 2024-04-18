@@ -11,59 +11,29 @@ class CursosController extends Controller
 {
     public function index()
     {
-        try {
-            $cursos = Cursos::get();
-            if (count($cursos) == 0) {
-                return response()->json(["resp" => "No hay registros insertados"]);
-            }
-            return response()->json(["data" => $cursos, "conteo" => count($cursos)]);
-        } catch (Exception $e) {
-            return response()->json(["error" => $e]);
-        }
+        $curso = Cursos::all();
+
+        return view('curso.index', compact('curso'));
     }
 
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        DB::beginTransaction();
-        try {
+        $request->validate([
+            'nombre' => 'required|string|min:1|max:100',
+            'categoria' => 'required|string|min:1|max:255',
+            'duracion' =>  'required|integer|min:1|max:15'
+        ]);
 
-            if (!$request->nombre) {
-                return response()->json(["resp" => "Ingrese el nombre"]);
-            }
+        Cursos::create([
+            'nombre' => $request->especializacion,
+            'categoria' => $request->descripcion,
+            'duracion' => $request->duracion
+        ]);
 
-            if (!$request->categoria) {
-                return response()->json(["resp" => "Ingrese la categoria"]);
-            }
+        
+        return redirect()->route('curso.index');
 
-            if (!$request->duracion) {
-                return response()->json(["resp" => "Ingrese la duracion"]);
-            }
-
-            if (!is_string($request->nombre)) {
-                return response()->json(["resp" => "El nombre debe ser un texto"]);
-            }
-
-            if (!is_string($request->categoria)) {
-                return response()->json(["resp" => "La categoria debe ser un texto"]);
-            }
-
-            if (!is_integer($request->duracion)) {
-                return response()->json(["resp" => "La duracion debe ser un número entero"]);
-            }
-
-            Cursos::create([
-                "nombre" => $request->nombre,
-                "categoria" => $request->categoria,
-                "duracion" => $request->duracion
-            ]);
-            
-            DB::commit();
-            return response()->json(["resp" => "Registro creado"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
     }
 
 
@@ -86,74 +56,29 @@ class CursosController extends Controller
 
     public function update(Request $request, $curso_id)
     {
-        DB::beginTransaction();
+        $request->validate([
+            'nombre' => 'required|string|min:1|max:100',
+            'categoria' => 'required|string|min:1|max:255',
+            'duracion' =>  'required|integer|min:1|max:15'
+        ]);
+        
+        $curso = Cursos::findOrFail($curso_id);
 
-        try {
-            $curso = Cursos::find($curso_id);
 
-            if ($curso == null) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $curso->update($request->all());
 
-            if (!$request->nombre) {
-                return response()->json(["resp" => "Ingrese el nombre"]);
-            }
-
-            if (!$request->categoria) {
-                return response()->json(["resp" => "Ingrese la categoria"]);
-            }
-
-            if (!$request->duracion) {
-                return response()->json(["resp" => "Ingrese la duracion"]);
-            }
-
-            if (!is_string($request->nombre)) {
-                return response()->json(["resp" => "El nombre debe ser un texto"]);
-            }
-
-            if (!is_string($request->categoria)) {
-                return response()->json(["resp" => "La categoria debe ser un texto"]);
-            }
-
-            if (!is_integer($request->duracion)) {
-                return response()->json(["resp" => "La duracion debe ser un número entero"]);
-            }
-
-            $curso->fill([
-                "nombre" => $request->nombre,
-                "categoria" => $request->categoria,
-                "duracion" => $request->duracion
-            ])->save();
-
-            DB::commit();
-            return response()->json(["resp" => "Registro editado"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('curso.index');
 
     }
 
 
     public function destroy($curso_id)
     {
-        DB::beginTransaction();
+        $curso = Cursos::findOrFail($curso_id);
 
-        try {
-            $curso = Cursos::find($curso_id);
+        $curso->delete();
 
-            if ($curso == null) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
-
-            $curso->delete();
-
-            DB::commit();
-            return response()->json(["resp" => `Registro con id ${curso_id} eliminado`]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('curso.index');
 
     }
 }

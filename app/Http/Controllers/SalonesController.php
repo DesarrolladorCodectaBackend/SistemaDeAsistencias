@@ -12,50 +12,76 @@ class SalonesController extends Controller
     
     public function index()
     {
-        $Salones = Salones::get();
+        $salones = Salones::all();
 
-        return response()->json(["data" => $Salones, "conteo" => count($Salones)]);
+        return view('salones.index', compact('salones'));
     }
     
     
-    public function create(Request $request)
+    // public function create(Request $request)
+    // {
+    //     Salones::create([
+    //         "nombre" => $request->nombre,
+    //         "descripcion" => $request->descripcion
+    //     ]);
+
+    //     return response()->json(["resp" => "Salón creado"]);
+    // }
+
+    public function store(Request $request)
     {
-        Salones::create([
-            "nombre" => $request->nombre,
-            "descripcion" => $request->descripcion
+        $request->validate([
+            'nombre' => 'required|string|min:1|max:100',
+            'descripcion' => 'required|string|min:1|max:255',
         ]);
 
-        return response()->json(["resp" => "Salón creado"]);
+ 
+        //Salones::create($request->all());
+
+        Salones::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        
+        return redirect()->route('salones.index');
     }
 
     
-    public function show($salon_id)
-    {
-        $salon = Salones::find($salon_id);
+    //public function show($salon_id)
+    //{
+      //  $salon = Salones::find($salon_id);
 
-        return response()->json(["data" => $salon]);
-    }
+        //return response()->json(["data" => $salon]);
+    //}
 
     
     public function update(Request $request, $salon_id)
     {
-        $salon = Salones::find($salon_id);
+        $request->validate([
+            'nombre' => 'required|string|min:1|max:100',
+            'descripcion' => 'required|string|min:1|max:255',
+        ]);
 
-        $salon->fill([
-            "nombre" => $request->nombre,
-            "descripcion" => $request->descripcion
-        ])->save();
 
-        return response()->json(["resp" => "Salón con id ".$salon_id." actualizado"]);
+        
+        $salon = Salones::findOrFail($salon_id);
+        
+        $datosActualizar = $request->all();
+
+        $salon->update($datosActualizar);
+
+        return redirect()->route('salones.index');
+
     }
 
     
     public function destroy($salon_id)
     {
-        $salon = Salones::find($salon_id);
+        $salon = Salones::findOrFail($salon_id);
 
         $salon->delete();
 
-        return response()->json(["resp" => "Salón con id ".$salon_id." eliminado"]);
+        return redirect()->route('salones.index');
     }
 }

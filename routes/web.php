@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\CandidatosController;
+use App\Http\Controllers\ColaboradoresController;
+use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,9 +45,14 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('areas', AreaController::class);
-
-
-
+    Route::resource('institucion', InstitucionController::class);
+    Route::post('institucion/{institucion}/activar-inactivar', [InstitucionController::class,'activarInactivar'])->name('institucion.activarInactivar');
+    Route::resource('candidatos', CandidatosController::class);
+    Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
+    //Route::get('/candidatos/form-candidatos', function () {return view('candidatos.form-candidatos');})->name('candidatos.form');
+    Route::resource('colaboradores', ColaboradoresController::class);
+    Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
+    
 });
 
 require __DIR__ . '/auth.php';

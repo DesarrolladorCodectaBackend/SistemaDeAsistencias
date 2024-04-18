@@ -1,13 +1,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('font-awesome/css/font-awesome.css')}}">
 
-    <link href="../../../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../../font-awesome/css/font-awesome.css" rel="stylesheet">
-
-    <link href="../../../css/animate.css" rel="stylesheet">
-    <link href="../../../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('css/animate.css')}}">
+    <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
+    <link href="../../../css/inspinia.css" rel="stylesheet">
 </head>
 
 
@@ -16,17 +17,17 @@
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element">
-                    <img alt="image" class="rounded-circle img-lg" src="../../../img/image.png" />
+                    <img alt="image" class="rounded-circle img-lg" src="../img/image.png" />
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <span class="block m-t-xs font-bold">Administrador</span>
                         <span class="text-muted text-xs block">Art Director <b class="caret"></b></span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Contacts</a></li>
-                        <li><a class="dropdown-item" href="#">Mailbox</a></li>
+                        <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                        <li><a class="dropdown-item" href="contacts.html">Contacts</a></li>
+                        <li><a class="dropdown-item" href="mailbox.html">Mailbox</a></li>
                         <li class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                        <li><a class="dropdown-item" href="login.html">Logout</a></li>
                     </ul>
                 </div>
                 <div class="logo-element">
@@ -34,109 +35,133 @@
                 </div>
             </li>
             <li>
-                <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span>
-                    <span class="fa arrow"></span></a>
+                <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span> <span
+                        class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="side_nav_bar-inspinia">Dashboard v.1</a></li>
-                    <li><a href="navbar-inspinia">Dashboard v.2</a></li>
-                    <li><a href="sidebar-inspinia">Dashboard v.3</a></li>
-                    <li><a href="#">Dashboard v.4</a></li>
-                    <li><a href="#">Dashboard v.5 </a></li>
-                    <li><a href="#">Áreas</a></li>
+                    <li><a href="index.html">Dashboard v.1</a></li>
+                    <li><a href="dashboard_2.html">Dashboard v.2</a></li>
+                    <li><a href="dashboard_3.html">Dashboard v.3</a></li>
+                    <li><a href="dashboard_4_1.html">Dashboard v.4</a></li>
+                    <li><a href="dashboard_5.html">Dashboard v.5 </a></li>
+                    <li><a href="dashboard_areas.html">Áreas</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
-                        Presenciales</span><span class="fa arrow"></span></a>
+                <a href="horario-general-presencial.html"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
+                        G.Presencial</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="#">General Presencial</a></li>
-                    <li><a href="#">Presencial Areas</a></li>
-                    <li><a href="#">Presencial Clases</a></li>
+                    <li><a href="horario-general-presencial.html">Presencial</a></li>
+                    <li><a href="horario-gp-areas.html">Areas</a></li>
+                    <li><a href="horario-gp-salon.html">Salon</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
-                        Virtuales</span></a>
+                <a href="horario-general-virtual.html"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
+                        G.Virtual</span></a>
             </li>
-            <li>
-                <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
+            <li class="">
+                <a href="layouts.html"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse">
                     <li>
-                        <a href="#">Capacitacion<span class="fa arrow"></span></a>
+                        <a href="../candidatos">Candidatos<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
                             <li>
-                                <a href="#">Informacion</a>
+                                <a href="../candidatos">Candidatos</a>
                             </li>
                             <li>
-                                <a href="#">Horario</a>
+                                <a href="../candidatos/form-candidatos">Formulario</a>
                             </li>
                         </ul>
+                    </li>
+                    <li class="">
+                        <a href="../colaboradores">Colaboradores<span class="fa arrow"></span></a>
+                        <ul class="nav nav-third-level">
+                            <li>
+                                <a href="../colaboradores">Colaboradores</a>
+                            </li>
+                            <li class="">
+                                <a href="form-candidatos-colab.html">Candidato a Colab</a>
+                            </li>
+                            <li>
+                                <a href="form-horario-clase.html">Horario Clase</a>
+
+                            </li>
+
+                            <li>
+                                <a href="horario-clase-semanal.html">Horario Semanal</a>
+                            </li>
+                        </ul>
+                    </li>
+
+
+                    <li>
+
                     </li>
 
                     <li>
-                        <a href="#">Empleados<span class="fa arrow"></span></a>
+                        <a href="#">Capacitacion-Horario<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
                             <li>
-                                <a href="#">Candidatos</a>
+                                <a href="capacitacion-colab.html">Informacion</a>
                             </li>
                             <li>
-                                <a href="#">Formulario</a>
-                            </li>
-                            <li>
-                                <a href="#">Colaboradores</a>
+                                <a href="capacitacion-horario.html">Horario</a>
                             </li>
                         </ul>
                     </li>
+                </ul>
+
+            </li>
+            <li>
+                <a href="../areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
+            </li>
+            <li>
+                <a href="Maquinas.html"><i class="fa fa-list-alt"></i> <span
+                        class="nav-label">Responsabilidades</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="responsabilidades_areas.html">Areas</a></li>
+                    <li><a href="responsabilidades-semanas.html">Semanas</a></li>
+                    <li><a href="responsabilidades-asis.html">Asistencia</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="Maquinas.html"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span><span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse">
 
                     <li>
-                        <a href="#">Clases Semanales<span class="fa arrow"></span></a>
-                        <ul class="nav nav-third-level">
-                            <li>
-                                <a href="#">Formulario</a>
-                            </li>
-                            <li>
-                                <a href="#">Horario</a>
-                            </li>
-                        </ul>
+                        <a href="Maquinas.html"><span class="nav-label">Maquinas</span></a>
+
                     </li>
-                    <li><a href="#">Computadoras</a></li>
+
+                    <li><a href="Computadora.html">Computadoras</a></li>
 
                 </ul>
 
             </li>
-            <li class="active">
-                <a href="#"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
+            <li>
+                <a href="salones.html"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-list-alt"></i> <span class="nav-label">Responsabilidades</span><span
+                <a href="configuracion.html"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="#">Areas</a></li>
-                    <li><a href="#">Semanas</a></li>
-                    <li><a href="#">Asistencia</a></li>
+                    <li><a href="../institucion">Institucion</a></li>
+                    <li><a href="config-carrera.html">Carrera</a></li>
+                    <li><a href="config-curso.html">Curso</a></li>
+                    <li><a href="config-programas.html">Programas</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
+                <form id="logoutForm" method="POST" action="http://127.0.0.1:8000/logout">
+                    @csrf
+                </form>
 
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="#">Institucion</a></li>
-                    <li><a href="#">Carrera</a></li>
-                    <li><a href="#">Curso</a></li>
-                    <li><a href="#">Programas</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-sign-out"></i> <span class="nav-label">Cerrar
-                        Sesion</span></a>
+                <a href="#" onclick="document.getElementById('logoutForm').submit();">
+                    <i class="fa fa-sign-out"></i>
+                    <span class="nav-label">Cerrar Sesión</span>
+                </a>
             </li>
         </ul>
 
@@ -260,9 +285,11 @@
 
 
                 <li>
-                    <a href="#">
-                        <i class="fa fa-sign-out"></i> Log out
+
+                    <a href="#" onclick="document.getElementById('logoutForm').submit();">
+                        <i class="fa fa-sign-out"></i>Log Out
                     </a>
+
                 </li>
                 <li>
                     <a class="right-sidebar-toggle">
@@ -276,9 +303,9 @@
 
 
 
-<!--- Cambiar Imagen-->
-<script>
-    document.getElementById('inputGroupFile').addEventListener('change', function() {
+    <!--- Cambiar Imagen-->
+    <script>
+        document.getElementById('inputGroupFile').addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -289,51 +316,51 @@
                 document.querySelector('.custom-file-label').innerHTML = file.name;
             }
         });
-</script>
+    </script>
 
-<!-- Mainly scripts -->
-<script src="js/jquery-3.1.1.min.js"></script>
-<script src="{{asset('js/alertify.min.js')}}"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.js"></script>
-<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="{{asset('js/alertify.min.js')}}"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-<!-- Flot -->
-<script src="js/plugins/flot/jquery.flot.js"></script>
-<script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-<script src="js/plugins/flot/jquery.flot.spline.js"></script>
-<script src="js/plugins/flot/jquery.flot.resize.js"></script>
-<script src="js/plugins/flot/jquery.flot.pie.js"></script>
-<script src="js/plugins/flot/jquery.flot.symbol.js"></script>
-<script src="js/plugins/flot/jquery.flot.time.js"></script>
+    <!-- Flot -->
+    <script src="js/plugins/flot/jquery.flot.js"></script>
+    <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="js/plugins/flot/jquery.flot.spline.js"></script>
+    <script src="js/plugins/flot/jquery.flot.resize.js"></script>
+    <script src="js/plugins/flot/jquery.flot.pie.js"></script>
+    <script src="js/plugins/flot/jquery.flot.symbol.js"></script>
+    <script src="js/plugins/flot/jquery.flot.time.js"></script>
 
-<!-- Peity -->
-<script src="js/plugins/peity/jquery.peity.min.js"></script>
-<script src="js/demo/peity-demo.js"></script>
+    <!-- Peity -->
+    <script src="js/plugins/peity/jquery.peity.min.js"></script>
+    <script src="js/demo/peity-demo.js"></script>
 
-<!-- Custom and plugin javascript -->
-<script src="js/inspinia.js"></script>
-<script src="js/plugins/pace/pace.min.js"></script>
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
 
-<!-- jQuery UI -->
-<script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
 
-<!-- Jvectormap -->
-<script src="js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
-<script src="js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- Jvectormap -->
+    <script src="js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
+    <script src="js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
 
-<!-- EayPIE -->
-<script src="js/plugins/easypiechart/jquery.easypiechart.js"></script>
+    <!-- EayPIE -->
+    <script src="js/plugins/easypiechart/jquery.easypiechart.js"></script>
 
-<!-- Sparkline -->
-<script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <!-- Sparkline -->
+    <script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
 
-<!-- Sparkline demo data  -->
-<script src="js/demo/sparkline-demo.js"></script>
+    <!-- Sparkline demo data  -->
+    <script src="js/demo/sparkline-demo.js"></script>
 
-<script>
-    $(document).ready(function() {
+    <script>
+        $(document).ready(function() {
             $('.chart').easyPieChart({
                 barColor: '#f8ac59',
 //                scaleColor: false,
@@ -494,4 +521,4 @@
                 },
             });
         });
-</script>
+    </script>
