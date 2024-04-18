@@ -87,9 +87,7 @@ class HorariosPresencialesController extends Controller
             $horario->delete();
             DB::commit();
             return response()->json(["resp" => "Horario presencial con id " . $horario_presencial_id . " eliminado"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
+
+            return redirect()->route('horariospresenciales.index');
         }
     }
-}
