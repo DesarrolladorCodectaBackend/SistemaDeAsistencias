@@ -21,22 +21,6 @@ class CarreraController extends Controller
     }
 
 
-    public function create(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            Carrera::create([
-                "Nombre" => $request->nombre,
-            ]);
-
-            DB::commit();
-            return response()->json(["resp" => "carrera creada con nombre " . $request->nombre]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
-    }
-
     public function store(Request $request)
     {
         $request->validate([
