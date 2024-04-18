@@ -29,7 +29,11 @@ class MaquinaReservadaController extends Controller
         }
     }
 
-    public function create(Request $request)
+    public function create(){
+        return view('maquinareservada.create');
+    }
+
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -135,6 +139,9 @@ class MaquinaReservadaController extends Controller
 
             DB::commit();
             return response()->json(["resp" => "Registro eliminado correctamente"]);
+
+            return redirect()->route('maquina_reservada.index');
+
         } catch(Exception $e){
             DB::rollBack();
             return response()->json(["error" => $e]);

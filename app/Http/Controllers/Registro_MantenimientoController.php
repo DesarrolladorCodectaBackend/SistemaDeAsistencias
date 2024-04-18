@@ -40,8 +40,12 @@ class Registro_MantenimientoController extends Controller
 
     }
 
+    public function create(){
+        return view('registro_mantenimiento.create');
+    }
 
-    public function create(Request $request)
+
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -179,6 +183,9 @@ class Registro_MantenimientoController extends Controller
             $registro_mantenimiento->delete();
             DB::commit();
             return response()->json(["resp" => "Registro eliminado correctamente"]);
+
+            return redirect()->route('registro_mantenimiento.index');
+
         } catch (Exception $e){
             DB::rollBack();
             return response()->json(["error"=> $e]);

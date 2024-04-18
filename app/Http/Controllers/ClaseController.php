@@ -27,8 +27,12 @@ class ClaseController extends Controller
 
     }
 
+    public function create(){
+        return view('clase.create');
+    }
+
     
-    public function create(Request $request)
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try{
@@ -174,6 +178,9 @@ class ClaseController extends Controller
 
             DB::commit();
             return response()->json(["resp" => "Registro eliminado correctamente"]);
+
+            return redirect()->route('clase.index');
+            
         } catch(Exception $e){
             DB::rollBack();
             return response()->json(["error" => $e]);

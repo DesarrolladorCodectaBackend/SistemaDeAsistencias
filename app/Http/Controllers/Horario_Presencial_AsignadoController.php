@@ -28,8 +28,12 @@ class Horario_Presencial_AsignadoController extends Controller
         
     }
 
+    public function create(){
+        return view('horario_presencial_asignado.create');
+    }
 
-    public function create(Request $request)
+
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try{
@@ -139,6 +143,9 @@ class Horario_Presencial_AsignadoController extends Controller
             
             DB::commit();
             return response()->json(["resp" => "Candidato eliminado correctamente"]);
+
+            return redirect()->route('horario_presencial_asignado.index');
+            
         } catch (Exception $e){
             DB::rollBack();
             return response()->json(["error" => $e]);

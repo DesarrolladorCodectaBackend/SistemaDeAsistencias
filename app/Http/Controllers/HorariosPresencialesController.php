@@ -25,8 +25,12 @@ class HorariosPresencialesController extends Controller
         }
     }
 
+    public function create(){
+        return view('horariospresenciales.create');
+    }
 
-    public function create(Request $request)
+
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -144,6 +148,9 @@ class HorariosPresencialesController extends Controller
             $horario->delete();
             DB::commit();
             return response()->json(["resp" => "Horario presencial con id " . $horario_presencial_id . " eliminado"]);
+
+            return redirect()->route('horariospresenciales.index');
+
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(["error" => $e]);

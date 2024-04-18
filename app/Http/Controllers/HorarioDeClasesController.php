@@ -25,8 +25,12 @@ class HorarioDeClasesController extends Controller
 
     }
 
+    public function create(){
+        return view('horariodeclases.create');
+    }
+
     
-    public function create(Request $request)
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try{
@@ -165,6 +169,9 @@ class HorarioDeClasesController extends Controller
             $horario_de_clases->delete();
             DB::commit();
             return response()->json(["resp" => "Registro eliminado correctamente"]);
+
+            return redirect()->route('horario_de_clases.index');
+
         } catch(Exception $e){
             DB::rollBack();
             return response()->json(["error" => $e]);

@@ -15,18 +15,29 @@ class ProgramasController extends Controller
     }
 
     
-    public function create(Request $request)
+    public function create(){
+        return view('programas.create');
+    }
+    
+    public function store(Request $request)
     {
-        Programas::create([
+        $request->validate([
             "nombre" => $request->nombre,
             "descripcion" => $request->descripcion,
             "memoria_grafica" => $request->memoria_grafica,
             "ram" => $request->ram
         ]);
 
-        return response()->json(["resp" => "Programa creado"]);
-    }
+        Programa::create([
+            "nombre" => $request->nombre,
+            "descripcion" => $request->descripcion,
+            "memoria_grafica" => $request->memoria_grafica,
+            "ram" => $request->ram
+        ]);
 
+        
+        return redirect()->route('programas.index');
+    }
     
     public function show($programa_id)
     {
@@ -58,5 +69,7 @@ class ProgramasController extends Controller
         $programa->delete();
 
         return response()->json(["resp" => "Programa con id ".$programa_id." eliminado"]);
+
+        return redirect()->route('programas.index');
     }
 }

@@ -25,8 +25,12 @@ class Asistentes_ClaseController extends Controller
 
     }
 
+    public function create(){
+        return view('asistentes_clase.create');
+    }
+
     
-    public function create(Request $request)
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try{
@@ -147,6 +151,9 @@ class Asistentes_ClaseController extends Controller
             $asistente_clase->delete();
             DB::commit();
             return response()->json(["resp" => "Registro eliminado correctamente"]);
+
+            return redirect()->route('asistentes_clase.index');
+
         } catch(Exception $e){
             DB::rollBack();
             return response()->json(["error" => $e]);

@@ -22,8 +22,12 @@ class Responsabilidades_SemanalesController extends Controller
         }
     }
 
+    public function create(){
+        return view('responsabilidades_semanales.create');
+    }
 
-    public function create(Request $request)
+
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -132,6 +136,9 @@ class Responsabilidades_SemanalesController extends Controller
 
             DB::commit();
             return response()->json(["resp" => `Registro con id ${responsabilidad_semanal_id} eliminado`]);
+
+            return redirect()->route('responsabilidades_semanales.index');
+
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(["error" => $e]);
