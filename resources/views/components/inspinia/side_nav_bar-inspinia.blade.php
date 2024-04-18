@@ -148,9 +148,9 @@
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="../institucion">Institucion</a></li>
-                    <li><a href="config-carrera.html">Carrera</a></li>
-                    <li><a href="config-curso.html">Curso</a></li>
-                    <li><a href="config-programas.html">Programas</a></li>
+                    <li><a href="../carreras">Carrera</a></li>
+                    <li><a href="../cursos">Curso</a></li>
+                    <li><a href="../programas">Programas</a></li>
                 </ul>
             </li>
             <li>

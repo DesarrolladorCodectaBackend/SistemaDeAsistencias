@@ -7,6 +7,7 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\CursosController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgramasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,6 +54,8 @@ Route::middleware('auth')->group(function () {
     Route::post('carreras/{carreras}/activar-inactivar', [CarreraController::class,'activarInactivar'])->name('carreras.activarInactivar');
     Route::resource('cursos', CursosController::class);
     Route::post('cursos/{cursos}/activar-inactivar', [CursosController::class,'activarInactivar'])->name('cursos.activarInactivar');
+    Route::resource('programas', ProgramasController::class);
+    Route::post('programas/{programas}/activar-inactivar', [ProgramasController::class,'activarInactivar'])->name('programas.activarInactivar');
     Route::resource('candidatos', CandidatosController::class);
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     //Route::get('/candidatos/form-candidatos', function () {return view('candidatos.form-candidatos');})->name('candidatos.form');

@@ -12,6 +12,7 @@ class Cursos extends Model
     protected $fillable = [
         'nombre',
         'categoria',
-        'duracion'
+        'duracion',
+        'estado'
     ];
 }

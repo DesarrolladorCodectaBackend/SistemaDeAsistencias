@@ -10,7 +10,8 @@ class Carrera extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nombre'
+        'nombre',
+        'estado'
     ];
 
     public function candidatos(){
