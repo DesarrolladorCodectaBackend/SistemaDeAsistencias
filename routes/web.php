@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
+use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\ProfileController;
@@ -47,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('areas', AreaController::class);
     Route::resource('institucion', InstitucionController::class);
     Route::post('institucion/{institucion}/activar-inactivar', [InstitucionController::class,'activarInactivar'])->name('institucion.activarInactivar');
+    Route::resource('carreras', CarreraController::class);
+    Route::post('carreras/{carreras}/activar-inactivar', [CarreraController::class,'activarInactivar'])->name('carreras.activarInactivar');
     Route::resource('candidatos', CandidatosController::class);
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     //Route::get('/candidatos/form-candidatos', function () {return view('candidatos.form-candidatos');})->name('candidatos.form');

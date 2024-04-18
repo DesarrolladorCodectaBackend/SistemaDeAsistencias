@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('categoria');
             $table->integer('duracion');
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }
