@@ -12,61 +12,29 @@ class ColaboradoresPorAreaController extends Controller
     
     public function index()
     {
-        try{
-            $Colabs_Area = Colaboradores_por_Area::/*with([
-                'colaboradores' => function($query){$query->select('id', 'candidato_id');},
-                'area' => function($query){$query->select('id', 'especializacion', 'color_hex');}])->*/get();
-            
-            if (count($Colabs_Area) == 0){
-                return response()->json(["resp" => "No hay registros insertados"]);
-            }
+        $colaborador_por_area = Colaboradores_por_Area::all();
 
-            return response()->json(["data" => $Colabs_Area, "conteo" => count($Colabs_Area)]);
-        } catch(Exception $e){
-            return response()->json(["error" => $e]);
-        }
+        return view('colaborador_por_area.index', compact('colaborador_por_area'));
     }
 
     
     public function store(Request $request)
     {
-        DB::beginTransaction();
-        try{
-            if(!$request->colaborador_id){
-                return response()->json(["resp" => "Ingrese colaborador"]);
-            }
-            
-            if(!$request->area_id){
-                return response()->json(["resp" => "Ingrese area"]);
-            }
+        $request->validate([
+            'colaborador_id' => 'required|integer|min:1|max:100',
+            'area_id' => 'required|integer|min:1|max:255',
+            'semana_inicio_id' =>  'required|integer|min:1|max:7'
+        ]);
 
-            if(!$request->semana_inicio_id){
-                return response()->json(["resp" => "Ingrese semana inicio"]);
-            }
+        Colaboradores_por_Area::create([
+            'colaborador_id' => $request->colaborador_id,
+            'area_id' => $request->area_id,
+            'semana_inicio_id' => $request->semana_inicio_id
+        ]);
 
-            if(!is_integer($request->colaborador_id)){
-                return response()->json(["resp" => "El id del colaborador debe ser un número entero"]);
-            }
-            
-            if(!is_integer($request->area_id)){
-                return response()->json(["resp" => "El id del area debe ser un número entero"]);
-            }
-            
-            if(!is_integer($request->semana_inicio_id)){
-                return response()->json(["resp" => "El id de la semana inicio debe ser un número entero"]);
-            }
+        
+        return redirect()->route('colaborador_por_area.index');
 
-            Colaboradores_por_Area::create([
-                "colaborador_id" => $request->colaborador_id,
-                "area_id" => $request->area_id,
-                "semana_inicio_id" => $request->semana_inicio_id
-            ]);
-            DB::commit();
-            return response()->json(["resp" => "Registro creado correctamente"]);
-        } catch (Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
 
     }
 
@@ -92,68 +60,26 @@ class ColaboradoresPorAreaController extends Controller
     
     public function update(Request $request, $colaborador_por_area_id)
     {
-        DB::beginTransaction();
-        try{
-            $colaborador_por_area = Colaboradores_por_Area::find($colaborador_por_area_id);
+        $request->validate([
+            'colaborador_id' => 'required|integer|min:1|max:100',
+            'area_id' => 'required|integer|min:1|max:255',
+            'semana_inicio_id' =>  'required|integer|min:1|max:7'
+        ]);
 
-            if(!$colaborador_por_area){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $colaborador_por_area = Colaboradores_por_Area::findOrFail($colaborador_por_area_id);
 
-            if(!$request->colaborador_id){
-                return response()->json(["resp" => "Ingrese colaborador"]);
-            }
-            
-            if(!$request->area_id){
-                return response()->json(["resp" => "Ingrese area"]);
-            }
+        $colaborador_por_area->update($request->all());
 
-            if(!$request->semana_inicio_id){
-                return response()->json(["resp" => "Ingrese semana inicio"]);
-            }
-
-            if(!is_integer($request->colaborador_id)){
-                return response()->json(["resp" => "El id del colaborador debe ser un número entero"]);
-            }
-            
-            if(!is_integer($request->area_id)){
-                return response()->json(["resp" => "El id del area debe ser un número entero"]);
-            }
-            
-            if(!is_integer($request->semana_inicio_id)){
-                return response()->json(["resp" => "El id de la semana inicio debe ser un número entero"]);
-            }
-
-            $colaborador_por_area->fill([
-                "colaborador_id" => $request->colaborador_id,
-                "area_id" => $request->area_id,
-                "semana_inicio_id" => $request->semana_inicio_id
-            ])->save();
-            DB::commit();
-            return response()->json(["resp" => "Registro actualizado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('colaborador_por_area.index');
     }
 
     
     public function destroy($colaborador_por_area_id)
     {
-        DB::beginTransaction();
-        try{
-            $colaborador_por_area = Colaboradores_por_Area::find($colaborador_por_area_id);
+        $colaborador_por_area = Colaboradores_por_Area::findOrFail($colaborador_por_area_id);
 
-            if(!$colaborador_por_area){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $colaborador_por_area->delete();
 
-            $colaborador_por_area->delete();
-            DB::commit();
-            return response()->json(["resp" => "Registro eliminado correctamente"]);
-        } catch (Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('colaborador_por_area.index');
     }
 }
