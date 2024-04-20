@@ -30,7 +30,7 @@
     padding: 10px;
 }
 
-.p-a-25{
+.p-a-25 {
     padding: 25px;
 }
 
@@ -48,6 +48,118 @@
     font-weight: bold;
 }
 
-.child-center{
+.child-center {
     text-align: center;
+}
+
+.right-form {
+    background-color: #293846;
+    display: flex;
+
+    align-items: center;
+    color: white;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0 10px 0 10px;
+
+}
+
+.input-box header {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.input {
+    height: 45px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgb(255, 255, 255);
+    outline: none;
+    margin-bottom: 20px;
+}
+
+.input-box .input-field label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.input-field .input:focus~label {
+    top: -10px;
+    font-size: 13px;
+}
+
+.input-field input:valid~label {
+    top: -10px;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.input-field .input:focus,
+.input-field .input:valid() {
+    border-bottom: 1px solid #743ae1;
+}
+
+.submit {
+    border: none;
+    outline: none;
+    height: 45px;
+    background: #1ab394;
+    border-radius: 5px;
+    transition: .4s;
+    color: white;
+}
+
+.submit:hover {
+    background-color: #258b77;
+    color: #fff;
+}
+
+
+.flex-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.white-text{
+    color: white;
+}
+
+.text-centered{
+    text-align: center;
+}
+
+.margin-a-5{
+    margin: 5;
+}
+.focus-lil-rounded:focus{
+    border-radius: 15px;
+    transition: 0.5s
+}
+
+.focus-linear-black-to-gray:focus{
+    background: linear-gradient(#293846, #000000);
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group-append {
+    margin-left: -30px; /* Ajusta este valor según sea necesario para alinear el icono del ojo */
+}
+
+.img-lg{
+    height: 338px;
+    width: 338px;
 }

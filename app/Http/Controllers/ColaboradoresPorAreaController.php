@@ -12,9 +12,9 @@ class ColaboradoresPorAreaController extends Controller
     
     public function index()
     {
-        $colaborador_por_area = Colaboradores_por_Area::all();
+        $colaboradores_por_area = Colaboradores_por_Area::all();
 
-        return view('colaborador_por_area.index', compact('colaborador_por_area'));
+        return view('colaboradores_por_area.index', compact('colaboradores_por_area'));
     }
 
     
@@ -33,7 +33,7 @@ class ColaboradoresPorAreaController extends Controller
         ]);
 
         
-        return redirect()->route('colaborador_por_area.index');
+        return redirect()->route('colaboradores_por_area.index');
 
 
     }
@@ -70,7 +70,7 @@ class ColaboradoresPorAreaController extends Controller
 
         $colaborador_por_area->update($request->all());
 
-        return redirect()->route('colaborador_por_area.index');
+        return redirect()->route('colaboradores_por_area.index');
     }
 
     
@@ -80,6 +80,6 @@ class ColaboradoresPorAreaController extends Controller
 
         $colaborador_por_area->delete();
 
-        return redirect()->route('colaborador_por_area.index');
+        return redirect()->route('colaboradores_por_area.index');
     }
 }

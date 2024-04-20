@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{asset('css/animate.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
-    <link href="../../../css/inspinia.css" rel="stylesheet">
+    <link href="{{asset('css/inspinia.css')}}" rel="stylesheet">
 </head>
 
 

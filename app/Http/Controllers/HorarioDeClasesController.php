@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Horario_de_Clases;
+use App\Models\Colaboradores;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,23 @@ class HorarioDeClasesController extends Controller
 
     }
 
+    public function store(Request $request, $candidato_id){
+        $colaborador = Colaboradores::where('candidato_id', $candidato_id)->first();
+        $request->validate([
+            'hora_inicial' => 'required|time',
+            'hora_final' => "required|time",
+            'dia' => "required|string"
+        ]);
+
+        Horario_de_Clases::create([
+            "colaborador_id" => $colaborador->id,
+            "hora_inicial" => $request->hora_inicial,
+            "hora_final" => $request->hora_final,
+            "dia" => $request->dia
+        ]);
+    }
     
+    /*
     public function create(Request $request)
     {
         DB::beginTransaction();
@@ -75,6 +92,7 @@ class HorarioDeClasesController extends Controller
             return response()->json(["error" => $e]);
         }
     }
+    */
 
     
     public function show($horario_de_clases_id)

@@ -5,6 +5,7 @@ use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\CursosController;
+use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramasController;
@@ -61,7 +62,7 @@ Route::middleware('auth')->group(function () {
     //Route::get('/candidatos/form-candidatos', function () {return view('candidatos.form-candidatos');})->name('candidatos.form');
     Route::resource('colaboradores', ColaboradoresController::class);
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
-    
+    Route::resource('horario_clases', HorarioDeClasesController::class);
 });
 
 require __DIR__ . '/auth.php';
