@@ -112,7 +112,7 @@
                                                                 <span class="input-group-addon"><i
                                                                         class="fa fa-calendar"></i></span><input
                                                                     type="time" class="form-control"
-                                                                    name="horarios[0][hora_inicial]" value="8:30am">
+                                                                    name="horarios[0][hora_inicial]" value="00:00">
                                                             </div>
                                                         </td>
                                                         <td>
@@ -120,7 +120,7 @@
                                                                 <span class="input-group-addon"><i
                                                                         class="fa fa-calendar"></i></span><input
                                                                     type="time" class="form-control"
-                                                                    name="horarios[0][hora_final]" value="12:30pm">
+                                                                    name="horarios[0][hora_final]" value="00:00">
                                                             </div>
                                                         </td>
                                                         <td>

@@ -41,7 +41,7 @@
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Nombre</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" class="form-control" name="nombre">
+                                                    placeholder="Ingrese un nombre" class="form-control" name="nombre" required>
                                             </div>
                                             <div class="form-group"><label>Apellido</label> <input type="text"
                                                     placeholder="Ingrese apellido" class="form-control" name="apellido">

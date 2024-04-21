@@ -193,7 +193,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="#">
-                                    <img alt="image" class="rounded-circle" src="../../../../public/img/a7.jpg">
+                                    <img alt="image" class="rounded-circle" src="">
                                 </a>
                                 <div>
                                     <small class="float-right">46h ago</small>
@@ -207,7 +207,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="#">
-                                    <img alt="image" class="rounded-circle" src="../../../../public/img/a4.jpg">
+                                    <img alt="image" class="rounded-circle" src="">
                                 </a>
                                 <div>
                                     <small class="float-right text-navy">5h ago</small>
@@ -221,7 +221,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="#">
-                                    <img alt="image" class="rounded-circle" src="../../../../public/img/profile.jpg">
+                                    <img alt="image" class="rounded-circle" src="">
                                 </a>
                                 <div>
                                     <small class="float-right">23h ago</small>
@@ -303,7 +303,7 @@
 
 
 
-    <!--- Cambiar Imagen-->
+    <!--- Cambiar Imagen
     <script>
         document.getElementById('inputGroupFile').addEventListener('change', function() {
             const file = this.files[0];
@@ -317,48 +317,50 @@
             }
         });
     </script>
-
+    -->
+    
     <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <script src="{{asset('js/alertify.min.js')}}"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <!-- Flot -->
-    <script src="js/plugins/flot/jquery.flot.js"></script>
-    <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-    <script src="js/plugins/flot/jquery.flot.spline.js"></script>
-    <script src="js/plugins/flot/jquery.flot.resize.js"></script>
-    <script src="js/plugins/flot/jquery.flot.pie.js"></script>
-    <script src="js/plugins/flot/jquery.flot.symbol.js"></script>
-    <script src="js/plugins/flot/jquery.flot.time.js"></script>
-
-    <!-- Peity -->
-    <script src="js/plugins/peity/jquery.peity.min.js"></script>
-    <script src="js/demo/peity-demo.js"></script>
+    <script src="{{asset('js/popper.min.js')}}"></script>
+    <script src="{{asset('js/bootstrap.js')}}"></script>
+    <script src="{{asset('js/plugins/metisMenu/jquery.metisMenu.js')}}"></script>
+    <script src="{{asset('js/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
 
     <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
+    <script src="{{asset('js/inspinia.js')}}"></script>
+    <script src="{{asset('js/plugins/pace/pace.min.js')}}"></script>
+    
+    <!-- 
+    <script class="Flot" src="{{asset('js/plugins/flot/jquery.flot.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.tooltip.min.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.spline.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.resize.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.pie.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.symbol.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.time.js')}}"></script>
 
-    <!-- jQuery UI -->
-    <script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    
+    <script class="Peity" src="{{asset('js/plugins/peity/jquery.peity.min.js')}}"></script>
+    <script src="{{asset('js/demo/peity-demo.js')}}"></script>
 
-    <!-- Jvectormap -->
-    <script src="js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
-    <script src="js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    
+    <script class="jQuery UI" src="{{asset('js/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
 
-    <!-- EayPIE -->
-    <script src="js/plugins/easypiechart/jquery.easypiechart.js"></script>
+    
+    <script class="Jvectormap" src="{{asset('js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js')}}"></script>
+    <script src="{{asset('js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script>
 
-    <!-- Sparkline -->
-    <script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
+    
+    <script class="EayPIE" src="{{asset('js/plugins/easypiechart/jquery.easypiechart.js')}}"></script>
 
-    <!-- Sparkline demo data  -->
-    <script src="js/demo/sparkline-demo.js"></script>
+    
+    <script class="Sparkline" src="{{asset('js/plugins/sparkline/jquery.sparkline.min.js')}}"></script>
 
+    
+    <script class="Sparkline demo data" src="{{asset('js/demo/sparkline-demo.js')}}"></script>
+    -->
+    <!-- 
     <script>
         $(document).ready(function() {
             $('.chart').easyPieChart({
@@ -522,3 +524,4 @@
             });
         });
     </script>
+    -->

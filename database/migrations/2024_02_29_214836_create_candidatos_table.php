@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre', 100);
             $table->string('apellido', 100);
-            $table->string('dni', 8);
+            $table->string('dni', 8)->unique();
             $table->string('direccion', 100);
             $table->date('fecha_nacimiento');
             $table->integer('ciclo_de_estudiante');

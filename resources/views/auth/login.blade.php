@@ -26,7 +26,7 @@
 
         <div class="row" style="height: 98%; width: 98%">
             <div class="col-md-6 side-image d-flex justify-content-center align-items-center">
-                <img src="{{asset('img/logotipo.png')}}" alt="#" class="img-lg">
+                <img src="{{asset('img/logotipo.png')}}" alt="#" class="img-lg-inspinia">
                 <style>
                     .side-image {
                         background-color: #1ab394;
