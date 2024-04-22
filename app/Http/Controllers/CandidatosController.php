@@ -29,13 +29,13 @@ class CandidatosController extends Controller
         $instituciones = Institucion::all();
         $carreras = Carrera::all();
 
-        return view('candidatos.index', compact('candidatos', 'instituciones', 'carreras'));
+        return view('inspiniaViews.candidatos.index', compact('candidatos', 'instituciones', 'carreras'));
     }
 
     public function getFormToColab($candidato_id){
         $candidato = Candidatos::findOrFail($candidato_id);
         $areas = Area::get();
-        return view('candidatos.form-candidatos', ['candidato' => $candidato], compact('areas'));
+        return view('inspiniaViews.candidatos.form-candidatos', ['candidato' => $candidato], compact('areas'));
     }
 
     public function store(Request $request)
@@ -79,7 +79,7 @@ class CandidatosController extends Controller
         ]);
 
 
-        return redirect()->route('candidatos.index');
+        return redirect()->route('inspiniaViews.candidatos.index');
 
     }
 
@@ -133,7 +133,7 @@ class CandidatosController extends Controller
 
         $candidato->update($datosActualizar);
         
-        return redirect()->route('candidatos.index');
+        return redirect()->route('inspiniaViews.candidatos.index');
     }
 
 
@@ -150,7 +150,7 @@ class CandidatosController extends Controller
 
         $candidato->delete();
 
-        return redirect()->route('candidatos.index');
+        return redirect()->route('inspiniaViews.candidatos.index');
 
     }
 

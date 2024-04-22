@@ -13,7 +13,7 @@ class AreaController extends Controller
     {
         $areas = Area::all();
 
-        return view('areas.index', compact('areas'));
+        return view('inspiniaViews.areas.index', compact('areas'));
     }
 
     public function create(){
@@ -47,7 +47,7 @@ class AreaController extends Controller
         ]);
 
         
-        return redirect()->route('areas.index');
+        return redirect()->route('inspiniaViews.areas.index');
     }
     
     public function show($area_id)
@@ -60,7 +60,7 @@ class AreaController extends Controller
     public function edit($area_id){
         $area = Area::findOrFail($area_id);
 
-        return view('areas.edit', compact('area'));
+        return view('inspiniaViews.areas.edit', compact('area'));
     }
     
     public function update(Request $request, $area_id)
@@ -92,7 +92,7 @@ class AreaController extends Controller
 
         $area->update($datosActualizar);
 
-        return redirect()->route('areas.index');
+        return redirect()->route('inspiniaViews.areas.index');
     }
 
     
@@ -102,6 +102,6 @@ class AreaController extends Controller
 
         $area->delete();
 
-        return redirect()->route('areas.index');
+        return redirect()->route('inspiniaViews.areas.index');
     }
 }

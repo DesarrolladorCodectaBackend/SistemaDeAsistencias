@@ -16,7 +16,7 @@ class CarreraController extends Controller
     {
         $carreras = Carrera::get();
 
-        return view('carreras.index', compact('carreras'));
+        return view('inspiniaViews.carreras.index', compact('carreras'));
 
     }
 
@@ -35,7 +35,7 @@ class CarreraController extends Controller
 
 
 
-        return redirect()->route('carreras.index');
+        return redirect()->route('inspiniaViews.carreras.index');
 
     }
 
@@ -59,7 +59,7 @@ class CarreraController extends Controller
 
         $carrera->update($request->all());
 
-        return redirect()->route('carreras.index');
+        return redirect()->route('inspiniaViews.carreras.index');
 
     }
 
@@ -70,7 +70,7 @@ class CarreraController extends Controller
 
         $carrera->delete();
 
-        return redirect()->route('carreras.index');
+        return redirect()->route('inspiniaViews.carreras.index');
 
     }
 
@@ -82,7 +82,7 @@ class CarreraController extends Controller
 
         $carrera->save();
 
-        return redirect()->route('carreras.index');
+        return redirect()->route('inspiniaViews.carreras.index');
     }
 
 }

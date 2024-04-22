@@ -16,7 +16,7 @@ class InstitucionController extends Controller
     {
         $institucion = Institucion::get();
 
-        return view('institucion.index', compact('institucion'));
+        return view('inspiniaViews.institucion.index', compact('institucion'));
 
     }
 
@@ -64,7 +64,7 @@ class InstitucionController extends Controller
 
 
 
-        return redirect()->route('institucion.index');
+        return redirect()->route('inspiniaViews.institucion.index');
 
     }
 
@@ -88,7 +88,7 @@ class InstitucionController extends Controller
 
         $institucion->update($request->all());
 
-        return redirect()->route('institucion.index');
+        return redirect()->route('inspiniaViews.institucion.index');
 
     }
 
@@ -99,7 +99,7 @@ class InstitucionController extends Controller
 
         $institucion->delete();
 
-        return redirect()->route('institucion.index');
+        return redirect()->route('inspiniaViews.institucion.index');
 
     }
 
@@ -111,6 +111,6 @@ class InstitucionController extends Controller
 
         $institucion->save();
 
-        return redirect()->route('institucion.index');
+        return redirect()->route('inspiniaViews.institucion.index');
     }
 }
