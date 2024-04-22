@@ -6,15 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA| Carreras</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="../../css/plugins/switchery/switchery.css" rel="stylesheet">
-
-    <!-- Toastr style -->
-    <link href="../../css/plugins/toastr/toastr.min.css" rel="stylesheet">
-
-    <link href="../../css/animate.css" rel="stylesheet">
-    <link href="../../css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -200,6 +191,25 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ajustes = document.getElementById('ajustesCont');
+            if (ajustes) {
+                ajustes.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'ajustesCont' no se encontró en el DOM.");
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const carrera = document.getElementById('carreras');
+            if (carrera) {
+                carrera.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'carreras' no se encontró en el DOM.");
+            }
+        });
+    </script>
+
+    <script>
         function confirmDelete(id) {
             alertify.confirm("¿Deseas eliminar este registro?", function(e) {
                 if (e) {
@@ -223,81 +233,13 @@
             
             estadoCheckbox.addEventListener('change', function () {
                 if (this.checked) {
-                    // Si está marcado, establecer el valor del campo oculto como 1 (true)
                     estadoHidden.value = '1';
                 } else {
-                    // Si no está marcado, establecer el valor del campo oculto como 0 (false)
                     estadoHidden.value = '0';
                 }
             });
         });
     </script>
-
-    <!-- Mainly scripts -->
-    <script src="../../jsjquery-3.1.1.min.js"></script>
-    <script src="../../jspopper.min.js"></script>
-    <script src="../../jsbootstrap.js"></script>
-    <script src="../../jsplugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="../../jsplugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="../../jsplugins/switchery/switchery.js"></script>
-
-    <!-- Flot -->
-    <script src="../../jsplugins/flot/jquery.flot.js"></script>
-    <script src="../../jsplugins/flot/jquery.flot.tooltip.min.js"></script>
-    <script src="../../jsplugins/flot/jquery.flot.spline.js"></script>
-    <script src="../../jsplugins/flot/jquery.flot.resize.js"></script>
-    <script src="../../jsplugins/flot/jquery.flot.pie.js"></script>
-    <script src="../../jsplugins/flot/jquery.flot.symbol.js"></script>
-    <script src="../../jsplugins/flot/jquery.flot.time.js"></script>
-
-    <!-- Peity -->
-    <script src="../../jsplugins/peity/jquery.peity.min.js"></script>
-    <script src="../../jsdemo/peity-demo.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="../../jsinspinia.js"></script>
-    <script src="../../jsplugins/pace/pace.min.js"></script>
-
-    <!-- jQuery UI -->
-    <script src="../../jsplugins/jquery-ui/jquery-ui.min.js"></script>
-
-    <!-- Jvectormap -->
-    <script src="../../jsplugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
-    <script src="../../jsplugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-
-    <!-- EayPIE -->
-    <script src="../../jsplugins/easypiechart/jquery.easypiechart.js"></script>
-
-    <!-- Sparkline -->
-    <script src="../../jsplugins/sparkline/jquery.sparkline.min.js"></script>
-
-    <!-- Sparkline demo data  -->
-    <script src="../../jsdemo/sparkline-demo.js"></script>
-
-    <script>
-    
-
-        var elem = document.querySelector('.js-switch');
-        var switchery = new Switchery(elem, { color: '#1AB394' });
-
-        var elem_2 = document.querySelector('.js-switch_2');
-        var switchery_2 = new Switchery(elem_2, { color: '#ED5565' });
-
-        var elem_3 = document.querySelector('.js-switch_3');
-        var switchery_3 = new Switchery(elem_3, { color: '#1AB394' });
-
-        var elem_4 = document.querySelector('.js-switch_4');
-        var switchery_4 = new Switchery(elem_4, { color: '#f8ac59' });
-            switchery_4.disable();
-        var elem_5 = document.querySelector('.js-switch_5');
-        var switchery_5 = new Switchery(elem_5, { color: '#f8ac59' });
-            switchery_5.disable();
-
-        
-
-
-</script>
-
 
 </body>
 

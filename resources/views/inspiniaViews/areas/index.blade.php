@@ -6,11 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA| Áreas Prueba</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../font-awesome/css/font-awesome.css" rel="stylesheet">
-
-    <link href="../../css/animate.css" rel="stylesheet">
-    <link href="../../css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -203,6 +198,16 @@
 
     </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const area = document.getElementById('areas');
+            if (area) {
+                area.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'areas' no se encontró en el DOM.");
+            }
+        });
+    </script>
 
 
     <script>

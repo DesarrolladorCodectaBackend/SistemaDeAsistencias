@@ -5,6 +5,9 @@
     <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('font-awesome/css/font-awesome.css')}}">
 
+    <link href="{{asset('css/plugins/switchery/switchery.css')}}" rel="stylesheet">
+    <link href="{{asset('css/plugins/toastr/toastr.min.css')}}" rel="stylesheet">
+
     <link rel="stylesheet" href="{{asset('css/animate.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
@@ -59,14 +62,14 @@
                 <a href="horario-general-virtual.html"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
                         G.Virtual</span></a>
             </li>
-            <li class="">
+            <li id="personalCont">
                 <a href="layouts.html"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse">
-                    <li>
+                    <li id="candidatosCont">
                         <a href="../candidatos">Candidatos<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
-                            <li>
+                            <li id="candidatos">
                                 <a href="../candidatos">Candidatos</a>
                             </li>
                             <li>
@@ -74,10 +77,10 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="">
+                    <li id="colaboradoresCont">
                         <a href="../colaboradores">Colaboradores<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
-                            <li>
+                            <li id="colaboradores">
                                 <a href="../colaboradores">Colaboradores</a>
                             </li>
                             <li class="">
@@ -113,7 +116,7 @@
                 </ul>
 
             </li>
-            <li>
+            <li id="areas">
                 <a href="../areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
             <li>
@@ -143,14 +146,14 @@
             <li>
                 <a href="salones.html"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
             </li>
-            <li>
-                <a href="configuracion.html"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
+            <li id="ajustesCont">
+                <a href=""><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="../institucion">Institucion</a></li>
-                    <li><a href="../carreras">Carrera</a></li>
-                    <li><a href="../cursos">Curso</a></li>
-                    <li><a href="../programas">Programas</a></li>
+                    <li id="instituciones"><a href="../institucion">Institucion</a></li>
+                    <li id="carreras"><a href="../carreras">Carrera</a></li>
+                    <li id="cursos"><a href="../cursos">Curso</a></li>
+                    <li id="programas"><a href="../programas">Programas</a></li>
                 </ul>
             </li>
             <li>

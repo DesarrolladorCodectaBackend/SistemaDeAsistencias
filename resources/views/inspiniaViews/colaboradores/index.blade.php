@@ -6,16 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA | Colaboradores</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="{{asset('css/plugins/switchery/switchery.css')}}" rel="stylesheet">
-
-    <!-- Toastr style -->
-    <link href="{{asset('css/plugins/toastr/toastr.min.css')}}" rel="stylesheet">
-
-    <link href="../../css/animate.css" rel="stylesheet">
-    <link href="../../css/style.css" rel="stylesheet">
-    <link href="../../css/inspinia.css" rel="stylesheet">
 </head>
 
 <body>
@@ -427,6 +417,33 @@
     @include('components.inspinia.footer-inspinia')
     </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const personal = document.getElementById('personalCont');
+            if (personal) {
+                personal.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const colabCont = document.getElementById('colaboradoresCont');
+            if (colabCont) {
+                colabCont.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'colaboradoresCont' no se encontró en el DOM.");
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const colaborador = document.getElementById('colaboradores');
+            if (colaborador) {
+                colaborador.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'colaboradores' no se encontró en el DOM.");
+            }
+        });
+    </script>
 
     <script>
         function hideModal(modalId) {
