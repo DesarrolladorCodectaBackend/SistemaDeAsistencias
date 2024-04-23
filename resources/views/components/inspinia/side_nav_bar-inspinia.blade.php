@@ -333,7 +333,20 @@
     <!-- Custom and plugin javascript -->
     <script src="{{asset('js/inspinia.js')}}"></script>
     <script src="{{asset('js/plugins/pace/pace.min.js')}}"></script>
+
     
+    <!-- jQuery UI  -->
+    <script class="jQuery UI" src="{{asset('js/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+    
+    <!-- iCheck -->
+    <script src="{{asset('js/plugins/iCheck/icheck.min.js')}}"></script>
+
+    <!-- Full Calendar -->
+    <script src="{{asset('js/plugins/fullcalendar/moment.min.js')}}"></script>
+    <script src="{{asset('js/plugins/fullcalendar/fullcalendar.min.js')}}"></script>
+
+
+
     <!-- 
     <script class="Flot" src="{{asset('js/plugins/flot/jquery.flot.js')}}"></script>
     <script src="{{asset('js/plugins/flot/jquery.flot.tooltip.min.js')}}"></script>
@@ -348,7 +361,7 @@
     <script src="{{asset('js/demo/peity-demo.js')}}"></script>
 
     
-    <script class="jQuery UI" src="{{asset('js/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+    
 
     
     <script class="Jvectormap" src="{{asset('js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js')}}"></script>

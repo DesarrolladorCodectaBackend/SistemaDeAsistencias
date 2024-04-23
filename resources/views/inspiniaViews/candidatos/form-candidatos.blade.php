@@ -139,8 +139,8 @@
                                             <div class="text-center">
                                                 <button class="ladda-button btn btn-primary mr-5" type="submit"
                                                     data-style="expand-left">Guardar</button>
-                                                <button class="ladda-button btn btn-primary"
-                                                    data-style="expand-left">Cancelar</button>
+                                                <a class="ladda-button btn btn-primary"
+                                                    data-style="expand-left" href="/candidatos">Cancelar</a>
                                             </div>
                             </form>
 

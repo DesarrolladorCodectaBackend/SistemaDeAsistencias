@@ -201,10 +201,11 @@
                                             <button class="btn btn-primary btn-danger fa fa-trash"
                                                 style="font-size: 20px;" type="button"
                                                 onclick="confirmDelete({{ $colaborador->id }})"></button>
-                                            <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
-                                                style="font-size: 20px;" type="button"
-                                                href="#modal-form-update{{$colaborador->id}}"
-                                                data-toggle="modal"></button>
+                                            <form role="form" method="GET" action="{{route('colaboradores.horarioClase', $colaborador->id)}}">
+                                                <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
+                                                style="font-size: 20px;" type="submit"></button>
+                                            </form>
+                                            
                                             <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                 style="font-size: 20px;"
                                                 href="#modal-form-view{{$colaborador->id}}"></button>

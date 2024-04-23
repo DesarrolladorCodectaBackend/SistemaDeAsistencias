@@ -71,7 +71,7 @@ class ColaboradoresController extends Controller
         $candidato->save();
     }
 
-    return redirect()->route('inspiniaViews.colaboradores.index');
+    return redirect()->route('colaboradores.index');
 }
 
 
@@ -126,7 +126,7 @@ class ColaboradoresController extends Controller
 
         $candidato->update($datosActualizar);
 
-        return redirect()->route('inspiniaViews.colaboradores.index');
+        return redirect()->route('colaboradores.index');
 
     }
 
@@ -137,7 +137,7 @@ class ColaboradoresController extends Controller
 
         $colaborador->delete();
 
-        return redirect()->route('inspiniaViews.colaboradores.index');
+        return redirect()->route('colaboradores.index');
 
     }
 
@@ -150,7 +150,7 @@ class ColaboradoresController extends Controller
 
         $colaborador->save();
 
-        return redirect()->route('inspiniaViews.colaboradores.index');
+        return redirect()->route('colaboradores.index');
     }
 
 

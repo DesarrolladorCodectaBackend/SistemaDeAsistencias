@@ -61,8 +61,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     //Route::get('/candidatos/form-candidatos', function () {return view('candidatos.form-candidatos');})->name('candidatos.form');
     Route::resource('colaboradores', ColaboradoresController::class);
+    //Route::get('/horarioClase/{colaborador_id}', [ColaboradoresController::class, 'getHorarioClases'])->name('colaboradores.horarioClase');
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
-    Route::resource('horario_clases', HorarioDeClasesController::class);
+    Route::resource('horarioClase', HorarioDeClasesController::class);
+    Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
+
 });
 
 require __DIR__ . '/auth.php';

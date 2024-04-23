@@ -64,7 +64,7 @@ class InstitucionController extends Controller
 
 
 
-        return redirect()->route('inspiniaViews.institucion.index');
+        return redirect()->route('institucion.index');
 
     }
 
@@ -88,7 +88,7 @@ class InstitucionController extends Controller
 
         $institucion->update($request->all());
 
-        return redirect()->route('inspiniaViews.institucion.index');
+        return redirect()->route('institucion.index');
 
     }
 
@@ -99,7 +99,7 @@ class InstitucionController extends Controller
 
         $institucion->delete();
 
-        return redirect()->route('inspiniaViews.institucion.index');
+        return redirect()->route('institucion.index');
 
     }
 
@@ -111,6 +111,6 @@ class InstitucionController extends Controller
 
         $institucion->save();
 
-        return redirect()->route('inspiniaViews.institucion.index');
+        return redirect()->route('institucion.index');
     }
 }

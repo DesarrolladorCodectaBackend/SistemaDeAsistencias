@@ -53,7 +53,7 @@ class ProgramasController extends Controller
         ]);
 
         
-        return redirect()->route('inspiniaViews.programas.index');
+        return redirect()->route('programas.index');
     }
 
     
@@ -93,7 +93,7 @@ class ProgramasController extends Controller
 
         $programa->update($datosActualizar);
 
-        return redirect()->route('inspiniaViews.programas.index');
+        return redirect()->route('programas.index');
     }
 
     
@@ -103,7 +103,7 @@ class ProgramasController extends Controller
 
         $programa->delete();
 
-        return redirect()->route('inspiniaViews.programas.index');
+        return redirect()->route('programas.index');
     }
 
     public function activarInactivar($programa_id)
@@ -114,6 +114,6 @@ class ProgramasController extends Controller
 
         $programa->save();
 
-        return redirect()->route('inspiniaViews.programas.index');
+        return redirect()->route('programas.index');
     }
 }

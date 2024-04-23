@@ -32,7 +32,7 @@ class CursosController extends Controller
         ]);
 
         
-        return redirect()->route('inspiniaViews.cursos.index');
+        return redirect()->route('cursos.index');
 
     }
 
@@ -67,7 +67,7 @@ class CursosController extends Controller
 
         $curso->update($request->all());
 
-        return redirect()->route('inspiniaViews.cursos.index');
+        return redirect()->route('cursos.index');
 
     }
 
@@ -78,7 +78,7 @@ class CursosController extends Controller
 
         $curso->delete();
 
-        return redirect()->route('inspiniaViews.cursos.index');
+        return redirect()->route('cursos.index');
 
     }
 
@@ -90,6 +90,6 @@ class CursosController extends Controller
 
         $curso->save();
 
-        return redirect()->route('inspiniaViews.cursos.index');
+        return redirect()->route('cursos.index');
     }
 }

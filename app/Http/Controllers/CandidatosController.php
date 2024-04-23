@@ -79,7 +79,7 @@ class CandidatosController extends Controller
         ]);
 
 
-        return redirect()->route('inspiniaViews.candidatos.index');
+        return redirect()->route('candidatos.index');
 
     }
 
@@ -133,7 +133,7 @@ class CandidatosController extends Controller
 
         $candidato->update($datosActualizar);
         
-        return redirect()->route('inspiniaViews.candidatos.index');
+        return redirect()->route('candidatos.index');
     }
 
 
@@ -150,7 +150,7 @@ class CandidatosController extends Controller
 
         $candidato->delete();
 
-        return redirect()->route('inspiniaViews.candidatos.index');
+        return redirect()->route('candidatos.index');
 
     }
 

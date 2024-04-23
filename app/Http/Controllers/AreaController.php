@@ -47,7 +47,7 @@ class AreaController extends Controller
         ]);
 
         
-        return redirect()->route('inspiniaViews.areas.index');
+        return redirect()->route('areas.index');
     }
     
     public function show($area_id)
@@ -92,7 +92,7 @@ class AreaController extends Controller
 
         $area->update($datosActualizar);
 
-        return redirect()->route('inspiniaViews.areas.index');
+        return redirect()->route('areas.index');
     }
 
     
@@ -102,6 +102,6 @@ class AreaController extends Controller
 
         $area->delete();
 
-        return redirect()->route('inspiniaViews.areas.index');
+        return redirect()->route('areas.index');
     }
 }

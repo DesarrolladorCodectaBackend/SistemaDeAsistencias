@@ -26,6 +26,13 @@ class HorarioDeClasesController extends Controller
 
     }
 
+    public function getCalendariosColaborador($colaborador_id) {
+        $horariosDeClases = Horario_de_Clases::where('colaborador_id', $colaborador_id)->get();
+        //return $horariosDeClases;
+        return view('inspiniaViews.colaboradores.horario_clases', compact('horariosDeClases'));
+    }
+
+
     public function store(Request $request, $candidato_id){
         $colaborador = Colaboradores::where('candidato_id', $candidato_id)->first();
         $request->validate([
