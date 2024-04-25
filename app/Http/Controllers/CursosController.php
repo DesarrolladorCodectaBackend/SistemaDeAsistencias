@@ -21,7 +21,7 @@ class CursosController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|min:1|max:100',
-            'categoria' => 'required|string|min:1|max:255',
+            'estado' => 'required|string|min:1|max:255',
             'duracion' =>  'required|integer|min:1|max:15'
         ]);
 

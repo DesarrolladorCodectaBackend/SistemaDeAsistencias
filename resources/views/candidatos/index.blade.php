@@ -41,24 +41,24 @@
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Nombre</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" class="form-control" name="nombre">
+                                                    placeholder="Ingrese un nombre" class="form-control" name="nombre" required>
                                             </div>
                                             <div class="form-group"><label>Apellido</label> <input type="text"
-                                                    placeholder="Ingrese apellido" class="form-control" name="apellido">
+                                                    placeholder="Ingrese apellido" class="form-control" name="apellido" required>
                                             </div>
                                             <div class="form-group"><label>DNI</label> <input type="text"
-                                                    placeholder="....." class="form-control" name="dni"></div>
+                                                    placeholder="....." class="form-control" name="dni" required></div>
                                             <div class="form-group"><label>Dirección</label> <input type="text"
                                                     placeholder="Ingrese un nombre" class="form-control"
-                                                    name="direccion">
+                                                    name="direccion" required>
                                             </div>
                                             <div class="form-group"><label>Fecha de Nacimiento</label> <input
                                                     type="date" placeholder="Ingrese apellido" class="form-control"
-                                                    name="fecha_nacimiento">
+                                                    name="fecha_nacimiento" required>
                                             </div>
                                             <div class="form-group"><label>Ciclo de Estudiante</label> <input
                                                     type="text" placeholder="....." class="form-control"
-                                                    name="ciclo_de_estudiante"></div>
+                                                    name="ciclo_de_estudiante" required></div>
 
 
                                         </div>
