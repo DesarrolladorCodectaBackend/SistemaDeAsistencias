@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Horario de Clases</title>
 
-    <link href="{{asset('css/plugins/iCheck/custom.css')}}" rel="stylesheet">
-    <link href="{{asset('css/plugins/fullcalendar/fullcalendar.css')}}" rel="stylesheet">
-    <link href="{{asset('css/plugins/fullcalendar/fullcalendar.print.css')}}" rel='stylesheet' media='print'>
+    <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
 </head>
 
 <body>
@@ -92,7 +92,8 @@
                                                                     <div class="form-group"><label>Nombres</label>
                                                                         <input type="text"
                                                                             placeholder="Ingrese su nombre"
-                                                                            class="form-control"></div>
+                                                                            class="form-control">
+                                                                    </div>
                                                                     <div class="form-group"><label>DNI</label> <input
                                                                             type="text" placeholder="Ingrese su DNI"
                                                                             class="form-control"></div>
@@ -100,7 +101,8 @@
                                                             </div>
                                                             <div class="col-sm-6">
                                                                 <div class="form-group"><label>Apellidos</label> <input
-                                                                        type="text" placeholder="Ingrese sus Apellidos"
+                                                                        type="text"
+                                                                        placeholder="Ingrese sus Apellidos"
                                                                         class="form-control"></div>
                                                                 <div class="form-group"><label>Ciclo</label> <input
                                                                         type="text" placeholder="**"
@@ -318,50 +320,129 @@
     </div>
     </div>
 
-
+<style>
+    .fc-toolbar{
+        display: none;
+    }
+</style>
 
 
 
 
     <script>
-                                    
-                                    
-                                    
         $(document).ready(function() {
     
-                $('.i-checks').iCheck({
-                    checkboxClass: 'icheckbox_square-green',
-                    radioClass: 'iradio_square-green'
-                });
-    
-            /* initialize the external events
-             -----------------------------------------------------------------*/
-    
-    
-            $('#external-events div.external-event').each(function() {
-    
-                // store data so the calendar knows to render an event upon drop
-                $(this).data('event', {
-                    title: $.trim($(this).text()), // use the element's text as the event title
-                    stick: true // maintain when user navigates (see docs on the renderEvent method)
-                });
-    
-                // make the event draggable using jQuery UI
-                $(this).draggable({
-                    zIndex: 1111999,
-                    revert: true,      // will cause the event to go back to its
-                    revertDuration: 0  //  original position after the drag
-                });
-    
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green'
             });
     
+            /* initialize the external events -----------------------------------------------------------------*/
+            $('#external-events div.external-event').each(function() {
+                $(this).data('event', {
+                    title: $.trim($(this).text()),
+                    stick: true
+                });
     
-            /* initialize the calendar
-             -----------------------------------------------------------------*/
+                $(this).draggable({
+                    zIndex: 1111999,
+                    revert: true,
+                    revertDuration: 0
+                });
+            });
+    
+            /* initialize the calendar -----------------------------------------------------------------*/
             var date = new Date();
             var d = date.getDate();
             var m = date.getMonth();
             var y = date.getFullYear();
+            var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
+    
+            var eventosHorarios = horariosFormateados.map(function(horario) {
+                var numeroDia;
+                if(horario.dia == "Lunes"){
+                    numeroDia = 5;
+                } else if(horario.dia == "Martes"){
+                    numeroDia = 6;
+                } else if(horario.dia == "Miercoles"){
+                    numeroDia = 7;
+                } else if(horario.dia == "Jueves"){
+                    numeroDia = 8;
+                } else if(horario.dia == "Viernes"){
+                    numeroDia = 9;
+                } else if(horario.dia == "Sabado"){
+                    numeroDia = 10;
+                } else if(horario.dia == "Domingo"){
+                    numeroDia = 4;
+                } else{
+                    numeroDia = 4;
+                }
+                return {
+                    title: "Clases",
+                    start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
+                    end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
+                    allDay: false,
+                    editable: false
+                };
+            });
+    
+            var eventos = [{
+                    title: 'Domingo',
+                    start: new Date(2024, 1, 4, 0, 0),
+                    end: new Date(2024, 1, 4, 13, 30),
+                    allDay: true,
+                    color: '#a0d6f4',
+                    editable: false
+                },
+                {
+                    title: 'Lunes',
+                    start: new Date(2024, 1, 5, 9, 0),
+                    end: new Date(2024, 1, 5, 13, 30),
+                    allDay: true,
+                    color: '#a0d6f4',
+                    editable: false
+                },
+                {
+                    title: 'Martes',
+                    start: new Date(2024, 1, 6, 9, 0),
+                    end: new Date(2024, 1, 6, 13, 30),
+                    allDay: true,
+                    color: '#a0d6f4',
+                    editable: false
+                },
+                {
+                    title: 'Miercoles',
+                    start: new Date(2024, 1, 7, 9, 0),
+                    end: new Date(2024, 1, 7, 13, 30),
+                    allDay: true,
+                    color: '#a0d6f4',
+                    editable: false
+                },
+                {
+                    title: 'Jueves',
+                    start: new Date(2024, 1, 8, 9, 0),
+                    end: new Date(2024, 1, 8, 13, 30),
+                    allDay: true,
+                    color: '#a0d6f4',
+                    editable: false
+                },
+                {
+                    title: 'Viernes',
+                    start: new Date(2024, 1, 9, 9, 0),
+                    end: new Date(2024, 1, 9, 13, 30),
+                    allDay: true,
+                    color: '#a0d6f4',
+                    editable: false
+                },
+                {
+                    title: 'Sabado',
+                    start: new Date(2024, 1, 10, 9, 0),
+                    end: new Date(2024, 1, 10, 13, 30),
+                    allDay: true,
+                    color: '#a0d6f4',
+                    editable: false
+                }
+            ].concat(eventosHorarios);
     
             $('#calendar').fullCalendar({
                 locale: 'es',
@@ -369,8 +450,8 @@
                 weekNumbers: false,
                 weekNumbersWithinDays: 7,
                 viewRender: function(view, element) {
-                    var startDate = moment('2024-03-24');             
-                    var endDate = moment(startDate).add(6, 'weeks');     
+                    var startDate = moment('2024-02-04');
+                    var endDate = moment(startDate).add(6, 'weeks');
                     if (view.end.isAfter(endDate)) {
                         $('#calendar').fullCalendar('gotoDate', startDate);
                     }
@@ -379,136 +460,33 @@
                     left: '',
                     center: 'title',
                     right: ''
-                    
                 },
-                         
                 allDayText: 'Hora/Area',
-                slotDuration: '00:30:00', 
-                slotLabelInterval: '01:00', 
-                minTime: '07:00:00', 
-                maxTime: '22:00:00', 
-                contentHeight: 'auto',      
-                eventOverlap: true, 
+                slotDuration: '00:30:00',
+                slotLabelInterval: '01:00',
+                minTime: '07:00:00',
+                maxTime: '22:00:00',
+                contentHeight: 'auto',
+                eventOverlap: true,
                 slotEventOverlap: false,
                 editable: true,
-                droppable: true, 
-                allDaySlot: true, 
-                
+                droppable: true,
+                allDaySlot: true,
                 drop: function() {
-                    // is the "remove after drop" checkbox checked?
                     if ($('#drop-remove').is(':checked')) {
-                        // if so, remove the element from the "Draggable Events" list
                         $(this).remove();
                     }
                 },
-                
-                events: [
-                    {
-                        title: 'All Day Event',
-                        start: new Date(y, m, 1)
-                    },
-                
-                    
-                    {
-                        title: 'Lunes',
-                        
-                        start: new Date(y, m, d-3, 9, 0),
-                        end: new Date(y, m, d-3, 13, 30),
-                        allDay: true,
-                        color: '#a0d6f4',
-                        editable: false
-                        
-                    },
-                    {
-                        title: 'Martes',
-                        
-                        start: new Date(y, m, d-2, 9, 0),
-                        end: new Date(y, m, d-2, 13, 30),
-                        allDay: true,
-                        color: '#a0d6f4',
-                        editable: false
-                        
-                    },
-                    {
-                        title: 'Miercoles',
-                        
-                        start: new Date(y, m, d-1, 9, 0),
-                        end: new Date(y, m, d-1, 13, 30),
-                        allDay: true,
-                        color: '#a0d6f4',
-                        editable: false
-                        
-                    },
-                    
-                    {
-                        title: 'Jueves',
-                        
-                        start: new Date(y, m, d, 9, 0),
-                        end: new Date(y, m, d, 13, 30),
-                        allDay: true,
-                        color: '#a0d6f4',
-                        editable: false
-                        
-                    },
-                                   
-                    {
-                        title: 'Viernes',
-                        
-                        start: new Date(y, m, d, 24),
-                        end: new Date(y, m, d, 24),
-                        allDay: true,
-                        color: '#a0d6f4',
-                        editable: false
-                        
-                    },
-                    {
-                        title: 'Sabado',
-                        
-                        start: new Date(y, m, d+1, 24),
-                        end: new Date(y, m, d+1, 24),
-                        allDay: true,
-                        color: '#a0d6f4',
-                        editable: false
-                        
-                    },
-                    {
-                        title: 'Domingo',
-                        
-                        start: new Date(y, m, d+2, 24),
-                        end: new Date(y, m, d+2, 24),
-                        allDay: true,
-                        color: '#a0d6f4',
-                        editable: false
-                        
-                    },
-                    {
-                        title: 'Marlo',
-                        start: new Date(y, m, d-3,7, 0),
-                        end: new Date(y, m, d-3, 21,0),
-                        allDay: false,
-                        color: '#78ea91',
-                        editable: true
-                        
-                    },
-                    
-                 
-                ],
-    
+                events: eventos,
                 eventRender: function(event, element) {
-                var daysToShow = 4; // Número de días que deseas mostrar
-                var columnWidth = $('.fc-day-grid-container').width() / daysToShow; // Ancho de la columna
-                element.css('width', columnWidth); // Aplicar el ancho al evento
-    
-                
-            }
-            
-            
-            
-                       
+                    var daysToShow = 4;
+                    var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
+                    element.css('width', columnWidth);
+                }
             });
         });
+    </script>
     
-    </script>    
 
 </body>
 
