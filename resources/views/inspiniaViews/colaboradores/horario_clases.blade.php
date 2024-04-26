@@ -85,246 +85,380 @@
                                             <div class="col-lg-12">
                                                 <div class="ibox ">
                                                     <div class="ibox-content">
-                                                        <h2><strong>Informacion</strong></h2>
-                                                        <div class="row">
-                                                            <div class="col-sm-6">
-                                                                <form role="form">
+                                                        <form id="storeHorarios" role="form" method="POST"
+                                                            action="{{ route('horarioClase.store') }}">
+                                                            @csrf
+                                                            <h2><strong>Informacion</strong></h2>
+                                                            <div class="row">
+                                                                <div class="col-sm-6">
+
                                                                     <div class="form-group"><label>Nombres</label>
                                                                         <input type="text"
                                                                             placeholder="Ingrese su nombre"
-                                                                            class="form-control">
+                                                                            value="{{ $colaborador->candidato->nombre }}"
+                                                                            class="form-control" disabled>
                                                                     </div>
-                                                                    <div class="form-group"><label>DNI</label> <input
-                                                                            type="text" placeholder="Ingrese su DNI"
-                                                                            class="form-control"></div>
-                                                                </form>
+                                                                    <div class="form-group"><label>DNI</label>
+                                                                        <input type="text"
+                                                                            placeholder="Ingrese su nombre"
+                                                                            value="{{ $colaborador->candidato->dni }}"
+                                                                            class="form-control" disabled>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <div class="form-group"><label>Apellidos</label>
+                                                                        <input type="text"
+                                                                            placeholder="Ingrese su nombre"
+                                                                            value="{{ $colaborador->candidato->apellido }}"
+                                                                            class="form-control" disabled>
+                                                                    </div>
+                                                                    <div class="form-group"><label>Ciclo</label>
+                                                                        <input type="text"
+                                                                            placeholder="Ingrese su nombre"
+                                                                            value="{{ $colaborador->candidato->ciclo_de_estudiante}}"
+                                                                            class="form-control" disabled>
+                                                                    </div>
+                                                                </div>
+
+
+
                                                             </div>
-                                                            <div class="col-sm-6">
-                                                                <div class="form-group"><label>Apellidos</label> <input
-                                                                        type="text"
-                                                                        placeholder="Ingrese sus Apellidos"
-                                                                        class="form-control"></div>
-                                                                <div class="form-group"><label>Ciclo</label> <input
-                                                                        type="text" placeholder="**"
-                                                                        class="form-control"></div>
-                                                            </div>
+                                                            <div class="col-lg-12">
+                                                                <div class="ibox">
+                                                                    <div class="ibox-title">
+                                                                        <h5>Tabla</h5>
+                                                                        <div class="ibox-tools">
+                                                                            <button class="btn btn-primary"
+                                                                                type="button" href="#modal-form-edit"
+                                                                                onclick="agregarFila()"
+                                                                                data-toggle="modal"><i
+                                                                                    class="fa fa-plus-circle"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="ibox-content">
 
+                                                                        <table id="tablaHorarios" class="table">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Dia</th>
+                                                                                    <th>Hora Inicial</th>
+                                                                                    <th>Hora Final</th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </thead>
 
+                                                                            <tbody>
+                                                                                @foreach($horariosDeClases as $key =>
+                                                                            $horario)
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="form-group row">
+                                                                                        <label
+                                                                                            class="col-form-label"></label>
 
+                                                                                        <div class="col-sm-10">
+                                                                                            <input
+                                                                                                class="form-control m-b"
+                                                                                                value="{{$horario->dia}}"
+                                                                                                disabled>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="input-group date">
+                                                                                        <span class="input-group-addon">
+                                                                                            <i
+                                                                                                class="fa fa-calendar"></i></span>
+                                                                                        <input type="time"
+                                                                                            class="form-control"
+                                                                                            value="{{$horario->hora_inicial}}"
+                                                                                            disabled>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="input-group date">
+                                                                                        <span
+                                                                                            class="input-group-addon"><i
+                                                                                                class="fa fa-calendar"></i></span>
+                                                                                        <input type="time"
+                                                                                            class="form-control"
+                                                                                            value="{{$horario->hora_final}}"
+                                                                                            disabled>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button
+                                                                                        class="btn btn-danger float-right mx-2"
+                                                                                        type="button"
+                                                                                        onclick="confirmDelete({{ $horario->id }})"><i
+                                                                                            class="fa fa-trash-o"></i>
+                                                                                    </button>
+                                                                                    <button
+                                                                                        class="btn btn-info float-right mx-2"
+                                                                                        type="button"
+                                                                                        href="#modal-form-update-{{$horario->id}}"
+                                                                                        data-toggle="modal"><i
+                                                                                            class="fa fa-paste"></i>
+
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                            @endforeach
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <div class="form-group row">
+                                                                                            <label
+                                                                                                class="col-form-label"></label>
+
+                                                                                            <div class="col-sm-10">
+                                                                                                <select
+                                                                                                    class="form-control m-b"
+                                                                                                    name="horarios[0][dia]">
+                                                                                                    <option>Lunes
+                                                                                                    </option>
+                                                                                                    <option>Martes
+                                                                                                    </option>
+                                                                                                    <option>Miercoles
+                                                                                                    </option>
+                                                                                                    <option>Jueves
+                                                                                                    </option>
+                                                                                                    <option>Viernes
+                                                                                                    </option>
+                                                                                                    <option>Sabado
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="input-group date">
+                                                                                            <span
+                                                                                                class="input-group-addon">
+                                                                                                <i
+                                                                                                    class="fa fa-calendar"></i></span>
+                                                                                            <input type="time"
+                                                                                                class="form-control"
+                                                                                                name="horarios[0][hora_inicial]"
+                                                                                                value="00:00">
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="input-group date">
+                                                                                            <span
+                                                                                                class="input-group-addon"><i
+                                                                                                    class="fa fa-calendar"></i></span><input
+                                                                                                type="time"
+                                                                                                class="form-control"
+                                                                                                name="horarios[0][hora_final]"
+                                                                                                value="00:00">
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <button
+                                                                                            class="btn btn-danger float-right"
+                                                                                            type="button"
+                                                                                            onclick="eliminarFila(this)"><i
+                                                                                                class="fa fa-trash-o"></i></button>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <input type="number"
+                                                                                    class="form-control-file"
+                                                                                    id="colaborador_id"
+                                                                                    name="colaborador_id"
+                                                                                    value="{{ $colaborador->id }}"
+                                                                                    style="display: none;">
+                                                        </form>
+                                                        <!---Div-->
+
+                                                        </tbody>
+
+                                                        </table>
+                                                        <div class="text-center">
+                                                            <button class="ladda-button btn btn-primary mr-5"
+                                                                onclick="document.getElementById('storeHorarios').submit();"
+                                                                data-style="expand-left">Guardar</button>
+                                                            <a class="ladda-button btn btn-primary"
+                                                                data-style="expand-left" href="/candidatos">Cancelar</a>
                                                         </div>
-                                                        <div class="col-lg-12">
-                                                            <div class="ibox">
-                                                                <div class="ibox-title">
-                                                                    <h5>Tabla</h5>
-                                                                    <div class="ibox-tools">
-                                                                        <button class="btn btn-primary" type="button"
-                                                                            href="#modal-form-edit"
-                                                                            data-toggle="modal"><i
-                                                                                class="fa fa-plus-circle"></i></button>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @foreach($horariosDeClases as $key =>
+                                            $horario)
+                                            <div id="modal-form-update-{{$horario->id}}"
+                                                class="modal fade" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body">
+                                                            <form role="form"
+                                                                method="POST"
+                                                                action="{{ route('horarioClase.update', $horario->id) }}"
+                                                                enctype="multipart/form-data">
+                                                                @csrf
+                                                                @method('put')
+                                                                <div
+                                                                    class="col-sm-12 b-r">
+                                                                    <h3
+                                                                        class="m-t-none m-b">
+                                                                        Ingrese los
+                                                                        Datos</h3>
+                                                                    <div
+                                                                        class="form-group">
+                                                                        <label>Día</label>
+                                                                        <select
+                                                                            class="form-control m-b"
+                                                                            name="dia"
+                                                                            value="{{ old('dia', $horario->dia) }}"
+                                                                            id="dia">
+                                                                            <option
+                                                                                style="background: #999">
+                                                                                {{
+                                                                                old('dia',
+                                                                                $horario->dia)
+                                                                                }}
+                                                                            </option>
+                                                                            <option>
+                                                                                Lunes
+                                                                            </option>
+                                                                            <option>
+                                                                                Martes
+                                                                            </option>
+                                                                            <option>
+                                                                                Miercoles
+                                                                            </option>
+                                                                            <option>
+                                                                                Jueves
+                                                                            </option>
+                                                                            <option>
+                                                                                Viernes
+                                                                            </option>
+                                                                            <option>
+                                                                                Sabado
+                                                                            </option>
+                                                                        </select>
                                                                     </div>
-                                                                </div>
-                                                                <div class="ibox-content">
-
-                                                                    <table class="table">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Horario</th>
-                                                                                <th>Descripcion</th>
-                                                                                <th>Dia</th>
-                                                                                <th>Hora Inicial</th>
-                                                                                <th>Hora Final</th>
-                                                                                <th></th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <div class="form-group row"><label
-                                                                                            class="col-form-label"></label>
-
-                                                                                        <div class="col-sm-10"><select
-                                                                                                class="form-control m-b"
-                                                                                                name="account">
-                                                                                                <option>Presencial
-                                                                                                </option>
-                                                                                                <option>Virtual</option>
-                                                                                                <option>Semi-Presencial
-                                                                                                </option>
-                                                                                            </select>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="text"
-                                                                                        class="form-control"
-                                                                                        placeholder="**">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="form-group row"><label
-                                                                                            class="col-form-label"></label>
-
-                                                                                        <div class="col-sm-10"><select
-                                                                                                class="form-control m-b"
-                                                                                                name="account">
-                                                                                                <option>Lunes</option>
-                                                                                                <option>Martes</option>
-                                                                                                <option>Miercoles
-                                                                                                </option>
-                                                                                                <option>Jueves</option>
-                                                                                                <option>Viernes</option>
-                                                                                                <option>Sabado</option>
-                                                                                            </select>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="input-group date">
-                                                                                        <span
-                                                                                            class="input-group-addon"><i
-                                                                                                class="fa fa-calendar"></i></span><input
-                                                                                            type="text"
-                                                                                            class="form-control"
-                                                                                            value="8:30am">
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="input-group date">
-                                                                                        <span
-                                                                                            class="input-group-addon"><i
-                                                                                                class="fa fa-calendar"></i></span><input
-                                                                                            type="text"
-                                                                                            class="form-control"
-                                                                                            value="12:30pm">
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <button
-                                                                                        class="btn btn-danger float-right"
-                                                                                        type="button"><i
-                                                                                            class="fa fa-trash-o"></i></button>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <!---Div-->
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <div class="form-group row"><label
-                                                                                            class="col-form-label"></label>
-
-                                                                                        <div class="col-sm-10"><select
-                                                                                                class="form-control m-b"
-                                                                                                name="account">
-                                                                                                <option>Presencial
-                                                                                                </option>
-                                                                                                <option>Virtual</option>
-                                                                                                <option>Semi-Presencial
-                                                                                                </option>
-                                                                                            </select>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input type="text"
-                                                                                        class="form-control"
-                                                                                        placeholder="**">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="form-group row"><label
-                                                                                            class="col-form-label"></label>
-
-                                                                                        <div class="col-sm-10"><select
-                                                                                                class="form-control m-b"
-                                                                                                name="account">
-                                                                                                <option>Lunes</option>
-                                                                                                <option>Martes</option>
-                                                                                                <option>Miercoles
-                                                                                                </option>
-                                                                                                <option>Jueves</option>
-                                                                                                <option>Viernes</option>
-                                                                                                <option>Sabado</option>
-                                                                                            </select>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="input-group date">
-                                                                                        <span
-                                                                                            class="input-group-addon"><i
-                                                                                                class="fa fa-calendar"></i></span><input
-                                                                                            type="text"
-                                                                                            class="form-control"
-                                                                                            value="8:30am">
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="input-group date">
-                                                                                        <span
-                                                                                            class="input-group-addon"><i
-                                                                                                class="fa fa-calendar"></i></span><input
-                                                                                            type="text"
-                                                                                            class="form-control"
-                                                                                            value="12:30pm">
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <button
-                                                                                        class="btn btn-danger float-right"
-                                                                                        type="button"><i
-                                                                                            class="fa fa-trash-o"></i></button>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-
-                                                                    </table>
-                                                                    <div class="text-center">
+                                                                    <div
+                                                                        class="form-group">
+                                                                        <label>Hora
+                                                                            Inicial</label>
+                                                                        <input
+                                                                            type="time"
+                                                                            class="form-control"
+                                                                            name="hora_inicial"
+                                                                            id="hora_inicial"
+                                                                            value="{{ old('hora_inicial', $horario->hora_inicial) }}">
+                                                                    </div>
+                                                                    <div
+                                                                        class="form-group">
+                                                                        <label>Hora
+                                                                            Final</label>
+                                                                        <input
+                                                                            type="time"
+                                                                            class="form-control"
+                                                                            name="hora_final"
+                                                                            id="hora_final"
+                                                                            value="{{ old('hora_final', $horario->hora_final) }}">
+                                                                    </div>
+                                                                    <div>
+                                                                        <a href="../horarioClases/{{$colaborador->id}}"
+                                                                            class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
                                                                         <button
-                                                                            class="ladda-button btn btn-primary mr-5"
-                                                                            data-style="expand-left">Guardar</button>
-                                                                        <button class="ladda-button btn btn-primary"
-                                                                            data-style="expand-left">Cancelar</button>
+                                                                            class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                                            type="submit"><i
+                                                                                class="fa fa-check"></i>&nbsp;Confirmar</button>
                                                                     </div>
-
-
                                                                 </div>
-                                                            </div>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
 
 
-
-
-
-
-
-
-        </div>
-        <div class="footer">
-            <div class="float-right">
-                10GB of <strong>250GB</strong> Free.
-            </div>
-            <div>
-                <strong>Copyright</strong> Example Company &copy; 2014-2018
-            </div>
         </div>
     </div>
     </div>
 
-<style>
-    .fc-toolbar{
-        display: none;
-    }
-</style>
+
+
+
+
+
+
+
+    </div>
+    <div class="footer">
+        <div class="float-right">
+            10GB of <strong>250GB</strong> Free.
+        </div>
+        <div>
+            <strong>Copyright</strong> Example Company &copy; 2014-2018
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <style>
+        .fc-toolbar {
+            display: none;
+        }
+    </style>
+    <script>
+        function confirmDelete(id) {
+            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+                if (e) {
+                    let form = document.createElement('form')
+                    form.method = 'POST'
+                    form.action = `/horarioClase/${id}`
+                    form.innerHTML = '@csrf @method('DELETE')'
+                    document.body.appendChild(form)
+                    form.submit()
+                } else {
+                    return false
+                }
+            });
+        }
+
+
+        var contadorFilas = 0;
+        function agregarFila() {
+            var tabla = document.getElementById("tablaHorarios").getElementsByTagName('tbody')[0];
+            var nuevaFila = tabla.insertRow(tabla.rows.length);
+    
+            // Insertar celdas en la nueva fila
+            var celdaDia = nuevaFila.insertCell(0);
+            var celdaHoraInicial = nuevaFila.insertCell(1);
+            var celdaHoraFinal = nuevaFila.insertCell(2);
+            var celdaBotonEliminar = nuevaFila.insertCell(3);
+
+            contadorFilas++;
+    
+            celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miercoles</option><option>Jueves</option><option>Viernes</option><option>Sabado</option></select></div></div>';
+            celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_inicial]" value="00:00"></div>';
+            celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_final]" value="00:00"></div>';
+            celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
+        
+            document.getElementById('storeHorarios').action = "{{ route('horarioClase.store') }}";
+        }
+    
+        function eliminarFila(boton) {
+            var fila = boton.parentNode.parentNode;
+            fila.parentNode.removeChild(fila);
+        }
+    </script>
 
 
 
@@ -486,7 +620,8 @@
             });
         });
     </script>
-    
+
+
 
 </body>
 
