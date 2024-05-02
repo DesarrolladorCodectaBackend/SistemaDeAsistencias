@@ -32,7 +32,7 @@ class CandidatosSeeder extends Seeder
 
         Candidatos::create([
             "nombre" => "Ejemplo",
-            "apellido" => "001",
+            "apellido" => "002",
             "dni" => "99999999",
             "direccion" => "direccion ejemplo #002",
             "fecha_nacimiento" => "2000-12-12",

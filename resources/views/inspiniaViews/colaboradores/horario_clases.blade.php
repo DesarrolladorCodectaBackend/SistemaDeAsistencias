@@ -438,7 +438,6 @@
             var tabla = document.getElementById("tablaHorarios").getElementsByTagName('tbody')[0];
             var nuevaFila = tabla.insertRow(tabla.rows.length);
     
-            // Insertar celdas en la nueva fila
             var celdaDia = nuevaFila.insertCell(0);
             var celdaHoraInicial = nuevaFila.insertCell(1);
             var celdaHoraFinal = nuevaFila.insertCell(2);

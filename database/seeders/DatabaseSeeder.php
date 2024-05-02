@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             CarreraSeeder::class,
             InstitucionSeeder::class,
             AreaSeeder::class,
+            CursoSeeder::class,
+            ProgramaSeeder::class,
             CandidatosSeeder::class,
             ColaboradoresSeeder::class,
             ColaboradoresPorAreaSeeder::class,
