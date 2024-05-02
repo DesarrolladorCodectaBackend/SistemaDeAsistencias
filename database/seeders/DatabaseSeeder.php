@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Colaboradores;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,6 +17,15 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+            CarreraSeeder::class,
+            InstitucionSeeder::class,
+            AreaSeeder::class,
+            CursoSeeder::class,
+            ProgramaSeeder::class,
+            CandidatosSeeder::class,
+            ColaboradoresSeeder::class,
+            ColaboradoresPorAreaSeeder::class,
+            HorarioDeClasesSeeder::class
     
     ]);
         // \App\Models\User::factory(10)->create();

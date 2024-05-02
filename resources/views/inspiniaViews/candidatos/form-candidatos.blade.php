@@ -139,8 +139,8 @@
                                             <div class="text-center">
                                                 <button class="ladda-button btn btn-primary mr-5" type="submit"
                                                     data-style="expand-left">Guardar</button>
-                                                <a class="ladda-button btn btn-primary"
-                                                    data-style="expand-left" href="/candidatos">Cancelar</a>
+                                                <a class="ladda-button btn btn-primary" data-style="expand-left"
+                                                    href="/candidatos">Cancelar</a>
                                             </div>
                             </form>
 
@@ -176,8 +176,8 @@
             contadorFilas++;
     
             celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miercoles</option><option>Jueves</option><option>Viernes</option><option>Sabado</option></select></div></div>';
-            celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_inicial]" value="8:30am"></div>';
-            celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_final]" value="12:30pm"></div>';
+            celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_inicial]" value="00:00"></div>';
+            celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_final]" value="00:00"></div>';
             celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
         }
     

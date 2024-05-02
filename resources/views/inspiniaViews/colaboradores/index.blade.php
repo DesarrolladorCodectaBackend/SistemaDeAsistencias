@@ -196,16 +196,19 @@
                                 <div class="m-t text-righ">
 
                                     <a href="#" data-toggle="model"> <i></i> </a>
+                                    <form id="horario-clase-{{$colaborador->id}}" role="form" method="GET"
+                                        action="{{route('colaboradores.horarioClase', $colaborador->id)}}">
+                                    </form>
                                     <div class="ibox-content">
                                         <div class="text-right">
                                             <button class="btn btn-primary btn-danger fa fa-trash"
                                                 style="font-size: 20px;" type="button"
                                                 onclick="confirmDelete({{ $colaborador->id }})"></button>
-                                            <form role="form" method="GET" action="{{route('colaboradores.horarioClase', $colaborador->id)}}">
-                                                <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
-                                                style="font-size: 20px;" type="submit"></button>
-                                            </form>
-                                            
+                                            <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
+                                                style="font-size: 20px;"
+                                                onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
+                                            <button class="btn btn-primary btn-warning fa fa-book mx-1"
+                                                style="font-size: 20px;" ></button>
                                             <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                 style="font-size: 20px;"
                                                 href="#modal-form-view{{$colaborador->id}}"></button>
@@ -258,7 +261,8 @@
                                                                             <option value="{{ $institucion->id }}"
                                                                                 @if($institucion->id ==
                                                                                 old('institucion_id',
-                                                                                $colaborador->candidato->institucion_id)) selected
+                                                                                $colaborador->candidato->institucion_id))
+                                                                                selected
                                                                                 @endif>{{ $institucion->nombre }}
                                                                             </option>
                                                                             @endforeach
@@ -312,7 +316,8 @@
                                                                             @foreach($carreras as $carrera)
                                                                             <option value="{{ $carrera->id }}"
                                                                                 @if($carrera->id == old('carrera_id',
-                                                                                $colaborador->candidato->carrera_id)) selected
+                                                                                $colaborador->candidato->carrera_id))
+                                                                                selected
                                                                                 @endif>{{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
