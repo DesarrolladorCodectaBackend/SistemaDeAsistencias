@@ -16,15 +16,6 @@ class CandidatosController extends Controller
 
     public function index()
     {
-        /*
-        $candidatos = Candidatos::with([
-            'institucion' => function ($query) {
-                $query->select('id', 'nombre'); },
-            'carrera' => function ($query) {
-                $query->select('id', 'nombre'); }
-        ])->where('estado', 1)->get();
-        return response()->json(["data" => $candidatos, "conteo" => count($candidatos)]);
-        */
         $candidatos = Candidatos::with('carrera', 'institucion')->get();
         $instituciones = Institucion::all();
         $carreras = Carrera::all();

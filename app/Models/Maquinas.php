@@ -18,7 +18,7 @@ class Maquinas extends Model
     ];
 
 
-    public function salones(){
+    public function salon(){
         return $this->belongsTo(Salones::class, 'salon_id', 'id');
     }
 

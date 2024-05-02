@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             CursoSeeder::class,
             ProgramaSeeder::class,
+            SalonesSeeder::class,
+            MaquinasSeeder::class,
             CandidatosSeeder::class,
             ColaboradoresSeeder::class,
             ColaboradoresPorAreaSeeder::class,

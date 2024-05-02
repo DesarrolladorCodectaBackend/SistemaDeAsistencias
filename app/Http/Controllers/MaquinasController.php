@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Maquinas;
+use App\Models\Salones;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreMaquinasRequest;
 use App\Http\Requests\UpdateMaquinasRequest;
@@ -12,9 +13,11 @@ class MaquinasController extends Controller
     
     public function index()
     {
-        $maquina = Maquinas::all();
+        $maquinas = Maquinas::get();
 
-        return view('maquinas.index', compact('maquina'));
+        $salones = Salones::get();
+
+        return view('inspiniaViews.maquinas.index', compact('maquinas', 'salones'));
     }
 
     
@@ -30,12 +33,12 @@ class MaquinasController extends Controller
         return response()->json(["resp" => "Maquina creada correctamente"]);
     }
 
-    public function store(StoreMaquinasRequest $request)
+    public function store(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|min:1|max:255',
             'detalles_tecnicos' => 'required|string|min:1|max:100',
-            'num_identificador' => 'required|string|min:1|max:255',
+            'num_identificador' => 'required|integer|min:1|max:255',
             'salon_id' => 'required|integer|min:1|max:15'  
         ]);
 
@@ -63,10 +66,10 @@ class MaquinasController extends Controller
     {
 
         $request->validate([
-            'nombre' => 'required|string|min:1|max:255',
-            'detalles_tecnicos' => 'required|string|min:1|max:100',
-            'num_identificador' => 'required|string|min:1|max:255',
-            'salon_id' => 'required|integer|min:1|max:15'  
+            'nombre' => 'sometimes|string|min:1|max:255',
+            'detalles_tecnicos' => 'sometimes|string|min:1|max:100',
+            'num_identificador' => 'sometimes|string|min:1|max:255',
+            'salon_id' => 'sometimes|integer|min:1|max:15'  
         ]);
         
         $maquina = Maquinas::find($maquina_id);
@@ -81,6 +84,17 @@ class MaquinasController extends Controller
         $maquina = Maquinas::findOrFail($maquina_id);
 
         $maquina->delete();
+
+        return redirect()->route('maquinas.index');
+    }
+
+    public function activarInactivar($maquina_id)
+    {
+        $maquina = Maquinas::findOrFail($maquina_id);
+
+        $maquina->estado = !$maquina->estado;
+
+        $maquina->save();
 
         return redirect()->route('maquinas.index');
     }

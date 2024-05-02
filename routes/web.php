@@ -7,8 +7,10 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\CursosController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
+use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramasController;
+use App\Http\Controllers\SalonesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,13 +36,6 @@ Route::get('/dashboard-prueba', function () {
     return view('dashboard-prueba');
 });
 
-Route::get('/sidebar-inspinia', function () {
-    return view('components.inspinia.sidebar-inspinia');
-});
-
-Route::get('/navbar-inspinia', function () {
-    return view('components.inspinia.navbar-inspinia');
-});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -57,6 +52,11 @@ Route::middleware('auth')->group(function () {
     Route::post('cursos/{cursos}/activar-inactivar', [CursosController::class,'activarInactivar'])->name('cursos.activarInactivar');
     Route::resource('programas', ProgramasController::class);
     Route::post('programas/{programas}/activar-inactivar', [ProgramasController::class,'activarInactivar'])->name('programas.activarInactivar');
+    Route::resource('salones', SalonesController::class);
+    Route::post('salones/{salones}/activar-inactivar', [SalonesController::class,'activarInactivar'])->name('salones.activarInactivar');
+    Route::get('/salones/{salon}/maquinas', [SalonesController::class, 'salonMaquinas']);
+    Route::resource('maquinas', MaquinasController::class);
+    Route::post('maquinas/{maquinas}/activar-inactivar', [MaquinasController::class,'activarInactivar'])->name('maquinas.activarInactivar');
     Route::resource('candidatos', CandidatosController::class);
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     //Route::get('/candidatos/form-candidatos', function () {return view('candidatos.form-candidatos');})->name('candidatos.form');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Maquinas;
 use App\Models\Salones;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreSalonesRequest;
@@ -12,11 +13,15 @@ class SalonesController extends Controller
     
     public function index()
     {
-        $salones = Salones::all();
+        $salones = Salones::get();
 
-        return view('salones.index', compact('salones'));
+        return view('inspiniaViews.salones.index', compact('salones'));
     }
     
+    public function salonMaquinas($salon_id){
+        $maquinas = Maquinas::where('salon_id', $salon_id)->get();
+        return response()->json($maquinas);
+    }
     
     // public function create(Request $request)
     // {
@@ -81,6 +86,17 @@ class SalonesController extends Controller
         $salon = Salones::findOrFail($salon_id);
 
         $salon->delete();
+
+        return redirect()->route('salones.index');
+    }
+
+    public function activarInactivar($salon_id)
+    {
+        $salon = Salones::findOrFail($salon_id);
+
+        $salon->estado = !$salon->estado;
+
+        $salon->save();
 
         return redirect()->route('salones.index');
     }
