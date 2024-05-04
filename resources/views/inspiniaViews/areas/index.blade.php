@@ -127,7 +127,7 @@
                                                                         type="color" placeholder="....."
                                                                         class="form-control" name="color_hex"
                                                                         id="color_hex"
-                                                                        value="{{ old('color_hex', $area->color_hex) }}">
+                                                                        value="{{ old('color_hex', $area->color_hex) }}" required>
                                                                 </div>
 
                                                             </div>

@@ -92,10 +92,10 @@
                                             </div>
                                             <input type="hidden" name="carrera_id_hidden" id="carrera_id_hidden">
                                             <div class="form-group"><label>Correo</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" class="form-control" name="correo">
+                                                    placeholder="Ingrese un nombre" class="form-control" name="correo" required>
                                             </div>
                                             <div class="form-group"><label>Celular</label> <input type="text"
-                                                    placeholder="Ingrese apellido" class="form-control" name="celular">
+                                                    placeholder="Ingrese apellido" class="form-control" name="celular" required>
                                             </div>
 
 
@@ -307,32 +307,32 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
-                                                                            value="{{ old('nombre', $candidato->nombre) }}">
+                                                                            value="{{ old('nombre', $candidato->nombre) }}" required>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label>Apellido</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
-                                                                            value="{{ old('apellido', $candidato->apellido) }}">
+                                                                            value="{{ old('apellido', $candidato->apellido) }}" required>
                                                                     </div>
                                                                     <div class="form-group"><label>DNI</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
-                                                                            value="{{ old('dni', $candidato->dni) }}">
+                                                                            value="{{ old('dni', $candidato->dni) }}" required>
                                                                     </div>
                                                                     <div class="form-group"><label>Dirección</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
-                                                                            value="{{ old('direccion', $candidato->direccion) }}">
+                                                                            value="{{ old('direccion', $candidato->direccion) }}" required>
                                                                     </div>
                                                                     <div class="form-group"><label>Fecha de
                                                                             Nacimiento</label>
                                                                         <input type="date" placeholder="....."
                                                                             class="form-control" name="fecha_nacimiento"
                                                                             id="fecha_nacimiento"
-                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}">
+                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}" required>
                                                                     </div>
                                                                     <div class="form-group"><label>Ciclo de
                                                                             Estudiante</label>
@@ -340,7 +340,7 @@
                                                                             class="form-control"
                                                                             name="ciclo_de_estudiante"
                                                                             id="ciclo_de_estudiante"
-                                                                            value="{{ old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante) }}">
+                                                                            value="{{ old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante) }}" required>
                                                                     </div>
 
                                                                 </div>
@@ -379,7 +379,7 @@
                                                                             <option value="{{ $carrera->id }}"
                                                                                 @if($carrera->id == old('carrera_id',
                                                                                 $candidato->carrera_id)) selected
-                                                                                @endif>{{ $carrera->nombre }}</option>
+                                                                                @endif >{{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
@@ -387,13 +387,13 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
-                                                                            value="{{ old('correo', $candidato->correo) }}">
+                                                                            value="{{ old('correo', $candidato->correo) }}" required>
                                                                     </div>
                                                                     <div class="form-group"><label>Celular</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="celular"
                                                                             id="celular"
-                                                                            value="{{ old('celular', $candidato->celular) }}">
+                                                                            value="{{ old('celular', $candidato->celular) }}" required>
                                                                     </div>
                                                                     <div>
                                                                         <a href="candidatos"

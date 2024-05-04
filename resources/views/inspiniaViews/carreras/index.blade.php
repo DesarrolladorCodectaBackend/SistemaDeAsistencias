@@ -45,7 +45,7 @@
                                         <form role="form" method="POST" action="{{ route('carreras.store') }}">
                                             @csrf
                                             <div class="form-group"><label>Carrera</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" name="nombre" class="form-control">
+                                                    placeholder="Ingrese un nombre" name="nombre" class="form-control" required>
                                             </div>
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -129,7 +129,7 @@
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $carrera->nombre) }}">
+                                                                    value="{{ old('nombre', $carrera->nombre) }}" required>
                                                             </div>
                                                             <div>
                                                                 <button

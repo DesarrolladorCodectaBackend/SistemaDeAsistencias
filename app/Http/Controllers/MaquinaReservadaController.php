@@ -29,37 +29,24 @@ class MaquinaReservadaController extends Controller
             return response()->json(["error" => $e]);
         }
         */
+        $maquina_reservada = Maquina_reservada::all();
+
+        return view('inspiniaViews.maquinareservada.index', compact('maquinareservada'));
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        DB::beginTransaction();
-        try {
-            if (!$request->horario_presencial_id) {
-                return response()->json(["resp" => "Ingrese el id del horario presencial"]);
-            }
+        $request->validate([
+            'horario_presencial_id' => 'required|string|min:1|max:100',
+            'maquina_id' => 'required|string|min:1|max:255'
+        ]);
 
-            if (!$request->maquina_id) {
-                return response()->json(["resp" => "Ingrese el id de la maquina"]);
-            }
+        Maquina_reservada::create([
+            "horario_presencial_id" => $request->horario_presencial_id,
+            "maquina_id" => $request->maquina_id
+        ]);
 
-            if (!is_integer($request->horario_presencial_id)) {
-                return response()->json(["resp" => "El id del horario presencial debe ser un número entero"]);
-            }
-
-            if (!is_integer($request->maquina_id)) {
-                return response()->json(["resp" => "El id de la maquina debe ser un número entero"]);
-            }
-            Maquina_reservada::create([
-                "horario_presencial_id" => $request->horario_presencial_id,
-                "maquina_id" => $request->maquina_id
-            ]);
-            DB::commit();
-            return response()->json(["resp" => "Registro creado correctamente"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('inspiniaViews.maquinareservada.index');
 
     }
 
@@ -85,62 +72,25 @@ class MaquinaReservadaController extends Controller
 
     public function update(Request $request, $maquina_reservada_id)
     {
-        DB::beginTransaction();
-        try {
-            $maquina_reservada = Maquina_reservada::find($maquina_reservada_id);
+        $request->validate([
+            'horario_presencial_id' => 'required|string|min:1|max:100',
+            'maquina_id' => 'required|string|min:1|max:255'
+        ]);
 
-            if (!$maquina_reservada) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $maquina_reservada = Maquina_reservada::findOrFail($maquina_reservada_id);
 
-            if (!$request->horario_presencial_id) {
-                return response()->json(["resp" => "Ingrese el id del horario presencial"]);
-            }
+        $maquina_reservada->update($request->all());
 
-            if (!$request->maquina_id) {
-                return response()->json(["resp" => "Ingrese el id de la maquina"]);
-            }
-
-            if (!is_integer($request->horario_presencial_id)) {
-                return response()->json(["resp" => "El id del horario presencial debe ser un número entero"]);
-            }
-
-            if (!is_integer($request->maquina_id)) {
-                return response()->json(["resp" => "El id de la maquina debe ser un número entero"]);
-            }
-
-            $maquina_reservada->fill([
-                "horario_presencial_id" => $request->horario_presencial_id,
-                "maquina_id" => $request->maquina_id
-            ])->save();
-            
-            DB::commit();
-            return response()->json(["resp" => "Registro actualizado correctamente"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
-
+        return redirect()->route('inspiniaViews.maquinareservada.index');
     }
 
     public function destroy($maquina_reservada_id)
     {
-        DB::beginTransaction();
-        try {
-            $maquina_reservada = Maquina_reservada::find($maquina_reservada_id);
+        $maquina_reservada = Maquina_reservada::findOrFail($maquina_reservada_id);
 
-            if (!$maquina_reservada) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $maquina_reservada->delete();
 
-            $maquina_reservada->delete();
-
-            DB::commit();
-            return response()->json(["resp" => "Registro eliminado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('inspiniaViews.maquinareservada.index');
 
     }
 
