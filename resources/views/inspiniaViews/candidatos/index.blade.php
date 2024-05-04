@@ -460,6 +460,32 @@
     </div>
     </div>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const personal = document.getElementById('personalCont');
+            if (personal) {
+                personal.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const candidatoCont = document.getElementById('candidatosCont');
+            if (candidatoCont) {
+                candidatoCont.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'candidatosCont' no se encontró en el DOM.");
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const candidato = document.getElementById('candidatos');
+            if (candidato) {
+                candidato.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'candidato' no se encontró en el DOM.");
+            }
+        });
+    </script>
+    <script>
         const hiddenFileInput = document.getElementById('icono');
         const iconUploadButton = document.getElementById('icon-upload');
 

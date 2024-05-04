@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Carrera extends Model
+class Prestamos_objetos_por_colaborador extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nombre',
-        'estado'
+        'colaborador_id',
+        'objeto_id',
+        'fecha_prestamo',
+        'fecha_devolucion'
     ];
-
-    public function candidatos(){
-        return $this->hasMany(Candidatos::class, 'carrera_id', 'id');
-    }
-
 }

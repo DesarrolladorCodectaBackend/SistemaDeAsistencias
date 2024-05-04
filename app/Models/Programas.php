@@ -12,6 +12,8 @@ class Programas extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
+        'estado',
+        'icono',
         'memoria_grafica',
         'ram',
         'almacenamiento'

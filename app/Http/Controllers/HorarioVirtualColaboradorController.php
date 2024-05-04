@@ -12,63 +12,29 @@ class HorarioVirtualColaboradorController extends Controller
     
     public function index()
     {
-        try{
-            $horarios_virtuales_colaborador = Horario_Virtual_Colaborador::/*with([
-                'horarios_virtuales' => function($query) {$query->select('id', 'hora_inicial', 'hora_final');},
-                'colaboradores' => function($query) {$query->select('id', 'candidato_id');}])->*/get();
+        $horario_virtual_colaborador = Horario_Virtual_Colaborador::all();
 
-            if (count($horarios_virtuales_colaborador) == 0) {
-                return response()->json(["resp" => "No hay registros insertados"]);
-            }
-
-            return response()->json(["data" => $horarios_virtuales_colaborador, "conteo" => count($horarios_virtuales_colaborador)]);
-        } catch (Exception $e){
-            return response()->json(["error" => $e]);
-        }
+        return view('horario_virtual_colaborador.index', compact('horario_virtual_colaborador'));
 
     }
 
     
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        DB::beginTransaction();
-        try{
-            if(!$request->horario_virtual_id){
-                return response()->json(["resp" => "Ingrese horario virtual"]);
-            }
+        $request->validate([
+            'horario_virtual_id' => 'required|integer|min:1|max:100',
+            'semana_id' => 'required|integer|min:1|max:255',
+            'area_id' => 'required|integer|min:1|max:255',
+        ]);
+        
+            
+        Horario_Virtual_Colaborador::create([
+            "horario_virtual_id" => $request->computadora_id,
+            "semana_id" => $request->programa_id,
+            "area_id" => $request->programa_id,
+        ]);
 
-            if(!$request->semana_id){
-                return response()->json(["resp" => "Ingrese semana"]);
-            }
-
-            if(!$request->area_id){
-                return response()->json(["resp" => "Ingrese area"]);
-            }
-
-            if(!is_integer($request->horario_virtual_id)){
-                return response()->json(["resp" => "El horario virtual debe ser un número entero"]);
-            }
-
-            if(!is_integer($request->semana_id)){
-                return response()->json(["resp" => "La semana debe ser un número entero"]);
-            }
-
-            if(!is_integer($request->area_id)){
-                return response()->json(["resp" => "El area debe ser un número entero"]);
-            }
-
-            Horario_Virtual_Colaborador::create([
-                "horario_virtual_id" => $request->horario_virtual_id,
-                "semana_id" => $request->semana_id,
-                "area_id" => $request->area_id
-            ]);
-
-            DB::commit();
-            return response()->json(["resp" => "Registro creado correctamente"]);
-        } catch (Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('horario_virtual_colaborador.index');
 
     }
 
@@ -94,73 +60,27 @@ class HorarioVirtualColaboradorController extends Controller
     
     public function update(Request $request, $horario_virtual_colaborador_id)
     {
-        DB::beginTransaction();
-        try{
-            $horario_virtual_colaborador = Horario_Virtual_Colaborador::find($horario_virtual_colaborador_id);
+        $request->validate([
+            'horario_virtual_id' => 'required|integer|min:1|max:100',
+            'semana_id' => 'required|integer|min:1|max:255',
+            'area_id' => 'required|integer|min:1|max:255',
+        ]);
 
-            if (!$horario_virtual_colaborador){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $horario_virtual_colaborador = Horario_Virtual_Colaborador::findOrFail($horario_virtual_colaborador_id);
+        
+        $horario_virtual_colaborador->update($request->all());
 
-            if(!$request->horario_virtual_id){
-                return response()->json(["resp" => "Ingrese horario virtual"]);
-            }
-
-            if(!$request->semana_id){
-                return response()->json(["resp" => "Ingrese semana"]);
-            }
-
-            if(!$request->area_id){
-                return response()->json(["resp" => "Ingrese area"]);
-            }
-
-            if(!is_integer($request->horario_virtual_id)){
-                return response()->json(["resp" => "El horario virtual debe ser un número entero"]);
-            }
-
-            if(!is_integer($request->semana_id)){
-                return response()->json(["resp" => "La semana debe ser un número entero"]);
-            }
-
-            if(!is_integer($request->area_id)){
-                return response()->json(["resp" => "El area debe ser un número entero"]);
-            }
-
-            $horario_virtual_colaborador->fill([
-                "horario_virtual_id" => $request->horario_virtual_id,
-                "semana_id" => $request->semana_id,
-                "area_id" => $request->area_id
-            ])->save();
-            
-            DB::commit();
-            return response()->json(["resp" => "Registro actualizado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
-
+        return redirect()->route('horario_virtual_colaborador.index');
     }
 
     
     public function destroy($horario_virtual_colaborador_id)
     {
-        DB::beginTransaction();
-        
-        try{
-            $horario_virtual_colaborador = Horario_Virtual_Colaborador::find($horario_virtual_colaborador_id);
+        $horario_virtual_colaborador = Horario_Virtual_Colaborador::findOrFail($horario_virtual_colaborador_id);
 
-            if (!$horario_virtual_colaborador){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $horario_virtual_colaborador->delete();
 
-            $horario_virtual_colaborador->delete();
-
-            DB::commit();
-            return response()->json(["resp" => "Registro eliminado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('horario_virtual_colaborador.index');
 
     }
 }

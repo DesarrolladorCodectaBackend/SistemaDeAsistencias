@@ -203,6 +203,7 @@ Route::post('horario_de_clase/store', [HorarioDeClasesController::class,'store']
 Route::get('horario_de_clase/show/{horario_de_clase_id}', [HorarioDeClasesController::class,'show']);
 Route::put('horario_de_clase/update/{horario_de_clase_id}', [HorarioDeClasesController::class,'update']);
 Route::delete('horario_de_clase/delete/{horario_de_clase_id}', [HorarioDeClasesController::class,'destroy']);
+Route::get('horario_de_clase/caldendario/{colaborador_id}', [HorarioDeClasesController::class,'getCalendariosColaborador']);
 
 //HORARIO VIRTUAL COLABORADOR
 /*

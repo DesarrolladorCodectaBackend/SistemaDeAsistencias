@@ -11,8 +11,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 {
     public function index()
     {
-        try {
-            $C_R_S = Cumplio_Responsabilidad_Semanal::/*with([
+        $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::all();
+
+        return view('cumplio_responsabilidad_semanal.index', compact('cumplio_responsabilidad_semanal'));
+        /*with([
 'computadora_colaborador' => function ($query) {
 $query->select(
 'id',
@@ -27,17 +29,7 @@ $query->select(
 },
 'programas' => function ($query) {
 $query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
-])->*/ get();
-
-            if (count($C_R_S) == 0) {
-                return response()->json(["resp" => "No hay registros insertados"]);
-            }
-
-            return response()->json(["data" => $C_R_S, "conteo" => count($C_R_S)]);
-        } catch (Exception $e) {
-            return response()->json(["Error" => $e]);
-        }
-
+])->*/ 
     }
 
 
@@ -92,6 +84,27 @@ $query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
 
     }
 
+    public function store(Request $request)
+    {
+
+        $request->validate([
+            'colaborador_area_id' => 'required|integer|min:1|max:100',
+            'responsabilidad_id' => 'required|integer|min:1|max:255',
+            'semana_id' => 'required|integer|min:1|max:100',
+            'cumplio' => 'required|boolean|min:1|max:100',
+
+        ]);
+
+
+        Cumplio_Responsabilidad_Semanal::create([
+            "colaborador_area_id" => $request->colaborador_area_id,
+            "responsabilidad_id" => $request->responsabilidad_id,
+            "semana_id" => $request->semana_id,
+            "cumplio" => $request->cumplio
+        ]);
+
+    }
+
 
     public function show($cumplio_responsabilidad_semanal_id)
     {
@@ -127,79 +140,26 @@ $query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
 
     public function update(Request $request, $cumplio_responsabilidad_semanal_id)
     {
-        DB::beginTransaction();
-        try {
-            $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::find($cumplio_responsabilidad_semanal_id);
+        $request->validate([
+            'computadora_id' => 'required|integer|min:1|max:100',
+            'programa_id' => 'required|integer|min:1|max:255',
+        ]);
 
-            if (!$cumplio_responsabilidad_semanal) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::findOrFail($cumplio_responsabilidad_semanal_id);
+        
+        $cumplio_responsabilidad_semanal->update($request->all());
 
-            if (!$request->colaborador_area_id) {
-                return response()->json(["resp" => "ingrese colaborador"]);
-            }
-
-            if (!$request->responsabilidad_id) {
-                return response()->json(["resp" => "ingrese responsabilidad"]);
-            }
-
-            if (!$request->semana_id) {
-                return response()->json(["resp" => "ingrese semana"]);
-            }
-
-            if (!$request->cumplio) {
-                return response()->json(["resp" => "ingrese si cumplio"]);
-            }
-
-            if (!is_integer($request->colaborador_area_id)) {
-                return response()->json(["resp" => "El id del colaborador debe ser un número entero"]);
-            }
-
-            if (!is_integer($request->responsabilidad_id)) {
-                return response()->json(["resp" => "El id de la responsabilidad debe ser un número entero"]);
-            }
-
-            if (!is_integer($request->semana_id)) {
-                return response()->json(["resp" => "El id de la semana debe ser un número entero"]);
-            }
-
-            if (!is_bool($request->cumplio)) {
-                return response()->json(["resp" => "Cumplio debe ser de tipo booleano"]);
-            }
-
-            $cumplio_responsabilidad_semanal->fill([
-                "colaborador_area_id" => $request->colaborador_area_id,
-                "responsabilidad_id" => $request->responsabilidad_id,
-                "semana_id" => $request->semana_id,
-                "cumplio" => $request->cumplio
-            ])->save();
-
-            DB::commit();
-            return response()->json(["resp" => "Registro actualizado correctamente"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('cumplio_responsabilidad_semanal.index');
 
     }
 
 
     public function destroy($cumplio_responsabilidad_semanal_id)
     {
-        DB::beginTransaction();
-        try {
-            $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::find($cumplio_responsabilidad_semanal_id);
+        $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::findOrFail($cumplio_responsabilidad_semanal_id);
 
-            if (!$cumplio_responsabilidad_semanal) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $cumplio_responsabilidad_semanal->delete();
 
-            $cumplio_responsabilidad_semanal->delete();
-            DB::commit();
-            return response()->json(["resp" => "Registro eliminado correctamente"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('cumplio_responsabilidad_semanal.index');
     }
 }

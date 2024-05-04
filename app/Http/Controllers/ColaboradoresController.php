@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
+use App\Models\Horario_de_Clases;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use Illuminate\Http\Request;
@@ -31,36 +32,48 @@ class ColaboradoresController extends Controller
             $colaboradoresConArea[] = $colaborador;
         }
 
-        return view('colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras'));
+        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras'));
     }
 
+    
     public function store(Request $request)
     {
-        $request->validate([
-            'candidato_id' => 'required|integer'
+    $request->validate([
+        'candidato_id' => 'required|integer',
+        'area_id' => 'required|integer',
+        'horarios' => 'required|array',
+        'horarios.*.hora_inicial' => 'required|date_format:H:i',
+        'horarios.*.hora_final' => 'required|date_format:H:i',
+        'horarios.*.dia' => 'required|string'
+    ]);
+
+    $candidato = Candidatos::findOrFail($request->candidato_id);
+
+    if ($candidato->estado == true) {
+        $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
+
+        Colaboradores_por_Area::create([
+            'colaborador_id' => $colaborador->id,
+            'area_id' => $request->area_id,
+            'semana_inicio_id' => null
         ]);
 
-        $candidato = Candidatos::findOrFail($request->candidato_id);
-        if ($candidato->estado == true) {
-            $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
-
-            Colaboradores_por_Area::create([
-                "colaborador_id" => $colaborador->id,
-                "area_id" => $request->area_id,
-                "semana_inicio_id" => $request->semana_inicio_id
+        foreach ($request->horarios as $horario) {
+            Horario_de_Clases::create([
+                'colaborador_id' => $colaborador->id,
+                'hora_inicial' => $horario['hora_inicial'],
+                'hora_final' => $horario['hora_final'],
+                'dia' => $horario['dia']
             ]);
-
-            
-            $candidato->estado = !$candidato->estado;
-            $candidato->save();
-
-
         }
 
-
-        return redirect()->route('candidatos.index');
-
+        $candidato->estado = !$candidato->estado;
+        $candidato->save();
     }
+
+    return redirect()->route('colaboradores.index');
+}
+
 
 
     public function show($colaborador_id)

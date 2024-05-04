@@ -5,10 +5,13 @@
     <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('font-awesome/css/font-awesome.css')}}">
 
+    <link href="{{asset('css/plugins/switchery/switchery.css')}}" rel="stylesheet">
+    <link href="{{asset('css/plugins/toastr/toastr.min.css')}}" rel="stylesheet">
+
     <link rel="stylesheet" href="{{asset('css/animate.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
-    <link href="../../../css/inspinia.css" rel="stylesheet">
+    <link href="{{asset('css/inspinia.css')}}" rel="stylesheet">
 </head>
 
 
@@ -59,14 +62,14 @@
                 <a href="horario-general-virtual.html"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
                         G.Virtual</span></a>
             </li>
-            <li class="">
+            <li id="personalCont">
                 <a href="layouts.html"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse">
-                    <li>
+                    <li id="candidatosCont">
                         <a href="../candidatos">Candidatos<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
-                            <li>
+                            <li id="candidatos">
                                 <a href="../candidatos">Candidatos</a>
                             </li>
                             <li>
@@ -74,10 +77,10 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="">
+                    <li id="colaboradoresCont">
                         <a href="../colaboradores">Colaboradores<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
-                            <li>
+                            <li id="colaboradores">
                                 <a href="../colaboradores">Colaboradores</a>
                             </li>
                             <li class="">
@@ -113,7 +116,7 @@
                 </ul>
 
             </li>
-            <li>
+            <li id="areas">
                 <a href="../areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
             <li>
@@ -143,14 +146,14 @@
             <li>
                 <a href="salones.html"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
             </li>
-            <li>
-                <a href="configuracion.html"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
+            <li id="ajustesCont">
+                <a href=""><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="../institucion">Institucion</a></li>
-                    <li><a href="config-carrera.html">Carrera</a></li>
-                    <li><a href="config-curso.html">Curso</a></li>
-                    <li><a href="config-programas.html">Programas</a></li>
+                    <li id="instituciones"><a href="../institucion">Institucion</a></li>
+                    <li id="carreras"><a href="../carreras">Carrera</a></li>
+                    <li id="cursos"><a href="../cursos">Curso</a></li>
+                    <li id="programas"><a href="../programas">Programas</a></li>
                 </ul>
             </li>
             <li>
@@ -193,7 +196,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="#">
-                                    <img alt="image" class="rounded-circle" src="../../../../public/img/a7.jpg">
+                                    <img alt="image" class="rounded-circle" src="">
                                 </a>
                                 <div>
                                     <small class="float-right">46h ago</small>
@@ -207,7 +210,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="#">
-                                    <img alt="image" class="rounded-circle" src="../../../../public/img/a4.jpg">
+                                    <img alt="image" class="rounded-circle" src="">
                                 </a>
                                 <div>
                                     <small class="float-right text-navy">5h ago</small>
@@ -221,7 +224,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="#">
-                                    <img alt="image" class="rounded-circle" src="../../../../public/img/profile.jpg">
+                                    <img alt="image" class="rounded-circle" src="">
                                 </a>
                                 <div>
                                     <small class="float-right">23h ago</small>
@@ -303,7 +306,7 @@
 
 
 
-    <!--- Cambiar Imagen-->
+    <!--- Cambiar Imagen
     <script>
         document.getElementById('inputGroupFile').addEventListener('change', function() {
             const file = this.files[0];
@@ -317,48 +320,63 @@
             }
         });
     </script>
-
+    -->
+    
     <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
     <script src="{{asset('js/alertify.min.js')}}"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <!-- Flot -->
-    <script src="js/plugins/flot/jquery.flot.js"></script>
-    <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-    <script src="js/plugins/flot/jquery.flot.spline.js"></script>
-    <script src="js/plugins/flot/jquery.flot.resize.js"></script>
-    <script src="js/plugins/flot/jquery.flot.pie.js"></script>
-    <script src="js/plugins/flot/jquery.flot.symbol.js"></script>
-    <script src="js/plugins/flot/jquery.flot.time.js"></script>
-
-    <!-- Peity -->
-    <script src="js/plugins/peity/jquery.peity.min.js"></script>
-    <script src="js/demo/peity-demo.js"></script>
+    <script src="{{asset('js/popper.min.js')}}"></script>
+    <script src="{{asset('js/bootstrap.js')}}"></script>
+    <script src="{{asset('js/plugins/metisMenu/jquery.metisMenu.js')}}"></script>
+    <script src="{{asset('js/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
 
     <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
+    <script src="{{asset('js/inspinia.js')}}"></script>
+    <script src="{{asset('js/plugins/pace/pace.min.js')}}"></script>
 
-    <!-- jQuery UI -->
-    <script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    
+    <!-- jQuery UI  -->
+    <script class="jQuery UI" src="{{asset('js/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+    
+    <!-- iCheck -->
+    <script src="{{asset('js/plugins/iCheck/icheck.min.js')}}"></script>
 
-    <!-- Jvectormap -->
-    <script src="js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
-    <script src="js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- Full Calendar -->
+    <script src="{{asset('js/plugins/fullcalendar/moment.min.js')}}"></script>
+    <script src="{{asset('js/plugins/fullcalendar/fullcalendar.min.js')}}"></script>
 
-    <!-- EayPIE -->
-    <script src="js/plugins/easypiechart/jquery.easypiechart.js"></script>
 
-    <!-- Sparkline -->
-    <script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
 
-    <!-- Sparkline demo data  -->
-    <script src="js/demo/sparkline-demo.js"></script>
+    <!-- 
+    <script class="Flot" src="{{asset('js/plugins/flot/jquery.flot.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.tooltip.min.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.spline.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.resize.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.pie.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.symbol.js')}}"></script>
+    <script src="{{asset('js/plugins/flot/jquery.flot.time.js')}}"></script>
 
+    
+    <script class="Peity" src="{{asset('js/plugins/peity/jquery.peity.min.js')}}"></script>
+    <script src="{{asset('js/demo/peity-demo.js')}}"></script>
+
+    
+    
+
+    
+    <script class="Jvectormap" src="{{asset('js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js')}}"></script>
+    <script src="{{asset('js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script>
+
+    
+    <script class="EayPIE" src="{{asset('js/plugins/easypiechart/jquery.easypiechart.js')}}"></script>
+
+    
+    <script class="Sparkline" src="{{asset('js/plugins/sparkline/jquery.sparkline.min.js')}}"></script>
+
+    
+    <script class="Sparkline demo data" src="{{asset('js/demo/sparkline-demo.js')}}"></script>
+    -->
+    <!-- 
     <script>
         $(document).ready(function() {
             $('.chart').easyPieChart({
@@ -522,3 +540,4 @@
             });
         });
     </script>
+    -->

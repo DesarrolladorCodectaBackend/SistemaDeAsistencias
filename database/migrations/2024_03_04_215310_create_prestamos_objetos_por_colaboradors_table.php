@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('colaboradores_por__areas', function (Blueprint $table) {
+        Schema::create('prestamos_objetos_por_colaboradors', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('colaborador_id');
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
-            $table->unsignedBigInteger('area_id');
-            $table->foreign('area_id')->references('id')->on('areas');
-            $table->unsignedBigInteger('semana_inicio_id')->nullable();
-            $table->foreign('semana_inicio_id')->references('id')->on('semanas')->nullable();
+            $table->unsignedBigInteger('objeto_id');
+            $table->foreign('objeto_id')->references('id')->on('objetos');
+            $table->date('fecha_prestamo');
+            $table->date('fecha_devolucion');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('colaboradores_por__areas');
+        Schema::dropIfExists('prestamos_objetos_por_colaboradors');
     }
 };

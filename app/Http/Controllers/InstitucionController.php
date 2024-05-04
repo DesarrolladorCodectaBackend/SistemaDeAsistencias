@@ -16,7 +16,7 @@ class InstitucionController extends Controller
     {
         $institucion = Institucion::get();
 
-        return view('institucion.index', compact('institucion'));
+        return view('inspiniaViews.institucion.index', compact('institucion'));
 
     }
 

@@ -11,9 +11,9 @@ class CursosController extends Controller
 {
     public function index()
     {
-        $curso = Cursos::all();
+        $cursos = Cursos::all();
 
-        return view('curso.index', compact('curso'));
+        return view('inspiniaViews.cursos.index', compact('cursos'));
     }
 
 
@@ -21,18 +21,23 @@ class CursosController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|min:1|max:100',
+<<<<<<< HEAD
             'estado' => 'required|string|min:1|max:255',
             'duracion' =>  'required|integer|min:1|max:15'
+=======
+            'categoria' => 'required|string|min:1|max:255',
+            'duracion' =>  'required|string|min:1|max:15'
+>>>>>>> d5eaff6534ec5fec88a2aac012614c03b109ca6f
         ]);
 
         Cursos::create([
-            'nombre' => $request->especializacion,
-            'categoria' => $request->descripcion,
+            'nombre' => $request->nombre,
+            'categoria' => $request->categoria,
             'duracion' => $request->duracion
         ]);
 
         
-        return redirect()->route('curso.index');
+        return redirect()->route('cursos.index');
 
     }
 
@@ -67,7 +72,7 @@ class CursosController extends Controller
 
         $curso->update($request->all());
 
-        return redirect()->route('curso.index');
+        return redirect()->route('cursos.index');
 
     }
 
@@ -78,7 +83,18 @@ class CursosController extends Controller
 
         $curso->delete();
 
-        return redirect()->route('curso.index');
+        return redirect()->route('cursos.index');
 
+    }
+
+    public function activarInactivar($curso_id)
+    {
+        $curso = Cursos::findOrFail($curso_id);
+
+        $curso->estado = !$curso->estado;
+
+        $curso->save();
+
+        return redirect()->route('cursos.index');
     }
 }

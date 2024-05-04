@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Candidatos;
 use App\Models\Institucion;
 use App\Models\Carrera;
+use App\Models\Area;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCandidatosRequest;
 use App\Http\Requests\UpdateCandidatosRequest;
@@ -28,13 +29,13 @@ class CandidatosController extends Controller
         $instituciones = Institucion::all();
         $carreras = Carrera::all();
 
-        return view('candidatos.index', compact('candidatos', 'instituciones', 'carreras'));
+        return view('inspiniaViews.candidatos.index', compact('candidatos', 'instituciones', 'carreras'));
     }
 
     public function getFormToColab($candidato_id){
         $candidato = Candidatos::findOrFail($candidato_id);
-
-        return view('candidatos.form-candidatos', ['candidato' => $candidato]);
+        $areas = Area::get();
+        return view('inspiniaViews.candidatos.form-candidatos', ['candidato' => $candidato], compact('areas'));
     }
 
     public function store(Request $request)

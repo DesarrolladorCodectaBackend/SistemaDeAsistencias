@@ -6,16 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA | Colaboradores</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="{{asset('css/plugins/switchery/switchery.css')}}" rel="stylesheet">
-
-    <!-- Toastr style -->
-    <link href="{{asset('css/plugins/toastr/toastr.min.css')}}" rel="stylesheet">
-
-    <link href="../../css/animate.css" rel="stylesheet">
-    <link href="../../css/style.css" rel="stylesheet">
-    <link href="../../css/inspinia.css" rel="stylesheet">
 </head>
 
 <body>
@@ -206,15 +196,19 @@
                                 <div class="m-t text-righ">
 
                                     <a href="#" data-toggle="model"> <i></i> </a>
+                                    <form id="horario-clase-{{$colaborador->id}}" role="form" method="GET"
+                                        action="{{route('colaboradores.horarioClase', $colaborador->id)}}">
+                                    </form>
                                     <div class="ibox-content">
                                         <div class="text-right">
                                             <button class="btn btn-primary btn-danger fa fa-trash"
                                                 style="font-size: 20px;" type="button"
                                                 onclick="confirmDelete({{ $colaborador->id }})"></button>
                                             <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
-                                                style="font-size: 20px;" type="button"
-                                                href="#modal-form-update{{$colaborador->id}}"
-                                                data-toggle="modal"></button>
+                                                style="font-size: 20px;"
+                                                onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
+                                            <button class="btn btn-primary btn-warning fa fa-book mx-1"
+                                                style="font-size: 20px;" ></button>
                                             <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                 style="font-size: 20px;"
                                                 href="#modal-form-view{{$colaborador->id}}"></button>
@@ -267,7 +261,8 @@
                                                                             <option value="{{ $institucion->id }}"
                                                                                 @if($institucion->id ==
                                                                                 old('institucion_id',
-                                                                                $colaborador->candidato->institucion_id)) selected
+                                                                                $colaborador->candidato->institucion_id))
+                                                                                selected
                                                                                 @endif>{{ $institucion->nombre }}
                                                                             </option>
                                                                             @endforeach
@@ -321,7 +316,8 @@
                                                                             @foreach($carreras as $carrera)
                                                                             <option value="{{ $carrera->id }}"
                                                                                 @if($carrera->id == old('carrera_id',
-                                                                                $colaborador->candidato->carrera_id)) selected
+                                                                                $colaborador->candidato->carrera_id))
+                                                                                selected
                                                                                 @endif>{{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
@@ -427,6 +423,33 @@
     @include('components.inspinia.footer-inspinia')
     </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const personal = document.getElementById('personalCont');
+            if (personal) {
+                personal.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const colabCont = document.getElementById('colaboradoresCont');
+            if (colabCont) {
+                colabCont.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'colaboradoresCont' no se encontró en el DOM.");
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const colaborador = document.getElementById('colaboradores');
+            if (colaborador) {
+                colaborador.classList.add('active');
+            } else {
+                console.error("El elemento con el id 'colaboradores' no se encontró en el DOM.");
+            }
+        });
+    </script>
 
     <script>
         function hideModal(modalId) {

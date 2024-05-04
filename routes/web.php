@@ -2,9 +2,13 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
+use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradoresController;
+use App\Http\Controllers\CursosController;
+use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgramasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,12 +51,21 @@ Route::middleware('auth')->group(function () {
     Route::resource('areas', AreaController::class);
     Route::resource('institucion', InstitucionController::class);
     Route::post('institucion/{institucion}/activar-inactivar', [InstitucionController::class,'activarInactivar'])->name('institucion.activarInactivar');
+    Route::resource('carreras', CarreraController::class);
+    Route::post('carreras/{carreras}/activar-inactivar', [CarreraController::class,'activarInactivar'])->name('carreras.activarInactivar');
+    Route::resource('cursos', CursosController::class);
+    Route::post('cursos/{cursos}/activar-inactivar', [CursosController::class,'activarInactivar'])->name('cursos.activarInactivar');
+    Route::resource('programas', ProgramasController::class);
+    Route::post('programas/{programas}/activar-inactivar', [ProgramasController::class,'activarInactivar'])->name('programas.activarInactivar');
     Route::resource('candidatos', CandidatosController::class);
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     //Route::get('/candidatos/form-candidatos', function () {return view('candidatos.form-candidatos');})->name('candidatos.form');
     Route::resource('colaboradores', ColaboradoresController::class);
+    //Route::get('/horarioClase/{colaborador_id}', [ColaboradoresController::class, 'getHorarioClases'])->name('colaboradores.horarioClase');
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
-    
+    Route::resource('horarioClase', HorarioDeClasesController::class);
+    Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
+
 });
 
 require __DIR__ . '/auth.php';
