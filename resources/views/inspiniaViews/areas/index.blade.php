@@ -37,14 +37,14 @@
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Especializacion</label> <input type="text"
-                                                    placeholder="....." class="form-control" name="especializacion">
+                                                    placeholder="....." class="form-control" name="especializacion" required>
                                             </div>
                                             <div class="form-group"><label>Descripcion</label> <input type="text"
-                                                    placeholder="....." class="form-control" name="descripcion">
+                                                    placeholder="....." class="form-control" name="descripcion" required>
                                             </div>
                                             <div class="form-group"><label>Color Hex</label>
                                                 <input type="color" placeholder="....." class="form-control"
-                                                    name="color_hex">
+                                                    name="color_hex" required>
                                             </div>
 
                                         </div>
@@ -115,19 +115,19 @@
                                                                     <input type="text" placeholder="....."
                                                                         class="form-control" name="especializacion"
                                                                         id="especializacion"
-                                                                        value="{{ old('especializacion', $area->especializacion) }}">
+                                                                        value="{{ old('especializacion', $area->especializacion) }}" required>
                                                                 </div>
                                                                 <div class="form-group"><label>Descripción</label>
                                                                     <input type="text" placeholder="....."
                                                                         class="form-control" name="descripcion"
                                                                         id="descripcion"
-                                                                        value="{{ old('descripcion', $area->descripcion) }}">
+                                                                        value="{{ old('descripcion', $area->descripcion) }}" required>
                                                                 </div>
                                                                 <div class="form-group"><label>Color Hex</label> <input
                                                                         type="color" placeholder="....."
                                                                         class="form-control" name="color_hex"
                                                                         id="color_hex"
-                                                                        value="{{ old('color_hex', $area->color_hex) }}">
+                                                                        value="{{ old('color_hex', $area->color_hex) }}" required>
                                                                 </div>
 
                                                             </div>

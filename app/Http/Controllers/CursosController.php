@@ -21,8 +21,13 @@ class CursosController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|min:1|max:100',
+<<<<<<< HEAD
+            'estado' => 'required|string|min:1|max:255',
+            'duracion' =>  'required|integer|min:1|max:15'
+=======
             'categoria' => 'required|string|min:1|max:255',
             'duracion' =>  'required|string|min:1|max:15'
+>>>>>>> d5eaff6534ec5fec88a2aac012614c03b109ca6f
         ]);
 
         Cursos::create([
