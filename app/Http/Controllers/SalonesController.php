@@ -15,6 +15,12 @@ class SalonesController extends Controller
     {
         $salones = Salones::get();
 
+        foreach($salones as $salon){
+            $maquinas = Maquinas::where('salon_id', $salon->id)->get();
+            $conteoMaquinas = $maquinas->count();
+            $salon->cant_maquinas = $conteoMaquinas;
+        }
+
         return view('inspiniaViews.salones.index', compact('salones'));
     }
     
@@ -97,6 +103,17 @@ class SalonesController extends Controller
         $salon->estado = !$salon->estado;
 
         $salon->save();
+
+        return redirect()->route('salones.index');
+    }
+
+    public function activarInactivarMaquina($maquina_id)
+    {
+        $maquina = Maquinas::findOrFail($maquina_id);
+
+        $maquina->estado = !$maquina->estado;
+
+        $maquina->save();
 
         return redirect()->route('salones.index');
     }

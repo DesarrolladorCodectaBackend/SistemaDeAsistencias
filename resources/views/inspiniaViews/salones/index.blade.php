@@ -78,7 +78,7 @@
         <div class="wrapper wrapper-content animated fadeInRight col-md-12">
             <div class="row">
                 @foreach ($salones as $index => $salon)
-                    @if ($index % 4 == 0)
+                @if ($index % 4 == 0)
             </div>
             <div class="row">
                 @endif
@@ -122,7 +122,7 @@
                                     <h3><strong>Cantidad De Maquinas</strong></h3>
                                 </small>
                                 <div class="small m-t-xs text-center">
-                                    <h5>0</h5>
+                                    <h5>{{$salon->cant_maquinas}}</h5>
                                 </div>
                                 <div class="m-t text-righ">
 
@@ -133,10 +133,10 @@
                                                 style="font-size: 20px;" type="button"
                                                 onclick="confirmDelete({{ $salon->id }})"></button>
                                             <a data-toggle="modal" class="btn btn-primary fa fa-edit"
-                                                style="font-size: 20px;"
-                                                href="#modal-form-update-{{ $salon->id }}"></a>
-                                            <button type="button" class="btn btn-primary btn-success fa fa-eye" data-toggle="modal"
-                                                data-target="#modal-form-view" style="font-size: 20px;" data-salon-id="{{ $salon->id }}"></button>
+                                                style="font-size: 20px;" href="#modal-form-update-{{ $salon->id }}"></a>
+                                            <button type="button" class="btn btn-primary btn-success fa fa-eye"
+                                                data-toggle="modal" data-target="#modal-form-view-{{ $salon->id }}"
+                                                style="font-size: 20px;" data-salon-id="{{ $salon->id }}"></button>
 
                                         </div>
                                         <style>
@@ -145,7 +145,7 @@
 
                                             }
                                         </style>
-                                        <div class="modal fade" id="modal-form-view" aria-hidden="true">
+                                        <div class="modal fade" id="modal-form-view-{{ $salon->id }}" aria-hidden="true">
                                             <div class="modal-dialog modal-custom">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
@@ -188,8 +188,8 @@
 
                                                                     <div class="form-group"><label>
                                                                             <h3 class="m-t-none m-b">Descripcion</h3>
-                                                                        </label><input type="text"
-                                                                            name="descripcion" class="form-control"
+                                                                        </label><input type="text" name="descripcion"
+                                                                            class="form-control"
                                                                             value="{{ old('descripcion', $salon->descripcion) }}">
                                                                     </div>
 
@@ -279,11 +279,23 @@
                         var maquinasHtml = '';
                         $.each(response, function(index, maquina) {
                             maquinasHtml += '<div class="col-md-4">';
-                            maquinasHtml += '<h2 class="text-center">Máquina ' + maquina.id + '</h2>';
+                            maquinasHtml += '<div class="ibox">';
+                            maquinasHtml += '<div class="ibox-content product-box">';
+                            maquinasHtml += '<div class="row">';
+                            maquinasHtml += '<div class="col-sm-6 b-r>';
+
+                            maquinasHtml += '<h2 class="text-center"> ' + maquina.nombre + '</h2>';
                             maquinasHtml += '<p class="text-center"><img src="{{asset('img/pc.jpg')}}" class="rounded-circle h-150"></p>';
-                            maquinasHtml += '<p class="text-center"><input type="checkbox" class="js-switch_4" checked /><a style="color: black;">Activo</a></p>';
+                            
+                            maquinasHtml += '<form method="POST" action="/salones/' + maquina.id + '/activar-inactivar-maquina">';
+                            maquinasHtml += '@csrf'; 
+                            maquinasHtml += '<button type="submit" class="btn btn-' + (maquina.estado ? 'outline-success' : 'danger') + ' btn-primary dim btn-xs">';
+                            maquinasHtml += '<span>' + (maquina.estado ? 'Activo' : 'Inactivo') + '</span>';
+                            maquinasHtml += '</button>';
+                            maquinasHtml += '</form>';
+
                             maquinasHtml += '</div>';
-                            maquinasHtml += '<div class="col-md-8">';
+                            maquinasHtml += '<div class="col-md-6">';
                             maquinasHtml += '<form role="form">';
                             maquinasHtml += '<dl class="row mb-2">';
                             maquinasHtml += '<div class="col-sm-12 text-sm-left">';
@@ -309,7 +321,12 @@
                             maquinasHtml += '<dd class="sm-2">' + maquina.salon_id + '</dd>';
                             maquinasHtml += '</div>';
                             maquinasHtml += '</dl>';
+                            maquinasHtml += '</div>';
                             maquinasHtml += '</form>';
+                            
+                            maquinasHtml += '</div>';
+                            maquinasHtml += '</div>';
+                            maquinasHtml += '</div>';
                             maquinasHtml += '</div>';
                         });
                         modal.find('#maquinas-content').html(maquinasHtml);

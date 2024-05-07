@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::post('programas/{programas}/activar-inactivar', [ProgramasController::class,'activarInactivar'])->name('programas.activarInactivar');
     Route::resource('salones', SalonesController::class);
     Route::post('salones/{salones}/activar-inactivar', [SalonesController::class,'activarInactivar'])->name('salones.activarInactivar');
+    Route::post('salones/{maquina}/activar-inactivar-maquina', [SalonesController::class, 'activarInactivarMaquina'])->name('salones.activarInactivarMaquina');
     Route::get('/salones/{salon}/maquinas', [SalonesController::class, 'salonMaquinas']);
     Route::resource('maquinas', MaquinasController::class);
     Route::post('maquinas/{maquinas}/activar-inactivar', [MaquinasController::class,'activarInactivar'])->name('maquinas.activarInactivar');

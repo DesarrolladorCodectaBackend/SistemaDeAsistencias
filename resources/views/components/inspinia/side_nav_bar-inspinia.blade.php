@@ -129,7 +129,7 @@
                 </ul>
             </li>
             <li id="maquinas">
-                <a href="../maquinas"><span class="nav-label">Maquinas</span></a>
+                <a href="../maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
             </li>
             <li id="salones">
                 <a href="../salones"><i class="fa fa-address-card-o"></i> <span
