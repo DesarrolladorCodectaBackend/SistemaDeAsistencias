@@ -34,8 +34,8 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
+                                <div class="row" style="display: flex; justify-content:center; align-items:center">
+                                    <div class="col-sm-11">
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
 
                                         <!--
@@ -49,10 +49,10 @@
                                             </div>
                                             <div class="form-group"><label>Categoria</label> <input type="text"
                                                 placeholder="Ingrese un nombre" name="categoria" class="form-control">
-                                        </div>
-                                        <div class="form-group"><label>Duracion</label> <input type="text"
-                                            placeholder="Ingrese un nombre" name="duracion" class="form-control">
-                                    </div>
+                                            </div>
+                                            <div class="form-group"><label>Duracion</label> <input type="text"
+                                                placeholder="Ingrese un nombre" name="duracion" class="form-control">
+                                            </div>
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                     type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
@@ -123,8 +123,8 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-sm-6 b-r">
+                                                <div class="row" style="display: flex; justify-content:center; align-items:center">
+                                                    <div class="col-sm-11 b-r">
                                                         <h3 class="m-t-none m-b">Editar</h3>
 
                                                         <!--
@@ -140,6 +140,12 @@
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
                                                                     value="{{ old('nombre', $curso->nombre) }}">
+                                                            </div>
+                                                            <div class="form-group"><label>Categoria</label> <input type="text"
+                                                                placeholder="....." name="categoria" value="{{ old('categoria', $curso->categoria) }}" class="form-control">
+                                                            </div>
+                                                            <div class="form-group"><label>Duracion</label> <input type="text"
+                                                                placeholder="....." name="duracion" value="{{ old('duracion', $curso->duracion) }}" class="form-control">
                                                             </div>
                                                             <div>
                                                                 <button

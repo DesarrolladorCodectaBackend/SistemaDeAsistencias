@@ -23,7 +23,8 @@ class CandidatosController extends Controller
         return view('inspiniaViews.candidatos.index', compact('candidatos', 'instituciones', 'carreras'));
     }
 
-    public function getFormToColab($candidato_id){
+    public function getFormToColab($candidato_id)
+    {
         $candidato = Candidatos::findOrFail($candidato_id);
         $areas = Area::get();
         return view('inspiniaViews.candidatos.form-candidatos', ['candidato' => $candidato], compact('areas'));
@@ -104,28 +105,32 @@ class CandidatosController extends Controller
             'celular' => 'sometimes|string|min:1|max:20',
             'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
         ]);
-        
+
         $candidato = Candidatos::findOrFail($candidato_id);
         $datosActualizar = $request->except(['icono']);
 
         if ($request->hasFile('icono')) {
             $rutaPublica = public_path('storage/candidatos');
-            if ($candidato->icono && $candidato->icono != 'Default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
+
+            // Verificar si el icono actual no es el predeterminado
+            if ($candidato->icono && $candidato->icono !== 'default.png') {
+                // Eliminar el icono actual si no es el predeterminado
                 unlink($rutaPublica . '/' . $candidato->icono);
             }
-    
+
             $icono = $request->file('icono');
             $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-    
+
             $icono->move($rutaPublica, $nombreIcono);
-    
+
             $datosActualizar['icono'] = $nombreIcono;
         }
 
         $candidato->update($datosActualizar);
-        
+
         return redirect()->route('candidatos.index');
     }
+
 
 
     public function destroy($candidato_id)

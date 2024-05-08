@@ -21,13 +21,8 @@ class CursosController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|min:1|max:100',
-<<<<<<< HEAD
             'estado' => 'required|string|min:1|max:255',
             'duracion' =>  'required|integer|min:1|max:15'
-=======
-            'categoria' => 'required|string|min:1|max:255',
-            'duracion' =>  'required|string|min:1|max:15'
->>>>>>> d5eaff6534ec5fec88a2aac012614c03b109ca6f
         ]);
 
         Cursos::create([
@@ -61,16 +56,21 @@ class CursosController extends Controller
 
     public function update(Request $request, $curso_id)
     {
+        
         $request->validate([
-            'nombre' => 'required|string|min:1|max:100',
-            'categoria' => 'required|string|min:1|max:255',
-            'duracion' =>  'required|integer|min:1|max:15'
+            'nombre' => 'sometimes|string|min:1|max:100',
+            'categoria' => 'sometimes|string|min:1|max:255',
+            'duracion' =>  'sometimes|string|min:1|max:15'
         ]);
         
         $curso = Cursos::findOrFail($curso_id);
 
-
-        $curso->update($request->all());
+        
+        $curso->fill([
+            "nombre" => $request->nombre,
+            "categoria" => $request->categoria,
+            "duracion" => $request->duracion
+        ])->save();
 
         return redirect()->route('cursos.index');
 

@@ -41,8 +41,8 @@ class ProgramasController extends Controller
             $icono = $request->file('icono');
             $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
             $icono->move(public_path('storage/programas'), $nombreIcono);
-        }else {
-            $nombreIcono = 'Default.png'; 
+        } else {
+            $nombreIcono = 'default.png';
         }
 
 
@@ -52,11 +52,11 @@ class ProgramasController extends Controller
             'icono' => $nombreIcono
         ]);
 
-        
+
         return redirect()->route('programas.index');
     }
 
-    
+
     public function show($programa_id)
     {
         $programa = Programas::find($programa_id);
@@ -64,7 +64,7 @@ class ProgramasController extends Controller
         return response()->json(["data" => $programa]);
     }
 
-    
+
     public function update(Request $request, $programa_id)
     {
         $request->validate([
@@ -72,22 +72,25 @@ class ProgramasController extends Controller
             "descripcion" => "sometimes|string|min:1|max:500",
             "icono" => "image|mimes:jpeg,png,jpg,gif"
         ]);
-        
+
         $programa = Programas::findOrFail($programa_id);
-        
+
         $datosActualizar = $request->except(['icono']);
 
         if ($request->hasFile('icono')) {
             $rutaPublica = public_path('storage/programas');
-            if ($programa->icono && $programa->icono != 'Default.png' && file_exists($rutaPublica . '/' . $programa->icono)) {
+        
+            // Verificar si el icono actual no es el predeterminado
+            if ($programa->icono && $programa->icono !== "default.png") {
+                // Eliminar el icono actual si no es el predeterminado
                 unlink($rutaPublica . '/' . $programa->icono);
             }
-    
+        
             $icono = $request->file('icono');
             $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-    
+        
             $icono->move($rutaPublica, $nombreIcono);
-    
+        
             $datosActualizar['icono'] = $nombreIcono;
         }
 
@@ -96,7 +99,8 @@ class ProgramasController extends Controller
         return redirect()->route('programas.index');
     }
 
-    
+
+
     public function destroy($programa_id)
     {
         $programa = Programas::findOrFail($programa_id);

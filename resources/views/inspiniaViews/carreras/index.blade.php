@@ -34,8 +34,8 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
+                                <div class="row" style="display: flex; justify-content:center; align-items:center">
+                                    <div class="col-sm-11">
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
 
                                         <!--
@@ -113,8 +113,8 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-sm-6 b-r">
+                                                <div class="row" style="display: flex; justify-content:center; align-items:center">
+                                                    <div class="col-sm-11 b-r">
                                                         <h3 class="m-t-none m-b">Editar</h3>
 
                                                         <!--
