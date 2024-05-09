@@ -11,17 +11,9 @@ class Asistentes_ClaseController extends Controller
 {
     public function index()
     {
-        try{
-            $asistentes_clases = Asistentes_Clase::/*with('colaboradores')->*/get();
+        $asistente_clase = Asistentes_Clase::all();
 
-            if(count($asistentes_clases) == 0){
-                return response()->json(["resp" => "No hay registros insertados"]);
-            }
-
-            return response()->json(["data" => $asistentes_clases, "conteo" => count($asistentes_clases)]);
-        } catch(Exception $e){
-            return response()->json(["error" => $e]);
-        }
+        return view('inspiniaViews.asistente_clase.index', compact('asistente_clase'));
 
     }
 
@@ -67,6 +59,24 @@ class Asistentes_ClaseController extends Controller
         }
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'colaborador_id' => 'required|integer|min:1|max:100',
+            'clase_id' => 'required|integer|min:1|max:255',
+            'asistio' => 'required|boolean|min:1|max:7'
+        ]);
+
+        Asistentes_Clase::create([
+            'colaborador_id' => $request->colaborador_id,
+            'clase_id' => $request->clase_id,
+            'asistio' => $request->asistio
+        ]);
+
+        return redirect()->route('asistente_clase.index');
+
+    }
+
     
     public function show($asistente_clase_id)
     {
@@ -87,70 +97,27 @@ class Asistentes_ClaseController extends Controller
     
     public function update(Request $request, $asistente_clase_id)
     {
-        DB::beginTransaction();
-        try{
-            $asistente_clase = Asistentes_Clase::find($asistente_clase_id);
+        $request->validate([
+            'colaborador_id' => 'required|integer|min:1|max:100',
+            'clase_id' => 'required|integer|min:1|max:255',
+            'asistio' => 'required|boolean|min:1|max:7'
+        ]);
 
-            if(!$asistente_clase){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $asistente_clase = Asistentes_Clase::findOrFail($asistente_clase_id);
 
-            if(!$request->colaborador_id){
-                return response()->json(["resp" => "Ingrese colaborador"]);
-            }
+        $asistente_clase->update($request->all());
 
-            if(!$request->clase_id){
-                return response()->json(["resp" => "Ingrese clase"]);
-            }
-
-            if(!$request->asistio){
-                return response()->json(["resp" => "Ingrese si asistio"]);
-            }
-
-            if(!is_integer($request->colaborador_id)){
-                return response()->json(["resp" => "El id del colaborador debe ser un número entero"]);
-            }
-
-            if(!is_integer($request->clase_id)){
-                return response()->json(["resp" => "El id de la clase debe ser un número entero"]);
-            }
-
-            if(!is_bool($request->asistio)){
-                return response()->json(["resp" => "Asistio debe ser un booleano"]);
-            }
-
-            $asistente_clase->fill([
-                "colaborador_id" => $request->colaborador_id,
-                "clase_id" => $request->clase_id,
-                "asistio" => $request->asistio
-            ])->save();
-            DB::commit();
-            return response()->json(["resp" => "Registro actualizado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('asistente_clase.index');
 
     }
 
     
     public function destroy($asistente_clase_id)
     {
-        DB::beginTransaction();
-        try{
-            $asistente_clase = Asistentes_Clase::find($asistente_clase_id);
+        $asistente_clase = Asistentes_Clase::findOrFail($asistente_clase_id);
 
-            if(!$asistente_clase){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $asistente_clase->delete();
 
-            $asistente_clase->delete();
-            DB::commit();
-            return response()->json(["resp" => "Registro eliminado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
-
+        return redirect()->route('asistente_clase.index');
     }
 }

@@ -11,20 +11,9 @@ class ClaseController extends Controller
 {
     public function index()
     {
-        try{
-            $clases = Clase::/*with([
-                'horarios_virtuales' => function($query) {$query->select('id', 'hora_inicial', 'hora_final');},
-                'colaboradores' => function($query) {$query->select('id', 'candidato_id');}])->*/get();
+        $clase = Clase::all();
 
-            if (count($clases) == 0) {
-                return response()->json(["resp" => "No hay registros insertados"]);
-            }
-
-            return response()->json(["data" => $clases, "conteo" => count($clases)]);
-        } catch (Exception $e){
-            return response()->json(["error" => $e]);
-        }
-
+        return view('inspiniaViews.clase.index', compact('clase'));
     }
 
     
@@ -80,6 +69,26 @@ class ClaseController extends Controller
 
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'hora_inicial' => 'required|string|min:1|max:100',
+            'hora_final' => 'required|string|min:1|max:255',
+            'dia' => 'required|string|min:1|max:7',
+            'curso_id' => 'required|integer|min:1|max:7',
+
+        ]);
+
+        Clase::create([
+            "hora_inicial" => $request->hora_inicial,
+            "hora_final" => $request->hora_final,
+            "dia" => $request->dia,
+            "curso_id" => $request->curso_id
+        ]);
+
+        return redirect()->route('inspiniaViews.clase.index');
+    }
+
     
     public function show($clase_id)
     {
@@ -102,82 +111,29 @@ class ClaseController extends Controller
     
     public function update(Request $request, $clase_id)
     {
-        DB::beginTransaction();
-        try{
-            $clase = Clase::find($clase_id);
+        $request->validate([
+            'hora_inicial' => 'required|string|min:1|max:100',
+            'hora_final' => 'required|string|min:1|max:255',
+            'dia' => 'required|string|min:1|max:7',
+            'curso_id' => 'required|integer|min:1|max:7',
 
-            if (!$clase_id){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        ]);
 
-            if(!$request->hora_inicial){
-                return response()->json(["resp" => "Ingrese hora inicial"]);
-            }
+        $clase = Clase::findOrFail($clase_id);
 
-            if(!$request->hora_final){
-                return response()->json(["resp" => "Ingrese hora final"]);
-            }
+        $clase->update($request->all());
 
-            if(!$request->dia){
-                return response()->json(["resp" => "Ingrese dia"]);
-            }
-
-            if(!$request->curso_id){
-                return response()->json(["resp" => "Ingrese curso"]);
-            }
-
-            if(!is_string($request->hora_inicial)){
-                return response()->json(["resp" => "La hora inicial debe ser un texto"]);
-            }
-
-            if(!is_string($request->hora_final)){
-                return response()->json(["resp" => "La hora final debe ser un texto"]);
-            }
-
-            if(!is_string($request->dia)){
-                return response()->json(["resp" => "El dia debe ser un texto"]);
-            }
-
-            if(!is_integer($request->curso_id)){
-                return response()->json(["resp" => "El curso debe ser un número entero"]);
-            }
-
-            $clase->fill([
-                "hora_inicial" => $request->hora_inicial,
-                "hora_final" => $request->hora_final,
-                "dia" => $request->dia,
-                "curso_id" => $request->curso_id
-            ])->save();
-            
-            DB::commit();
-            return response()->json(["resp" => "Registro actualizado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
+        return redirect()->route('inspiniaViews.clase.index');
 
     }
 
     
     public function destroy($clase_id)
     {
-        DB::beginTransaction();
-        
-        try{
-            $clase = Clase::find($clase_id);
+        $clase = Clase::findOrFail($clase_id);
 
-            if (!$clase){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
+        $clase->delete();
 
-            $clase->delete();
-
-            DB::commit();
-            return response()->json(["resp" => "Registro eliminado correctamente"]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
-
+        return redirect()->route('inspiniaViews.clase.index');
     }
 }
