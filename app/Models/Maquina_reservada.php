@@ -14,11 +14,11 @@ class Maquina_reservada extends Model
         'maquina_id'
     ];
 
-    public function maquinas(){
+    public function maquina(){
         return $this->belongsTo(Maquinas::class, 'maquina_id', 'id');
     }   
 
-    public function horarios_presenciales(){
+    public function horario_presenciale(){
         return $this->belongsTo(Horarios_Presenciales::class, 'horario_presencial_id', 'id');
     }
 }

@@ -15,4 +15,8 @@ class Registro_Mantenimiento extends Model
         'registro_incidencia'
     ];
 
+    public function computadora(){
+        return $this->belongsTo(Computadora_colaborador::class, 'computadora_id', 'id');
+    }
+
 }

@@ -32,7 +32,7 @@ class Candidatos extends Model
         return $this->belongsTo(Carrera::class, 'carrera_id', 'id');
     }
 
-    public function colaboradores(){
+    public function colaborador(){
         return $this->hasOne(Colaboradores::class, 'candidato_id', 'id');
     }
 

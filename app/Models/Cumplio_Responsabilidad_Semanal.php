@@ -16,4 +16,10 @@ class Cumplio_Responsabilidad_Semanal extends Model
         'cumplio'
     ];
     
+    public function colaborador_por_area(){
+        return $this->belongsTo(Colaboradores_por_Area::class, 'colaborador_id', 'id');
+    }
+    public function responsabilidad_semanal(){
+        return $this->belongsTo(Responsabilidades_semanales::class, 'responsabilidad_id', 'id');
+    }
 }

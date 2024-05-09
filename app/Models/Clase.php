@@ -15,4 +15,8 @@ class Clase extends Model
         'dia',
         'curso_id'
     ];
+
+    public function curso(){
+        return $this->belongsTo(Cursos::class, 'curso_id', 'id');
+    }
 }

@@ -106,6 +106,7 @@ Route::post('responsabilidad_semanal/store', [Responsabilidades_SemanalesControl
 Route::get('responsabilidad_semanal/show/{responsabilidad_semanal_id}', [Responsabilidades_SemanalesController::class,'show']);
 Route::put('responsabilidad_semanal/update/{responsabilidad_semanal_id}', [Responsabilidades_SemanalesController::class,'update']);
 Route::delete('responsabilidad_semanal/delete/{responsabilidad_semanal_id}', [Responsabilidades_SemanalesController::class,'destroy']);
+Route::get('respon/{area_id}', [Responsabilidades_SemanalesController::class, 'getMesesAreas']);
 
 //CURSOS
 Route::get('curso/get', [CursosController::class,'index']);

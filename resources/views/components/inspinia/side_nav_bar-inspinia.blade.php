@@ -20,7 +20,7 @@
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element">
-                    <img alt="image" class="rounded-circle img-lg" src="../img/image.png" />
+                    <img alt="image" class="rounded-circle img-lg" src="{{asset('img/image.png')}}" />
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <span class="block m-t-xs font-bold">Administrador</span>
                         <span class="text-muted text-xs block">Art Director <b class="caret"></b></span>
@@ -66,35 +66,11 @@
                 <a href="layouts.html"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse">
-                    <li id="candidatosCont">
-                        <a href="../candidatos">Candidatos<span class="fa arrow"></span></a>
-                        <ul class="nav nav-third-level">
-                            <li id="candidatos">
-                                <a href="../candidatos">Candidatos</a>
-                            </li>
-                            <li>
-                                <a href="../candidatos/form-candidatos">Formulario</a>
-                            </li>
-                        </ul>
+                    <li id="candidatos">
+                        <a href="/candidatos">Candidatos</a>
                     </li>
-                    <li id="colaboradoresCont">
-                        <a href="../colaboradores">Colaboradores<span class="fa arrow"></span></a>
-                        <ul class="nav nav-third-level">
-                            <li id="colaboradores">
-                                <a href="../colaboradores">Colaboradores</a>
-                            </li>
-                            <li class="">
-                                <a href="form-candidatos-colab.html">Candidato a Colab</a>
-                            </li>
-                            <li>
-                                <a href="form-horario-clase.html">Horario Clase</a>
-
-                            </li>
-
-                            <li>
-                                <a href="horario-clase-semanal.html">Horario Semanal</a>
-                            </li>
-                        </ul>
+                    <li id="colaboradores">
+                        <a href="/colaboradores">Colaboradores</a>
                     </li>
 
 
@@ -117,32 +93,25 @@
 
             </li>
             <li id="areas">
-                <a href="../areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
+                <a href="/areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
             <li>
-                <a href=""><i class="fa fa-list-alt"></i> <span
-                        class="nav-label">Responsabilidades</span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="responsabilidades_areas.html">Areas</a></li>
-                    <li><a href="responsabilidades-semanas.html">Semanas</a></li>
-                    <li><a href="responsabilidades-asis.html">Asistencia</a></li>
-                </ul>
+                <a href="/responsabilidades"><i class="fa fa-list-alt"></i> <span class="nav-label">Responsabilidades</span></a>
             </li>
             <li id="maquinas">
-                <a href="../maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
+                <a href="/maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
             </li>
             <li id="salones">
-                <a href="../salones"><i class="fa fa-address-card-o"></i> <span
-                        class="nav-label">Salones</span></a>
+                <a href="/salones"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
             </li>
             <li id="ajustesCont">
                 <a href=""><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li id="instituciones"><a href="../institucion">Institucion</a></li>
-                    <li id="carreras"><a href="../carreras">Carrera</a></li>
-                    <li id="cursos"><a href="../cursos">Curso</a></li>
-                    <li id="programas"><a href="../programas">Programas</a></li>
+                    <li id="instituciones"><a href="/institucion">Institucion</a></li>
+                    <li id="carreras"><a href="/carreras">Carrera</a></li>
+                    <li id="cursos"><a href="/cursos">Curso</a></li>
+                    <li id="programas"><a href="/programas">Programas</a></li>
                 </ul>
             </li>
             <li>

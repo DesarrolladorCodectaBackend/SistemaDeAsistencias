@@ -14,7 +14,7 @@ class Carrera extends Model
         'estado'
     ];
 
-    public function candidatos(){
+    public function candidato(){
         return $this->hasMany(Candidatos::class, 'carrera_id', 'id');
     }
 

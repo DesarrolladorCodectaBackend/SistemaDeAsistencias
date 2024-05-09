@@ -20,7 +20,7 @@ class Computadora_colaborador extends Model
         'codigo_serie'
     ];
 
-    public function colaboradores(){
+    public function colaborador(){
         return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
     }
 

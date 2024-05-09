@@ -4,13 +4,16 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradoresController;
+use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramasController;
+use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
+use App\Models\Cumplio_Responsabilidad_Semanal;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,6 +69,8 @@ Route::middleware('auth')->group(function () {
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
     Route::resource('horarioClase', HorarioDeClasesController::class);
     Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
+    Route::resource('responsabilidades', Cumplio_Responsabilidad_SemanalController::class);
+    Route::get('/responsabilidades/meses/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMesesAreas'])->name('responsabilidades.meses');
 
 });
 

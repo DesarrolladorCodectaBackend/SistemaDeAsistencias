@@ -16,7 +16,7 @@ class Colaboradores_por_Area extends Model
     ];
 
     
-    public function colaboradores(){
+    public function colaborador(){
         return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
     }
 

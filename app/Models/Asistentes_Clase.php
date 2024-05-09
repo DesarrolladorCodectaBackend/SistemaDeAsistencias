@@ -14,4 +14,8 @@ class Asistentes_Clase extends Model
         'clase_id',
         'asistio'
     ];
+
+    public function colaborador(){
+        return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
+    }
 }

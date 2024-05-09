@@ -15,4 +15,8 @@ class Cursos extends Model
         'duracion',
         'estado'
     ];
+
+    public function clase(){
+        return $this->hasMany(Clase::class, 'curso', 'id');
+    } 
 }

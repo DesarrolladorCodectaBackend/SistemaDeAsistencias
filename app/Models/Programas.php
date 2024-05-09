@@ -19,7 +19,7 @@ class Programas extends Model
         'almacenamiento'
     ];
 
-    public function programas_instalados(){
+    public function programa_instalado(){
         return $this->hasMany(Programas_instalados::class, 'programa_id', 'id');
     }
 

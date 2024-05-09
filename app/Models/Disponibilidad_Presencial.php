@@ -15,11 +15,11 @@ class Disponibilidad_Presencial extends Model
     ];
 
 
-    public function colaboradores(){
+    public function colaborador(){
         return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
     }
 
-    public function horarios_presenciales(){
+    public function horario_presencial(){
         return $this->belongsTo(Horarios_Presenciales::class, 'horarios_presenciales_id', 'id');
     }
 

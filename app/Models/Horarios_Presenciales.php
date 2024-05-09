@@ -16,11 +16,13 @@ class Horarios_Presenciales extends Model
     ];
 
 
+    /*
     public function disponibilidad_presencial(){
         return $this->hasMany(Disponibilidad_Presencial::class, 'horarios_presenciales_id', 'id');
     }
 
-    public function copy_of_maquinas(){
+    public function maquina_reservada(){
         return $this->hasMany(Maquina_reservada::class, 'horario_presencial_id', 'id');
     }
+    */
 }

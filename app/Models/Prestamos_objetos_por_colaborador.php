@@ -15,4 +15,11 @@ class Prestamos_objetos_por_colaborador extends Model
         'fecha_prestamo',
         'fecha_devolucion'
     ];
+
+    public function colaborador(){
+        return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
+    }
+    public function objeto(){
+        return $this->belongsTo(Objetos::class, 'objeto_id', 'id');
+    }
 }

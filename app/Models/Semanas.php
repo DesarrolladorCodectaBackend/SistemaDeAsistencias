@@ -12,4 +12,11 @@ class Semanas extends Model
     protected $fillable = [
         'fecha_lunes'
     ];
+
+
+    public function horario_virtual_colaborador(){
+        return $this->hasMany(Horario_virtual_colaborador::class, 'semana_id', 'id');
+    }
+
+
 }

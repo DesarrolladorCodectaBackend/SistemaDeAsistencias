@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cumplio_Responsabilidad_Semanal;
+use App\Models\Area;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -11,25 +12,35 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 {
     public function index()
     {
-        $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::all();
+        $areas = Area::get();
 
-        return view('cumplio_responsabilidad_semanal.index', compact('cumplio_responsabilidad_semanal'));
-        /*with([
-'computadora_colaborador' => function ($query) {
-$query->select(
-'id',
-'colaborador_id',
-'procesador',
-'tarjeta_grafica',
-'ram',
-'almacenamiento',
-'es_laptop',
-'codigo_serie'
-);
-},
-'programas' => function ($query) {
-$query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
-])->*/ 
+        return view('inspiniaViews.responsabilidades.index', compact('areas'));
+
+    }
+
+    public function getMesesAreas($area_id)
+    {
+        $area = Area::findOrFail($area_id);
+
+        $meses = [
+            ['id' => 1, 'nombre' => 'Enero'],
+            ['id' => 2, 'nombre' => 'Febrero'],
+            ['id' => 3, 'nombre' => 'Marzo'],
+            ['id' => 4, 'nombre' => 'Abril'],
+            ['id' => 5, 'nombre' => 'Mayo'],
+            ['id' => 6, 'nombre' => 'Junio'],
+            ['id' => 7, 'nombre' => 'Julio'],
+            ['id' => 8, 'nombre' => 'Agosto'],
+            ['id' => 9, 'nombre' => 'Septiembre'],
+            ['id' => 10, 'nombre' => 'Octubre'],
+            ['id' => 11, 'nombre' => 'Noviembre'],
+            ['id' => 12, 'nombre' => 'Diciembre']
+        ];
+        return view('inspiniaViews.responsabilidades.meses', ['area' => $area], compact('meses'));
+    }
+
+    public function getAsistenciasAreas($area_id){
+        $responsabilidades = Cumplio_Responsabilidad_Semanal::where('area_id');
     }
 
 

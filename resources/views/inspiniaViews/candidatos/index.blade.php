@@ -468,6 +468,7 @@
                 console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
             }
         });
+        /*
         document.addEventListener('DOMContentLoaded', function() {
             const candidatoCont = document.getElementById('candidatosCont');
             if (candidatoCont) {
@@ -476,6 +477,7 @@
                 console.error("El elemento con el id 'candidatosCont' no se encontró en el DOM.");
             }
         });
+        */
         document.addEventListener('DOMContentLoaded', function() {
             const candidato = document.getElementById('candidatos');
             if (candidato) {

@@ -13,4 +13,8 @@ class Objetos extends Model
         'nombre',
         'descripcion'
     ];
+
+    public function prestamo_objeto(){
+        return $this->hasMany(Prestamos_objetos_por_colaborador::class, 'objeto_id', 'id');
+    }
 }

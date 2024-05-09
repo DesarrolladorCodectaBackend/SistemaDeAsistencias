@@ -16,7 +16,7 @@ class Horario_de_Clases extends Model
         'dia'
     ];
 
-    public function colaboradores(){
+    public function colaborador(){
         return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
     }
 
