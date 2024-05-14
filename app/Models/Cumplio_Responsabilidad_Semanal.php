@@ -22,4 +22,7 @@ class Cumplio_Responsabilidad_Semanal extends Model
     public function responsabilidad_semanal(){
         return $this->belongsTo(Responsabilidades_semanales::class, 'responsabilidad_id', 'id');
     }
+    public function semana(){
+        return $this->belongsTo(Semanas::class, 'semana_id', 'id');
+    }
 }

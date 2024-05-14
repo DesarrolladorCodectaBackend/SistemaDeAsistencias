@@ -256,6 +256,8 @@ Route::post('cumplio_res_sem/store', [Cumplio_Responsabilidad_SemanalController:
 Route::get('cumplio_res_sem/show/{cumplio_res_sem_id}', [Cumplio_Responsabilidad_SemanalController::class,'show']);
 Route::put('cumplio_res_sem/update/{cumplio_res_sem_id}', [Cumplio_Responsabilidad_SemanalController::class,'update']);
 Route::delete('cumplio_res_sem/delete/{cumplio_res_sem_id}', [Cumplio_Responsabilidad_SemanalController::class,'destroy']);
+Route::get('cumplio_res_sem/getMesesArea/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMesesAreas']);
+Route::get('cumplio_res_sem/getFormAsistencias/{mes, registros}', [Cumplio_Responsabilidad_SemanalController::class, 'getMesesAreas']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

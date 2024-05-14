@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('semanas', function (Blueprint $table) {
+        Schema::create('meses', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('fecha_lunes');
+            $table->string('nombre');
+            $table->unsignedBigInteger('year_id');
+            $table->foreign('year_id')->references('id')->on('years');
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('semanas');
+        Schema::dropIfExists('meses');
     }
 };

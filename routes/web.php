@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
     Route::resource('responsabilidades', Cumplio_Responsabilidad_SemanalController::class);
     Route::get('/responsabilidades/meses/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMesesAreas'])->name('responsabilidades.meses');
+    Route::post('/responsabilidades/{mes}', [Cumplio_Responsabilidad_SemanalController::class, 'getFormAsistencias'])->name('responsabilidades.asis');
 
 });
 

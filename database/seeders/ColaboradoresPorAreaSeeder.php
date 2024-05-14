@@ -17,7 +17,7 @@ class ColaboradoresPorAreaSeeder extends Seeder
     {
         Colaboradores_por_Area::create([
             "colaborador_id" => 1,
-            "area_id" => 2,
+            "area_id" => 1,
             "semana_inicio_id" => NULL
         ]);
 

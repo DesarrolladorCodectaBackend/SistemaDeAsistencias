@@ -107,7 +107,7 @@
         <div>
             <table class="juntar">
                 <tr>
-                    <th> Marzo </th>
+                    <th> {{$mes}} </th>
                     <th class="semana" colspan="8">Semana: 1
                         <button onclick="avanzarSemana()">-></button>
 
@@ -115,79 +115,137 @@
                 </tr>
                 <tr>
                     <th> Área </th>
-                    <th class="area" colspan="8">Estructura</th>
+                    <th class="area" colspan="8">{{$area->especializacion}}</th>
                 </tr>
             </table>
             <table id="semana1">
+                <form id="cumplioStore1" role="form" method="POST" action="{{ route('responsabilidades.store') }}">
+                    @csrf
+                    <table id="semana1">
+                        <thead>
+                            <tr>
+                                <th> Colaboradores / Responsabilidades </th>
+                                @foreach($responsabilidades as $responsabilidad)
+                                <td class="respon">{{$responsabilidad->nombre}}</td>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($colaboradoresArea as $colaboradorArea)
+                            <tr>
+                                <th class="colabo">
+                                    {{$colaboradorArea->colaborador->candidato->nombre}}
+                                    {{$colaboradorArea->colaborador->candidato->apellido}}
+                                    <input type="number" name="colaborador_area_id[]" value="{{$colaboradorArea->id}}"
+                                        style="display: none">
+                                </th>
+                                @foreach($responsabilidades as $responsabilidad)
+                                <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
+                                    style="display: none">
+                                <td class="check" onclick="toggleCheck(this)">
+                                    <div>
+                                        <span></span>
+                                        <input type="number" name="cumplio[]" value="0" style="display: none">
+                                    </div>
+                                </td>
+                                @endforeach
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <button type="submit">Guardar</button>
+                </form>
+            </table>
+
+
+
+            <table id="semana2">
                 <thead>
                     <tr>
                         <th> Colaboradores / Responsabilidades </th>
-                        <td class="respon">Asistencia diaria</td>
-                        <td class="respon">Reuniones Virtuales</td>
-                        <td class="respon">Aportes de Ideas</td>
-                        <td class="respon">Participación</td>
-                        <td class="respon">Presentación de trabajos</td>
-                        <td class="respon">Lecturas</td>
-                        <td class="respon">Faltas justificadas</td>
+                        @foreach($responsabilidades as $responsabilidad)
+                        <td class="respon">{{$responsabilidad->nombre}} </td>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach($colaboradoresArea as $colaboradorArea)
                     <tr>
-                        <th class="colabo">Marlo Samaniego</th>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">❌</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
+                        <th class="colabo">{{$colaboradorArea->colaborador->candidato->nombre}}
+                            {{$colaboradorArea->colaborador->candidato->apellido}}</th>
+                        @foreach($responsabilidades as $responsabilidad)
+                        <td class="check" onclick="toggleCheck(this)"> </td>
+                        @endforeach
                     </tr>
-                    <tr>
-                        <th class="colabo">Daniel Roman</th>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                    </tr>
-                    <tr>
-                        <th class="colabo">Isabel Torres</th>
-                        <td class="check" onclick="toggleCheck(this)">❌</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                    </tr>
-                    <tr>
-                        <th class="colabo">Paolo Guerrero</th>
-                        <td class="check" onclick="toggleCheck(this)">❌</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                    </tr>
-                    <tr>
-                        <th class="colabo">Julio Flores</th>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">❌</td>
-                        <td class="check" onclick="toggleCheck(this)">❌</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                        <td class="check" onclick="toggleCheck(this)">✔️</td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
+
+            <div class="text-center">
+                <!--<button onclick="guardarCambios()" class="ladda-button btn btn-primary mr-5"
+                    data-style="expand-left">Guardar</button>-->
+                <a href="#" class="ladda-button btn btn-primary mr-5"
+                    onclick="document.getElementById('cumplioStore1').submit();">Guardar</a>
+                <button onclick="descartarCambios()" class="ladda-button btn btn-primary"
+                    data-style="expand-left">Descartar</button>
+            </div>
+
+            <script>
+                var currentWeek = 1;
+        
+                function toggleCheck(cell) {
+                    var span = cell.querySelector('div span');
+                    var input = cell.querySelector('div input');
+                    if (span.textContent === '✔️') {
+                        span.textContent = '❌';
+                        input.setAttribute('value', '0');
+                    } else {
+                        span.textContent = '✔️';
+                        input.setAttribute('value', '1');
+                    }
+                }
+                function actualizarSemana(offset) {
+                    currentWeek += offset;
+                    var semanaTitulo = document.querySelector('.semana');
+                    semanaTitulo.textContent = "Semana: " + currentWeek;
+        
+                    var checkCells = document.querySelectorAll('.check');
+                    checkCells.forEach(function(cell) {
+                        cell.textContent = '';
+                    });
+                    var backButton = document.getElementById('backButton');
+                    var nextButton = document.getElementById('nextButton');
+        
+                    if (currentWeek === 1) {
+                        backButton.style.display = 'none';
+                        nextButton.style.display = 'inline-block';
+                    } else if (currentWeek === 2) {
+                        backButton.style.display = 'inline-block';
+                        nextButton.style.display = 'none';
+                    } else {
+                        backButton.style.display = 'inline-block';
+                        nextButton.style.display = 'none'; 
+                    }
+                }        
+                function regresarSemana() {
+                    if (currentWeek > 1) {
+                        $("#semana2").css("display", "none");
+                        $("#semana1").css("display", "table");
+                        actualizarSemana(-1);
+                    }
+                }
+            
+                function avanzarSemana() {
+                    $("#semana1").css("display", "none");
+                    $("#semana2").css("display", "table");
+                    actualizarSemana(1);
+                }        
+
+            </script>
         </div>
 
 
-        
+
 
 
 
@@ -196,7 +254,7 @@
 
 
         @include('components.inspinia.footer-inspinia')
-        </div>
+    </div>
     </div>
 
 </body>

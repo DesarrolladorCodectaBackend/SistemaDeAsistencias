@@ -81,9 +81,7 @@ class AreaController extends Controller
         if ($request->hasFile('icono')) {
             $rutaPublica = public_path('storage/areas');
 
-            // Verificar si el icono actual no es el predeterminado
             if ($area->icono && $area->icono !== 'default.png') {
-                // Eliminar el icono actual si no es el predeterminado
                 unlink($rutaPublica . '/' . $area->icono);
             }
 

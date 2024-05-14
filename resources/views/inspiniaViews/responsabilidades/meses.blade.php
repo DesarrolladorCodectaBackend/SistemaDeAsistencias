@@ -32,8 +32,8 @@
         <div class="wrapper wrapper-content animated fadeInRight">
 
             <div class="row">
-                @foreach ($meses as $index => $mes)
-                    @if ($index % 4 == 0)
+                @foreach ($agrupadosPorMes as $mes => $registros)
+                    @if ($loop->iteration % 4 == 1 && !$loop->first)
             </div>
             <div class="row">
                 @endif
@@ -41,29 +41,21 @@
                     <div class="ibox">
                         <div class="ibox-content product-box">
                             <div class="product-desc text-center">
-                                <!---<span class="product-price">
-                                    ON
-                                </span>
-                                -->
-
-
-                                <a href="#" class="product-name">{{$mes['nombre']}}</a>
-
+                                <a href="#" class="product-name">{{ $mes }}</a>
                                 <div class="text-lg m-t-xs">
-                                    Semanas Evaluadas: 4
+                                    Semanas Evaluadas: {{ count($registros) }}
                                 </div>
                                 <div class="text-lg m-t-xs">
                                     Semanas sin Evaluar: 0
                                 </div>
                                 <div class="m-t text-righ">
-                                    <button class="btn btn-danger btn-circle" type="button">
-                                    </button>
-                                    <a class="" href="responsabilidades-asis.html">Terminado</a>
-                                </div>
-
-                                </button>
-                                <div class="m-t text-righ">
-                                    <a class="btn btn-success" href="responsabilidades-terminado.html">Ver</a>
+                                    
+                                    <form method="post" action="{{ route('responsabilidades.asis', $mes) }}">
+                                        @csrf
+                                        <input type="hidden" name="registros" value="{{ urlencode(serialize($registros)) }}">
+                                        <input type="hidden" name="area_id" value="{{ $area_id }}">
+                                        <button type="submit" class="btn btn-success">Evaluar</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -71,24 +63,10 @@
                 </div>
                 @endforeach
             </div>
-
-            
-
         </div>
-
-
-
-
-
-
-
-
-
 
         @include('components.inspinia.footer-inspinia')
     </div>
-    </div>
-
 </body>
 
 </html>
