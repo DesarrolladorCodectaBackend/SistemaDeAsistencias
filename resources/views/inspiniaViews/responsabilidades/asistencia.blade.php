@@ -102,14 +102,25 @@
                 left: 10px;
                 background-color: antiquewhite;
             }
-        </style>
 
-        <div>
+            .disabled {
+                pointer-events: none;
+                opacity: 0.75;
+                /* Cambia la opacidad para simular el efecto de deshabilitar */
+            }
+        </style>
+        @foreach($semanasMes as $index => $semana)
+        <section id="semana{{$index+1}}" style="display: none">
             <table class="juntar">
                 <tr>
                     <th> {{$mes}} </th>
-                    <th class="semana" colspan="8">Semana: 1
-                        <button onclick="avanzarSemana()">-></button>
+                    <th class="semana" colspan="8">Semana: {{$index+1}}
+                        <div>
+                            <button id="backButton{{$index+1}}" onclick="regresarSemana()"
+                                style="margin-right: 30px">←</button>
+                            <button id="nextButton{{$index+1}}" onclick="avanzarSemana()">→</button>
+                        </div>
+
 
                     </th>
                 </tr>
@@ -118,80 +129,136 @@
                     <th class="area" colspan="8">{{$area->especializacion}}</th>
                 </tr>
             </table>
-            <table id="semana1">
-                <form id="cumplioStore1" role="form" method="POST" action="{{ route('responsabilidades.store') }}">
+            @if($semana->cumplido == true)
+            <table id="table-semana-cumplida{{$index+1}}" class="disabled">
+                <form id="cumplioUpdate{{$index+1}}" role="form" method="POST"
+                    action="{{ route('responsabilidades.actualizar', ['semana_id' => $semana->id, 'area_id' => $area->id]) }}">
                     @csrf
-                    <table id="semana1">
-                        <thead>
-                            <tr>
-                                <th> Colaboradores / Responsabilidades </th>
-                                @foreach($responsabilidades as $responsabilidad)
-                                <td class="respon">{{$responsabilidad->nombre}}</td>
-                                @endforeach
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($colaboradoresArea as $colaboradorArea)
-                            <tr>
-                                <th class="colabo">
-                                    {{$colaboradorArea->colaborador->candidato->nombre}}
-                                    {{$colaboradorArea->colaborador->candidato->apellido}}
-                                    <input type="number" name="colaborador_area_id[]" value="{{$colaboradorArea->id}}"
-                                        style="display: none">
-                                </th>
-                                @foreach($responsabilidades as $responsabilidad)
-                                <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
-                                    style="display: none">
-                                <td class="check" onclick="toggleCheck(this)">
-                                    <div>
-                                        <span></span>
-                                        <input type="number" name="cumplio[]" value="0" style="display: none">
-                                    </div>
-                                </td>
-                                @endforeach
-                            </tr>
+                    @method('PUT')
+                    <thead>
+                        <tr>
+                            <th> Colaboradores / Responsabilidades </th>
+                            @foreach($responsabilidades as $responsabilidad)
+                            <td class="respon">{{$responsabilidad->nombre}}</td>
                             @endforeach
-                        </tbody>
-                    </table>
-                    <button type="submit">Guardar</button>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($colaboradoresArea as $colaboradorArea)
+                        <tr>
+                            <th class="colabo">
+                                {{$colaboradorArea->colaborador->candidato->nombre}}
+                                {{$colaboradorArea->colaborador->candidato->apellido}}
+                                <input type="number" name="colaborador_area_id[]" value="{{$colaboradorArea->id}}"
+                                    style="display: none">
+                                <input type="number" name="semana_id" value="{{$semana->id}}" style="display: none">
+                            </th>
+                            @foreach($responsabilidades as $responsabilidad)
+
+                            <?php
+                                $registro = $registros->where('colaborador_area_id', $colaboradorArea->id)
+                                                    ->where('responsabilidad_id', $responsabilidad->id)
+                                                    ->where('semana_id', $semana->id)
+                                                    ->first();
+                            ?>
+                            <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
+                                style="display: none">
+                            <td class="check" onclick="toggleCheck(this)">
+                                <div>
+                                    <span>
+                                        @if($registro->cumplio == true)
+                                        ✔️
+                                        @else
+                                        ❌
+                                        @endif
+                                    </span>
+                                    <input type="number" name="cumplio[]"
+                                        value="{{ old('cumplio', $registro->cumplio) }}" style="display: none">
+
+                                </div>
+                            </td>
+                            @endforeach
+                        </tr>
+                        @endforeach
+                    </tbody>
                 </form>
             </table>
-
-
-
-            <table id="semana2">
-                <thead>
-                    <tr>
-                        <th> Colaboradores / Responsabilidades </th>
-                        @foreach($responsabilidades as $responsabilidad)
-                        <td class="respon">{{$responsabilidad->nombre}} </td>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($colaboradoresArea as $colaboradorArea)
-                    <tr>
-                        <th class="colabo">{{$colaboradorArea->colaborador->candidato->nombre}}
-                            {{$colaboradorArea->colaborador->candidato->apellido}}</th>
-                        @foreach($responsabilidades as $responsabilidad)
-                        <td class="check" onclick="toggleCheck(this)"> </td>
-                        @endforeach
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
             <div class="text-center">
-                <!--<button onclick="guardarCambios()" class="ladda-button btn btn-primary mr-5"
-                    data-style="expand-left">Guardar</button>-->
-                <a href="#" class="ladda-button btn btn-primary mr-5"
-                    onclick="document.getElementById('cumplioStore1').submit();">Guardar</a>
-                <button onclick="descartarCambios()" class="ladda-button btn btn-primary"
+                <button onclick="habilitarEdicion({{$index+1}})"
+                    class="ladda-button btn btn-success mr-2">Editar</button>
+                <a href="#" id="BtnGuardar{{$index+1}}" class="ladda-button btn btn-primary mr-2 disabled"
+                    onclick="document.getElementById('cumplioUpdate{{$index+1}}').submit();" disabled>Guardar</a>
+                <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
                     data-style="expand-left">Descartar</button>
             </div>
-
             <script>
-                var currentWeek = 1;
+                function habilitarEdicion(index) {
+                    let tabla = document.getElementById(`table-semana-cumplida${index}`);
+                    let botonGuardar = document.getElementById(`BtnGuardar${index}`);
+            
+                    tabla.classList.remove('disabled');
+                    botonGuardar.classList.remove('disabled');
+                }
+            </script>
+            @else
+            <table id="table-semana{{$index+1}}">
+                <form id="cumplioStore{{$index+1}}" role="form" method="POST"
+                    action="{{ route('responsabilidades.store') }}">
+                    @csrf
+                    <thead>
+                        <tr>
+                            <th> Colaboradores / Responsabilidades </th>
+                            @foreach($responsabilidades as $responsabilidad)
+                            <td class="respon">{{$responsabilidad->nombre}}</td>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($colaboradoresArea as $colaboradorArea)
+                        <tr>
+                            <th class="colabo">
+                                {{$colaboradorArea->colaborador->candidato->nombre}}
+                                {{$colaboradorArea->colaborador->candidato->apellido}}
+                                <input type="number" name="colaborador_area_id[]" value="{{$colaboradorArea->id}}"
+                                    style="display: none">
+                                <input type="number" name="semana_id" value="{{$semana->id}}" style="display: none">
+                            </th>
+                            @foreach($responsabilidades as $responsabilidad)
+                            <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
+                                style="display: none">
+                            <td class="check" onclick="toggleCheck(this)">
+                                <div>
+                                    <span></span>
+                                    <input type="number" name="cumplio[]" value="0" style="display: none">
+                                </div>
+                            </td>
+                            @endforeach
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </form>
+            </table>
+            <div class="text-center">
+                <a href="#" class="ladda-button btn btn-primary mr-5"
+                    onclick="document.getElementById('cumplioStore{{$index+1}}').submit();">Guardar</a>
+                <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
+                    data-style="expand-left">Descartar</button>
+            </div>
+            @endif
+
+        </section>
+
+        @endforeach
+
+
+
+
+
+        <script>
+            var currentWeek = 1;
+            var totalWeeks = {{ count($semanasMes) }};
+            $("#semana1").css("display", "unset");
+            updateNavigationButtons();
         
                 function toggleCheck(cell) {
                     var span = cell.querySelector('div span');
@@ -229,20 +296,50 @@
                 }        
                 function regresarSemana() {
                     if (currentWeek > 1) {
-                        $("#semana2").css("display", "none");
-                        $("#semana1").css("display", "table");
-                        actualizarSemana(-1);
+                        $(`#semana${currentWeek}`).css("display", "none");
+                        currentWeek--;
+                        $(`#semana${currentWeek}`).css("display", "unset");
+                        updateNavigationButtons();
                     }
                 }
             
                 function avanzarSemana() {
-                    $("#semana1").css("display", "none");
-                    $("#semana2").css("display", "table");
-                    actualizarSemana(1);
-                }        
+                    if (currentWeek < totalWeeks) {
+                        $(`#semana${currentWeek}`).css("display", "none");
+                        currentWeek++;
+                        $(`#semana${currentWeek}`).css("display", "unset");
+                        updateNavigationButtons();
+                    }
+                }
 
-            </script>
-        </div>
+                function descartarCambios() {
+                    location.reload();
+                }
+
+                function updateNavigationButtons() {
+                    for (var i = 1; i <= totalWeeks; i++) {
+                        var backButton = $(`#backButton${i}`);
+                        var nextButton = $(`#nextButton${i}`);
+
+                        backButton.show();
+                        nextButton.show();
+
+                        if (currentWeek === 1) {
+                            backButton.prop('disabled', true);
+                        } else {
+                            backButton.prop('disabled', false);
+                        }
+
+                        if (currentWeek === totalWeeks) {
+                            nextButton.prop('disabled', true);
+                        } else {
+                            nextButton.prop('disabled', false);
+                        }
+                    }
+                }
+
+                
+        </script>
 
 
 

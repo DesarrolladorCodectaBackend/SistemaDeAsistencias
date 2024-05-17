@@ -37,10 +37,12 @@
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Especializacion</label> <input type="text"
-                                                    placeholder="....." class="form-control" name="especializacion" required>
+                                                    placeholder="....." class="form-control" name="especializacion"
+                                                    required>
                                             </div>
                                             <div class="form-group"><label>Descripcion</label> <input type="text"
-                                                    placeholder="....." class="form-control" name="descripcion" required>
+                                                    placeholder="....." class="form-control" name="descripcion"
+                                                    required>
                                             </div>
                                             <div class="form-group"><label>Color Hex</label>
                                                 <input type="color" placeholder="....." class="form-control"
@@ -50,8 +52,8 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <h4>Subir Icono</h4>
-                                            <input type="file" class="form-control-file" id="icono"
-                                                name="icono" style="display: none;">
+                                            <input type="file" class="form-control-file" id="icono" name="icono"
+                                                style="display: none;">
                                             <!-- Icono que simula el clic en el botón de subir archivos -->
                                             <button type="button" class="btn btn-link" id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
@@ -60,8 +62,8 @@
                                         <div>
                                             <a href="areas"
                                                 class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
-                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
+                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit"><i
+                                                    class="fa fa-check"></i>&nbsp;Confirmar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -75,7 +77,7 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 @foreach ($areas as $index => $area)
-                    @if ($index % 4 == 0)
+                @if ($index % 4 == 0)
             </div>
             <div class="row">
                 @endif
@@ -95,8 +97,7 @@
                                 </div>
                                 <div class="m-t text-left">
                                     <button class="btn btn-danger" type="button"
-                                        onclick="confirmDelete({{ $area->id }})"><i
-                                            class="fa fa-trash-o"></i></button>
+                                        onclick="confirmDelete({{ $area->id }})"><i class="fa fa-trash-o"></i></button>
                                     <button class="btn btn-info" type="button" href="#modal-form{{ $area->id }}"
                                         data-toggle="modal"><i class="fa fa-paste"></i> Edit</button>
                                     <div id="modal-form{{ $area->id }}" class="modal fade" aria-hidden="true">
@@ -115,19 +116,21 @@
                                                                     <input type="text" placeholder="....."
                                                                         class="form-control" name="especializacion"
                                                                         id="especializacion"
-                                                                        value="{{ old('especializacion', $area->especializacion) }}" required>
+                                                                        value="{{ old('especializacion', $area->especializacion) }}">
                                                                 </div>
                                                                 <div class="form-group"><label>Descripción</label>
                                                                     <input type="text" placeholder="....."
                                                                         class="form-control" name="descripcion"
                                                                         id="descripcion"
-                                                                        value="{{ old('descripcion', $area->descripcion) }}" required>
+                                                                        value="{{ old('descripcion', $area->descripcion) }}"
+                                                                        required>
                                                                 </div>
                                                                 <div class="form-group"><label>Color Hex</label> <input
                                                                         type="color" placeholder="....."
                                                                         class="form-control" name="color_hex"
                                                                         id="color_hex"
-                                                                        value="{{ old('color_hex', $area->color_hex) }}" required>
+                                                                        value="{{ old('color_hex', $area->color_hex) }}"
+                                                                        required>
                                                                 </div>
 
                                                             </div>

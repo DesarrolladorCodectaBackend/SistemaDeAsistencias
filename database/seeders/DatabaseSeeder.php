@@ -22,18 +22,18 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             CursoSeeder::class,
             ProgramaSeeder::class,
-            SemanaSeeder::class,
-            YearSeeder::class,
+                //SemanaSeeder::class,
+                //YearSeeder::class,
             SalonesSeeder::class,
-            MesSeeder::class,
+                //MesSeeder::class,
             ResponsabilidadSemanalSeeder::class,
             MaquinasSeeder::class,
             CandidatosSeeder::class,
             ColaboradoresSeeder::class,
             ColaboradoresPorAreaSeeder::class,
             HorarioDeClasesSeeder::class
-    
-    ]);
+
+        ]);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
