@@ -135,15 +135,8 @@
                 <a href="../salones"><i class="fa fa-address-card-o"></i> <span
                         class="nav-label">Salones</span></a>
             </li>
-            <li id="ajustesCont">
-                <a href=""><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span><span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li id="instituciones"><a href="../institucion">Institucion</a></li>
-                    <li id="carreras"><a href="../carreras">Carrera</a></li>
-                    <li id="cursos"><a href="../cursos">Curso</a></li>
-                    <li id="programas"><a href="../programas">Programas</a></li>
-                </ul>
+            <li id="ajustes">
+                <a href="../ajustes"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
             </li>
             <li>
                 <form id="logoutForm" method="POST" action="http://127.0.0.1:8000/logout">

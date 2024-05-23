@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
@@ -66,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class,'activarInactivar'])->name('colaboradores.activarInactivar');
     Route::resource('horarioClase', HorarioDeClasesController::class);
     Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
+    Route::resource('ajustes', AjusteController::class);
 
 });
 
