@@ -27,6 +27,18 @@
                     </li>
                 </ol>
             </div>
+            <div class="col-lg-2 text-center">
+                <div class="ibox-content">
+                    <form id="average-form" method="post"
+                        action="{{ route('responsabilidades.getMonthsProm', $area_id) }}">
+                        @csrf
+                        <input type="hidden" name="selected_months" id="selected-months">
+                        <button type="button" id="btn-getMonthsProm" class="btn btn-primary disabled"
+                            onclick="submitAverageForm()" disabled>Sacar
+                            Promedio</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div class="wrapper wrapper-content animated fadeInRight">
@@ -41,7 +53,14 @@
                     <div class="ibox">
                         <div class="ibox-content product-box">
                             <div class="product-desc text-center">
-                                <a href="#" class="product-name">{{ $mes }}</a>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <a href="#" class="product-name">{{ $mes }}</a>
+                                    @if(($infoMes['total_semanas'] == $infoMes['semanas_evaluadas']) &&
+                                    ($infoMes['total_semanas'] != 0))
+                                    <input id="month-checkbox-{{$mes}}" type="checkbox" class="ml-2" value="{{ $mes }}"
+                                        onchange="updateSelectedMonths()">
+                                    @endif
+                                </div>
                                 <div class="text-lg m-t-xs">
                                     Semanas Evaluadas: {{ $infoMes['semanas_evaluadas'] }}
                                 </div>
@@ -61,8 +80,17 @@
                                     </button>
                                     <a class="" href="">Terminado</a>
                                 </div>
-                                <div class="m-t text-righ">
-                                    <a class="btn btn-success" href="">Ver</a>
+                                <div class="m-t text-center" style="display: flex; justify-content:center; gap: 5px">
+                                    <form method="post" action="{{ route('responsabilidades.asis', $mes) }}">
+                                        @csrf
+                                        <input type="hidden" name="area_id" value="{{ $area_id }}">
+                                        <button type="submit" class="btn btn-success">Ver</button>
+                                    </form>
+                                    <form method="get"
+                                        action="{{ route('responsabilidades.getMonthProm', ['mes' => $mes, 'area_id' => $area_id]) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">Promedio</button>
+                                    </form>
                                 </div>
                                 @else
                                 <div class="m-t text-righ">
@@ -88,6 +116,29 @@
 
         @include('components.inspinia.footer-inspinia')
     </div>
+
+    <script>
+        function updateSelectedMonths() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedMonths = Array.from(checkboxes).map(cb => cb.value);
+        document.getElementById('selected-months').value = JSON.stringify(selectedMonths);
+
+        const button = document.getElementById('btn-getMonthsProm');
+        if (selectedMonths.length > 0) {
+            button.disabled = false;
+            button.classList.remove('disabled');
+        } else {
+            button.disabled = true;
+            button.classList.add('disabled');
+        }
+        }
+
+        function submitAverageForm() {
+            updateSelectedMonths();
+            document.getElementById('average-form').submit();
+        }
+    </script>
+
 </body>
 
 </html>

@@ -73,7 +73,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/responsabilidades/meses/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMesesAreas'])->name('responsabilidades.meses');
     Route::post('/responsabilidades/{mes}', [Cumplio_Responsabilidad_SemanalController::class, 'getFormAsistencias'])->name('responsabilidades.asis');
     Route::put('/responsabilidades/{semana_id}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'actualizar'])->name('responsabilidades.actualizar');
-
+    Route::get('/responsabilidades/{mes}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMonthProm'])->name('responsabilidades.getMonthProm');
+    Route::post('/responsabilidades/getMonthsProm/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMonthsProm'])->name('responsabilidades.getMonthsProm');
 });
 
 require __DIR__ . '/auth.php';

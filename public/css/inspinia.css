@@ -163,3 +163,7 @@
     height: 338px;
     width: 338px;
 }
+
+.disabled {
+    cursor: not-allowed;
+}
