@@ -81,8 +81,6 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     }
 
 
-
-
     public function getFormAsistencias(Request $request, $mes)
     {
         $area_id = $request->area_id;
@@ -315,7 +313,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $colaboradoresAreaId = $colaboradoresArea->pluck('id');
 
         $selectedMonths = json_decode($request->input('selected_months'), true);
-
+        
         $Meses = [
             "Enero" => ["nombre" => "Enero", "id" => "01"],
             "Febrero" => ["nombre" => "Febrero", "id" => "02"],
