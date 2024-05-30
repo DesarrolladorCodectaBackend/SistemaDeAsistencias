@@ -16,14 +16,19 @@ class ProgramaSeeder extends Seeder
     public function run()
     {
         Programas::create([
-            "nombre" => "Programa1",
-            "descripcion" => "Descripcion del Programa 1",
-            "icono" => "default.png"
+            "nombre" => "StarUML",
+            "descripcion" => "Creación de Diagramas",
+            "icono" => "staruml.svg"
         ]);
         Programas::create([
-            "nombre" => "Programa2",
-            "descripcion" => "Descripcion del Programa 2",
-            "icono" => "default.png"
+            "nombre" => "Adobe Illustrator",
+            "descripcion" => "Editor de gráficos",
+            "icono" => "illustrator.svg"
+        ]);
+        Programas::create([
+            "nombre" => "Adobe Photoshop",
+            "descripcion" => "Editor de fotografías",
+            "icono" => "photoshop.svg"
         ]);
         
     }

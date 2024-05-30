@@ -26,5 +26,69 @@ class ColaboradoresPorAreaSeeder extends Seeder
             "area_id" => 1,
             "semana_inicio_id" => NULL
         ]);
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 3,
+            "area_id" => 1,
+            "semana_inicio_id" => NULL
+        ]);
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 4,
+            "area_id" => 1,
+            "semana_inicio_id" => NULL
+        ]);
+
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 5,
+            "area_id" => 2,
+            "semana_inicio_id" => NULL
+        ]);
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 6,
+            "area_id" => 2,
+            "semana_inicio_id" => NULL
+        ]);
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 7,
+            "area_id" => 2,
+            "semana_inicio_id" => NULL
+        ]);
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 8,
+            "area_id" => 2,
+            "semana_inicio_id" => NULL
+        ]);
+
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 9,
+            "area_id" => 3,
+            "semana_inicio_id" => NULL
+        ]);
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 10,
+            "area_id" => 3,
+            "semana_inicio_id" => NULL
+        ]);
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 11,
+            "area_id" => 3,
+            "semana_inicio_id" => NULL
+        ]);
+
+        Colaboradores_por_Area::create([
+            "colaborador_id" => 12,
+            "area_id" => 3,
+            "semana_inicio_id" => NULL
+        ]);
+
+
     }
 }

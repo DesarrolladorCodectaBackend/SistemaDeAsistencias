@@ -16,13 +16,19 @@ class CarreraSeeder extends Seeder
     public function run()
     {
         Carrera::create([
-            'nombre' => 'Ingeniería de Software con IA'
+            'nombre' => 'Desarrollo de Software'
         ]);
         Carrera::create([
-            'nombre' => 'Ingeniería de Ciberseguridad'
+            'nombre' => 'Ingenieria de Software con IA'
         ]);
         Carrera::create([
-            'nombre' => 'Ingeniería de Sistemas'
+            'nombre' => 'Diseño Gráfico Digital'
+        ]);
+        Carrera::create([
+            'nombre' => 'Administración'
+        ]);
+        Carrera::create([
+            'nombre' => 'Soporte'
         ]);
     }
 }

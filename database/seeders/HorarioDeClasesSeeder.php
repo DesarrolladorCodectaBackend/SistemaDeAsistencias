@@ -33,5 +33,68 @@ class HorarioDeClasesSeeder extends Seeder
             "hora_final" => "17:00",
             "dia" => "Viernes"
         ]);
+
+        Horario_de_Clases::create([
+            "colaborador_id" => 3,
+            "hora_inicial" => "07:00",
+            "hora_final" => "19:00",
+            "dia" => "Lunes"
+        ]);
+        Horario_de_Clases::create([
+            "colaborador_id" => 4,
+            "hora_inicial" => "07:00",
+            "hora_final" => "12:00",
+            "dia" => "Miercoles"
+        ]);
+
+        Horario_de_Clases::create([
+            "colaborador_id" => 5,
+            "hora_inicial" => "07:00",
+            "hora_final" => "17:00",
+            "dia" => "Viernes"
+        ]);
+        Horario_de_Clases::create([
+            "colaborador_id" => 6,
+            "hora_inicial" => "07:00",
+            "hora_final" => "19:00",
+            "dia" => "Lunes"
+        ]);
+        Horario_de_Clases::create([
+            "colaborador_id" => 7,
+            "hora_inicial" => "07:00",
+            "hora_final" => "12:00",
+            "dia" => "Miercoles"
+        ]);
+        Horario_de_Clases::create([
+            "colaborador_id" => 8,
+            "hora_inicial" => "07:00",
+            "hora_final" => "17:00",
+            "dia" => "Viernes"
+        ]);
+
+        Horario_de_Clases::create([
+            "colaborador_id" => 9,
+            "hora_inicial" => "07:00",
+            "hora_final" => "17:00",
+            "dia" => "Viernes"
+        ]);
+        Horario_de_Clases::create([
+            "colaborador_id" => 10,
+            "hora_inicial" => "07:00",
+            "hora_final" => "19:00",
+            "dia" => "Lunes"
+        ]);
+        Horario_de_Clases::create([
+            "colaborador_id" => 11,
+            "hora_inicial" => "07:00",
+            "hora_final" => "12:00",
+            "dia" => "Miercoles"
+        ]);
+        Horario_de_Clases::create([
+            "colaborador_id" => 12,
+            "hora_inicial" => "07:00",
+            "hora_final" => "17:00",
+            "dia" => "Viernes"
+        ]);
     }
 }
