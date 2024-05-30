@@ -87,6 +87,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
         $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->with('colaborador')->get();
+        $colaboradoresAreaId = $colaboradoresArea->pluck('id');
         //return $registros;
 
         $Meses = [
@@ -122,7 +123,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         }
 
         //Obtener Registros creados del mes
-        $semanasCumplidas = Cumplio_Responsabilidad_Semanal::whereIn("semana_id", $semanasMesId)->get();
+        $semanasCumplidas = Cumplio_Responsabilidad_Semanal::whereIn("semana_id", $semanasMesId)->whereIn("colaborador_area_id", $colaboradoresAreaId)->get(); //validar por area (colaboradores)
         $semanasCumplidasIds = $semanasCumplidas->pluck('semana_id')->toArray();
 
         // Definir semanas cumplidas
@@ -201,7 +202,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $dataProm = [];
 
         foreach ($semanasMesId as $id) {
-            $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $id)->whereIn("colaborador_area_id", $colaboradoresAreaId)->get();
+            $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $id)->whereIn("colaborador_area_id", $colaboradoresAreaId)->get(); //Posible problema con las areas, fijar despues, facil solucion con whereIn colaboradoresArea
+
             foreach ($registrosCumplidosSemana as $registro) {
                 $colaboradorArea = Colaboradores_por_Area::findOrFail($registro->colaborador_area_id);
                 $colaborador = Colaboradores::with('candidato')->findOrFail($colaboradorArea->colaborador_id);
