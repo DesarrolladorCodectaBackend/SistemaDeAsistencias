@@ -38,7 +38,7 @@ class MaquinasController extends Controller
         $request->validate([
             'nombre' => 'required|string|min:1|max:255',
             'detalles_tecnicos' => 'required|string|min:1|max:100',
-            'num_identificador' => 'required|integer|min:1|max:255',
+            'num_identificador' => 'required|integer|min:1|max:255|unique:maquinas,num_identificador',
             'salon_id' => 'required|integer|min:1|max:15'  
         ]);
 

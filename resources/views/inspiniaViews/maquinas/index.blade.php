@@ -78,8 +78,12 @@
                                                     </label>
                                                     <input type="number" name="num_identificador"
                                                         placeholder="Ingrese numero" class="form-control" required>
-
                                                 </div>
+                                                @if ($errors->has('num_identificador'))
+                                                    <div class="alert alert-danger">
+                                                        {{ $errors->first('num_identificador') }}
+                                                    </div>
+                                                @endif
                                                 <div class="form-group"><label>
                                                         <h3 class="m-t-none m-b">Salon Asignado</h3>
                                                     </label>
@@ -216,8 +220,12 @@
                                                                         <input type="number" name="num_identificador"
                                                                             value="{{ old('num_identificador', $maquina->num_identificador) }}"
                                                                             class="form-control">
-
                                                                     </div>
+                                                                    @if ($errors->has('num_identificador'))
+                                                                        <div class="alert alert-danger">
+                                                                            {{ $errors->first('num_identificador') }}
+                                                                        </div>
+                                                                    @endif
                                                                     <div class="form-group"><label>
                                                                             <h3 class="m-t-none m-b">Salon Asignado
                                                                             </h3>

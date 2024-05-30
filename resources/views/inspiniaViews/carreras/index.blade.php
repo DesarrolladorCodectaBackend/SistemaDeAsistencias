@@ -47,6 +47,11 @@
                                             <div class="form-group"><label>Carrera</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control" required>
                                             </div>
+                                            @if ($errors->has('nombre'))
+                                                <div class="alert alert-danger">
+                                                    {{ $errors->first('nombre') }}
+                                                </div>
+                                            @endif
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                     type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
@@ -131,6 +136,11 @@
                                                                     class="form-control" name="nombre" id="nombre"
                                                                     value="{{ old('nombre', $carrera->nombre) }}" required>
                                                             </div>
+                                                            @if ($errors->has('nombre'))
+                                                                <div class="alert alert-danger">
+                                                                    {{ $errors->first('nombre') }}
+                                                                </div>
+                                                            @endif
                                                             <div>
                                                                 <button
                                                                     class="btn btn-primary btn-sm m-t-n-xs float-right"

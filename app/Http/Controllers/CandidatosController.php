@@ -35,14 +35,14 @@ class CandidatosController extends Controller
         $request->validate([
             'nombre' => 'required|string|min:1|max:100',
             'apellido' => 'required|string|min:1|max:100',
-            'dni' => 'required|string|min:1|max:8',
+            'dni' => 'required|string|min:1|max:8|unique:candidatos,dni',
             'direccion' => 'required|string|min:1|max:100',
             'fecha_nacimiento' => 'required|string|min:1|max:255',
             'ciclo_de_estudiante' => 'required|string|min:1|max:50',
             'institucion_id' => 'required|integer|min:1|max:20',
             'carrera_id' => 'required|integer|min:1|max:20',
-            'correo' => 'required|string|min:1|max:255',
-            'celular' => 'required|string|min:1|max:20',
+            'correo' => 'required|string|min:1|max:255|unique:candidatos,correo',
+            'celular' => 'required|string|min:1|max:20|unique:candidatos,celular',
             'icono' => 'image|mimes:jpeg,png,jpg,gif'
         ]);
 

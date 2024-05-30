@@ -24,7 +24,7 @@ class CarreraController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|min:1|max:100',
+            'nombre' => 'required|string|min:1|max:100|unique:carrera,nombre',
 
         ]);
 

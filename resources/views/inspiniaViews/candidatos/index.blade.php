@@ -46,8 +46,16 @@
                                             <div class="form-group"><label>Apellido</label> <input type="text"
                                                     placeholder="Ingrese apellido" class="form-control" name="apellido" required>
                                             </div>
-                                            <div class="form-group"><label>DNI</label> <input type="text"
-                                                    placeholder="....." class="form-control" name="dni" required></div>
+                                            <div class="form-group">
+                                                <label>DNI</label> 
+                                                <input type="text" placeholder="....." class="form-control" name="dni" required>
+                                            </div>
+                                            
+                                            @if ($errors->has('dni'))
+                                                <div class="alert alert-danger">
+                                                    {{ $errors->first('dni') }}
+                                                </div>
+                                            @endif
                                             <div class="form-group"><label>Dirección</label> <input type="text"
                                                     placeholder="Ingrese un nombre" class="form-control"
                                                     name="direccion" required>
@@ -94,6 +102,11 @@
                                             <div class="form-group"><label>Correo</label> <input type="text"
                                                     placeholder="Ingrese un nombre" class="form-control" name="correo" required>
                                             </div>
+                                            @if ($errors->has('correo'))
+                                                <div class="alert alert-danger">
+                                                    {{ $errors->first('correo') }}
+                                                </div>
+                                            @endif
                                             <div class="form-group"><label>Celular</label> <input type="text"
                                                     placeholder="Ingrese apellido" class="form-control" name="celular" required>
                                             </div>
@@ -321,6 +334,11 @@
                                                                             class="form-control" name="dni" id="dni"
                                                                             value="{{ old('dni', $candidato->dni) }}" required>
                                                                     </div>
+                                                                    @if ($errors->has('dni'))
+                                                                        <div class="alert alert-danger">
+                                                                            {{ $errors->first('dni') }}
+                                                                        </div>
+                                                                    @endif
                                                                     <div class="form-group"><label>Dirección</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
@@ -389,12 +407,22 @@
                                                                             id="correo"
                                                                             value="{{ old('correo', $candidato->correo) }}" required>
                                                                     </div>
+                                                                    @if ($errors->has('correo'))
+                                                                        <div class="alert alert-danger">
+                                                                            {{ $errors->first('correo') }}
+                                                                        </div>
+                                                                    @endif
                                                                     <div class="form-group"><label>Celular</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="celular"
                                                                             id="celular"
                                                                             value="{{ old('celular', $candidato->celular) }}" required>
                                                                     </div>
+                                                                    @if ($errors->has('celular'))
+                                                                        <div class="alert alert-danger">
+                                                                            {{ $errors->first('celular') }}
+                                                                        </div>
+                                                                    @endif
                                                                     <div>
                                                                         <a href="candidatos"
                                                                             class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
