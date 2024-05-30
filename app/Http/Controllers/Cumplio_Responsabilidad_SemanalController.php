@@ -201,8 +201,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $dataProm = [];
 
         foreach ($semanasMesId as $id) {
-            $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $id)->whereIn("colaborador_area_id", $colaboradoresAreaId)->get(); //Posible problema con las areas, fijar despues, facil solucion con whereIn colaboradoresArea
-
+            $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $id)->whereIn("colaborador_area_id", $colaboradoresAreaId)->get();
             foreach ($registrosCumplidosSemana as $registro) {
                 $colaboradorArea = Colaboradores_por_Area::findOrFail($registro->colaborador_area_id);
                 $colaborador = Colaboradores::with('candidato')->findOrFail($colaboradorArea->colaborador_id);
