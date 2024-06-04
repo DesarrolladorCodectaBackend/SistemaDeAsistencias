@@ -32,6 +32,7 @@
                     <form id="average-form" method="post"
                         action="{{ route('responsabilidades.getMonthsProm', $area_id) }}">
                         @csrf
+                        <input type="hidden" name="year" value="{{$year}}">
                         <input type="hidden" name="selected_months" id="selected-months">
                         <button type="button" id="btn-getMonthsProm" class="btn btn-primary disabled"
                             onclick="submitAverageForm()" disabled>Sacar
@@ -42,7 +43,6 @@
         </div>
 
         <div class="wrapper wrapper-content animated fadeInRight">
-
             <div class="row">
                 @foreach ($agrupadosPorMes as $mes => $infoMes)
                 @if ($loop->iteration % 4 == 1 && !$loop->first)
@@ -81,13 +81,13 @@
                                     <a class="" href="">Terminado</a>
                                 </div>
                                 <div class="m-t text-center" style="display: flex; justify-content:center; gap: 5px">
-                                    <form method="post" action="{{ route('responsabilidades.asis', $mes) }}">
+                                    <form method="post"
+                                        action="{{ route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]) }}">
                                         @csrf
-                                        <input type="hidden" name="area_id" value="{{ $area_id }}">
                                         <button type="submit" class="btn btn-success">Ver</button>
                                     </form>
                                     <form method="get"
-                                        action="{{ route('responsabilidades.getMonthProm', ['mes' => $mes, 'area_id' => $area_id]) }}">
+                                        action="{{ route('responsabilidades.getMonthProm', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]) }}">
                                         @csrf
                                         <button type="submit" class="btn btn-success">Promedio</button>
                                     </form>
@@ -99,9 +99,9 @@
                                     <a class="" href="">Activo</a>
                                 </div>
                                 <div class="m-t text-righ">
-                                    <form method="post" action="{{ route('responsabilidades.asis', $mes) }}">
+                                    <form method="post"
+                                        action="{{ route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]) }}">
                                         @csrf
-                                        <input type="hidden" name="area_id" value="{{ $area_id }}">
                                         <button type="submit" class="btn btn-success">Evaluar</button>
                                     </form>
                                 </div>

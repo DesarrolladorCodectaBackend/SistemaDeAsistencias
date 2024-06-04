@@ -135,6 +135,8 @@
                     action="{{ route('responsabilidades.actualizar', ['semana_id' => $semana->id, 'area_id' => $area->id]) }}">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="year" value="{{$year}}">
+                    <input type="hidden" name="mes" value="{{$mes}}">
                     <thead>
                         <tr>
                             <th> Colaboradores / Responsabilidades </th>
@@ -205,6 +207,8 @@
                 <form id="cumplioStore{{$index+1}}" role="form" method="POST"
                     action="{{ route('responsabilidades.store') }}">
                     @csrf
+                    <input type="hidden" name="year" value="{{$year}}">
+                    <input type="hidden" name="mes" value="{{$mes}}">
                     <thead>
                         <tr>
                             <th> Colaboradores / Responsabilidades </th>

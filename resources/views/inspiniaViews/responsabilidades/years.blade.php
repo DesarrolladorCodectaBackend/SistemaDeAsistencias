@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>INSPINIA | RESPONSABILIDADES</title>
+    <title>INSPINIA | RESPONSABILIDADES MESES</title>
 </head>
 
 <body>
@@ -23,43 +23,37 @@
                         <a href="/responsabilidades">Responsabilidades</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>Áreas</strong>
+                        <strong>Years</strong>
                     </li>
                 </ol>
+            </div>
+            <div class="col-lg-2 text-center">
             </div>
         </div>
 
         <div class="wrapper wrapper-content animated fadeInRight">
+
             <div class="row">
-                @foreach ($areas as $index => $area)
-                @if ($index % 4 == 0)
+                @foreach ($Years as $year)
+                @if ($loop->iteration % 4 == 1 && !$loop->first)
             </div>
             <div class="row">
                 @endif
                 <div class="col-md-3">
                     <div class="ibox">
                         <div class="ibox-content product-box">
-                            <div class="product-imitation">
-                                <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
-                            </div>
-                            <div class="product-desc">
-                                <button class="btn btn-outline btn-primary dim float-right"
-                                    type="button"><span>ON</span></button>
-                                <small class="text-muted">{{ $area->id }}</small>
-                                <a href="#" class="product-name">{{ $area->especializacion }}</a>
-                                <div class="small m-t-xs">
-                                    {{ $area->descripcion }}
+                            <div class="product-desc text-center">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <a href="#" class="product-name">{{ $year }}</a>
                                 </div>
-
-                                <div class="m-t text-righ flex-centered gap-20">
-                                    @if($countYears > 1)
-                                    <form method="GET" action="{{ route('responsabilidades.years', $area->id) }}">
-                                        <button class="btn btn-success" type="submit"><i class="fa fa-paste"></i>
-                                            Años</button>
-                                    </form>
-                                    @endif
+                                <div class="m-t text-righ">
+                                    <button class="btn btn-primary btn-circle" type="button">
+                                    </button>
+                                    <a class="" href="">Activo</a>
+                                </div>
+                                <div class="m-t text-righ">
                                     <form method="GET"
-                                        action="{{ route('responsabilidades.meses', ['year' => $currentYear, 'area_id' => $area->id]) }}">
+                                        action="{{ route('responsabilidades.meses', ['year' => $year, 'area_id' => $area_id]) }}">
                                         <button class="btn btn-success" type="submit"><i class="fa fa-paste"></i>
                                             Meses</button>
                                     </form>
@@ -70,15 +64,32 @@
                 </div>
                 @endforeach
             </div>
-
-
         </div>
-
-
 
         @include('components.inspinia.footer-inspinia')
     </div>
-    </div>
+
+    <script>
+        function updateSelectedMonths() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedMonths = Array.from(checkboxes).map(cb => cb.value);
+        document.getElementById('selected-months').value = JSON.stringify(selectedMonths);
+
+        const button = document.getElementById('btn-getMonthsProm');
+        if (selectedMonths.length > 0) {
+            button.disabled = false;
+            button.classList.remove('disabled');
+        } else {
+            button.disabled = true;
+            button.classList.add('disabled');
+        }
+        }
+
+        function submitAverageForm() {
+            updateSelectedMonths();
+            document.getElementById('average-form').submit();
+        }
+    </script>
 
 </body>
 

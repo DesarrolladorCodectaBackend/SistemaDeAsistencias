@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             CursoSeeder::class,
             ProgramaSeeder::class,
-                //SemanaSeeder::class,
+            SemanaSeeder::class,
                 //YearSeeder::class,
             SalonesSeeder::class,
                 //MesSeeder::class,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Colaboradores;
 use App\Models\Responsabilidades_semanales;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Area;
@@ -15,81 +16,24 @@ use Exception;
 
 class Cumplio_Responsabilidad_SemanalController extends Controller
 {
-    public function index()
+
+    public function years()
     {
-        $areas = Area::get();
+        $TotalSemanas = Semanas::get();
+        $Years = [];
 
-        return view('inspiniaViews.responsabilidades.index', compact('areas'));
-
-    }
-
-
-    public function getMesesAreas($area_id)
-    {
-        $nombresMeses = [
-            '01' => 'Enero',
-            '02' => 'Febrero',
-            '03' => 'Marzo',
-            '04' => 'Abril',
-            '05' => 'Mayo',
-            '06' => 'Junio',
-            '07' => 'Julio',
-            '08' => 'Agosto',
-            '09' => 'Septiembre',
-            '10' => 'Octubre',
-            '11' => 'Noviembre',
-            '12' => 'Diciembre',
-        ];
-
-        $area = Area::findOrFail($area_id);
-
-        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->get();
-        $colaboradoresAreaIds = $colaboradoresArea->pluck('id');
-
-        $Cumplio_res_Area = Cumplio_Responsabilidad_Semanal::with('semana')
-            ->whereIn('colaborador_area_id', $colaboradoresAreaIds)
-            ->get();
-
-        $agrupadosPorMes = [];
-
-        foreach ($nombresMeses as $mesNum => $mes) {
-            $agrupadosPorMes[$mes] = [
-                'total_semanas' => 0,
-                'semanas_evaluadas' => 0,
-                'semanas_sin_evaluar' => 0,
-            ];
+        foreach ($TotalSemanas as $semana) {
+            $semanaYear = date('Y', strtotime($semana->fecha_lunes));
+            if (!in_array($semanaYear, $Years)) {
+                $Years[] = $semanaYear;
+            }
         }
 
-        $semanasTotales = Semanas::get();
-
-        foreach ($nombresMeses as $mesNum => $mes) {
-            $semanasMes = $semanasTotales->filter(function ($semana) use ($mesNum) {
-                return date('m', strtotime($semana->fecha_lunes)) == $mesNum;
-            });
-
-            $agrupadosPorMes[$mes]['total_semanas'] = $semanasMes->count();
-
-            $semanasEvaluadas = $Cumplio_res_Area->filter(function ($registro) use ($semanasMes) {
-                return $semanasMes->contains('id', $registro->semana->id);
-            })->unique('semana_id')->count();
-
-            $agrupadosPorMes[$mes]['semanas_evaluadas'] = $semanasEvaluadas;
-            $agrupadosPorMes[$mes]['semanas_sin_evaluar'] = $agrupadosPorMes[$mes]['total_semanas'] - $semanasEvaluadas;
-        }
-
-        return view('inspiniaViews.responsabilidades.meses', ['area_id' => $area_id], compact('agrupadosPorMes'));
+        return $Years;
     }
 
-
-    public function getFormAsistencias(Request $request, $mes)
+    public function meses()
     {
-        $area_id = $request->area_id;
-        $area = Area::findOrFail($area_id);
-        $responsabilidades = Responsabilidades_semanales::get();
-        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->with('colaborador')->get();
-        $colaboradoresAreaId = $colaboradoresArea->pluck('id');
-        //return $registros;
-
         $Meses = [
             "Enero" => ["nombre" => "Enero", "id" => "01"],
             "Febrero" => ["nombre" => "Febrero", "id" => "02"],
@@ -105,16 +49,107 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             "Diciembre" => ["nombre" => "Diciembre", "id" => "12"],
         ];
 
+        return $Meses;
+    }
+
+    public function index()
+    {
+        $areas = Area::get();
+
+        $now = Carbon::now();
+        $Years = $this->years();
+        $countYears = count($Years);
+        //$currentYear = $now->year;
+        $currentYear = last($Years);
+
+        return view('inspiniaViews.responsabilidades.index', [
+            'countYears' => $countYears,
+            'currentYear' => $currentYear,
+            'areas' => $areas
+        ]);
+
+    }
+
+    public function getYearsArea($area_id)
+    {
+
+        $Years = $this->years();
+
+        return view(
+            'inspiniaViews.responsabilidades.years',
+            [
+                'area_id' => $area_id,
+                'Years' => $Years
+            ]
+        );
+    }
+
+    public function getMesesAreas($year, $area_id)
+    {
+        $Meses = $this->meses();
+
+        $area = Area::findOrFail($area_id);
+
+        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->get();
+        $colaboradoresAreaIds = $colaboradoresArea->pluck('id');
+
+        $Cumplio_res_Area = Cumplio_Responsabilidad_Semanal::with('semana')
+            ->whereIn('colaborador_area_id', $colaboradoresAreaIds)
+            ->get();
+
+        $agrupadosPorMes = [];
+
+        foreach ($Meses as $mes) {
+            $agrupadosPorMes[$mes['nombre']] = [
+                'total_semanas' => 0,
+                'semanas_evaluadas' => 0,
+                'semanas_sin_evaluar' => 0,
+            ];
+        }
+
+        $semanasTotales = Semanas::get();
+
+        foreach ($Meses as $mes) {
+            $semanasMes = $semanasTotales->filter(function ($semana) use ($mes, $year) {
+                return date('Y', strtotime($semana->fecha_lunes)) == $year &&
+                    date('m', strtotime($semana->fecha_lunes)) == $mes['id'];
+            });
+
+            $agrupadosPorMes[$mes['nombre']]['total_semanas'] = $semanasMes->count();
+
+            $semanasEvaluadas = $Cumplio_res_Area->filter(function ($registro) use ($semanasMes) {
+                return $semanasMes->contains('id', $registro->semana->id);
+            })->unique('semana_id')->count();
+
+            $agrupadosPorMes[$mes['nombre']]['semanas_evaluadas'] = $semanasEvaluadas;
+            $agrupadosPorMes[$mes['nombre']]['semanas_sin_evaluar'] = $agrupadosPorMes[$mes['nombre']]['total_semanas'] - $semanasEvaluadas;
+        }
+
+        return view('inspiniaViews.responsabilidades.meses', ['area_id' => $area_id, 'year' => $year], compact('agrupadosPorMes'));
+    }
+
+    public function getFormAsistencias($year, $mes, $area_id)
+    {
+        //$area_id = $request->area_id;
+        $area = Area::findOrFail($area_id);
+        $responsabilidades = Responsabilidades_semanales::get();
+        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->with('colaborador')->get();
+        $colaboradoresAreaId = $colaboradoresArea->pluck('id');
+        //return $registros;
+
+        $Meses = $this->meses();
+
         //Obtener las semanas del mes
         $semanasMes = [];
         $semanasMesId = [];
+        $semanasTotales = Semanas::get();
 
         foreach ($Meses as $Month) {
             if ($Month['nombre'] == $mes) {
-                $semanasTotales = Semanas::get();
                 foreach ($semanasTotales as $semana) {
                     $mesFecha = date('m', strtotime($semana->fecha_lunes));
-                    if ($mesFecha == $Month['id']) {
+                    $yearFecha = date('Y', strtotime($semana->fecha_lunes));
+                    if ($mesFecha == $Month['id'] && $yearFecha == $year) {
                         $semanasMes[] = $semana;
                         $semanasMesId[] = $semana->id;
                     }
@@ -140,6 +175,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         //return $semanasMes;
         //return $registros;
         return view('inspiniaViews.responsabilidades.asistencia', [
+            'year' => $year,
             'mes' => $mes,
             'registros' => $registros,
             'area' => $area,
@@ -149,27 +185,14 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         ]);
     }
 
-    public function getMonthProm($mes, $area_id)
+    public function getMonthProm($year, $mes, $area_id)
     {
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
         $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->with('colaborador')->get();
         $colaboradoresAreaId = $colaboradoresArea->pluck('id');
 
-        $Meses = [
-            "Enero" => ["nombre" => "Enero", "id" => "01"],
-            "Febrero" => ["nombre" => "Febrero", "id" => "02"],
-            "Marzo" => ["nombre" => "Marzo", "id" => "03"],
-            "Abril" => ["nombre" => "Abril", "id" => "04"],
-            "Mayo" => ["nombre" => "Mayo", "id" => "05"],
-            "Junio" => ["nombre" => "Junio", "id" => "06"],
-            "Julio" => ["nombre" => "Julio", "id" => "07"],
-            "Agosto" => ["nombre" => "Agosto", "id" => "08"],
-            "Septiembre" => ["nombre" => "Septiembre", "id" => "09"],
-            "Octubre" => ["nombre" => "Octubre", "id" => "10"],
-            "Noviembre" => ["nombre" => "Noviembre", "id" => "11"],
-            "Diciembre" => ["nombre" => "Diciembre", "id" => "12"],
-        ];
+        $Meses = $this->meses();
 
         $semanasMes = [];
         $semanasMesId = [];
@@ -179,7 +202,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 $semanasTotales = Semanas::get();
                 foreach ($semanasTotales as $semana) {
                     $mesFecha = date('m', strtotime($semana->fecha_lunes));
-                    if ($mesFecha == $Month['id']) {
+                    $yearFecha = date('Y', strtotime($semana->fecha_lunes));
+                    if ($mesFecha == $Month['id'] && $yearFecha == $year) {
                         $semanasMes[] = $semana;
                         $semanasMesId[] = $semana->id;
                     }
@@ -301,6 +325,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         return view('inspiniaViews.responsabilidades.promediomes', [
             "dataProm" => $dataProm,
             "responsabilidades" => $responsabilidades,
+            "year" => $year,
             "mes" => $mes,
             "area" => $area,
         ]);
@@ -313,22 +338,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->with('colaborador')->get();
         $colaboradoresAreaId = $colaboradoresArea->pluck('id');
 
+        $year = $request->year;
         $selectedMonths = json_decode($request->input('selected_months'), true);
-        
-        $Meses = [
-            "Enero" => ["nombre" => "Enero", "id" => "01"],
-            "Febrero" => ["nombre" => "Febrero", "id" => "02"],
-            "Marzo" => ["nombre" => "Marzo", "id" => "03"],
-            "Abril" => ["nombre" => "Abril", "id" => "04"],
-            "Mayo" => ["nombre" => "Mayo", "id" => "05"],
-            "Junio" => ["nombre" => "Junio", "id" => "06"],
-            "Julio" => ["nombre" => "Julio", "id" => "07"],
-            "Agosto" => ["nombre" => "Agosto", "id" => "08"],
-            "Septiembre" => ["nombre" => "Septiembre", "id" => "09"],
-            "Octubre" => ["nombre" => "Octubre", "id" => "10"],
-            "Noviembre" => ["nombre" => "Noviembre", "id" => "11"],
-            "Diciembre" => ["nombre" => "Diciembre", "id" => "12"],
-        ];
+
+        $Meses = $this->meses();
 
         $totalSemanasCumplidasCount = 0;
         $totalDataProm = [];
@@ -343,7 +356,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                     $semanasTotales = Semanas::get();
                     foreach ($semanasTotales as $semana) {
                         $mesFecha = date('m', strtotime($semana->fecha_lunes));
-                        if ($mesFecha == $Month['id']) {
+                        $yearFecha = date('Y', strtotime($semana->fecha_lunes));
+                        if ($mesFecha == $Month['id'] && $yearFecha == $year) {
                             $semanasMes[] = $semana;
                             $semanasMesId[] = $semana->id;
                         }
@@ -513,7 +527,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             'responsabilidad_id.*' => 'required|integer|min:1|max:255',
             'semana_id' => 'required|integer|min:1|max:100',
             'cumplio.*' => 'required|boolean|min:0|max:1',
+            'year' => 'required|integer',
         ]);
+        $year = $request->year;
+
         $colab_id = $request->colaborador_area_id[0];
         $colab = Colaboradores_por_Area::find($colab_id);
         $area_id = $colab->area_id;
@@ -543,7 +560,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             }
         }
 
-        return redirect()->route('responsabilidades.meses', ['area_id' => $area_id]);
+        return redirect()->route('responsabilidades.meses', ['year' => $year, 'area_id' => $area_id]);
 
     }
 
@@ -586,23 +603,20 @@ $query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
             'colaborador_area_id.*' => 'sometimes|integer|min:1|max:100',
             'responsabilidad_id.*' => 'sometimes|integer|min:1|max:255',
             'cumplio.*' => 'sometimes|boolean|min:0|max:1',
+            'year' => 'required|integer',
         ]);
+        $year = $request->year;
 
         $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('id');
 
         $registros = Cumplio_Responsabilidad_Semanal::where('semana_id', $semana_id)->whereIn('colaborador_area_id', $colaboradoresAreaId)->get();
-
-        //return $registros;
-        //return $request;
 
         foreach ($registros as $index => $registro) {
             $registro->cumplio = $request->cumplio[$index];
             $registro->save();
         }
 
-
-
-        return redirect()->route('responsabilidades.meses', ['area_id' => $area_id]);
+        return redirect()->route('responsabilidades.meses', ['year' => $year, 'area_id' => $area_id]);
 
     }
 
