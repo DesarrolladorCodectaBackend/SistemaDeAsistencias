@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
     Route::resource('horarioClase', HorarioDeClasesController::class);
     Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
+    Route::post('colaboradores/filtrar', [ColaboradoresController::class, 'filtrarColaboradores'])->name('colaboradores.filtrar');
 
     //AJUSTES
     Route::resource('ajustes', AjusteController::class);

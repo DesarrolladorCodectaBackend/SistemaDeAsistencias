@@ -29,11 +29,105 @@
             <div class="col-lg-2">
 
                 <div class="ibox-content">
-                    <div class="text-center">
+                    <div class="text-center flex-centered gap-20">
                         <a data-toggle="modal" class="btn btn-primary " href="#modal-form1"> Agregar <i
+                                class="fa fa-long-arrow-right"></i></a>
+                        <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar <i
                                 class="fa fa-long-arrow-right"></i></a>
                     </div>
                     <!-- Modal view here-->
+                    <div id="modal-filtrar" class="modal fade" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <form role="form" method="POST" action="{{ route('colaboradores.filtrar') }}"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-sm-6 b-r">
+                                                <h2 class="m-t-none m-b">Filtrar Colaboradores</h2>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <h4 class="m-t-none m-b">Areas:</h4>
+                                                    </label>
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-areas"><span>Seleccionar
+                                                            todos</span>
+                                                    </div>
+                                                    @foreach($areas as $index => $area)
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="checkbox-areas-{{$index}}"
+                                                            name="area_id[]" value="{{ $area->id }}"><span>{{
+                                                            $area->especializacion
+                                                            }}</span>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <h4 class="m-t-none m-b">Estados:</h4>
+                                                    </label>
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-estados"><span>Seleccionar
+                                                            todos</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="checkbox" name="estado[]" id="checkbox-estados-1"
+                                                            value="1"><span>activo</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="checkbox" name="estado[]" id="checkbox-estados-0"
+                                                            value="0"><span>inactivo</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 b-r">
+                                                <div class="form-group">
+                                                    <label>
+                                                        <h4 class="m-t-none m-b">Carreras:</h4>
+                                                    </label>
+                                                    <div class="form-group">
+                                                        <input type="checkbox"
+                                                            id="select-all-carreras"><span>Seleccionar todos</span>
+                                                    </div>
+                                                    @foreach($carreras as $index => $carrera)
+                                                    <div class="form-group">
+                                                        <input type="checkbox" name="carrera_id[]"
+                                                            id="checkbox-carreras-{{$index}}"
+                                                            value="{{ $carrera->id }}"><span>{{ $carrera->nombre
+                                                            }}</span>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <h4 class="m-t-none m-b">Instituciones:</h4>
+                                                    </label>
+                                                    <div class="form-group">
+                                                        <input type="checkbox"
+                                                            id="select-all-instituciones"><span>Seleccionar todos</span>
+                                                    </div>
+                                                    @foreach($instituciones as $index => $institucion)
+                                                    <div class="form-group">
+                                                        <input type="checkbox" name="institucion_id[]"
+                                                            id="checkbox-institucion-{{$index}}"
+                                                            value="{{ $institucion->id }}"><span>{{ $institucion->nombre
+                                                            }}</span>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                                                    <a class="btn btn-warning" href="">Cancelar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -208,7 +302,7 @@
                                                 style="font-size: 20px;"
                                                 onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
                                             <button class="btn btn-primary btn-warning fa fa-book mx-1"
-                                                style="font-size: 20px;" ></button>
+                                                style="font-size: 20px;"></button>
                                             <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                 style="font-size: 20px;"
                                                 href="#modal-form-view{{$colaborador->id}}"></button>
@@ -493,6 +587,79 @@
                 }
             });
         }
+
+
+
+
+
+        
+
+        function updateSelectAll(checkboxGroup, selectAllId) {
+            const selectAllCheckbox = document.getElementById(selectAllId);
+            const checkboxes = document.querySelectorAll(checkboxGroup);
+            selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+        }
+
+        document.getElementById('select-all-areas').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-areas-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-estados').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-estados-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-carreras').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-carreras-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-instituciones').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-institucion-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.querySelectorAll('input[id^="checkbox-areas-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-areas-"]', 'select-all-areas');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-estados-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-estados-"]', 'select-all-estados');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-carreras-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-carreras-"]', 'select-all-carreras');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
+            });
+        });
+
+
+
+
+
+
+
+
+
     </script>
 </body>
 

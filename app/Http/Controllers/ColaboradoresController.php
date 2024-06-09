@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
@@ -10,6 +11,8 @@ use App\Models\Institucion;
 use App\Models\Carrera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Session;
 use Exception;
 
 class ColaboradoresController extends Controller
@@ -18,8 +21,9 @@ class ColaboradoresController extends Controller
     public function index()
     {
         $colaboradores = Colaboradores::with('candidato')->get();
-        $instituciones = Institucion::all();
-        $carreras = Carrera::all();
+        $instituciones = Institucion::get();
+        $carreras = Carrera::get();
+        $areas = Area::get();
         $colaboradoresConArea = [];
 
         foreach ($colaboradores as $colaborador) {
@@ -32,47 +36,123 @@ class ColaboradoresController extends Controller
             $colaboradoresConArea[] = $colaborador;
         }
 
-        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras'));
+        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
     }
 
-    
-    public function store(Request $request)
+    public function filtrarColaboradores(Request $request)
     {
-    $request->validate([
-        'candidato_id' => 'required|integer',
-        'area_id' => 'required|integer',
-        'horarios' => 'required|array',
-        'horarios.*.hora_inicial' => 'required|date_format:H:i',
-        'horarios.*.hora_final' => 'required|date_format:H:i',
-        'horarios.*.dia' => 'required|string'
-    ]);
-
-    $candidato = Candidatos::findOrFail($request->candidato_id);
-
-    if ($candidato->estado == true) {
-        $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
-
-        Colaboradores_por_Area::create([
-            'colaborador_id' => $colaborador->id,
-            'area_id' => $request->area_id,
-            'semana_inicio_id' => null
+        // Validamos los request de los filtros que queremos aplicar
+        $request->validate([
+            'area_id.*' => 'sometimes|integer',
+            'estado.*' => 'sometimes',
+            'carrera_id.*' => 'sometimes|integer',
+            'institucion_id.*' => 'sometimes|integer'
         ]);
 
-        foreach ($request->horarios as $horario) {
-            Horario_de_Clases::create([
-                'colaborador_id' => $colaborador->id,
-                'hora_inicial' => $horario['hora_inicial'],
-                'hora_final' => $horario['hora_final'],
-                'dia' => $horario['dia']
-            ]);
+        $instituciones = Institucion::get();
+        $carreras = Carrera::get();
+        $areas = Area::get();
+
+        // Pasamos los request a arrays para usarlos más fácilmente
+        //Validar si hay  request areas
+        if (!$request->area_id) {
+            $requestAreas = $areas->pluck('id');
+        } else {
+            $requestAreas = $request->area_id;
+        }
+        //Validar si hay  request estados
+        if (!$request->estado) {
+            $requestEstados = ["1", "0"];
+        } else {
+            $requestEstados = $request->estado;
+        }
+        //Validar si hay  request carreras
+        if (!$request->carrera_id) {
+            $requestCarreras = $carreras->pluck('id');
+        } else {
+            $requestCarreras = $request->carrera_id;
+        }
+        //Validar si hay  request carreras
+        if (!$request->institucion_id) {
+            $requestInstituciones = $instituciones->pluck('id');
+        } else {
+            $requestInstituciones = $request->institucion_id;
         }
 
-        $candidato->estado = !$candidato->estado;
-        $candidato->save();
+        // Obtenemos a los colaboradores filtrados por áreas
+        $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
+            ->whereIn('area_id', $requestAreas)
+            ->get()
+            ->pluck('colaborador');
+
+        //filtramos por los estados
+        $colaboradoresCandidatoId = $colaboradoresArea->whereIn('estado', $requestEstados)->pluck('candidato_id');
+
+        //filtrar los candidatos por la carrera y la institucion
+
+        $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
+            ->whereIn('carrera_id', $requestCarreras)
+            ->whereIn('institucion_id', $requestInstituciones)
+            ->pluck('id');
+
+        $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->get();
+
+
+        $colaboradoresConArea = [];
+
+        foreach ($colaboradores as $colaborador) {
+            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->first();
+            if ($colaboradorArea) {
+                $colaborador->area = $colaboradorArea->area->especializacion;
+            } else {
+                $colaborador->area = 'Sin área asignada';
+            }
+            $colaboradoresConArea[] = $colaborador;
+        }
+
+
+        //return $colaboradoresConArea;
+        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
     }
 
-    return redirect()->route('colaboradores.index');
-}
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'candidato_id' => 'required|integer',
+            'area_id' => 'required|integer',
+            'horarios' => 'required|array',
+            'horarios.*.hora_inicial' => 'required|date_format:H:i',
+            'horarios.*.hora_final' => 'required|date_format:H:i',
+            'horarios.*.dia' => 'required|string'
+        ]);
+
+        $candidato = Candidatos::findOrFail($request->candidato_id);
+
+        if ($candidato->estado == true) {
+            $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
+
+            Colaboradores_por_Area::create([
+                'colaborador_id' => $colaborador->id,
+                'area_id' => $request->area_id,
+                'semana_inicio_id' => null
+            ]);
+
+            foreach ($request->horarios as $horario) {
+                Horario_de_Clases::create([
+                    'colaborador_id' => $colaborador->id,
+                    'hora_inicial' => $horario['hora_inicial'],
+                    'hora_final' => $horario['hora_final'],
+                    'dia' => $horario['dia']
+                ]);
+            }
+
+            $candidato->estado = !$candidato->estado;
+            $candidato->save();
+        }
+
+        return redirect()->route('colaboradores.index');
+    }
 
 
 
@@ -142,7 +222,7 @@ class ColaboradoresController extends Controller
     }
 
 
-    public function activarInactivar($colaborador_id)
+    public function activarInactivar(Request $request, $colaborador_id)
     {
         $colaborador = Colaboradores::findOrFail($colaborador_id);
 
@@ -150,7 +230,20 @@ class ColaboradoresController extends Controller
 
         $colaborador->save();
 
+        //$url = URL::current();
+
+        //Session::put('previousUrl', url()->previous());
+
+        //return redirect()->route('colaboradores.index');
+
+        //$params = $request->except('_token');
+
+        // Redirigir a la URL anterior con los parámetros de filtro
+        //return redirect()->route('colaboradores.index', $params);
+
         return redirect()->route('colaboradores.index');
+        //return back();
+        //return redirect($url);
     }
 
 
