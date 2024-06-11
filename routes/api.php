@@ -169,7 +169,7 @@ Route::post('colaborador/store', [ColaboradoresController::class, 'store']);
 Route::get('colaborador/show/{colaborador_id}', [ColaboradoresController::class, 'show']);
 Route::put('colaborador/update/{colaborador_id}', [ColaboradoresController::class, 'update']);
 Route::delete('colaborador/delete/{colaborador_id}', [ColaboradoresController::class, 'destroy']);
-Route::get('colaborador/ShowByName', [ColaboradoresController::class, 'ShowByName']);
+//Route::get('colaborador/ShowByName', [ColaboradoresController::class, 'ShowByName']);
 
 //MAQUINA RESERVADA
 Route::get('maquina_reservada/get', [MaquinaReservadaController::class, 'index']);

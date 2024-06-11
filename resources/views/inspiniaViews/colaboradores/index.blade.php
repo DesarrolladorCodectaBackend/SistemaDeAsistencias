@@ -12,8 +12,8 @@
     <div id="wrapper">
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
-            <div class="col-lg-10">
-                <h2>Colaboradores</h2>zzzzzzzzzzzzzzzzz
+            <div class="col-lg-3">
+                <h2>Colaboradores</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="index.html">Home</a>
@@ -25,6 +25,17 @@
                         <strong>Colaboradores</strong>
                     </li>
                 </ol>
+            </div>
+            <div class="col-lg-7 flex-centered">
+                <div class="flex-centered spc-per-90">
+                    <form method="POST" action="{{route('colaboradores.search')}}"
+                        class="flex-centered gap-20 spc-per-100">
+                        @csrf
+                        <input class="form-control wdt-per-80" type="search" name="busqueda" placeholder="Buscar Colaborador..."
+                            aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
             </div>
             <div class="col-lg-2">
 

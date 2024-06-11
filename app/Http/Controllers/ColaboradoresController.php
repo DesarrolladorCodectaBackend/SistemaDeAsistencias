@@ -246,34 +246,55 @@ class ColaboradoresController extends Controller
     }
 
 
-    public function ShowByName(Request $request)
+    public function search(Request $request)
     {
-        try {
-            if (!$request->nombre) {
-                return response()->json(["resp" => "Ingrese el nombre del colaborador"]);
-            }
+        
+        //asignar a variable
+        $busqueda = $request->busqueda;
 
-            if (!is_string($request->nombre)) {
-                return response()->json(["resp" => "El nombre debe ser una cadena de texto"]);
-            }
+        //Obtener colaboradores con nombre
+        $colabsWithCand = Colaboradores::with('candidato')->get();
+        //Filtrar por id
+        $colaboradorPorId = $colabsWithCand->where('id', $busqueda)->all(); //Se usa all para forzar a que sea una colección aunque solo tenga un elemento, para evitar errores al recorrer
 
-            $nombreCompleto = $request->nombre;
+        //Obtener todos los colabs con candidato por function query
+        $colaboradoresTotales = Colaboradores::with([
+            'candidato' => function ($query) {
+                $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'institucion_id', 'carrera_id', 'icono', 'correo', 'celular'); }
+        ]);
+        //Filtrar por nombre y apellido de candidato                
+        $colaboradoresPorNombre = $colaboradoresTotales->whereHas('candidato', function ($query) use ($busqueda) {
+            $query->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%');
+        })->get();
 
-            $colaboradores = Colaboradores::with([
-                'candidatos' => function ($query) {
-                    $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'institucion_id', 'carrera_id');
-                }
-            ])
-                ->whereHas('candidatos', function ($query) use ($nombreCompleto) {
-                    $query->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $nombreCompleto . '%');
-                })
-                ->where('estado', true)
-                ->get();
-
-            return response()->json(["data" => $colaboradores, "conteo" => $colaboradores->count()]);
-        } catch (Exception $e) {
-            return response()->json(["error" => $e]);
+        //Si existe un registro encontrado por el id
+        if ($colaboradorPorId) {
+            //Se asigna el valor del colaboradorPorId
+            $colaboradores = $colaboradorPorId;
+        } else { //Si no existe
+            //Se asigna el valor de los colaboradoresPorNombre
+            $colaboradores = $colaboradoresPorNombre;
         }
+
+        $instituciones = Institucion::get();
+        $carreras = Carrera::get();
+        $areas = Area::get();
+
+        $colaboradoresConArea = [];
+
+        foreach ($colaboradores as $colaborador) {
+            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->first();
+            if ($colaboradorArea) {
+                $colaborador->area = $colaboradorArea->area->especializacion;
+            } else {
+                $colaborador->area = 'Sin área asignada';
+            }
+            $colaboradoresConArea[] = $colaborador;
+        }
+
+        //return $colaboradoresConArea;
+
+        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
 
     }
 }
