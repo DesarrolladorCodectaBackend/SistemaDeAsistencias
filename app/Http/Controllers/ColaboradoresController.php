@@ -89,10 +89,9 @@ class ColaboradoresController extends Controller
         $colaboradoresCandidatoId = $colaboradoresArea->whereIn('estado', $requestEstados)->pluck('candidato_id');
 
         //filtrar los candidatos por la carrera y la institucion
-
         $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
-            ->whereIn('carrera_id', $requestCarreras)
-            ->whereIn('institucion_id', $requestInstituciones)
+            ->whereIn('carrera_id', $requestCarreras) //filtrar por la carrera
+            ->whereIn('institucion_id', $requestInstituciones) //filtrar por la institucion
             ->pluck('id');
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->get();

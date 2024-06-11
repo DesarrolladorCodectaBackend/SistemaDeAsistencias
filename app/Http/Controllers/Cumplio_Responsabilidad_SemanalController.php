@@ -56,10 +56,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     {
         $areas = Area::get();
 
-        $now = Carbon::now();
         $Years = $this->years();
         $countYears = count($Years);
-        //$currentYear = $now->year;
         $currentYear = last($Years);
 
         return view('inspiniaViews.responsabilidades.index', [
