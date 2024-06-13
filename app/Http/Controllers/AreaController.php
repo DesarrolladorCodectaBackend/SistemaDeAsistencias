@@ -11,8 +11,8 @@ class AreaController extends Controller
 {
     public function index()
     {
-        $areas = Area::all();
-
+        $areas = Area::get();
+        //return response()->json(["resp" => $areas]);
         return view('inspiniaViews.areas.index', compact('areas'));
     }
 
@@ -47,7 +47,7 @@ class AreaController extends Controller
             'icono' => $nombreIcono
         ]);
 
-
+        //return response()->json(["resp" => "Área creada correctamente"]);
         return redirect()->route('areas.index');
     }
 

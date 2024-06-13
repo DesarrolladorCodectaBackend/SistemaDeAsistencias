@@ -80,8 +80,8 @@ Route::put('salon/update/{salon_id}', [SalonesController::class, 'update']);
 Route::delete('salon/delete/{salon_id}', [SalonesController::class, 'destroy']);
 
 //AREAS
-Route::get('area/get', [AreaController::class, 'index']);
-Route::post('area/store', [AreaController::class, 'store']);
+Route::get('area/getall', [AreaController::class, 'index']);
+Route::post('area/storeArea', [AreaController::class, 'store']);
 Route::get('area/show/{area_id}', [AreaController::class, 'show']);
 Route::put('area/update/{area_id}', [AreaController::class, 'update']);
 Route::delete('area/delete/{area_id}', [AreaController::class, 'destroy']);
