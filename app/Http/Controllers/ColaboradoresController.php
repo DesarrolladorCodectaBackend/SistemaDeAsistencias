@@ -18,12 +18,7 @@ use Exception;
 class ColaboradoresController extends Controller
 {
 
-    public function index()
-    {
-        $colaboradores = Colaboradores::with('candidato')->get();
-        $instituciones = Institucion::get();
-        $carreras = Carrera::get();
-        $areas = Area::get();
+    public function colaboradoresConArea($colaboradores){
         $colaboradoresConArea = [];
 
         foreach ($colaboradores as $colaborador) {
@@ -35,7 +30,16 @@ class ColaboradoresController extends Controller
             }
             $colaboradoresConArea[] = $colaborador;
         }
+        return $colaboradoresConArea;
+    }
 
+    public function index()
+    {
+        $colaboradores = Colaboradores::with('candidato')->get();
+        $instituciones = Institucion::get();
+        $carreras = Carrera::get();
+        $areas = Area::get();
+        $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
         return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
     }
 
@@ -97,17 +101,7 @@ class ColaboradoresController extends Controller
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->get();
 
 
-        $colaboradoresConArea = [];
-
-        foreach ($colaboradores as $colaborador) {
-            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->first();
-            if ($colaboradorArea) {
-                $colaborador->area = $colaboradorArea->area->especializacion;
-            } else {
-                $colaborador->area = 'Sin área asignada';
-            }
-            $colaboradoresConArea[] = $colaborador;
-        }
+        $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
 
 
         //return $colaboradoresConArea;
@@ -280,17 +274,7 @@ class ColaboradoresController extends Controller
         $carreras = Carrera::get();
         $areas = Area::get();
 
-        $colaboradoresConArea = [];
-
-        foreach ($colaboradores as $colaborador) {
-            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->first();
-            if ($colaboradorArea) {
-                $colaborador->area = $colaboradorArea->area->especializacion;
-            } else {
-                $colaborador->area = 'Sin área asignada';
-            }
-            $colaboradoresConArea[] = $colaborador;
-        }
+        $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
 
         //return $colaboradoresConArea;
 

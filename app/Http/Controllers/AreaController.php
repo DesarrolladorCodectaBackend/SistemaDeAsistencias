@@ -6,13 +6,24 @@ use App\Models\Area;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
+use Illuminate\Support\Facades\DB;
 
 class AreaController extends Controller
 {
+    /**
+     * INDEX
+     * 
+     * Se encarga de mostrar todos los registros de áreas en la vista index.blade.php de la carpeta areas.
+     * 
+     * @response 200 vista index.blade.php con todas las áreas
+     * 
+     */
     public function index()
     {
+        //Recurar todos los registros en áreas
         $areas = Area::get();
-        //return response()->json(["resp" => $areas]);
+        // return response()->json(["data" => $areas]);
+        //Redirigir a la vista mandando las áreas
         return view('inspiniaViews.areas.index', compact('areas'));
     }
 
@@ -21,34 +32,74 @@ class AreaController extends Controller
         return view('areas.create');
     }
 
+    /**
+     *  STORE
+     *  
+     *  Se encarga de guardar los datos de un área en la base de datos. Con imagen definida o default.
+     * 
+     *  @bodyParam especializacion string required Especialización del área.
+     *  @bodyParam descripcion string required Descripción del área.
+     *  @bodyParam color_hex string required Color hexadecimal del área.
+     *  @bodyParam icono file Imagen del área. Ejemplo: "icono.png" (opcional)
+     *  
+     *  @response 200 Ruta de redirección a la vista index.blade.php.
+     * 
+     *  @response 400 {"message": "Debe ingresar la especialización"}
+     *  @response 400 {"message": "Debe ingresar la descripción"}
+     *  @response 400 {"message": "Debe ingresar el color"}
+     * 
+     * 
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'especializacion' => 'required|string|min:1|max:100',
-            'descripcion' => 'required|string|min:1|max:255',
-            'color_hex' => 'required|string|min:1|max:7',
-            'icono' => 'image|mimes:jpeg,png,jpg,gif'
-        ]);
-
-        if ($request->hasFile('icono')) {
-            $icono = $request->file('icono');
-            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-            $icono->move(public_path('storage/areas'), $nombreIcono);
-        } else {
-            $nombreIcono = 'Default.png';
+        //Se inicia la transacción 
+        DB::beginTransaction();
+        try{
+            //Solicitar los datos requeridos
+            $request->validate([
+                'especializacion' => 'required|string|min:1|max:100',
+                'descripcion' => 'required|string|min:1|max:255',
+                'color_hex' => 'required|string|min:1|max:7',
+                'icono' => 'image|mimes:jpeg,png,jpg,gif'
+            ]);
+            //Validar que los datos no esten vacios
+            if(!$request->especializacion) return response()->json(["message" => "Debe ingresar la especialización"]);
+            if(!$request->descripcion) return response()->json(["message" => "Debe ingresar la descripcion"]);
+            if(!$request->color) return response()->json(["message" => "Debe ingresar el color"]);
+            
+            //Validar que la imagen haya sido ingresada
+            if ($request->hasFile('icono')) {
+                //Si se ingresó se guarda en la variable icono
+                $icono = $request->file('icono');
+                //Le asignamos un nombre único con la fecha y hora exacta actual y la extensión del archivo
+                $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+                //Se mueve la imagen a la carpeta storage/areas con el nombre único que se le asignó anteriormente
+                $icono->move(public_path('storage/areas'), $nombreIcono);
+            } else {
+                //Si no se ingresó se asigna el nombre de la imagen por defecto
+                $nombreIcono = 'Default.png';
+            }
+    
+            //Area::create($request->all());
+            //Se crea un nuevo registro con  los datos requeridos y la imagen definida o default
+            Area::create([
+                'especializacion' => $request->especializacion,
+                'descripcion' => $request->descripcion,
+                'color_hex' => $request->color_hex,
+                'icono' => $nombreIcono
+            ]);
+            //Se confirma la transacción
+            DB::commit();
+            //return response()->json(["resp" => "Área creada correctamente"]);
+            //Se redirige a la vista index.blade.php de la carpeta areas
+            return redirect()->route('areas.index');
+        } catch (\Exception $e) {
+            //Si ocurre algún error
+            //Se revierte la transacción
+            DB::rollback();
+            //Se retorna un mensaje avisando que hubo un error con la información del error
+            return response()->json(["message" => "Error al crear el registro", "error" => $e->getMessage()]);
         }
-
-        //Area::create($request->all());
-
-        Area::create([
-            'especializacion' => $request->especializacion,
-            'descripcion' => $request->descripcion,
-            'color_hex' => $request->color_hex,
-            'icono' => $nombreIcono
-        ]);
-
-        //return response()->json(["resp" => "Área creada correctamente"]);
-        return redirect()->route('areas.index');
     }
 
     public function show($area_id)
@@ -58,6 +109,7 @@ class AreaController extends Controller
         return response()->json(["data" => $area]);
     }
 
+
     public function edit($area_id)
     {
         $area = Area::findOrFail($area_id);
@@ -65,37 +117,79 @@ class AreaController extends Controller
         return view('inspiniaViews.areas.edit', compact('area'));
     }
 
+    /**
+     *  UPDATE
+     *  
+     *  Se encarga de actualizar los datos de un área en la base de datos. 
+     * 
+     *  @urlParam  area_id integer required ID del área a actualizar. 
+     *  
+     *  @bodyParam especializacion string Especialización del área.
+     *  @bodyParam descripcion string Descripción del área.
+     *  @bodyParam color_hex string Color hexadecimal del área.
+     *  @bodyParam icono file Imagen del área.
+     * 
+     *  @response 200 Ruta de redirección a la vista de áreas. 
+     * 
+     */
+
     public function update(Request $request, $area_id)
     {
-        $request->validate([
-            'especializacion' => 'sometimes|string|min:1|max:100',
-            'descripcion' => 'sometimes|string|min:1|max:255',
-            'color_hex' => 'sometimes|string|min:1|max:7',
-            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
-        ]);
+        //Se inicia la transacción
+        DB::beginTransaction();
+        try{
+            //Se raliza la validación de los datos ingresados por el usuario
+            $request->validate([
+                'especializacion' => 'sometimes|string|min:1|max:100',
+                'descripcion' => 'sometimes|string|min:1|max:255',
+                'color_hex' => 'sometimes|string|min:1|max:7',
+                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
+            ]);
 
-        $area = Area::findOrFail($area_id);
+            // return $request;
 
-        $datosActualizar = $request->except(['icono']);
-
-        if ($request->hasFile('icono')) {
-            $rutaPublica = public_path('storage/areas');
-
-            if ($area->icono && $area->icono !== 'default.png') {
-                unlink($rutaPublica . '/' . $area->icono);
+            //Se busca el área por el id ingresado como parámetro 
+            $area = Area::findOrFail($area_id);
+            //Se asignan los valores ingresados por el usuario a las variables correspondientes, si no se ingresó nada se asigna el valor actual de la base de datos
+            $especializacion = !$request->especializacion ? $area->especializacion : $request->especializacion;
+            $descripcion = !$request->descripcion ? $area->descripcion : $request->descripcion;
+            $color_hex = !$request->color_hex ? $area->color_hex : $request->color_hex;
+            //Se crea un array con los datos a actualizar
+            $datosActualizar = [
+                "especializacion" => $especializacion, 
+                "descripcion" => $descripcion, 
+                "color_hex" => $color_hex
+            ];
+            //Se verifica si se ingresó la imagen
+            if ($request->hasFile('icono')) {
+                //Si existe buscamos la ruta publica
+                $rutaPublica = public_path('storage/areas');
+                //Si existe la imagen y no es la imagen por defecto, se elimina la imagen anterior
+                if ($area->icono && $area->icono !== 'default.png') {
+                    unlink($rutaPublica . '/' . $area->icono);
+                }
+                //Se obtiene la imagen ingresada por el usuario
+                $icono = $request->file('icono');
+                //Se obtiene el nombre de la imagen ingresada por el usuario y se le agrega la extensión de la imagen
+                $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+                //Se mueve la imagen a la ruta publica con el nombre de la imagen definido anteriormente
+                $icono->move($rutaPublica, $nombreIcono);
+                //Se agrega el nombre de la imagen al array de datos a actualizar
+                $datosActualizar['icono'] = $nombreIcono;
             }
-
-            $icono = $request->file('icono');
-            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-
-            $icono->move($rutaPublica, $nombreIcono);
-
-            $datosActualizar['icono'] = $nombreIcono;
+            //Se actualiza el área con los datos ingresados por el usuario
+            $area->update($datosActualizar);
+            //Se confirma la transacción
+            DB::commit();
+            //Se redirige a la vista index.blade.php de la carpeta areas
+            return redirect()->route('areas.index');
+        } catch (\Exception $e) {
+            //Si ocurre algún error
+            //Se revierte la transacción
+            DB::rollBack();
+            //Se retorna un mensaje avisando que hubo un error con la información del error
+            return response()->json(["message" => "Hubo un error", "error" => $e->getMessage()]);
         }
-
-        $area->update($datosActualizar);
-
-        return redirect()->route('areas.index');
     }
 
 
