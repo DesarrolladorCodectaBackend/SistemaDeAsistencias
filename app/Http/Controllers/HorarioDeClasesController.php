@@ -54,6 +54,7 @@ class HorarioDeClasesController extends Controller
 
     public function store(Request $request)
     {
+        // return $request;
         $request->validate([
             'colaborador_id' => 'required|integer',
             'horarios' => 'required|array',

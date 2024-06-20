@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CarreraSeeder::class,
             InstitucionSeeder::class,
             AreaSeeder::class,
+            HorariosPresencialesSeeder::class,
             CursoSeeder::class,
             ProgramaSeeder::class,
             SemanaSeeder::class,
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
             ResponsabilidadSemanalSeeder::class,
             MaquinasSeeder::class,
             CandidatosSeeder::class,
+            HorarioPresencialAsignadoSeeder::class,
             ColaboradoresSeeder::class,
             ColaboradoresPorAreaSeeder::class,
             HorarioDeClasesSeeder::class

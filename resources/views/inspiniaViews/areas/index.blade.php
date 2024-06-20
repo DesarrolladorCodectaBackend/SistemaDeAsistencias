@@ -95,11 +95,14 @@
                                 <div class="small m-t-xs">
                                     {{ $area->descripcion }}
                                 </div>
-                                <div class="m-t text-left">
+                                <div style="display: flex; gap: 4px" class="m-t text-left">
                                     <button class="btn btn-danger" type="button"
                                         onclick="confirmDelete({{ $area->id }})"><i class="fa fa-trash-o"></i></button>
                                     <button class="btn btn-info" type="button" href="#modal-form{{ $area->id }}"
                                         data-toggle="modal"><i class="fa fa-paste"></i> Edit</button>
+                                    <form role="form" method="GET" action="{{route('areas.getHorario', $area->id)}}">
+                                        <button class="btn btn-primary fa fa-clock-o" style="font-size: 20px;"></button>
+                                    </form>
                                     <div id="modal-form{{ $area->id }}" class="modal fade" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -175,27 +178,6 @@
 
 
         @include('components.inspinia.footer-inspinia')
-
-        <!--
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>ESPECIALIZACIÓN</th>
-                    <th>COLOR HEX</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($areas as $area)
-<tr>
-                    <td>{{ $area->id }}</td>
-                    <td>{{ $area->especializacion }}</td>
-                    <td>{{ $area->color_hex }}</td>
-                </tr>
-@endforeach
-            </tbody>
-        </table>
-        -->
 
     </div>
     </div>

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Colaboradores_por_Area;
+use App\Models\Horario_de_Clases;
+use App\Models\Horario_Presencial_Asignado;
+use App\Models\Horarios_Presenciales;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
@@ -22,7 +26,7 @@ class AreaController extends Controller
     {
         //Recurar todos los registros en áreas
         $areas = Area::get();
-        // return response()->json(["data" => $areas]);
+        // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
         return view('inspiniaViews.areas.index', compact('areas'));
     }
@@ -30,6 +34,51 @@ class AreaController extends Controller
     public function create()
     {
         return view('areas.create');
+    }
+
+    public function getFormHorarios($area_id){
+        //Encontrar area
+        $area = Area::findOrFail($area_id);
+        //Encontrar el id de los colaboradores del área
+        $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('colaborador_id');
+        //encontrar los días de clase de esos colaboradores
+        $diasColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get()->pluck('dia');
+        //Filtrar los horarios exceptuando las que tiene días usados por los colaboradores
+        $horariosPresencialesDisponibles = Horarios_Presenciales::whereNotIn('dia', $diasColaboradores)->get();
+
+        
+        $hasHorario = false;
+        $horarioAsignado = Horario_Presencial_Asignado::with('horario_presencial')->where('area_id', $area_id)->get();
+        
+        if($horarioAsignado){
+            $hasHorario = true;
+        } else{
+            $hasHorario = false;
+            $horarioAsignado = 0;
+        }
+
+        foreach ($horarioAsignado as $horario) {
+            $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
+            $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
+
+            $horariosFormateados[] = [
+                'hora_inicial' => $horaInicial,
+                'hora_final' => $horaFinal,
+                'dia' => $horario->dia,
+            ];
+        }
+
+        // return $horarioAsignado;
+
+        // return [$diasColaboradores,$horariosPresencialesDisponibles];
+
+        return view('inspiniaViews.areas.gestHorarios', [
+            "area" => $area,
+            "horariosDisponibles" => $horariosPresencialesDisponibles,
+            "horarioAsignado" => $horarioAsignado,
+            "horariosFormateados" => $horariosFormateados,
+            "hasHorario" => $hasHorario
+        ]);
     }
 
     /**
@@ -65,7 +114,7 @@ class AreaController extends Controller
             //Validar que los datos no esten vacios
             if(!$request->especializacion) return response()->json(["message" => "Debe ingresar la especialización"]);
             if(!$request->descripcion) return response()->json(["message" => "Debe ingresar la descripcion"]);
-            if(!$request->color) return response()->json(["message" => "Debe ingresar el color"]);
+            if(!$request->color_hex) return response()->json(["message" => "Debe ingresar el color"]);
             
             //Validar que la imagen haya sido ingresada
             if ($request->hasFile('icono')) {

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Horario de Clases</title>
+    <title>PRUEBA HORARIO AREA</title>
 
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
@@ -85,6 +85,7 @@
                                             <div class="col-lg-12">
                                                 <div class="ibox ">
                                                     <div class="ibox-content">
+                                                        <!-- 
                                                         <form id="storeHorarios" role="form" method="POST"
                                                             action="{{ route('horarioClase.store') }}">
                                                             @csrf
@@ -95,13 +96,11 @@
                                                                     <div class="form-group"><label>Nombres</label>
                                                                         <input type="text"
                                                                             placeholder="Ingrese su nombre"
-                                                                            value="{{ $colaborador->candidato->nombre }}"
                                                                             class="form-control" disabled>
                                                                     </div>
                                                                     <div class="form-group"><label>DNI</label>
                                                                         <input type="text"
                                                                             placeholder="Ingrese su nombre"
-                                                                            value="{{ $colaborador->candidato->dni }}"
                                                                             class="form-control" disabled>
                                                                     </div>
 
@@ -110,13 +109,11 @@
                                                                     <div class="form-group"><label>Apellidos</label>
                                                                         <input type="text"
                                                                             placeholder="Ingrese su nombre"
-                                                                            value="{{ $colaborador->candidato->apellido }}"
                                                                             class="form-control" disabled>
                                                                     </div>
                                                                     <div class="form-group"><label>Ciclo</label>
                                                                         <input type="text"
                                                                             placeholder="Ingrese su nombre"
-                                                                            value="{{ $colaborador->candidato->ciclo_de_estudiante}}"
                                                                             class="form-control" disabled>
                                                                     </div>
                                                                 </div>
@@ -149,7 +146,6 @@
                                                                             </thead>
 
                                                                             <tbody>
-                                                                                @foreach($horariosDeClases as $key =>
                                                                             $horario)
                                                                             <tr>
                                                                                 <td>
@@ -160,7 +156,6 @@
                                                                                         <div class="col-sm-10">
                                                                                             <input
                                                                                                 class="form-control m-b"
-                                                                                                value="{{$horario->dia}}"
                                                                                                 disabled>
                                                                                         </div>
                                                                                     </div>
@@ -172,7 +167,6 @@
                                                                                                 class="fa fa-calendar"></i></span>
                                                                                         <input type="time"
                                                                                             class="form-control"
-                                                                                            value="{{$horario->hora_inicial}}"
                                                                                             disabled>
                                                                                     </div>
                                                                                 </td>
@@ -183,7 +177,6 @@
                                                                                                 class="fa fa-calendar"></i></span>
                                                                                         <input type="time"
                                                                                             class="form-control"
-                                                                                            value="{{$horario->hora_final}}"
                                                                                             disabled>
                                                                                     </div>
                                                                                 </td>
@@ -191,20 +184,17 @@
                                                                                     <button
                                                                                         class="btn btn-danger float-right mx-2"
                                                                                         type="button"
-                                                                                        onclick="confirmDelete({{ $horario->id }})"><i
                                                                                             class="fa fa-trash-o"></i>
                                                                                     </button>
                                                                                     <button
                                                                                         class="btn btn-info float-right mx-2"
                                                                                         type="button"
-                                                                                        href="#modal-form-update-{{$horario->id}}"
                                                                                         data-toggle="modal"><i
                                                                                             class="fa fa-paste"></i>
 
                                                                                     </button>
                                                                                 </td>
                                                                             </tr>
-                                                                            @endforeach
                                                                                 <tr>
                                                                                     <td>
                                                                                         <div class="form-group row">
@@ -266,9 +256,9 @@
                                                                                     class="form-control-file"
                                                                                     id="colaborador_id"
                                                                                     name="colaborador_id"
-                                                                                    value="{{ $colaborador->id }}"
                                                                                     style="display: none;">
                                                         </form>
+                                                    -->
                                                         <!---Div-->
 
                                                         </tbody>
@@ -286,17 +276,16 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            @foreach($horariosDeClases as $key =>
+                                            <!--
                                             $horario)
-                                            <div id="modal-form-update-{{$horario->id}}"
+                                            <div id="modal-form-update-"
                                                 class="modal fade" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-body">
                                                             <form role="form"
                                                                 method="POST"
-                                                                action="{{ route('horarioClase.update', $horario->id) }}"
+                                                                action="{{ route('horarioClase.update', 1) }}"
                                                                 enctype="multipart/form-data">
                                                                 @csrf
                                                                 @method('put')
@@ -312,14 +301,9 @@
                                                                         <select
                                                                             class="form-control m-b"
                                                                             name="dia"
-                                                                            value="{{ old('dia', $horario->dia) }}"
                                                                             id="dia">
                                                                             <option
                                                                                 style="background: #999">
-                                                                                {{
-                                                                                old('dia',
-                                                                                $horario->dia)
-                                                                                }}
                                                                             </option>
                                                                             <option>
                                                                                 Lunes
@@ -350,7 +334,6 @@
                                                                             class="form-control"
                                                                             name="hora_inicial"
                                                                             id="hora_inicial"
-                                                                            value="{{ old('hora_inicial', $horario->hora_inicial) }}">
                                                                     </div>
                                                                     <div
                                                                         class="form-group">
@@ -361,10 +344,8 @@
                                                                             class="form-control"
                                                                             name="hora_final"
                                                                             id="hora_final"
-                                                                            value="{{ old('hora_final', $horario->hora_final) }}">
                                                                     </div>
                                                                     <div>
-                                                                        <a href="../horarioClases/{{$colaborador->id}}"
                                                                             class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
                                                                         <button
                                                                             class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -377,7 +358,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @endforeach
+                                        -->
                                         </div>
                                     </div>
                                 </div>
@@ -510,7 +491,6 @@
                 } else{
                     numeroDia = 4;
                 }
-                console.log(horario.hora_inicial);
                 return {
                     title: "Clases",
                     start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),

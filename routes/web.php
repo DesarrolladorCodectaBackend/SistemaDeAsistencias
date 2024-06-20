@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
 
     //AREAS
     Route::resource('areas', AreaController::class);
+    Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');
 
     //INSTITUCION
     Route::resource('institucion', InstitucionController::class);
