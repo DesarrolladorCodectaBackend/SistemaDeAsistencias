@@ -23,7 +23,7 @@ class HorariosPresencialesSeeder extends Seeder
         ]);
         Horarios_Presenciales::create([
             'hora_inicial' => '14:00',
-            'hora_final' => '16:00',
+            'hora_final' => '18:00',
             'dia' => 'Lunes'
         ]);
 
@@ -35,7 +35,7 @@ class HorariosPresencialesSeeder extends Seeder
         ]);
         Horarios_Presenciales::create([
             'hora_inicial' => '14:00',
-            'hora_final' => '16:00',
+            'hora_final' => '18:00',
             'dia' => 'Martes'
         ]);
 
@@ -47,7 +47,7 @@ class HorariosPresencialesSeeder extends Seeder
         ]);
         Horarios_Presenciales::create([
             'hora_inicial' => '14:00',
-            'hora_final' => '16:00',
+            'hora_final' => '18:00',
             'dia' => 'Miércoles'
         ]);
 
@@ -59,7 +59,7 @@ class HorariosPresencialesSeeder extends Seeder
         ]);
         Horarios_Presenciales::create([
             'hora_inicial' => '14:00',
-            'hora_final' => '16:00',
+            'hora_final' => '18:00',
             'dia' => 'Jueves'
         ]);
 
@@ -71,7 +71,7 @@ class HorariosPresencialesSeeder extends Seeder
         ]);
         Horarios_Presenciales::create([
             'hora_inicial' => '14:00',
-            'hora_final' => '16:00',
+            'hora_final' => '18:00',
             'dia' => 'Viernes'
         ]);
 
@@ -83,7 +83,7 @@ class HorariosPresencialesSeeder extends Seeder
         ]);
         Horarios_Presenciales::create([
             'hora_inicial' => '14:00',
-            'hora_final' => '16:00',
+            'hora_final' => '18:00',
             'dia' => 'Sábado'
         ]);
 

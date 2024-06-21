@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    
+
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
@@ -36,7 +36,7 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs" role="tablist">
                             <li><a class="nav-link active" data-toggle="tab" href="#tab-1"> Ver</a></li>
-                            <li><a class="nav-link" data-toggle="tab" href="#tab-2">Agregar</a></li>
+                            <li><a class="nav-link" data-toggle="tab" href="#tab-2">Gestionar</a></li>
                         </ul>
                         <div class="tab-content">
                             <div role="tabpanel" id="tab-1" class="tab-pane active">
@@ -75,10 +75,118 @@
                                 <div class="panel-body">
                                     <div class="wrapper wrapper-content animated fadeInRight">
                                         <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="ibox ">
+                                                    <div class="ibox-content">
+                                                        @if($hasHorario)
+                                                        <h2>Cambiar Horario</h2>
+                                                        <?php $asignado = $horarioAsignado->first(); ?>
+                                                        <form action="{{ route('areas.horarioUpdate', $asignado->id) }}"
+                                                            role="form" method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input value="{{ $area->id }}" name="area_id"
+                                                                type="hidden" />
+                                                            <h3 class="m-t-none m-b">Seleccione uno de los horarios
+                                                                disponibles:</h3>
+                                                            <div class="row">
+                                                                @foreach($horariosDisponibles as $index => $horario)
+                                                                @if($index % 4 == 0)
+                                                            </div>
+                                                            <div class="row">
+                                                                @endif
+                                                                <div class="col-md-3">
+                                                                    <div class="ibox">
+                                                                        <div style="cursor: pointer"
+                                                                            class="ibox-content product-box"
+                                                                            onclick="toggleCheckbox(event, {{ $horario->id }})">
+                                                                            <div class="product-desc">
+                                                                                <div style="display: flex; gap:60%">
+                                                                                    <h1 class="product-name">{{
+                                                                                        $horario->dia }}
+                                                                                        @if($horario->actual === true)
+                                                                                        <span
+                                                                                            style="color: #f00; font-size: 13px">(Actual)</span>
+                                                                                        @endif
+                                                                                    </h1>
+                                                                                    <input type="checkbox"
+                                                                                        value="{{ $horario->id }}"
+                                                                                        name="horario_presencial_id"
+                                                                                        class="horario-checkbox"
+                                                                                        id="checkbox-{{ $horario->id }}"
+                                                                                        onchange="updateSubmitButton()" />
+                                                                                </div>
+                                                                                <div class="m-t-xs">Desde: {{
+                                                                                    $horario->hora_inicial }}</div>
+                                                                                <div class="m-t-xs">Hasta: {{
+                                                                                    $horario->hora_final }}</div>
 
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                @endforeach
+                                                            </div>
+                                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                                type="submit" id="submit-button" disabled>
+                                                                <i class="fa fa-check"></i>&nbsp;Enviar
+                                                            </button>
+                                                        </form>
 
+                                                        @else
+                                                        <h2>Asignar Horario</h2>
+                                                        <form action="{{ route('areas.horarioCreate') }}" role="form"
+                                                            method="POST">
+                                                            @csrf
+                                                            <input value="{{ $area->id }}" name="area_id"
+                                                                type="hidden" />
+                                                            <h3 class="m-t-none m-b">Seleccione uno de los horarios
+                                                                disponibles:</h3>
+                                                            <div class="row">
+                                                                @foreach($horariosDisponibles as $index => $horario)
+                                                                @if($index % 4 == 0)
+                                                            </div>
+                                                            <div class="row">
+                                                                @endif
+                                                                <div class="col-md-3">
+                                                                    <div class="ibox">
+                                                                        <div style="cursor: pointer"
+                                                                            class="ibox-content product-box"
+                                                                            onclick="toggleCheckbox(event, {{ $horario->id }})">
+                                                                            <div class="product-desc">
+                                                                                <div style="display: flex; gap:60%">
+                                                                                    <h1 class="product-name">{{
+                                                                                        $horario->dia }}</h1>
+                                                                                    <input type="checkbox"
+                                                                                        value="{{ $horario->id }}"
+                                                                                        name="horario_presencial_id"
+                                                                                        class="horario-checkbox"
+                                                                                        id="checkbox-{{ $horario->id }}"
+                                                                                        onchange="updateSubmitButton()" />
+                                                                                </div>
+                                                                                <div class="m-t-xs">Desde: {{
+                                                                                    $horario->hora_inicial }}</div>
+                                                                                <div class="m-t-xs">Hasta: {{
+                                                                                    $horario->hora_final }}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                @endforeach
+                                                            </div>
+                                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                                type="submit" id="submit-button" disabled>
+                                                                <i class="fa fa-check"></i>&nbsp;Enviar
+                                                            </button>
+                                                        </form>
 
+                                                        @endif
+                                                        <form action="">
 
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +202,7 @@
         </div>
 
 
-        
+
 
 
 
@@ -103,8 +211,39 @@
 
 
         @include('components.inspinia.footer-inspinia')
-        </div>
     </div>
+    </div>
+    <script>
+        function toggleCheckbox(event, id) {
+            if (event.target.tagName !== 'INPUT') {
+                const checkbox = document.getElementById(`checkbox-${id}`);
+                checkbox.checked = !checkbox.checked;
+                updateSubmitButton();
+            }
+            uncheckOthers(id);
+        }
+    
+        function uncheckOthers(id) {
+            const checkboxes = document.querySelectorAll('.horario-checkbox');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.id !== `checkbox-${id}`) {
+                    checkbox.checked = false;
+                }
+            });
+        }
+    
+        function updateSubmitButton() {
+            const checkboxes = document.querySelectorAll('.horario-checkbox');
+            const submitButton = document.getElementById('submit-button');
+            let isAnyChecked = false;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    isAnyChecked = true;
+                }
+            });
+            submitButton.disabled = !isAnyChecked;
+        }
+    </script>
 
 
 
@@ -140,17 +279,18 @@
             
             var eventosHorarios = horariosFormateados.map(function(horario) {
                 var numeroDia;
+                console.log(horario.dia);
                 if(horario.dia == "Lunes"){
                     numeroDia = 5;
                 } else if(horario.dia == "Martes"){
                     numeroDia = 6;
-                } else if(horario.dia == "Miercoles"){
+                } else if(horario.dia == "Miércoles"){
                     numeroDia = 7;
                 } else if(horario.dia == "Jueves"){
                     numeroDia = 8;
                 } else if(horario.dia == "Viernes"){
                     numeroDia = 9;
-                } else if(horario.dia == "Sabado"){
+                } else if(horario.dia == "Sábado"){
                     numeroDia = 10;
                 } else if(horario.dia == "Domingo"){
                     numeroDia = 4;
@@ -158,7 +298,7 @@
                     numeroDia = 4;
                 }
                 return {
-                    title: "Clases",
+                    title: "Presencial",
                     start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
                     end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
                     allDay: false,
@@ -275,8 +415,8 @@
                 allDayText: 'Hora/Area',
                 slotDuration: '00:30:00',
                 slotLabelInterval: '01:00',
-                minTime: '07:00:00',
-                maxTime: '22:00:00',
+                minTime: '08:00:00',
+                maxTime: '18:00:01',
                 contentHeight: 'auto',
                 eventOverlap: true,
                 slotEventOverlap: false,

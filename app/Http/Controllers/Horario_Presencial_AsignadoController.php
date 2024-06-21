@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Horario_Presencial_Asignado;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\AreaController;
 use Exception;
 
 class Horario_Presencial_AsignadoController extends Controller
@@ -29,10 +30,16 @@ class Horario_Presencial_AsignadoController extends Controller
     }
 
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try{
+            // return $request;
+            $request->validate([
+                "horario_presencial_id" => "required|integer",
+                "area_id" => "required|integer",
+            ]);
+
             if(!$request->horario_presencial_id){
                 return response()->json(["resp" => "Ingrese el horario presencial"]);
             }
@@ -41,21 +48,14 @@ class Horario_Presencial_AsignadoController extends Controller
                 return response()->json(["resp" => "Ingrese el area"]);
             }
 
-            if (!is_integer($request->horario_presencial_id)) {
-                return response()->json(["resp" => "El horario presencial debe ser un número entero"]);
-            }
-
-            if (!is_integer($request->area_id)) {
-                return response()->json(["resp" => "El area debe ser un número entero"]);
-            }
-
             Horario_Presencial_Asignado::create([
                 "horario_presencial_id" => $request->horario_presencial_id,
                 "area_id" => $request->area_id
             ]);
 
             DB::commit();
-            return response()->json(["resp" => "Registro creado exitosamente"]);
+            // return response()->json(["resp" => "Registro creado exitosamente"]);
+            return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         }catch(Exception $e){
             DB::rollBack();
             return response()->json(["error" => $e]);
@@ -87,6 +87,10 @@ class Horario_Presencial_AsignadoController extends Controller
     {
         DB::beginTransaction();
         try{
+            $request->validate([
+                "horario_presencial_id" => "required|integer",
+                "area_id" => "required|integer",
+            ]);
             $horario_presencial_asignado = Horario_Presencial_Asignado::find($horario_presencial_asignado_id);
 
             if (!$horario_presencial_asignado){
@@ -101,21 +105,11 @@ class Horario_Presencial_AsignadoController extends Controller
                 return response()->json(["resp" => "Ingrese el area"]);
             }
 
-            if (!is_integer($request->horario_presencial_id)) {
-                return response()->json(["resp" => "El horario presencial debe ser un número entero"]);
-            }
-
-            if (!is_integer($request->area_id)) {
-                return response()->json(["resp" => "El area debe ser un número entero"]);
-            }
-
-            $horario_presencial_asignado->fill([
-                "horario_presencial_id" => $request->horario_presencial_id,
-                "area_id" => $request->area_id
-            ])->save();
+            $horario_presencial_asignado->update($request->all());
             
             DB::commit();
-            return response()->json(["resp" => "Registro actualizado correctamente"]);
+            // return response()->json(["resp" => "Registro actualizado correctamente"]);
+            return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         } catch(Exception $e){
             DB::rollBack();
             return response()->json(["error" => $e]);

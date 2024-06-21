@@ -50,25 +50,51 @@ class AreaController extends Controller
         $hasHorario = false;
         $horarioAsignado = Horario_Presencial_Asignado::with('horario_presencial')->where('area_id', $area_id)->get();
         
-        if($horarioAsignado){
+        $horariosFormateados = [];
+        if(count($horarioAsignado)>0){
             $hasHorario = true;
+            foreach ($horarioAsignado as $horario) {
+                $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
+                $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
+    
+                $horariosFormateados[] = [
+                    'hora_inicial' => $horaInicial,
+                    'hora_final' => $horaFinal,
+                    'dia' => $horario->horario_presencial->dia,
+                ];
+            }
+
         } else{
             $hasHorario = false;
-            $horarioAsignado = 0;
         }
-
-        foreach ($horarioAsignado as $horario) {
-            $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
-            $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-
-            $horariosFormateados[] = [
-                'hora_inicial' => $horaInicial,
-                'hora_final' => $horaFinal,
-                'dia' => $horario->dia,
-            ];
-        }
-
         // return $horarioAsignado;
+        // return $horariosPresencialesDisponibles;
+
+        foreach($horariosPresencialesDisponibles as $horario) {
+            //En caso sea igual al horario asignado, darle un campo "actual" true; para que en el front sepa que es el horario actual y no lo pueda cambiar
+            //Hacer los cambios en el mismo array usado "horariosPresencialesDisponibles" para no tener que hacer otro foreach y no tener que crear otro array
+            if($hasHorario) {
+                foreach($horarioAsignado as $horarioAsig) {
+                    if($horarioAsig->horario_presencial_id == $horario->id) {
+                        $horario->actual = true;
+                        break;
+                    } else {
+                        $horario->actual = false;
+                    }
+                }
+            } else {
+                $horario->actual = false;
+            }
+        }
+
+
+        // return $horariosPresencialesDisponibles;
+        // return $horarioAsignado->first();
+
+        // return response()->json(["hasHorario" => $hasHorario]);
+
+
+        // return $horariosPresencialesDisponibles;
 
         // return [$diasColaboradores,$horariosPresencialesDisponibles];
 

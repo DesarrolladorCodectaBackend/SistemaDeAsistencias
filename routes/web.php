@@ -7,6 +7,7 @@ use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
+use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
@@ -49,6 +50,9 @@ Route::middleware('auth')->group(function () {
     //AREAS
     Route::resource('areas', AreaController::class);
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');
+    Route::post('/areas/horarioCreate', [Horario_Presencial_AsignadoController::class, 'store'])->name('areas.horarioCreate');
+    Route::put('/areas/horarioUpdate/{horario_presencial_asignado_id}', [Horario_Presencial_AsignadoController::class, 'update'])->name('areas.horarioUpdate');
+    // Route::resource('areas', Horario_Presencial_AsignadoController::class);
 
     //INSTITUCION
     Route::resource('institucion', InstitucionController::class);
