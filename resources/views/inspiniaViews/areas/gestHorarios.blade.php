@@ -213,6 +213,12 @@
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
+    <style>
+        /*Ocultar la fecha del calendario*/
+        .fc-toolbar {
+            display: none;
+        }
+    </style>
     <script>
         function toggleCheckbox(event, id) {
             if (event.target.tagName !== 'INPUT') {

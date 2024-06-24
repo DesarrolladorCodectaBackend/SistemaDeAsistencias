@@ -33,6 +33,25 @@ class HorarioDeClasesController extends Controller
 
         $colaborador = Colaboradores::findOrFail($colaborador_id);
 
+        $horas = [
+            "07:00", 
+            "08:00", 
+            "09:00", 
+            "10:00", 
+            "11:00", 
+            "12:00", 
+            "13:00", 
+            "14:00", 
+            "15:00", 
+            "16:00", 
+            "17:00", 
+            "18:00", 
+            "19:00", 
+            "20:00", 
+            "21:00", 
+            "22:00",
+        ];
+
         foreach ($horariosDeClases as $horario) {
             $horaInicial = (int) date('H', strtotime($horario->hora_inicial));
             $horaFinal = (int) date('H', strtotime($horario->hora_final));
@@ -47,7 +66,8 @@ class HorarioDeClasesController extends Controller
         return view('inspiniaViews.colaboradores.horario_clases', [
             'horariosDeClases' => $horariosDeClases,
             'horariosFormateados' => $horariosFormateados,
-            'colaborador' => $colaborador
+            'colaborador' => $colaborador,
+            'horas' => $horas,
         ]);
     }
 

@@ -150,61 +150,62 @@
 
                                                                             <tbody>
                                                                                 @foreach($horariosDeClases as $key =>
-                                                                            $horario)
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <div class="form-group row">
-                                                                                        <label
-                                                                                            class="col-form-label"></label>
+                                                                                $horario)
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <div class="form-group row">
+                                                                                            <label
+                                                                                                class="col-form-label"></label>
 
-                                                                                        <div class="col-sm-10">
-                                                                                            <input
-                                                                                                class="form-control m-b"
-                                                                                                value="{{$horario->dia}}"
+                                                                                            <div class="col-sm-10">
+                                                                                                <input
+                                                                                                    class="form-control m-b"
+                                                                                                    value="{{$horario->dia}}"
+                                                                                                    disabled>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="input-group date">
+                                                                                            <span
+                                                                                                class="input-group-addon">
+                                                                                                <i
+                                                                                                    class="fa fa-calendar"></i></span>
+                                                                                            <input type="time"
+                                                                                                class="form-control"
+                                                                                                value="{{$horario->hora_inicial}}"
                                                                                                 disabled>
                                                                                         </div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="input-group date">
-                                                                                        <span class="input-group-addon">
-                                                                                            <i
-                                                                                                class="fa fa-calendar"></i></span>
-                                                                                        <input type="time"
-                                                                                            class="form-control"
-                                                                                            value="{{$horario->hora_inicial}}"
-                                                                                            disabled>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="input-group date">
-                                                                                        <span
-                                                                                            class="input-group-addon"><i
-                                                                                                class="fa fa-calendar"></i></span>
-                                                                                        <input type="time"
-                                                                                            class="form-control"
-                                                                                            value="{{$horario->hora_final}}"
-                                                                                            disabled>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <button
-                                                                                        class="btn btn-danger float-right mx-2"
-                                                                                        type="button"
-                                                                                        onclick="confirmDelete({{ $horario->id }})"><i
-                                                                                            class="fa fa-trash-o"></i>
-                                                                                    </button>
-                                                                                    <button
-                                                                                        class="btn btn-info float-right mx-2"
-                                                                                        type="button"
-                                                                                        href="#modal-form-update-{{$horario->id}}"
-                                                                                        data-toggle="modal"><i
-                                                                                            class="fa fa-paste"></i>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="input-group date">
+                                                                                            <span
+                                                                                                class="input-group-addon"><i
+                                                                                                    class="fa fa-calendar"></i></span>
+                                                                                            <input type="time"
+                                                                                                class="form-control"
+                                                                                                value="{{$horario->hora_final}}"
+                                                                                                disabled>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <button
+                                                                                            class="btn btn-danger float-right mx-2"
+                                                                                            type="button"
+                                                                                            onclick="confirmDelete({{ $horario->id }})"><i
+                                                                                                class="fa fa-trash-o"></i>
+                                                                                        </button>
+                                                                                        <button
+                                                                                            class="btn btn-info float-right mx-2"
+                                                                                            type="button"
+                                                                                            href="#modal-form-update-{{$horario->id}}"
+                                                                                            data-toggle="modal"><i
+                                                                                                class="fa fa-paste"></i>
 
-                                                                                    </button>
-                                                                                </td>
-                                                                            </tr>
-                                                                            @endforeach
+                                                                                        </button>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                @endforeach
                                                                                 <tr>
                                                                                     <td>
                                                                                         <div class="form-group row">
@@ -237,21 +238,44 @@
                                                                                                 class="input-group-addon">
                                                                                                 <i
                                                                                                     class="fa fa-calendar"></i></span>
+                                                                                            <!--
                                                                                             <input type="time"
                                                                                                 class="form-control"
                                                                                                 name="horarios[0][hora_inicial]"
-                                                                                                >
+                                                                                                > -->
+                                                                                            <select class="form-control"
+                                                                                                name="horarios[0][hora_inicial]"
+                                                                                                id="">
+                                                                                                @foreach($horas as $key
+                                                                                                => $hora)
+                                                                                                <option
+                                                                                                    value="{{ $hora }}">
+                                                                                                    {{ $hora }}</option>
+
+                                                                                                @endforeach
+                                                                                            </select>
                                                                                         </div>
                                                                                     </td>
                                                                                     <td>
                                                                                         <div class="input-group date">
                                                                                             <span
                                                                                                 class="input-group-addon"><i
-                                                                                                    class="fa fa-calendar"></i></span><input
-                                                                                                type="time"
+                                                                                                    class="fa fa-calendar"></i></span>
+                                                                                            <!--
+                                                                                            <input type="time"
                                                                                                 class="form-control"
+                                                                                                name="horarios[0][hora_final]"> -->
+                                                                                            <select class="form-control"
                                                                                                 name="horarios[0][hora_final]"
-                                                                                                >
+                                                                                                id="">
+                                                                                                @foreach($horas as $key
+                                                                                                => $hora)
+                                                                                                <option
+                                                                                                    value="{{ $hora }}">
+                                                                                                    {{ $hora }}</option>
+
+                                                                                                @endforeach
+                                                                                            </select>
                                                                                         </div>
                                                                                     </td>
                                                                                     <td>
@@ -289,33 +313,26 @@
 
                                             @foreach($horariosDeClases as $key =>
                                             $horario)
-                                            <div id="modal-form-update-{{$horario->id}}"
-                                                class="modal fade" aria-hidden="true">
+                                            <div id="modal-form-update-{{$horario->id}}" class="modal fade"
+                                                aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-body">
-                                                            <form role="form"
-                                                                method="POST"
+                                                            <form role="form" method="POST"
                                                                 action="{{ route('horarioClase.update', $horario->id) }}"
                                                                 enctype="multipart/form-data">
                                                                 @csrf
                                                                 @method('put')
-                                                                <div
-                                                                    class="col-sm-12 b-r">
-                                                                    <h3
-                                                                        class="m-t-none m-b">
+                                                                <div class="col-sm-12 b-r">
+                                                                    <h3 class="m-t-none m-b">
                                                                         Ingrese los
                                                                         Datos</h3>
-                                                                    <div
-                                                                        class="form-group">
+                                                                    <div class="form-group">
                                                                         <label>Día</label>
-                                                                        <select
-                                                                            class="form-control m-b"
-                                                                            name="dia"
+                                                                        <select class="form-control m-b" name="dia"
                                                                             value="{{ old('dia', $horario->dia) }}"
                                                                             id="dia">
-                                                                            <option
-                                                                                style="background: #999">
+                                                                            <option style="background: #999">
                                                                                 {{
                                                                                 old('dia',
                                                                                 $horario->dia)
@@ -341,27 +358,45 @@
                                                                             </option>
                                                                         </select>
                                                                     </div>
-                                                                    <div
-                                                                        class="form-group">
+                                                                    <div class="form-group">
                                                                         <label>Hora
                                                                             Inicial</label>
-                                                                        <input
-                                                                            type="time"
-                                                                            class="form-control"
-                                                                            name="hora_inicial"
-                                                                            id="hora_inicial"
-                                                                            value="{{ old('hora_inicial', $horario->hora_inicial) }}">
+                                                                        <!--
+                                                                        <input type="time" class="form-control"
+                                                                            name="hora_inicial" id="hora_inicial"
+                                                                            value="{{ old('hora_inicial', $horario->hora_inicial) }}"> -->
+                                                                        <select class="form-control" name="hora_inicial"
+                                                                            id="hora_inicial">
+                                                                            <option style="background: #999"
+                                                                                value="{{ old('hora_inicial', $horario->hora_inicial) }}">
+                                                                                {{$horario->hora_inicial}}</option>
+                                                                            @foreach($horas as $key
+                                                                            => $hora)
+                                                                            <option value="{{ $hora }}">
+                                                                                {{ $hora }}</option>
+
+                                                                            @endforeach
+                                                                        </select>
                                                                     </div>
-                                                                    <div
-                                                                        class="form-group">
+                                                                    <div class="form-group">
                                                                         <label>Hora
                                                                             Final</label>
-                                                                        <input
-                                                                            type="time"
-                                                                            class="form-control"
-                                                                            name="hora_final"
-                                                                            id="hora_final"
-                                                                            value="{{ old('hora_final', $horario->hora_final) }}">
+                                                                        <!--
+                                                                        <input type="time" class="form-control"
+                                                                            name="hora_final" id="hora_final"
+                                                                            value="{{ old('hora_final', $horario->hora_final) }}"> -->
+                                                                        <select class="form-control" name="hora_final"
+                                                                            id="hora_final">
+                                                                            <option style="background: #999"
+                                                                                value="{{ old('hora_final', $horario->hora_final) }}">
+                                                                                {{$horario->hora_final}}</option>
+                                                                            @foreach($horas as $key
+                                                                            => $hora)
+                                                                            <option value="{{ $hora }}">
+                                                                                {{ $hora }}</option>
+
+                                                                            @endforeach
+                                                                        </select>
                                                                     </div>
                                                                     <div>
                                                                         <a href="../horarioClases/{{$colaborador->id}}"
@@ -434,23 +469,37 @@
 
 
         var contadorFilas = 0;
+        var horas = @json($horas);
+    
         function agregarFila() {
             var tabla = document.getElementById("tablaHorarios").getElementsByTagName('tbody')[0];
             var nuevaFila = tabla.insertRow(tabla.rows.length);
     
+            // Insertar celdas en la nueva fila
             var celdaDia = nuevaFila.insertCell(0);
             var celdaHoraInicial = nuevaFila.insertCell(1);
             var celdaHoraFinal = nuevaFila.insertCell(2);
             var celdaBotonEliminar = nuevaFila.insertCell(3);
-
+    
             contadorFilas++;
     
+            // Construir el select de horas iniciales y finales
+            var selectHoraInicial = construirSelectHora('horarios[' + contadorFilas + '][hora_inicial]');
+            var selectHoraFinal = construirSelectHora('horarios[' + contadorFilas + '][hora_final]');
+    
             celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miercoles</option><option>Jueves</option><option>Viernes</option><option>Sabado</option></select></div></div>';
-            celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_inicial]" value="00:00"></div>';
-            celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_final]" value="00:00"></div>';
+            celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraInicial + '</div>';
+            celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
             celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
-        
-            document.getElementById('storeHorarios').action = "{{ route('horarioClase.store') }}";
+        }
+    
+        function construirSelectHora(name) {
+            var select = '<select class="form-control" name="' + name + '">';
+            for (var i = 0; i < horas.length; i++) {
+                select += '<option value="' + horas[i] + '">' + horas[i] + '</option>';
+            }
+            select += '</select>';
+            return select;
         }
     
         function eliminarFila(boton) {
