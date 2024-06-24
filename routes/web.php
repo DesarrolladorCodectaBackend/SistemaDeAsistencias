@@ -50,9 +50,10 @@ Route::middleware('auth')->group(function () {
     //AREAS
     Route::resource('areas', AreaController::class);
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');
+    
+    Route::get('/horarioGeneral', [Horario_Presencial_AsignadoController::class, 'index'])->name('horarios.getHorarioGeneral');
     Route::post('/areas/horarioCreate', [Horario_Presencial_AsignadoController::class, 'store'])->name('areas.horarioCreate');
     Route::put('/areas/horarioUpdate/{horario_presencial_asignado_id}', [Horario_Presencial_AsignadoController::class, 'update'])->name('areas.horarioUpdate');
-    // Route::resource('areas', Horario_Presencial_AsignadoController::class);
 
     //INSTITUCION
     Route::resource('institucion', InstitucionController::class);

@@ -56,6 +56,9 @@
                                                                 justify-content: center;
 
                                                             }
+                                                            .fc-content {
+                                                                text-align: center;
+                                                            }
 
                                                             .fc-day-header {
                                                                 display: none !important;
@@ -281,11 +284,10 @@
             var m = date.getMonth();
             var y = date.getFullYear();
             var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
-    
+            const area = <?php echo json_encode($area); ?>;
             
             var eventosHorarios = horariosFormateados.map(function(horario) {
                 var numeroDia;
-                console.log(horario.dia);
                 if(horario.dia == "Lunes"){
                     numeroDia = 5;
                 } else if(horario.dia == "Martes"){
@@ -304,44 +306,15 @@
                     numeroDia = 4;
                 }
                 return {
-                    title: "Presencial",
+                    title: area.especializacion,
                     start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
                     end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
                     allDay: false,
+                    color: area.color_hex,
                     editable: false
                 };
             });
             
-           /*
-            var eventosHorarios = horarioAsignado.map(function(horario) {
-                var numeroDia;
-                if(horario.horario_presencial.dia == "Lunes"){
-                    numeroDia = 5;
-                } else if(horario.horario_presencial.dia == "Martes"){
-                    numeroDia = 6;
-                } else if(horario.horario_presencial.dia == "Miercoles"){
-                    numeroDia = 7;
-                } else if(horario.horario_presencial.dia == "Jueves"){
-                    numeroDia = 8;
-                } else if(horario.horario_presencial.dia == "Viernes"){
-                    numeroDia = 9;
-                } else if(horario.horario_presencial.dia == "Sabado"){
-                    numeroDia = 10;
-                } else if(horario.horario_presencial.dia == "Domingo"){
-                    numeroDia = 4;
-                } else{
-                    numeroDia = 4;
-                }
-                console.log(horario.horario_presencial.hora_final);
-                return {
-                    title: "Clases",
-                    start: new Date(2024, 1, numeroDia, horario.horario_presencial.hora_inicial, 0),
-                    end: new Date(2024, 1, numeroDia, horario.horario_presencial.hora_final, 0),
-                    allDay: false,
-                    editable: false
-                };
-            });
-            */
     
             var eventos = [{
                     title: 'Domingo',

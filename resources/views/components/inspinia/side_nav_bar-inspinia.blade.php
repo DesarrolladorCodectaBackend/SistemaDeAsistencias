@@ -50,16 +50,16 @@
                 </ul>
             </li>
             <li>
-                <a href="horario-general-presencial.html"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
+                <a href="/horarioGeneral"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
                         G.Presencial</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="horario-general-presencial.html">Presencial</a></li>
-                    <li><a href="horario-gp-areas.html">Areas</a></li>
-                    <li><a href="horario-gp-salon.html">Salon</a></li>
+                    <li><a href="/horarioGeneral">Presencial</a></li>
+                    <li><a href="/horarioGeneral">Areas</a></li>
+                    <li><a href="/horarioGeneral">Salon</a></li>
                 </ul>
             </li>
             <li>
-                <a href="horario-general-virtual.html"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
+                <a href="/horarioGeneral"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
                         G.Virtual</span></a>
             </li>
             <li id="personalCont">
