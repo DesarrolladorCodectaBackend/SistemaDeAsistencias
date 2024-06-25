@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramasController;
 use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
+use App\Http\Controllers\Reuniones_ProgramadasController;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +55,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/horarioGeneral', [Horario_Presencial_AsignadoController::class, 'index'])->name('horarios.getHorarioGeneral');
     Route::post('/areas/horarioCreate', [Horario_Presencial_AsignadoController::class, 'store'])->name('areas.horarioCreate');
     Route::put('/areas/horarioUpdate/{horario_presencial_asignado_id}', [Horario_Presencial_AsignadoController::class, 'update'])->name('areas.horarioUpdate');
+    
+    Route::get('/areas/reuniones/{area_id}', [Reuniones_ProgramadasController::class, 'reunionesGest'])->name('areas.getReuniones');
+    Route::post('/areas/reunionCreate', [Reuniones_ProgramadasController::class, 'store'])->name('areas.reunionCreate');
+    Route::put('/areas/reunionUpdate/{id}', [Reuniones_ProgramadasController::class, 'update'])->name('areas.reunionUpdate');
+    Route::delete('/areas/reunionDelete/{id}', [Reuniones_ProgramadasController::class, 'destroy']);
 
     //INSTITUCION
     Route::resource('institucion', InstitucionController::class);

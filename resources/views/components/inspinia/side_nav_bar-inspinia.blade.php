@@ -72,23 +72,6 @@
                     <li id="colaboradores">
                         <a href="/colaboradores">Colaboradores</a>
                     </li>
-
-
-                    <li>
-
-                    </li>
-
-                    <li>
-                        <a href="#">Capacitacion-Horario<span class="fa arrow"></span></a>
-                        <ul class="nav nav-third-level">
-                            <li>
-                                <a href="capacitacion-colab.html">Informacion</a>
-                            </li>
-                            <li>
-                                <a href="capacitacion-horario.html">Horario</a>
-                            </li>
-                        </ul>
-                    </li>
                 </ul>
 
             </li>

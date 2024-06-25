@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('meses', function (Blueprint $table) {
+        Schema::create('reuniones__programadas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->unsignedBigInteger('year_id');
-            $table->foreign('year_id')->references('id')->on('years');
-            $table->boolean('estado')->default(true);
+            $table->unSignedBigInteger('area_id');
+            $table->foreign('area_id')->references('id')->on('areas');
+            $table->string('dia');
+            $table->string('hora_inicial');
+            $table->string('hora_final');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meses');
+        Schema::dropIfExists('reuniones__programadas');
     }
 };

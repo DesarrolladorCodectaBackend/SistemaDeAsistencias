@@ -15,23 +15,21 @@ class HorarioPresencialAsignadoSeeder extends Seeder
      */
     public function run()
     {
-        //LUNES
         Horario_Presencial_Asignado::create([
-            'horario_presencial_id' => 1,
+            'horario_presencial_id' => 3,
             'area_id' => 1
         ]);
         Horario_Presencial_Asignado::create([
-            'horario_presencial_id' => 2,
+            'horario_presencial_id' => 8,
             'area_id' => 2
         ]);
 
-        //MARTES
         Horario_Presencial_Asignado::create([
-            'horario_presencial_id' => 3,
+            'horario_presencial_id' => 7,
             'area_id' => 3
         ]);
         Horario_Presencial_Asignado::create([
-            'horario_presencial_id' => 4,
+            'horario_presencial_id' => 1,
             'area_id' => 4
         ]);
     }

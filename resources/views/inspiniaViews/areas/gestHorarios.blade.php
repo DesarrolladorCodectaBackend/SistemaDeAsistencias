@@ -56,6 +56,7 @@
                                                                 justify-content: center;
 
                                                             }
+
                                                             .fc-content {
                                                                 text-align: center;
                                                             }
@@ -184,9 +185,6 @@
                                                         </form>
 
                                                         @endif
-                                                        <form action="">
-
-                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>

@@ -36,16 +36,17 @@ class AreaController extends Controller
         return view('areas.create');
     }
 
+    
     public function getFormHorarios($area_id){
         //Encontrar area
         $area = Area::findOrFail($area_id);
         //Encontrar el id de los colaboradores del área
         $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('colaborador_id');
         //encontrar los días de clase de esos colaboradores
-        $diasColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get()->pluck('dia');
+        $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        $diasColaboradores = $horariosColaboradores->pluck('dia');
         //Filtrar los horarios exceptuando las que tiene días usados por los colaboradores
-        $horariosPresencialesDisponibles = Horarios_Presenciales::whereNotIn('dia', $diasColaboradores)->get();
-
+        $horariosDisponibles = Horarios_Presenciales::whereNotIn('dia', $diasColaboradores)->get();
         
         $hasHorario = false;
         $horarioAsignado = Horario_Presencial_Asignado::with('horario_presencial')->where('area_id', $area_id)->get();
@@ -67,12 +68,10 @@ class AreaController extends Controller
         } else{
             $hasHorario = false;
         }
-        // return $horarioAsignado;
-        // return $horariosPresencialesDisponibles;
 
-        foreach($horariosPresencialesDisponibles as $horario) {
+        foreach($horariosDisponibles as $horario) {
             //En caso sea igual al horario asignado, darle un campo "actual" true; para que en el front sepa que es el horario actual y no lo pueda cambiar
-            //Hacer los cambios en el mismo array usado "horariosPresencialesDisponibles" para no tener que hacer otro foreach y no tener que crear otro array
+            //Hacer los cambios en el mismo array usado "horariosDisponibles" para no tener que hacer otro foreach y no tener que crear otro array
             if($hasHorario) {
                 foreach($horarioAsignado as $horarioAsig) {
                     if($horarioAsig->horario_presencial_id == $horario->id) {
@@ -87,25 +86,106 @@ class AreaController extends Controller
             }
         }
 
-
-        // return $horariosPresencialesDisponibles;
-        // return $horarioAsignado->first();
-
-        // return response()->json(["hasHorario" => $hasHorario]);
-
-
-        // return $horariosPresencialesDisponibles;
-
-        // return [$diasColaboradores,$horariosPresencialesDisponibles];
+        // return $horariosDisponibles;
 
         return view('inspiniaViews.areas.gestHorarios', [
             "area" => $area,
-            "horariosDisponibles" => $horariosPresencialesDisponibles,
+            "horariosDisponibles" => $horariosDisponibles,
             "horarioAsignado" => $horarioAsignado,
             "horariosFormateados" => $horariosFormateados,
             "hasHorario" => $hasHorario
         ]);
     }
+    
+    
+
+    /*
+    public function getFormHorarios($area_id)
+    {
+        // Encontrar área
+        $area = Area::findOrFail($area_id);
+        
+        // Encontrar el id de los colaboradores del área
+        $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('colaborador_id');
+        
+        // Encontrar los días y horas de clase de esos colaboradores
+        $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        
+        // Filtrar los horarios exceptuando los que tienen conflictos de día y horas usadas por los colaboradores
+        $horariosDisponibles = Horarios_Presenciales::all()->filter(function ($horarioPresencial) use ($horariosColaboradores) {
+            foreach ($horariosColaboradores as $horarioColaborador) {
+                if ($horarioPresencial->dia == $horarioColaborador->dia) {
+                    $inicioPresencial = strtotime($horarioPresencial->hora_inicial);
+                    $finPresencial = strtotime($horarioPresencial->hora_final);
+                    $inicioColaborador = strtotime($horarioColaborador->hora_inicial);
+                    $finColaborador = strtotime($horarioColaborador->hora_final);
+                    
+                    // return response()->json(["IP" => $inicioPresencial, "FP" => $finPresencial,
+                    //     "IC" => $inicioColaborador, "FC" => $finColaborador]);
+
+                    // Verificar si hay solapamiento de horarios
+                    if (($inicioPresencial < $finColaborador) && ($finPresencial > $inicioColaborador)) {
+                        return false; // Solapamiento encontrado, excluir este horario
+                    }
+                    // if(($inicioColaborador >= $inicioPresencial) && ()){
+
+                    // }
+                }
+            }
+            return true; // No hay solapamiento, incluir este horario
+        });
+
+        $hasHorario = false;
+        $horarioAsignado = Horario_Presencial_Asignado::with('horario_presencial')->where('area_id', $area_id)->get();
+
+        $horariosFormateados = [];
+        if (count($horarioAsignado) > 0) {
+            $hasHorario = true;
+            foreach ($horarioAsignado as $horario) {
+                $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
+                $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
+
+                $horariosFormateados[] = [
+                    'hora_inicial' => $horaInicial,
+                    'hora_final' => $horaFinal,
+                    'dia' => $horario->horario_presencial->dia,
+                ];
+            }
+        } else {
+            $hasHorario = false;
+        }
+
+        foreach ($horariosDisponibles as $horario) {
+            // En caso sea igual al horario asignado, darle un campo "actual" true; para que en el front sepa que es el horario actual y no lo pueda cambiar
+            // Hacer los cambios en el mismo array usado "horariosDisponibles" para no tener que hacer otro foreach y no tener que crear otro array
+            if ($hasHorario) {
+                foreach ($horarioAsignado as $horarioAsig) {
+                    if ($horarioAsig->horario_presencial_id == $horario->id) {
+                        $horario->actual = true;
+                        break;
+                    } else {
+                        $horario->actual = false;
+                    }
+                }
+            } else {
+                $horario->actual = false;
+            }
+        }
+
+        return response()->json(["HC" => $horariosColaboradores, "Disp" => $horariosDisponibles]);
+
+        return view('inspiniaViews.areas.gestHorarios', [
+            "area" => $area,
+            "horariosDisponibles" => $horariosDisponibles,
+            "horarioAsignado" => $horarioAsignado,
+            "horariosFormateados" => $horariosFormateados,
+            "hasHorario" => $hasHorario
+        ]);
+    }
+    */
+
+
+
 
     /**
      *  STORE

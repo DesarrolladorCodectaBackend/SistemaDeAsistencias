@@ -58,29 +58,29 @@ class Horario_Presencial_AsignadoController extends Controller
 
     
     public function index()
-{
-    try {
-        $horarios_presenciales_Asignados = Horario_Presencial_Asignado::with(['horario_presencial', 'area'])->get();
+    {
+        try {
+            $horarios_presenciales_Asignados = Horario_Presencial_Asignado::with(['horario_presencial', 'area'])->get();
 
-        foreach ($horarios_presenciales_Asignados as $horario) {
-            $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
-            $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-    
-            $horariosFormateados = [
-                'hora_inicial' => $horaInicial,
-                'hora_final' => $horaFinal,
-                'dia' => $horario->horario_presencial->dia,
-            ];
-            $horario->horario_modificado = $horariosFormateados;
+            foreach ($horarios_presenciales_Asignados as $horario) {
+                $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
+                $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
+        
+                $horariosFormateados = [
+                    'hora_inicial' => $horaInicial,
+                    'hora_final' => $horaFinal,
+                    'dia' => $horario->horario_presencial->dia,
+                ];
+                $horario->horario_modificado = $horariosFormateados;
+            }
+
+            return view('InspiniaViews.horarios.horario_general_presencial', compact('horarios_presenciales_Asignados'));
+            // return response()->json(["data" => $horarios_presenciales_Asignados]);
+
+        } catch (Exception $e) {
+            return response()->json(["error" => $e->getMessage()]);
         }
-
-        return view('InspiniaViews.horarios.horario_general_presencial', compact('horarios_presenciales_Asignados'));
-        // return response()->json(["data" => $horarios_presenciales_Asignados]);
-
-    } catch (Exception $e) {
-        return response()->json(["error" => $e->getMessage()]);
     }
-}
 
 
 
