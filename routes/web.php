@@ -49,6 +49,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     //AREAS
+    Route::get('/areaPractica1', [AreaController::class, 'indexpractica1']);
+    Route::get('/areaPractica2', [AreaController::class, 'indexpractica2']);
+    Route::get('/areaPractica3', [AreaController::class, 'indexpractica3']);
     Route::resource('areas', AreaController::class);
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');
     

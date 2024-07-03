@@ -31,6 +31,33 @@ class AreaController extends Controller
         return view('inspiniaViews.areas.index', compact('areas'));
     }
 
+    public function indexpractica1()
+    {
+        //Recurar todos los registros en áreas
+        $areas = Area::get();
+        // return response()->json(["areas" => $areas]);
+        //Redirigir a la vista mandando las áreas
+        return view('practica.practica1', compact('areas'));
+    }
+
+    public function indexpractica2()
+    {
+        //Recurar todos los registros en áreas
+        $areas = Area::get();
+        // return response()->json(["areas" => $areas]);
+        //Redirigir a la vista mandando las áreas
+        return view('practica.practica2', compact('areas'));
+    }
+
+    public function indexpractica3()
+    {
+        //Recurar todos los registros en áreas
+        $areas = Area::get();
+        // return response()->json(["areas" => $areas]);
+        //Redirigir a la vista mandando las áreas
+        return view('practica.practica3', compact('areas'));
+    }
+
     public function create()
     {
         return view('areas.create');
@@ -99,8 +126,8 @@ class AreaController extends Controller
     
     
 
-    /*
-    public function getFormHorarios($area_id)
+    
+    public function getFormHorarioss($area_id)
     {
         // Encontrar área
         $area = Area::findOrFail($area_id);
@@ -182,7 +209,7 @@ class AreaController extends Controller
             "hasHorario" => $hasHorario
         ]);
     }
-    */
+    
 
 
 
