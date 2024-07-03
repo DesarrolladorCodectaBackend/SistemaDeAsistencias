@@ -22,13 +22,13 @@ class AreaSeeder extends Seeder
             "icono" => "programacion.svg"
         ]);
         Area::create([
-            "especializacion" => "Analisis",
+            "especializacion" => "Análisis",
             "descripcion" => "Descripción de Analisis",
             "color_hex" => "#f0aa12",
             "icono" => "analisis.svg"
         ]);
         Area::create([
-            "especializacion" => "Planeacion",
+            "especializacion" => "Planeación",
             "descripcion" => "Descripción de Planeacion",
             "color_hex" => "#45aacc",
             "icono" => "planeacion.svg"
@@ -59,7 +59,7 @@ class AreaSeeder extends Seeder
             "icono" => "ia.svg"
         ]);
         Area::create([
-            "especializacion" => "Programacion Web",
+            "especializacion" => "Programación Web",
             "descripcion" => "Descripción de Programación Web",
             "color_hex" => "#165478",
             "icono" => "programacion_web.svg"

@@ -123,11 +123,70 @@ class AreaController extends Controller
             "hasHorario" => $hasHorario
         ]);
     }
+    public function getFormHorariosNew($area_id){
+        //Encontrar area
+        $area = Area::findOrFail($area_id);
+        //Encontrar el id de los colaboradores del área
+        $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('colaborador_id');
+        //encontrar los días de clase de esos colaboradores
+        $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        $diasColaboradores = $horariosColaboradores->pluck('dia');
+        //Filtrar los horarios exceptuando las que tiene días usados por los colaboradores
+        $horariosDisponibles = Horarios_Presenciales::whereNotIn('dia', $diasColaboradores)->get();
+        
+        $hasHorario = false;
+        $horarioAsignado = Horario_Presencial_Asignado::with('horario_presencial')->where('area_id', $area_id)->get();
+        
+        $horariosFormateados = [];
+        if(count($horarioAsignado)>0){
+            $hasHorario = true;
+            foreach ($horarioAsignado as $horario) {
+                $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
+                $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
+    
+                $horariosFormateados[] = [
+                    'hora_inicial' => $horaInicial,
+                    'hora_final' => $horaFinal,
+                    'dia' => $horario->horario_presencial->dia,
+                ];
+            }
+
+        } else{
+            $hasHorario = false;
+        }
+
+        foreach($horariosDisponibles as $horario) {
+            //En caso sea igual al horario asignado, darle un campo "actual" true; para que en el front sepa que es el horario actual y no lo pueda cambiar
+            //Hacer los cambios en el mismo array usado "horariosDisponibles" para no tener que hacer otro foreach y no tener que crear otro array
+            if($hasHorario) {
+                foreach($horarioAsignado as $horarioAsig) {
+                    if($horarioAsig->horario_presencial_id == $horario->id) {
+                        $horario->actual = true;
+                        break;
+                    } else {
+                        $horario->actual = false;
+                    }
+                }
+            } else {
+                $horario->actual = false;
+            }
+        }
+
+        // return $horariosDisponibles;
+
+        return view('inspiniaViews.areas.gestHorarios', [
+            "area" => $area,
+            "horariosDisponibles" => $horariosDisponibles,
+            "horarioAsignado" => $horarioAsignado,
+            "horariosFormateados" => $horariosFormateados,
+            "hasHorario" => $hasHorario
+        ]);
+    }
     
     
 
     
-    public function getFormHorarioss($area_id)
+    /*public function getFormHorarioss($area_id)
     {
         // Encontrar área
         $area = Area::findOrFail($area_id);
@@ -137,6 +196,46 @@ class AreaController extends Controller
         
         // Encontrar los días y horas de clase de esos colaboradores
         $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        // $trabajadorOcupado = [
+        //     {
+        //     "dia" => "Lunes",
+        //     "hora_inicial"=> "7:00",
+        //     "hora_final"=> "12:00"
+        //     },
+        //     {
+        //         "dia" => "Lunes",
+        //         "hora_inicial"=> "7:00",
+        //         "hora_final"=> "12:00"
+        //     },
+        //     {
+        //         "dia" => "Lunes",
+        //         "hora_inicial"=> "7:00",
+        //         "hora_final"=> "12:00"
+        //     },
+        // ]
+        
+
+        // $rangoHorarios = [
+        //     "7:00",
+        //     "8:00",
+        //     "9:00",
+        //     "10:00",
+        //     "11:00"
+        //     "12:00"
+        // ]
+
+        // $horasTrabajo = [
+            
+        //     "13:00",
+        //     "14:00",
+        //     "15:00",
+        //     "16:00",
+        //     "17:00",
+        //     "18:00",
+        // ]
+
+
+        
         
         // Filtrar los horarios exceptuando los que tienen conflictos de día y horas usadas por los colaboradores
         $horariosDisponibles = Horarios_Presenciales::all()->filter(function ($horarioPresencial) use ($horariosColaboradores) {
@@ -212,7 +311,7 @@ class AreaController extends Controller
     
 
 
-
+*/
 
     /**
      *  STORE

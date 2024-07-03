@@ -88,7 +88,7 @@
                 <a href="/salones"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
             </li>
             <li id="ajustes">
-                <a href="../ajustes"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
+                <a href="/ajustes"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
             </li>
             <li>
                 <form id="logoutForm" method="POST" action="http://127.0.0.1:8000/logout">

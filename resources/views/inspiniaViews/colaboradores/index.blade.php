@@ -247,7 +247,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 ">
                     <div class="ibox">
                         <div class="ibox-content product-box">
 
@@ -320,8 +320,8 @@
                                         </div>
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
                                             aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
+                                            <div class="modal-dialog modal-custom">
+                                                <div style="min-width: 750px" class="modal-content">
                                                     <div class="modal-body">
                                                         <form role="form" method="POST"
                                                             action="{{ route('colaboradores.update', $colaborador->candidato->id) }}"
@@ -334,25 +334,29 @@
                                                                 }
                                                             </style>
                                                             <div class="row">
-                                                                <div class="col-sm-6 b-r">
-                                                                    <h3 class="m-t-none m-b">Informacion Personal </h3>
+                                                                <div class="col-sm-4 b-r">
+                                                                    <h3 class="m-t-none m-b">Informacion Personal
+                                                                    </h3>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Nombres:</h5>
-                                                                        </label><input type="text" placeholder="....."
+                                                                        </label><input type="text"
+                                                                            placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
                                                                             value="{{ old('nombre', $colaborador->candidato->nombre) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Apellidos:</h5>
-                                                                        </label><input type="text" placeholder="....."
+                                                                        </label><input type="text"
+                                                                            placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
                                                                             value="{{ old('apellido', $colaborador->candidato->apellido) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Direccion:</h5>
-                                                                        </label><input type="text" placeholder="....."
+                                                                        </label><input type="text"
+                                                                            placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
                                                                             value="{{ old('direccion', $colaborador->candidato->direccion) }}">
@@ -362,20 +366,19 @@
                                                                         </label>
                                                                         <select class="form-control"
                                                                             name="institucion_id">
-                                                                            @foreach($instituciones as $institucion)
-                                                                            <option value="{{ $institucion->id }}"
-                                                                                @if($institucion->id ==
-                                                                                old('institucion_id',
-                                                                                $colaborador->candidato->institucion_id))
-                                                                                selected
-                                                                                @endif>{{ $institucion->nombre }}
-                                                                            </option>
+                                                                            @foreach ($instituciones as $institucion)
+                                                                                <option
+                                                                                    value="{{ $institucion->id }}"
+                                                                                    @if ($institucion->id == old('institucion_id', $colaborador->candidato->institucion_id)) selected @endif>
+                                                                                    {{ $institucion->nombre }}
+                                                                                </option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Ciclo:</h5>
-                                                                        </label><input type="text" placeholder="....."
+                                                                        </label><input type="text"
+                                                                            placeholder="....."
                                                                             class="form-control"
                                                                             name="ciclo_de_estudiante"
                                                                             id="ciclo_de_estudiante"
@@ -383,30 +386,36 @@
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Correo:</h5>
-                                                                        </label><input type="text" placeholder="....."
+                                                                        </label><input type="text"
+                                                                            placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
                                                                             value="{{ old('correo', $colaborador->candidato->correo) }}">
                                                                     </div>
+                                                                </div>
+                                                                <div class="col-sm-4 b-r">
+                                                                    <h3 class="m-t-none m-b">.</h3>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">fecha de Nacimiento:
                                                                             </h5>
-                                                                        </label><input type="date" placeholder="....."
-                                                                            class="form-control" name="fecha_nacimiento"
+                                                                        </label><input type="date"
+                                                                            placeholder="....." class="form-control"
+                                                                            name="fecha_nacimiento"
                                                                             id="fecha_nacimiento"
                                                                             value="{{ old('fecha_nacimiento', $colaborador->candidato->fecha_nacimiento) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">DNI:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control" name="dni" id="dni"
+                                                                        </label><input type="text"
+                                                                            placeholder="....." class="form-control"
+                                                                            name="dni" id="dni"
                                                                             value="{{ old('dni', $colaborador->candidato->dni) }}"></input>
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Celular:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control" name="celular"
-                                                                            id="celular"
+                                                                        </label><input type="text"
+                                                                            placeholder="....." class="form-control"
+                                                                            name="celular" id="celular"
                                                                             value="{{ old('celular', $colaborador->candidato->celular) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
@@ -417,13 +426,12 @@
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Carrera:</h5>
                                                                         </label>
-                                                                        <select class="form-control" name="carrera_id">
-                                                                            @foreach($carreras as $carrera)
-                                                                            <option value="{{ $carrera->id }}"
-                                                                                @if($carrera->id == old('carrera_id',
-                                                                                $colaborador->candidato->carrera_id))
-                                                                                selected
-                                                                                @endif>{{ $carrera->nombre }}</option>
+                                                                        <select class="form-control"
+                                                                            name="carrera_id">
+                                                                            @foreach ($carreras as $carrera)
+                                                                                <option value="{{ $carrera->id }}"
+                                                                                    @if ($carrera->id == old('carrera_id', $colaborador->candidato->carrera_id)) selected @endif>
+                                                                                    {{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
@@ -454,40 +462,47 @@
 
 
                                                                     </div>
+
+                                                                </div>
+                                                                <div class="col-sm-4 text-center text-danger">
+                                                                    <h2><strong> Colaborador </strong></h2>
+                                                                    <a
+                                                                        style="color: black;"><strong>ID: {{ $colaborador->id }}</strong></a>
+                                                                    <div class="custom-file w-200 h-300 "
+                                                                        style="padding: 20px 0px;">
+        
+        
+                                                                        <input type="file" class="form-control-file"
+                                                                            id="icono-{{ $colaborador->candidato->id }}"
+                                                                            name="icono"
+                                                                            value="{{ old('icono', $colaborador->candidato->icono) }}"
+                                                                            style="display: none;">
+                                                                        <button type="button" class="btn btn-link"
+                                                                            id="icon-upload-{{ $colaborador->candidato->id }}">
+                                                                            <img src="{{ asset('storage/candidatos/' . $colaborador->candidato->icono) }}"
+                                                                                class="img-lg w-200 max-min-h-w-200 img-cover">
+                                                                        </button>
+                                                                        <script>
+                                                                            document.getElementById('icon-upload-{{ $colaborador->candidato->id }}').addEventListener('click', function() {
+                                                                                document.getElementById('icono-{{ $colaborador->candidato->id }}').click();
+                                                                            });
+                                                                        </script>
+                                                                    </div>
+                                                                    <a data-toggle="modal"
+                                                                        class="btn btn-primary btn-success fa fa-desktop"
+                                                                        style="width: 100px; font-size: 18px;"
+                                                                        href=""></a>
+                                                                    <a data-toggle="modal"
+                                                                        class="btn btn-primary btn-success "
+                                                                        style="width: 100px; font-size: 12px;"
+                                                                        href="">?</a>
+        
+                                                                </div>
+
+                                                            </div>
                                                         </form>
 
 
-
-                                                    </div>
-                                                    <div class="col-sm-6 text-center text-danger">
-                                                        <h2><strong> Colaborador </strong></h2>
-                                                        <a
-                                                            style="color: black;"><strong>{{$colaborador->id}}</strong></a>
-                                                        <div class="custom-file w-200 h-300 "
-                                                            style="padding: 20px 0px;">
-
-
-                                                            <input type="file" class="form-control-file"
-                                                                id="icono-{{ $colaborador->candidato->id }}"
-                                                                name="icono"
-                                                                value="{{ old('icono', $colaborador->candidato->icono) }}"
-                                                                style="display: none;">
-                                                            <button type="button" class="btn btn-link"
-                                                                id="icon-upload-{{ $colaborador->candidato->id }}">
-                                                                <img src="{{asset('storage/candidatos/'.$colaborador->candidato->icono)}}"
-                                                                    class="img-lg w-200 max-min-h-w-200 img-cover">
-                                                            </button>
-                                                            <script>
-                                                                document.getElementById('icon-upload-{{ $colaborador->candidato->id }}').addEventListener('click', function() {
-                                                                        document.getElementById('icono-{{ $colaborador->candidato->id }}').click();
-                                                                    });
-                                                            </script>
-                                                        </div>
-                                                        <a data-toggle="modal"
-                                                            class="btn btn-primary btn-success fa fa-desktop"
-                                                            style="width: 100px; font-size: 18px;" href=""></a>
-                                                        <a data-toggle="modal" class="btn btn-primary btn-success "
-                                                            style="width: 100px; font-size: 12px;" href="">?</a>
 
                                                     </div>
                                                 </div>
@@ -500,13 +515,13 @@
                         </div>
                     </div>
                 </div>
+                @endforeach
             </div>
         </div>
 
 
 
 
-        @endforeach
     </div>
 
 

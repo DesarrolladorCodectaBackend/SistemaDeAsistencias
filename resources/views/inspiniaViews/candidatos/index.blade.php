@@ -47,18 +47,26 @@
                                                     placeholder="Ingrese apellido" class="form-control" name="apellido" required>
                                             </div>
                                             <div class="form-group"><label>DNI</label> <input type="text"
-                                                    placeholder="....." class="form-control" name="dni" required></div>
+                                                    placeholder="Ingrese dni" class="form-control" name="dni" required></div>
                                             <div class="form-group"><label>Dirección</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" class="form-control"
+                                                    placeholder="Ingrese dirección" class="form-control"
                                                     name="direccion" required>
                                             </div>
                                             <div class="form-group"><label>Fecha de Nacimiento</label> <input
-                                                    type="date" placeholder="Ingrese apellido" class="form-control"
+                                                    type="date" class="form-control"
                                                     name="fecha_nacimiento" required>
                                             </div>
-                                            <div class="form-group"><label>Ciclo de Estudiante</label> <input
-                                                    type="text" placeholder="....." class="form-control"
-                                                    name="ciclo_de_estudiante" required></div>
+                                            <div class="form-group"><label>Ciclo de Estudiante</label> 
+                                                <select name="ciclo_de_estudiante" class="form-control">
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                    <option value="10">10</option>
+                                                </select>
+                                            </div>
 
 
                                         </div>
@@ -91,11 +99,11 @@
                                                 </select>
                                             </div>
                                             <input type="hidden" name="carrera_id_hidden" id="carrera_id_hidden">
-                                            <div class="form-group"><label>Correo</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" class="form-control" name="correo" required>
+                                            <div class="form-group"><label>Correo</label> <input type="email"
+                                                    placeholder="correo@gmail.com" class="form-control" name="correo" required>
                                             </div>
                                             <div class="form-group"><label>Celular</label> <input type="text"
-                                                    placeholder="Ingrese apellido" class="form-control" name="celular" required>
+                                                    placeholder="Ingrese celular" class="form-control" name="celular" required>
                                             </div>
 
 
@@ -307,40 +315,45 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
-                                                                            value="{{ old('nombre', $candidato->nombre) }}" required>
+                                                                            value="{{ old('nombre', $candidato->nombre) }}">
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label>Apellido</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
-                                                                            value="{{ old('apellido', $candidato->apellido) }}" required>
+                                                                            value="{{ old('apellido', $candidato->apellido) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>DNI</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
-                                                                            value="{{ old('dni', $candidato->dni) }}" required>
+                                                                            value="{{ old('dni', $candidato->dni) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>Dirección</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
-                                                                            value="{{ old('direccion', $candidato->direccion) }}" required>
+                                                                            value="{{ old('direccion', $candidato->direccion) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>Fecha de
                                                                             Nacimiento</label>
                                                                         <input type="date" placeholder="....."
                                                                             class="form-control" name="fecha_nacimiento"
                                                                             id="fecha_nacimiento"
-                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}" required>
+                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>Ciclo de
                                                                             Estudiante</label>
-                                                                        <input type="text" placeholder="....."
-                                                                            class="form-control"
-                                                                            name="ciclo_de_estudiante"
-                                                                            id="ciclo_de_estudiante"
-                                                                            value="{{ old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante) }}" required>
+                                                                            <select name="ciclo_de_estudiante" id="ciclo_de_estudiante" class="form-control">
+                                                                                <option style="background: #999" value="{{ old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante) }}">{{$candidato->ciclo_de_estudiante}}</option>
+                                                                                <option value="4">4</option>
+                                                                                <option value="5">5</option>
+                                                                                <option value="6">6</option>
+                                                                                <option value="7">7</option>
+                                                                                <option value="8">8</option>
+                                                                                <option value="9">9</option>
+                                                                                <option value="10">10</option>
+                                                                            </select>
                                                                     </div>
 
                                                                 </div>
@@ -387,13 +400,13 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
-                                                                            value="{{ old('correo', $candidato->correo) }}" required>
+                                                                            value="{{ old('correo', $candidato->correo) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>Celular</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="celular"
                                                                             id="celular"
-                                                                            value="{{ old('celular', $candidato->celular) }}" required>
+                                                                            value="{{ old('celular', $candidato->celular) }}">
                                                                     </div>
                                                                     <div>
                                                                         <a href="candidatos"

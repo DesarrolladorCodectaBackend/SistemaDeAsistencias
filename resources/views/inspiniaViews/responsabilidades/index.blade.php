@@ -32,42 +32,41 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 @foreach ($areas as $index => $area)
-                @if ($index % 4 == 0)
-            </div>
-            <div class="row">
-                @endif
-                <div class="col-md-3">
-                    <div class="ibox">
-                        <div class="ibox-content product-box">
-                            <div class="product-imitation">
-                                <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
-                            </div>
-                            <div class="product-desc">
-                                <button class="btn btn-outline btn-primary dim float-right"
-                                    type="button"><span>ON</span></button>
-                                <small class="text-muted">{{ $area->id }}</small>
-                                <a href="#" class="product-name">{{ $area->especializacion }}</a>
-                                <div class="small m-t-xs">
-                                    {{ $area->descripcion }}
+                    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                        <div class="ibox">
+                            <div class="ibox-content product-box">
+                                <div class="product-imitation">
+                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt=""
+                                        class="img-lg">
                                 </div>
+                                <div class="product-desc">
+                                    <button class="btn btn-outline btn-primary dim float-right"
+                                        type="button"><span>ON</span></button>
+                                    <small class="text-muted">{{ $area->id }}</small>
+                                    <a href="#" class="product-name">{{ $area->especializacion }}</a>
+                                    <div class="small m-t-xs">
+                                        {{ $area->descripcion }}
+                                    </div>
 
-                                <div class="m-t text-righ flex-centered gap-20">
-                                    @if($countYears > 1)
-                                    <form method="GET" action="{{ route('responsabilidades.years', $area->id) }}">
-                                        <button class="btn btn-success" type="submit"><i class="fa fa-paste"></i>
-                                            Años</button>
-                                    </form>
-                                    @endif
-                                    <form method="GET"
-                                        action="{{ route('responsabilidades.meses', ['year' => $currentYear, 'area_id' => $area->id]) }}">
-                                        <button class="btn btn-success" type="submit"><i class="fa fa-paste"></i>
-                                            Meses</button>
-                                    </form>
+                                    <div class="m-t text-righ flex-centered gap-20">
+                                        @if ($countYears > 1)
+                                            <form method="GET"
+                                                action="{{ route('responsabilidades.years', $area->id) }}">
+                                                <button class="btn btn-success" type="submit"><i
+                                                        class="fa fa-paste"></i>
+                                                    Años</button>
+                                            </form>
+                                        @endif
+                                        <form method="GET"
+                                            action="{{ route('responsabilidades.meses', ['year' => $currentYear, 'area_id' => $area->id]) }}">
+                                            <button class="btn btn-success" type="submit"><i class="fa fa-paste"></i>
+                                                Meses</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 @endforeach
             </div>
 

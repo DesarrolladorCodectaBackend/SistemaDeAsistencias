@@ -106,11 +106,7 @@
         <div class="wrapper wrapper-content animated fadeInRight col-md-12">
             <div class="row">
                 @foreach ($maquinas as $index => $maquina)
-                    @if ($index % 4 == 0)
-            </div>
-            <div class="row">
-                @endif
-                <div class="col-md-3">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                     <div class="ibox">
                         <div class="ibox-content product-box">
 
