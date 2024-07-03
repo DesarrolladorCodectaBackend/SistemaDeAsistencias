@@ -31,8 +31,8 @@
                     <form method="POST" action="{{route('colaboradores.search')}}"
                         class="flex-centered gap-20 spc-per-100">
                         @csrf
-                        <input class="form-control wdt-per-80" type="search" name="busqueda" placeholder="Buscar Colaborador..."
-                            aria-label="Search">
+                        <input class="form-control wdt-per-80" type="search" name="busqueda"
+                            placeholder="Buscar Colaborador..." aria-label="Search">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
@@ -339,24 +339,21 @@
                                                                     </h3>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Nombres:</h5>
-                                                                        </label><input type="text"
-                                                                            placeholder="....."
+                                                                        </label><input type="text" placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
                                                                             value="{{ old('nombre', $colaborador->candidato->nombre) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Apellidos:</h5>
-                                                                        </label><input type="text"
-                                                                            placeholder="....."
+                                                                        </label><input type="text" placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
                                                                             value="{{ old('apellido', $colaborador->candidato->apellido) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Direccion:</h5>
-                                                                        </label><input type="text"
-                                                                            placeholder="....."
+                                                                        </label><input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
                                                                             value="{{ old('direccion', $colaborador->candidato->direccion) }}">
@@ -367,18 +364,19 @@
                                                                         <select class="form-control"
                                                                             name="institucion_id">
                                                                             @foreach ($instituciones as $institucion)
-                                                                                <option
-                                                                                    value="{{ $institucion->id }}"
-                                                                                    @if ($institucion->id == old('institucion_id', $colaborador->candidato->institucion_id)) selected @endif>
-                                                                                    {{ $institucion->nombre }}
-                                                                                </option>
+                                                                            <option value="{{ $institucion->id }}"
+                                                                                @if($institucion->id
+                                                                                ==old('institucion_id',
+                                                                                $colaborador->candidato->institucion_id))
+                                                                                selected @endif>
+                                                                                {{ $institucion->nombre }}
+                                                                            </option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Ciclo:</h5>
-                                                                        </label><input type="text"
-                                                                            placeholder="....."
+                                                                        </label><input type="text" placeholder="....."
                                                                             class="form-control"
                                                                             name="ciclo_de_estudiante"
                                                                             id="ciclo_de_estudiante"
@@ -386,8 +384,7 @@
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Correo:</h5>
-                                                                        </label><input type="text"
-                                                                            placeholder="....."
+                                                                        </label><input type="text" placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
                                                                             value="{{ old('correo', $colaborador->candidato->correo) }}">
@@ -398,24 +395,22 @@
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">fecha de Nacimiento:
                                                                             </h5>
-                                                                        </label><input type="date"
-                                                                            placeholder="....." class="form-control"
-                                                                            name="fecha_nacimiento"
+                                                                        </label><input type="date" placeholder="....."
+                                                                            class="form-control" name="fecha_nacimiento"
                                                                             id="fecha_nacimiento"
                                                                             value="{{ old('fecha_nacimiento', $colaborador->candidato->fecha_nacimiento) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">DNI:</h5>
-                                                                        </label><input type="text"
-                                                                            placeholder="....." class="form-control"
-                                                                            name="dni" id="dni"
+                                                                        </label><input type="text" placeholder="....."
+                                                                            class="form-control" name="dni" id="dni"
                                                                             value="{{ old('dni', $colaborador->candidato->dni) }}"></input>
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Celular:</h5>
-                                                                        </label><input type="text"
-                                                                            placeholder="....." class="form-control"
-                                                                            name="celular" id="celular"
+                                                                        </label><input type="text" placeholder="....."
+                                                                            class="form-control" name="celular"
+                                                                            id="celular"
                                                                             value="{{ old('celular', $colaborador->candidato->celular) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
@@ -426,12 +421,13 @@
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Carrera:</h5>
                                                                         </label>
-                                                                        <select class="form-control"
-                                                                            name="carrera_id">
+                                                                        <select class="form-control" name="carrera_id">
                                                                             @foreach ($carreras as $carrera)
-                                                                                <option value="{{ $carrera->id }}"
-                                                                                    @if ($carrera->id == old('carrera_id', $colaborador->candidato->carrera_id)) selected @endif>
-                                                                                    {{ $carrera->nombre }}</option>
+                                                                            <option value="{{ $carrera->id }}"
+                                                                                @if($carrera->id == old('carrera_id',
+                                                                                $colaborador->candidato->carrera_id))
+                                                                                selected @endif>
+                                                                                {{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
@@ -466,12 +462,12 @@
                                                                 </div>
                                                                 <div class="col-sm-4 text-center text-danger">
                                                                     <h2><strong> Colaborador </strong></h2>
-                                                                    <a
-                                                                        style="color: black;"><strong>ID: {{ $colaborador->id }}</strong></a>
+                                                                    <a style="color: black;"><strong>ID: {{
+                                                                            $colaborador->id }}</strong></a>
                                                                     <div class="custom-file w-200 h-300 "
                                                                         style="padding: 20px 0px;">
-        
-        
+
+
                                                                         <input type="file" class="form-control-file"
                                                                             id="icono-{{ $colaborador->candidato->id }}"
                                                                             name="icono"
@@ -496,7 +492,7 @@
                                                                         class="btn btn-primary btn-success "
                                                                         style="width: 100px; font-size: 12px;"
                                                                         href="">?</a>
-        
+
                                                                 </div>
 
                                                             </div>
@@ -522,6 +518,7 @@
 
 
 
+        @include('components.inspinia.footer-inspinia')
     </div>
 
 
@@ -529,19 +526,6 @@
 
 
 
-    </div>
-
-
-
-
-
-
-
-
-
-
-    @include('components.inspinia.footer-inspinia')
-    </div>
     </div>
 
     <script>

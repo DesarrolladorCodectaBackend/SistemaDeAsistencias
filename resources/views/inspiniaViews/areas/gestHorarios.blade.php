@@ -339,7 +339,7 @@
                     editable: false
                 },
                 {
-                    title: 'Miercoles',
+                    title: 'Miércoles',
                     start: new Date(2024, 1, 7, 9, 0),
                     end: new Date(2024, 1, 7, 13, 30),
                     allDay: true,

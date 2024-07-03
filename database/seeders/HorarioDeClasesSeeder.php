@@ -25,7 +25,7 @@ class HorarioDeClasesSeeder extends Seeder
             "colaborador_id" => 2,
             "hora_inicial" => "07:00",
             "hora_final" => "12:00",
-            "dia" => "Miercoles"
+            "dia" => "Miércoles"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 2,
@@ -44,7 +44,7 @@ class HorarioDeClasesSeeder extends Seeder
             "colaborador_id" => 4,
             "hora_inicial" => "07:00",
             "hora_final" => "12:00",
-            "dia" => "Miercoles"
+            "dia" => "Miércoles"
         ]);
 
         Horario_de_Clases::create([
@@ -63,7 +63,7 @@ class HorarioDeClasesSeeder extends Seeder
             "colaborador_id" => 7,
             "hora_inicial" => "07:00",
             "hora_final" => "12:00",
-            "dia" => "Miercoles"
+            "dia" => "Miércoles"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 8,
@@ -88,7 +88,7 @@ class HorarioDeClasesSeeder extends Seeder
             "colaborador_id" => 11,
             "hora_inicial" => "07:00",
             "hora_final" => "12:00",
-            "dia" => "Miercoles"
+            "dia" => "Miércoles"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 12,

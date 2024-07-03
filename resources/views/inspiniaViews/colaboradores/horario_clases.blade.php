@@ -220,7 +220,7 @@
                                                                                                     </option>
                                                                                                     <option>Martes
                                                                                                     </option>
-                                                                                                    <option>Miercoles
+                                                                                                    <option>Miércoles
                                                                                                     </option>
                                                                                                     <option>Jueves
                                                                                                     </option>
@@ -345,7 +345,7 @@
                                                                                 Martes
                                                                             </option>
                                                                             <option>
-                                                                                Miercoles
+                                                                                Miércoles
                                                                             </option>
                                                                             <option>
                                                                                 Jueves
@@ -487,7 +487,7 @@
             var selectHoraInicial = construirSelectHora('horarios[' + contadorFilas + '][hora_inicial]');
             var selectHoraFinal = construirSelectHora('horarios[' + contadorFilas + '][hora_final]');
     
-            celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miercoles</option><option>Jueves</option><option>Viernes</option><option>Sabado</option></select></div></div>';
+            celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sabado</option></select></div></div>';
             celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraInicial + '</div>';
             celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
             celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
@@ -546,7 +546,7 @@
                     numeroDia = 5;
                 } else if(horario.dia == "Martes"){
                     numeroDia = 6;
-                } else if(horario.dia == "Miercoles"){
+                } else if(horario.dia == "Miércoles"){
                     numeroDia = 7;
                 } else if(horario.dia == "Jueves"){
                     numeroDia = 8;
@@ -594,7 +594,7 @@
                     editable: false
                 },
                 {
-                    title: 'Miercoles',
+                    title: 'Miércoles',
                     start: new Date(2024, 1, 7, 9, 0),
                     end: new Date(2024, 1, 7, 13, 30),
                     allDay: true,
