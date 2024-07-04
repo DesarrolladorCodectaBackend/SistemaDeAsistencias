@@ -7,6 +7,8 @@
 
     <link href="{{ asset('css/plugins/switchery/switchery.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
+    <link href="{{asset('css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css">
 
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -241,22 +243,6 @@
 
 
 
-    <!--- Cambiar Imagen
-    <script>
-        document.getElementById('inputGroupFile').addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('previewImage').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-                document.querySelector('.custom-file-label').innerHTML = file.name;
-            }
-        });
-    </script>
-    -->
-
     <!-- Mainly scripts -->
     <script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ asset('js/alertify.min.js') }}"></script>
@@ -279,8 +265,10 @@
     <!-- Full Calendar -->
     <script src="{{ asset('js/plugins/fullcalendar/moment.min.js') }}"></script>
     <script src="{{ asset('js/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
-
-
+    
+    <!-- Select2 -->
+    <script src="asset('js/plugins/select2/select2.full.min.js') "></script>
+    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/js/multi-select-tag.js"></script>
 
     <!--
     <script class="Flot" src="{{ asset('js/plugins/flot/jquery.flot.js') }}"></script>

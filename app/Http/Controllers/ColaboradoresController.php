@@ -22,11 +22,16 @@ class ColaboradoresController extends Controller
         $colaboradoresConArea = [];
 
         foreach ($colaboradores as $colaborador) {
-            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->first();
-            if ($colaboradorArea) {
-                $colaborador->area = $colaboradorArea->area->especializacion;
+            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->get();
+            if (count($colaboradorArea)>0) {
+                $areas = [];
+
+                foreach($colaboradorArea as $colArea){
+                    $areas[] = $colArea->area->especializacion;
+                }
+                $colaborador->areas = $areas;
             } else {
-                $colaborador->area = 'Sin área asignada';
+                $colaborador->areas = ['Sin área asignada'];
             }
             $colaboradoresConArea[] = $colaborador;
         }
@@ -40,6 +45,7 @@ class ColaboradoresController extends Controller
         $carreras = Carrera::get();
         $areas = Area::get();
         $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
+        // return $colaboradoresConArea;
         return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
     }
 
@@ -111,9 +117,10 @@ class ColaboradoresController extends Controller
 
     public function store(Request $request)
     {
+        // return $request;
         $request->validate([
             'candidato_id' => 'required|integer',
-            'area_id' => 'required|integer',
+            'areas_id.*' => 'required|integer',
             'horarios' => 'required|array',
             'horarios.*.hora_inicial' => 'required|date_format:H:i',
             'horarios.*.hora_final' => 'required|date_format:H:i',
@@ -125,11 +132,13 @@ class ColaboradoresController extends Controller
         if ($candidato->estado == true) {
             $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
 
-            Colaboradores_por_Area::create([
-                'colaborador_id' => $colaborador->id,
-                'area_id' => $request->area_id,
-                'semana_inicio_id' => null
-            ]);
+            foreach($request->areas_id as $area_id){
+                Colaboradores_por_Area::create([
+                    'colaborador_id' => $colaborador->id,
+                    'area_id' => $area_id,
+                    'semana_inicio_id' => null
+                ]);
+            }
 
             foreach ($request->horarios as $horario) {
                 Horario_de_Clases::create([
@@ -164,8 +173,9 @@ class ColaboradoresController extends Controller
     }
 
 
-    public function update(Request $request, $candidato_id)
+    public function update(Request $request, $colaborador_id)
     {
+        return $request;
         $request->validate([
             'nombre' => 'sometimes|string|min:1|max:100',
             'apellido' => 'sometimes|string|min:1|max:100',
@@ -177,10 +187,16 @@ class ColaboradoresController extends Controller
             'carrera_id' => 'sometimes|integer|min:1|max:20',
             'correo' => 'sometimes|string|min:1|max:255',
             'celular' => 'sometimes|string|min:1|max:20',
-            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
-        ]);
+            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
+            'areas_id.*' => 'sometimes|integer'
 
-        $candidato = Candidatos::findOrFail($candidato_id);
+        ]);
+        $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
+        $candidato = $colaborador->candidato;
+        // TO DO: Cuando un colaborador se le actualiza su area, si el area en el que ya estaba se quita, se debe marcar como inactivo, si se le agrega a una nueva, se crea un nuevo registro con esa area
+        // Si estaba en un area que dejó y despues vuelve, verificar el registro que ya habia y marcarlo como activo nuevamente
+        // Agregar campo de estado en Colaboradores_Por_Area
+        return $candidato;
         $datosActualizar = $request->except(['icono']);
 
         if ($request->hasFile('icono')) {

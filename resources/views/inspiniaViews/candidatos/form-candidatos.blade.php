@@ -59,12 +59,15 @@
                                                 placeholder="Ingrese su telefono" value="{{ $candidato->celular }}"
                                                 class="form-control" disabled></div>
                                         <div class="form-group"><label class="col-form-label">Area</label>
-                                            <div><select class="form-control m-b" name="area_id">
-                                                    @foreach ($areas as $area)
+                                            <div>
+                                                <select id="countries" name="areas_id[]" multiple required>
+                                                    @foreach ($areas as $key => $area)
                                                     <option value="{{ $area->id }}">{{ $area->especializacion }}
                                                     </option>
                                                     @endforeach
-                                                </select></div>
+                                                </select>
+                                                
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +177,6 @@
     @include('components.inspinia.footer-inspinia')
 
 
-
     </div>
     </div>
     <!--
@@ -204,6 +206,13 @@
         }
     </script> -->
 
+    <style type="text/css">
+        [required]{
+            box-shadow: 0 0 10px 1px #f00;
+        }
+    </style>    
+
+
     <script>
         var contadorFilas = 0;
         var horas = @json($horas);
@@ -223,7 +232,8 @@
             // Construir el select de horas iniciales y finales
             var selectHoraInicial = construirSelectHora('horarios[' + contadorFilas + '][hora_inicial]');
             var selectHoraFinal = construirSelectHora('horarios[' + contadorFilas + '][hora_final]');
-    
+            
+            celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sabado</option></select></div></div>';
             celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraInicial + '</div>';
             celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
             celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
@@ -242,6 +252,10 @@
             var fila = boton.parentNode.parentNode;
             fila.parentNode.removeChild(fila);
         }
+    </script>
+    <script>
+        
+        new MultiSelectTag('countries')  // id
     </script>
 
 </body>

@@ -202,9 +202,14 @@
                                                     <h5 class="m-t-none m-b">Celular:</h5>
                                                 </label><label for="">{{$colaborador->candidato->celular}}</label>
                                             </div>
-                                            <div class="form-group"><label>
+                                            <div class="form-group">
+                                                <label>
                                                     <h5 class="m-t-none m-b">Area:</h5>
-                                                </label><label for="">Analisis</label></div>
+                                                </label>
+                                                @foreach($colaborador->areas as $area)
+                                                <label>{{$area}}</label>
+                                                @endforeach
+                                            </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Carrera:</h5>
                                                 </label><label
@@ -275,10 +280,12 @@
 
 
                                 <small class="text-muted text-left">
-                                    <h3>Area:</h3>
+                                    <h3>Área(s):</h3>
                                 </small>
                                 <div class="small m-t-xs text-left">
-                                    <h5>{{$colaborador->area}}</h5>
+                                    @foreach($colaborador->areas as $area)
+                                    <h5>{{$area}}</h5>
+                                    @endforeach
                                 </div>
                                 <small class="text-muted text-left">
                                     <h3>DN1:</h3>
@@ -324,7 +331,7 @@
                                                 <div style="min-width: 750px" class="modal-content">
                                                     <div class="modal-body">
                                                         <form role="form" method="POST"
-                                                            action="{{ route('colaboradores.update', $colaborador->candidato->id) }}"
+                                                            action="{{ route('colaboradores.update', $colaborador->id) }}"
                                                             enctype="multipart/form-data">
                                                             @csrf
                                                             @method('PUT')
@@ -413,11 +420,45 @@
                                                                             id="celular"
                                                                             value="{{ old('celular', $colaborador->candidato->celular) }}">
                                                                     </div>
-                                                                    <div class="form-group"><label>
+                                                                    <!-- <div class="form-group">
+                                                                        <label>
                                                                             <h5 class="m-t-none">Area:</h5>
-                                                                        </label><input style="padding: 1px 8px;"
-                                                                            type="text" class="form-control"
-                                                                            value="Analisis"></input></div>
+                                                                        </label>
+                                                                        <select name="areas_id[]" multiple required>
+                                                                            @foreach ($areas as $key => $area)
+                                                                            <option value="{{ $area->id }}">{{ $area->especializacion }}
+                                                                            </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                        
+                                                                    </div> -->
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Area:</h5>
+                                                                        </label>
+                                                                        <select name="areas_id[]" multiple required class="form-control select2_demo_2">
+                                                                            @foreach ($areas as $key => $area)+
+                                                                                <option value="{{ $area->id }}"
+                                                                                    @foreach ($colaborador->areas as $areaNombre)
+                                                                                        @if($area->especializacion == $areaNombre)
+                                                                                        selected 
+                                                                                        @endif 
+                                                                                        @endforeach
+                                                                                    >
+                                                                                    {{ $area->especializacion }}</option>
+                                                                                <!-- <option value="{{ $area->id }}">{{ $area->especializacion }}</option> -->
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <!-- Incluir scripts al final del archivo o en tu layout -->
+                                                                    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+                                                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+                                                                    <script>
+                                                                        $(document).ready(function() {
+                                                                            $('.select2_demo_2').select2();
+                                                                        });
+                                                                    </script>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Carrera:</h5>
                                                                         </label>
@@ -527,7 +568,12 @@
 
 
     </div>
-
+    <style>
+        .select2-container.select2-container--default.select2-container--open{
+            z-index: 9999 !important;
+            width: 100% !important;
+        }
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const personal = document.getElementById('personalCont');
@@ -663,7 +709,7 @@
         });
 
 
-
+        
 
 
 
