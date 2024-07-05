@@ -22,7 +22,7 @@ class ColaboradoresController extends Controller
         $colaboradoresConArea = [];
 
         foreach ($colaboradores as $colaborador) {
-            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->get();
+            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->where('estado', true)->get();
             if (count($colaboradorArea)>0) {
                 $areas = [];
 
@@ -175,7 +175,7 @@ class ColaboradoresController extends Controller
 
     public function update(Request $request, $colaborador_id)
     {
-        return $request;
+        // return $request;
         $request->validate([
             'nombre' => 'sometimes|string|min:1|max:100',
             'apellido' => 'sometimes|string|min:1|max:100',
@@ -196,8 +196,26 @@ class ColaboradoresController extends Controller
         // TO DO: Cuando un colaborador se le actualiza su area, si el area en el que ya estaba se quita, se debe marcar como inactivo, si se le agrega a una nueva, se crea un nuevo registro con esa area
         // Si estaba en un area que dejó y despues vuelve, verificar el registro que ya habia y marcarlo como activo nuevamente
         // Agregar campo de estado en Colaboradores_Por_Area
-        return $candidato;
-        $datosActualizar = $request->except(['icono']);
+        foreach($request->areas_id as $area_id){
+            $colaborador_por_area = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('area_id', $area_id)->first();
+            if (!$colaborador_por_area) {
+                Colaboradores_por_Area::create([
+                    'colaborador_id' => $colaborador->id,
+                    'area_id' => $area_id,
+                    'semana_inicio_id' => null,
+                    'estado' => true,
+                ]);
+            } else if ($colaborador_por_area->estado == false) {
+                $colaborador_por_area->update(['estado' => true]);
+            } 
+        }
+        $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->whereNotIn('area_id', $request->areas_id)->get();
+        // return $areasInactivas;
+        foreach ($areasInactivas as $areaInactiva) {
+            $areaInactiva->update(['estado' => false]);
+        }
+        // return $candidato;
+        $datosActualizar = $request->except(['icono', 'areas_id']);
 
         if ($request->hasFile('icono')) {
             $rutaPublica = public_path('storage/candidatos');
@@ -213,7 +231,9 @@ class ColaboradoresController extends Controller
             $datosActualizar['icono'] = $nombreIcono;
         }
 
+        // return $datosActualizar;
         $candidato->update($datosActualizar);
+
 
         return redirect()->route('colaboradores.index');
 

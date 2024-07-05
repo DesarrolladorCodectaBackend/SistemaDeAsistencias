@@ -12,7 +12,8 @@ class Colaboradores_por_Area extends Model
     protected $fillable = [
         'colaborador_id',
         'area_id',
-        "semana_inicio_id"
+        'semana_inicio_id',
+        'estado'
     ];
 
     

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('especializacion', 100);
             $table->string('descripcion',255);
             $table->char('color_hex', 7);
+            $table->boolean('estado')->default(true);
             $table->string('icono');
             $table->timestamps();
         });

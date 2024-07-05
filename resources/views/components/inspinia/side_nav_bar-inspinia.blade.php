@@ -8,7 +8,8 @@
     <link href="{{ asset('css/plugins/switchery/switchery.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     <link href="{{asset('css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css">
 
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -81,7 +82,8 @@
                 <a href="/areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
             <li>
-                <a href="/responsabilidades"><i class="fa fa-list-alt"></i> <span class="nav-label">Responsabilidades</span></a>
+                <a href="/responsabilidades"><i class="fa fa-list-alt"></i> <span
+                        class="nav-label">Responsabilidades</span></a>
             </li>
             <li id="maquinas">
                 <a href="/maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
@@ -111,13 +113,12 @@
     <div class="row border-bottom">
         <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
-                <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
-                        class="fa fa-bars"></i>
+                <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i>
                 </a>
                 <form role="search" class="navbar-form-custom" action="search_results.html">
                     <div class="form-group">
-                        <input type="text" placeholder="Search for something..." class="form-control"
-                            name="top-search" id="top-search">
+                        <input type="text" placeholder="Search for something..." class="form-control" name="top-search"
+                            id="top-search">
                     </div>
                 </form>
             </div>
@@ -259,16 +260,16 @@
     <!-- jQuery UI  -->
     <script class="jQuery UI" src="{{ asset('js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 
+
     <!-- iCheck -->
     <script src="{{ asset('js/plugins/iCheck/icheck.min.js') }}"></script>
 
     <!-- Full Calendar -->
     <script src="{{ asset('js/plugins/fullcalendar/moment.min.js') }}"></script>
     <script src="{{ asset('js/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
-    
+
     <!-- Select2 -->
-    <script src="asset('js/plugins/select2/select2.full.min.js') "></script>
-    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/js/multi-select-tag.js"></script>
+    <script src="{{asset('js/plugins/select2/select2.full.min.js')}} "></script>
 
     <!--
     <script class="Flot" src="{{ asset('js/plugins/flot/jquery.flot.js') }}"></script>

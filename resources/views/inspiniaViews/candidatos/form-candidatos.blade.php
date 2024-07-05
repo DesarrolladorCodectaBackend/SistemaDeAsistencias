@@ -60,13 +60,14 @@
                                                 class="form-control" disabled></div>
                                         <div class="form-group"><label class="col-form-label">Area</label>
                                             <div>
-                                                <select id="countries" name="areas_id[]" multiple required>
-                                                    @foreach ($areas as $key => $area)
-                                                    <option value="{{ $area->id }}">{{ $area->especializacion }}
-                                                    </option>
+                                                <select name="areas_id[]" multiple required
+                                                    class="form-control multiple_areas_select">
+                                                    @foreach ($areas as $key => $area)+
+                                                    <option value="{{ $area->id }}">
+                                                        {{ $area->especializacion }}</option>
                                                     @endforeach
                                                 </select>
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -207,11 +208,17 @@
     </script> -->
 
     <style type="text/css">
-        [required]{
+        [required] {
             box-shadow: 0 0 10px 1px #f00;
         }
-    </style>    
+    </style>
 
+    <script>
+        //JQuery para select multiple de areas
+        $(document).ready(function() {
+            $('.multiple_areas_select').select2();
+        });
+    </script>
 
     <script>
         var contadorFilas = 0;
@@ -252,10 +259,6 @@
             var fila = boton.parentNode.parentNode;
             fila.parentNode.removeChild(fila);
         }
-    </script>
-    <script>
-        
-        new MultiSelectTag('countries')  // id
     </script>
 
 </body>

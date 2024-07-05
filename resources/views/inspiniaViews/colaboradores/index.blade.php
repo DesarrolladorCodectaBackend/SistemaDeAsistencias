@@ -420,45 +420,29 @@
                                                                             id="celular"
                                                                             value="{{ old('celular', $colaborador->candidato->celular) }}">
                                                                     </div>
-                                                                    <!-- <div class="form-group">
-                                                                        <label>
-                                                                            <h5 class="m-t-none">Area:</h5>
-                                                                        </label>
-                                                                        <select name="areas_id[]" multiple required>
-                                                                            @foreach ($areas as $key => $area)
-                                                                            <option value="{{ $area->id }}">{{ $area->especializacion }}
-                                                                            </option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                        
-                                                                    </div> -->
+
                                                                     <div class="form-group">
                                                                         <label>
                                                                             <h5 class="m-t-none">Area:</h5>
                                                                         </label>
-                                                                        <select name="areas_id[]" multiple required class="form-control select2_demo_2">
+                                                                        <select name="areas_id[]" multiple required
+                                                                            class="form-control multiple_areas_select">
                                                                             @foreach ($areas as $key => $area)+
-                                                                                <option value="{{ $area->id }}"
-                                                                                    @foreach ($colaborador->areas as $areaNombre)
-                                                                                        @if($area->especializacion == $areaNombre)
-                                                                                        selected 
-                                                                                        @endif 
-                                                                                        @endforeach
-                                                                                    >
-                                                                                    {{ $area->especializacion }}</option>
-                                                                                <!-- <option value="{{ $area->id }}">{{ $area->especializacion }}</option> -->
+                                                                            <option value="{{ $area->id }}"
+                                                                            @foreach($colaborador->areas as $areaNombre)
+                                                                                @if($area->especializacion ==
+                                                                                $areaNombre)
+                                                                                selected
+                                                                                @endif
+                                                                                @endforeach
+                                                                                >
+                                                                                {{ $area->especializacion }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
 
-                                                                    <!-- Incluir scripts al final del archivo o en tu layout -->
-                                                                    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-                                                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-                                                                    <script>
-                                                                        $(document).ready(function() {
-                                                                            $('.select2_demo_2').select2();
-                                                                        });
-                                                                    </script>
+
+
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Carrera:</h5>
                                                                         </label>
@@ -569,10 +553,24 @@
 
     </div>
     <style>
-        .select2-container.select2-container--default.select2-container--open{
+        .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
             width: 100% !important;
         }
+
+        /* .select2-container--default .select2-selection--multiple {
+            width: auto;
+            min-width: 100% !important; 
+        } */
+        .select2-container {
+            display: inline !important;
+        }
+
+        /* .select2.select2-container.select2-container--default.selection.select2-selection.select2-selection--multiple.
+        .select2-selection__rendered.select2-container--below.select2-selection__rendered{
+            z-index: 9999 !important;
+            width: 100% !important;
+        } */
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -716,6 +714,13 @@
 
 
 
+    </script>
+    
+    <script>
+        //JQuery para select multiple de areas
+        $(document).ready(function() {
+            $('.multiple_areas_select').select2();
+        });
     </script>
 </body>
 

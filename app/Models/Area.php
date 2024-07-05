@@ -13,7 +13,8 @@ class Area extends Model
         'especializacion',
         'descripcion',
         'color_hex',
-        'icono'
+        'estado',
+        'icono',
     ];
 
 
