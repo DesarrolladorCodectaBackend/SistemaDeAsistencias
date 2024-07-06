@@ -68,7 +68,7 @@ class AreaController extends Controller
         //Encontrar area
         $area = Area::findOrFail($area_id);
         //Encontrar el id de los colaboradores del área
-        $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('colaborador_id');
+        $colaboradoresAreaId = Colaboradores_por_Area::where('estado', true)->where('area_id', $area_id)->get()->pluck('colaborador_id');
         //encontrar los días de clase de esos colaboradores
         $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
         $diasColaboradores = $horariosColaboradores->pluck('dia');
@@ -128,7 +128,7 @@ class AreaController extends Controller
         // Encontrar area
         $area = Area::findOrFail($area_id);
         // Encontrar el id de los colaboradores del área
-        $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->pluck('colaborador_id');
+        $colaboradoresAreaId = Colaboradores_por_Area::where('estado', true)->where('area_id', $area_id)->pluck('colaborador_id');
         // Encontrar los días de clase de esos colaboradores
         $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
         $horariosPresenciales = Horarios_Presenciales::all();

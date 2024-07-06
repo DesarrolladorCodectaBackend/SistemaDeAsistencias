@@ -131,7 +131,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         //$area_id = $request->area_id;
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
-        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->with('colaborador')->get();
+        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', true)->with('colaborador')->get();
         $colaboradoresAreaId = $colaboradoresArea->pluck('id');
         //return $registros;
 
@@ -515,7 +515,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     {
         //
     }
-
+    
     public function store(Request $request)
     {
         //return $request;
@@ -526,9 +526,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             'semana_id' => 'required|integer|min:1|max:100',
             'cumplio.*' => 'required|boolean|min:0|max:1',
             'year' => 'required|integer',
+            'mes' => 'required|string',
         ]);
         $year = $request->year;
-
+        $mes = $request->mes;
+        
         $colab_id = $request->colaborador_area_id[0];
         $colab = Colaboradores_por_Area::find($colab_id);
         $area_id = $colab->area_id;
@@ -558,7 +560,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             }
         }
 
-        return redirect()->route('responsabilidades.meses', ['year' => $year, 'area_id' => $area_id]);
+        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+        
 
     }
 
@@ -602,8 +605,10 @@ $query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
             'responsabilidad_id.*' => 'sometimes|integer|min:1|max:255',
             'cumplio.*' => 'sometimes|boolean|min:0|max:1',
             'year' => 'required|integer',
+            'mes' => 'required|string',
         ]);
         $year = $request->year;
+        $mes = $request->mes;
 
         $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('id');
 
@@ -614,7 +619,8 @@ $query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
             $registro->save();
         }
 
-        return redirect()->route('responsabilidades.meses', ['year' => $year, 'area_id' => $area_id]);
+        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+
 
     }
 

@@ -10,53 +10,6 @@ use Exception;
 
 class Horario_Presencial_AsignadoController extends Controller
 {
-    // public function index()
-    // {
-    //     try{
-    //         $horarios_presenciales_Asignados = Horario_Presencial_Asignado::with(['horario_presencial', 'area'])->get();
-    //         // if (count($horarios_presenciales_Asignados) == 0) {
-    //         //     return response()->json(["resp" => "No hay registros insertados"]);
-    //         // }
-    //         $horariosFormateados = [];
-    //     if(count($horarios_presenciales_Asignados)>0){
-    //         foreach ($horarios_presenciales_Asignados as $horario) {
-    //             $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
-    //             $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-    
-    //             $horariosFormateados[] = [
-    //                 'hora_inicial' => $horaInicial,
-    //                 'hora_final' => $horaFinal,
-    //                 'dia' => $horario->horario_presencial->dia,
-    //             ];
-    //         }
-
-    //     }
-    //     if(count($horarios_presenciales_Asignados)>0){
-    //         foreach ($horarios_presenciales_Asignados as $horario) {
-    //             $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
-    //             $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-                
-    //             $horario->horario_presencial->hora_inicial = $horaInicial;
-    //             $horario->horario_presencial->hora_final = $horaFinal;
-
-    //             // return $horario->horario_presencial->hora_inicial;
-
-    //         }
-
-    //     }
-
-    //         // return $horarios_presenciales_Asignados;
-    //         return $horariosFormateados;
-
-
-    //         return response()->json(["data" => $horarios_presenciales_Asignados, "conteo" => count($horarios_presenciales_Asignados)]);
-    //     } catch(Exception $e){
-    //         return response()->json(["error" => $e]);
-    //     }
-        
-    // }
-
-    
     public function index()
     {
         try {
