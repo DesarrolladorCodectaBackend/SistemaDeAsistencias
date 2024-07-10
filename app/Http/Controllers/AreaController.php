@@ -131,22 +131,25 @@ class AreaController extends Controller
         $colaboradoresAreaId = Colaboradores_por_Area::where('estado', true)->where('area_id', $area_id)->pluck('colaborador_id');
         // Encontrar los días de clase de esos colaboradores
         $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        // Obtener todos los Horarios presenciales disponibles
         $horariosPresenciales = Horarios_Presenciales::all();
-        // Convertir horarios colaboradores a un array de horas ocupadas por día
+        // Array para las horas ocupadas de los colaboradores
         $horasOcupadas = [];
+        // Recorrer los horarios de los colaboradores
         foreach ($horariosColaboradores as $horarioColab) {
             $dia = $horarioColab->dia;
             $horaInicial = strtotime($horarioColab->hora_inicial);
             $horaFinal = strtotime($horarioColab->hora_final);
     
-            // Rellenar las horas ocupadas en el día
+            // Por cada hora en el rango, agregar la hora al array de horas ocupadas para ese día
             for ($hora = $horaInicial; $hora <= $horaFinal; $hora += 3600) {
+                //Agregar key dia y dentro de cada uno las horas que están ocupados durante ese día
                 $horasOcupadas[$dia][] = date('H', $hora);
             }
         }
         // Array para los horarios disponibles
         $horariosDisponibles = [];
-        // Verificar cada horario presencial
+        // Recorrer todos los Horarios Presenciales
         foreach ($horariosPresenciales as $horarioPres) {
             $diaPres = $horarioPres->dia;
             $horaInicialPres = strtotime($horarioPres->hora_inicial);
@@ -164,31 +167,37 @@ class AreaController extends Controller
             // Comprobar si alguna de las horas del horario presencial coincide con las horas ocupadas
             if (isset($horasOcupadas[$diaPres])) {
                 // error_log($diaPres);
+                //Recorrer el rango de horas presenciales
                 foreach ($rangoHorasPres as $hora) {
+                    //Si la hora está dentro de las horas ocupadas del día
                     if (in_array($hora, $horasOcupadas[$diaPres])) {
+                        //Este horario no estará disponible
                         $disponible = false;
                         break;
                     }
                 }
             }
-            
+            //Si disponible es true
             if ($disponible) {
+                //Se agrega el horario disponible al array de horarios disponibles
                 $horariosDisponibles[] = $horarioPres;
             }
-            // return $horariosDisponibles;
         }
-        // return $horariosDisponibles;
-
+        //Verificar si el área tiene horario asignado
         $hasHorario = false;
+        //Ver si el area tiene horarios asignados
         $horarioAsignado = Horario_Presencial_Asignado::with('horario_presencial')->where('area_id', $area_id)->get();
-        
+        //Array de horariosFormateados
         $horariosFormateados = [];
+        //Si el area tiene horarios asignados
         if(count($horarioAsignado)>0){
+            //Se marca hasHorario como true
             $hasHorario = true;
+            //Se recorre el horarios asignado
             foreach ($horarioAsignado as $horario) {
                 $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
                 $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-    
+                //Se formatean las horas y se guarda en el array
                 $horariosFormateados[] = [
                     'hora_inicial' => $horaInicial,
                     'hora_final' => $horaFinal,
@@ -197,22 +206,28 @@ class AreaController extends Controller
             }
 
         } else{
+            // Si no tiene horarios asignados, se marca hasHorario como false
             $hasHorario = false;
         }
-
+        // Recorrer los horarios disponibles
         foreach($horariosDisponibles as $horario) {
-            //En caso sea igual al horario asignado, darle un campo "actual" true; para que en el front sepa que es el horario actual y no lo pueda cambiar
-            //Hacer los cambios en el mismo array usado "horariosDisponibles" para no tener que hacer otro foreach y no tener que crear otro array
+            //En caso sea igual al horario asignado, darle un campo "actual" true
+            //Si hasHorario es true
             if($hasHorario) {
+                //Se recorre cada horario Asignado
                 foreach($horarioAsignado as $horarioAsig) {
+                    //Si el horario asignado es igual al horario disponible
                     if($horarioAsig->horario_presencial_id == $horario->id) {
+                        // Se marca como actual
                         $horario->actual = true;
                         break;
                     } else {
+                        //Sino se marca como false
                         $horario->actual = false;
                     }
                 }
             } else {
+                //Si no tiene horario asignado, se marca como false
                 $horario->actual = false;
             }
         }
