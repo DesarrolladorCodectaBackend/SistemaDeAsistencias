@@ -11,6 +11,27 @@ use Exception;
 class Reuniones_ProgramadasController extends Controller
 {
     
+    public function getAllReu(){
+        $reuniones = Reuniones_Programadas::with('area')->get();
+
+        foreach ($reuniones as $horario) {
+            $horaInicial = (int) date('H', strtotime($horario->hora_inicial));
+            $horaFinal = (int) date('H', strtotime($horario->hora_final));
+    
+            $horariosFormateados = [
+                'hora_inicial' => $horaInicial,
+                'hora_final' => $horaFinal,
+                'dia' => $horario->dia,
+            ];
+            $horario->horario_modificado = $horariosFormateados;
+        }
+
+
+        // return $reuniones;
+
+        return view('InspiniaViews.horarios.reuniones_generales', ['reuniones'=> $reuniones]);
+    }
+
     public function reunionesGest($area_id){
         $area = Area::findOrFail($area_id);
         $reuniones = Reuniones_Programadas::with('area')->where('area_id', $area_id)->get();

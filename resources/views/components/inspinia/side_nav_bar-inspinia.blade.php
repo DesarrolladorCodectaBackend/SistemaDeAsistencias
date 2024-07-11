@@ -41,24 +41,14 @@
                 </div>
             </li>
             <li>
-                <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span> <span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="index.html">Dashboard v.1</a></li>
-                    <li><a href="dashboard_2.html">Dashboard v.2</a></li>
-                    <li><a href="dashboard_3.html">Dashboard v.3</a></li>
-                    <li><a href="dashboard_4_1.html">Dashboard v.4</a></li>
-                    <li><a href="dashboard_5.html">Dashboard v.5 </a></li>
-                    <li><a href="dashboard_areas.html">Áreas</a></li>
-                </ul>
+                <a href="/dashboard"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span></a>
             </li>
             <li>
                 <a href="/horarioGeneral"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
-                        G.Presencial</span><span class="fa arrow"></span></a>
+                        Generales</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/horarioGeneral">Presencial</a></li>
-                    <li><a href="/horarioGeneral">Areas</a></li>
-                    <li><a href="/horarioGeneral">Salon</a></li>
+                    <li><a href="/ReunionesAreas">Reuniones</a></li>
                 </ul>
             </li>
             <li>
