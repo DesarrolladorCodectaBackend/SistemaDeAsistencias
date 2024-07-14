@@ -243,8 +243,17 @@
                                                 class="img-lg  max-min-h-w-200 img-cover">
 
                                         </div>
-                                        <a class="btn btn-primary btn-success fa fa-desktop"
-                                            style="width: 100px; font-size: 18px;" href="Computadora.html"></a>
+                                        <div style="display: flex; gap:2px">
+                                            <form id="getComputadoraColab{{$colaborador->id}}" action="{{route('colaboradores.getComputadora', $colaborador->id)}}"></form>
+                                            <a href="#" class="btn btn-primary btn-success fa fa-desktop"
+                                                style="width: 100px; font-size: 18px;"
+                                                onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
+                                            </a>
+                                            <a data-toggle="modal"
+                                                class="btn btn-primary btn-success fa fa-dropbox"
+                                                style="width: 100px; font-size: 18px;"
+                                                href=""></a>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -509,14 +518,16 @@
                                                                             });
                                                                         </script>
                                                                     </div>
-                                                                    <a data-toggle="modal"
-                                                                        class="btn btn-primary btn-success fa fa-desktop"
-                                                                        style="width: 100px; font-size: 18px;"
-                                                                        href=""></a>
-                                                                    <a data-toggle="modal"
-                                                                        class="btn btn-primary btn-success "
-                                                                        style="width: 100px; font-size: 12px;"
-                                                                        href="">?</a>
+                                                                    <div style="display: flex; gap:2px">
+                                                                        <a href="#" class="btn btn-primary btn-success fa fa-desktop"
+                                                                            style="width: 100px; font-size: 18px;"
+                                                                            onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
+                                                                        </a>
+                                                                        <a data-toggle="modal"
+                                                                            class="btn btn-primary btn-success fa fa-dropbox"
+                                                                            style="width: 100px; font-size: 18px;"
+                                                                            href=""></a>
+                                                                    </div>
 
                                                                 </div>
 

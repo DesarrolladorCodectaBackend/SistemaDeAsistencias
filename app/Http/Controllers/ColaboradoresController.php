@@ -6,9 +6,13 @@ use App\Models\Area;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
+use App\Models\Computadora_colaborador;
 use App\Models\Horario_de_Clases;
 use App\Models\Institucion;
 use App\Models\Carrera;
+use App\Models\Programas;
+use App\Models\Programas_instalados;
+use App\Models\Registro_Mantenimiento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -47,6 +51,51 @@ class ColaboradoresController extends Controller
         $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
         // return $colaboradoresConArea;
         return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
+    }
+
+    public function getComputadoraColaborador($colaborador_id){
+        $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
+
+        $computerColab = Computadora_colaborador::where('colaborador_id', $colaborador_id)->first();
+
+        $hasComputer = false;
+        $incidencias = [];
+        $ultimaIncidencia = null;
+        $programas = Programas::get();
+        $programasInstalados = [];
+        if($computerColab) {
+            $hasComputer = true;
+            $incidencias = Registro_Mantenimiento::where('computadora_id', $computerColab->id)->where('estado', true)->get();
+            $ultimaIncidencia = Registro_Mantenimiento::where('computadora_id', $computerColab->id)->orderBy('fecha', 'desc')->first();
+            $programasInstalados = Programas_instalados::with('programa')->where('computadora_id', $computerColab->id)->where('estado', true)->get();
+        }
+
+        $procesadores = [
+            'Core I8',
+            'Core I5',
+            'Core I3',
+        ];
+
+        $almacenamientos = [
+            '8 GBytes',
+            '7 GBytes',
+            '6 GBytes',
+        ];
+
+
+        // return response()->json(["colaborador" => $colaborador, "computerColab" => $computerColab, "hasComputer" => $hasComputer, "incidencias" => $incidencias, "ultimaIncidencia" => $ultimaIncidencia, "programas" => $programas,"programasInstalados" => $programasInstalados]);
+
+        return view('inspiniaViews.computadoras.compuColab', [
+            'colaborador' => $colaborador,
+            'computerColab' => $computerColab,
+            'hasComputer' => $hasComputer,
+            'incidencias' => $incidencias,
+            'ultimaIncidencia' => $ultimaIncidencia,
+            'programas' => $programas,
+            'programasInstalados' => $programasInstalados,
+            'procesadores' => $procesadores,
+            'almacenamientos' => $almacenamientos,
+        ]);
     }
 
     public function filtrarColaboradores(Request $request)

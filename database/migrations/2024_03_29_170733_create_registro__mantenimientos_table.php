@@ -17,8 +17,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('computadora_id');
             $table->foreign('computadora_id')->references('id')->on('computadora_colaboradors');
-            $table->dateTime('fecha');
+            $table->date('fecha');
             $table->string('registro_incidencia');
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }

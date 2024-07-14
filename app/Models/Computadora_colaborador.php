@@ -17,7 +17,8 @@ class Computadora_colaborador extends Model
         'ram',
         'almacenamiento',
         'es_laptop',
-        'codigo_serie'
+        'codigo_serie',
+        'estado'
     ];
 
     public function colaborador(){

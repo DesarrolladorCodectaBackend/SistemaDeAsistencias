@@ -68,6 +68,63 @@ class Programas_instaladosController extends Controller
         return redirect()->route('programas_instalados.index');
     }
 
+    public function selectProgramas(Request $request, $computadora_id){
+        DB::beginTransaction();
+        try{
+            // return $request;
+            $request->validate([
+                "programas_id.*" => "required|integer",
+                "colaborador_id" => "required|integer",
+            ]);
+
+            foreach($request->programas_id as $programa_id){
+                $programa = Programas_instalados::where("computadora_id", $computadora_id)->where("programa_id", $programa_id)->first();
+                if(!$programa){
+                    Programas_instalados::create([
+                        "computadora_id" => $computadora_id,
+                        "programa_id" => $programa_id
+                    ]);
+                } else{
+                    if($programa->estado === 0){
+                        $programa->estado = 1;
+                        $programa->save();
+                    }
+                }
+            }
+
+            $programasInactivos = Programas_instalados::where("computadora_id", $computadora_id)->whereNotIn("programa_id", $request->programas_id)->get();
+            // return $programasInactivos;
+            foreach($programasInactivos as $programaInactivo){
+                $programaInactivo->estado = 0;
+                $programaInactivo->save();
+
+            }
+            DB::commit();
+            return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            // return response()->json(["error"=> $e]);
+            return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
+        }
+
+    }
+    public function inactivate($colaborador_id, $id){
+        DB::beginTransaction();
+        try{
+            $registro = Programas_instalados::findOrFail($id);
+            if($registro){
+                $registro->estado = 0;
+                $registro->save();
+            }
+            DB::commit();
+            return redirect()->route('colaboradores.getComputadora', $colaborador_id);
+        } catch(Exception $e){
+            DB::rollBack();
+            // return response()->json(["error" => $e]);
+            return redirect()->route('colaboradores.getComputadora', $colaborador_id);
+        }
+    }
 
 
     public function show($programas_instalados_id)

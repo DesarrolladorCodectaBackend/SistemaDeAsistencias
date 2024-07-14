@@ -12,7 +12,8 @@ class Registro_Mantenimiento extends Model
     protected $fillable = [
         'computadora_id',
         'fecha',
-        'registro_incidencia'
+        'registro_incidencia',
+        'estado'
     ];
 
     public function computadora(){

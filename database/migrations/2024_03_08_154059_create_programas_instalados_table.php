@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('computadora_id')->references('id')->on('computadora_colaboradors');
             $table->unsignedBigInteger('programa_id');
             $table->foreign('programa_id')->references('id')->on('programas');
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }

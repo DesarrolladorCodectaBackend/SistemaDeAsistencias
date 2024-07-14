@@ -19,11 +19,12 @@ return new class extends Migration
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
             $table->string('procesador');
             $table->string('tarjeta_grafica');
-            $table->integer('memoria_grafica'); //?
-            $table->integer('ram');
+            $table->string('memoria_grafica');
+            $table->string('ram');
             $table->string('almacenamiento');
             $table->boolean('es_laptop');
             $table->string('codigo_serie');
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }

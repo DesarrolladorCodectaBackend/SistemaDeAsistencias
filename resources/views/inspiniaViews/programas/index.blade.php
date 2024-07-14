@@ -34,7 +34,8 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <form role="form" method="POST" action="{{ route('programas.store') }}" enctype="multipart/form-data">
+                                <form role="form" method="POST" action="{{ route('programas.store') }}"
+                                    enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
@@ -49,8 +50,8 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <h4>Subir Icono</h4>
-                                            <input type="file" class="form-control-file" id="icono"
-                                                name="icono" style="display: none;">
+                                            <input type="file" class="form-control-file" id="icono" name="icono"
+                                                style="display: none;">
                                             <!-- Icono que simula el clic en el botón de subir archivos -->
                                             <button type="button" class="btn btn-link" id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
@@ -59,8 +60,8 @@
                                         <div>
                                             <a href="areas"
                                                 class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
-                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
+                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit"><i
+                                                    class="fa fa-check"></i>&nbsp;Confirmar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -109,83 +110,83 @@
                         </thead>
                         <tbody>
                             @foreach ($programas as $programa)
-                                <tr>
-                                    <td>{{ $programa->id }}</td>
-                                    <td>{{ $programa->nombre }}</td>
-                                    <td>{{ $programa->descripcion }}</td>
-                                    <td class="child-center">
-                                        <form method="POST"
-                                            action="{{ route('programas.activarInactivar', $programa->id) }}">
-                                            @csrf
-                                            <button type="submit"
-                                                class="btn btn-{{ $programa->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                                <span>{{ $programa->estado ? 'Activo' : 'Inactivo' }}</span>
-                                            </button>
-                                        </form>
-                                    </td>
-                                    <td class="child-center"><img src="{{ asset('storage/programas/' . $programa->icono) }}"
-                                            style="height: 50px; width: 50px; border-radius: 10px" class="img-cover" alt=""></td>
-                                    <td class="child-center"><button class="btn btn-info" type="button"
-                                            href="#modal-form{{ $programa->id }}" data-toggle="modal"><i
-                                                class="fa fa-paste"></i></button></td>
-                                    <div id="modal-form{{ $programa->id }}" class="modal fade" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <form role="form" method="POST"
-                                                        action="{{ route('programas.update', $programa->id) }}" enctype="multipart/form-data">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="row">
-                                                            <div class="col-sm-6 b-r">
-                                                                <h3 class="m-t-none m-b">Editar</h3>
-                                                                <label class="col-form-label">Programas</label>
-                                                                <div class="form-group"><label>Nombre</label>
-                                                                    <input type="text" placeholder="....."
-                                                                        class="form-control" name="nombre"
-                                                                        id="nombre"
-                                                                        value="{{ old('nombre', $programa->nombre) }}">
-                                                                </div>
-                                                                <div class="form-group"><label>Descripcion</label>
-                                                                    <input type="text" placeholder="....."
-                                                                        class="form-control" name="descripcion"
-                                                                        id="descripcion"
-                                                                        value="{{ old('nombre', $programa->nombre) }}">
-                                                                </div>
-
+                            <tr>
+                                <td>{{ $programa->id }}</td>
+                                <td>{{ $programa->nombre }}</td>
+                                <td>{{ $programa->descripcion }}</td>
+                                <td class="child-center">
+                                    <form method="POST"
+                                        action="{{ route('programas.activarInactivar', $programa->id) }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-{{ $programa->estado ? 'outline-success' : 'danger' }} btn-primary dim">
+                                            <span>{{ $programa->estado ? 'Activo' : 'Inactivo' }}</span>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="child-center"><img src="{{ asset('storage/programas/' . $programa->icono) }}"
+                                        style="height: 50px; width: 50px; border-radius: 10px" class="img-cover" alt="">
+                                </td>
+                                <td class="child-center"><button class="btn btn-info" type="button"
+                                        href="#modal-form{{ $programa->id }}" data-toggle="modal"><i
+                                            class="fa fa-paste"></i></button></td>
+                                <div id="modal-form{{ $programa->id }}" class="modal fade" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <form role="form" method="POST"
+                                                    action="{{ route('programas.update', $programa->id) }}"
+                                                    enctype="multipart/form-data">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="row">
+                                                        <div class="col-sm-6 b-r">
+                                                            <h3 class="m-t-none m-b">Editar</h3>
+                                                            <label class="col-form-label">Programas</label>
+                                                            <div class="form-group"><label>Nombre</label>
+                                                                <input type="text" placeholder="....."
+                                                                    class="form-control" name="nombre" id="nombre"
+                                                                    value="{{ old('nombre', $programa->nombre) }}">
                                                             </div>
-                                                            <div class="col-sm-6 b-r">
-                                                                <h4>Subir Icono</h4>
-                                                                <input type="file" class="form-control-file"
-                                                                    id="icono-{{ $programa->id }}" name="icono"
-                                                                    value="{{ old('icono', $programa->icono) }}"
-                                                                    style="display: none;">
-                                                                <button type="button" class="btn btn-link"
-                                                                    id="icon-upload-{{ $programa->id }}">
-                                                                    <i class="fa fa-cloud-download big-icon"></i>
-                                                                </button>
-                                                                <script>
-                                                                    document.getElementById('icon-upload-{{ $programa->id }}').addEventListener('click', function() {
+                                                            <div class="form-group"><label>Descripcion</label>
+                                                                <input type="text" placeholder="....."
+                                                                    class="form-control" name="descripcion"
+                                                                    id="descripcion"
+                                                                    value="{{ old('descripcion', $programa->descripcion) }}">
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="col-sm-6 b-r">
+                                                            <h4>Subir Icono</h4>
+                                                            <input type="file" class="form-control-file"
+                                                                id="icono-{{ $programa->id }}" name="icono"
+                                                                value="{{ old('icono', $programa->icono) }}"
+                                                                style="display: none;">
+                                                            <button type="button" class="btn btn-link"
+                                                                id="icon-upload-{{ $programa->id }}">
+                                                                <i class="fa fa-cloud-download big-icon"></i>
+                                                            </button>
+                                                            <script>
+                                                                document.getElementById('icon-upload-{{ $programa->id }}').addEventListener('click', function() {
                                                                         document.getElementById('icono-{{ $programa->id }}').click();
                                                                     });
-                                                                </script>
-                                                                <button
-                                                                    class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                                    type="submit"><i
-                                                                        class="fa fa-check"></i>&nbsp;Confirmar</button>
-                                                            </div>
+                                                            </script>
+                                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                                type="submit"><i
+                                                                    class="fa fa-check"></i>&nbsp;Confirmar</button>
                                                         </div>
-                                                    </form>
+                                                    </div>
+                                                </form>
 
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <td class="child-center"><button class="btn btn-danger" type="button"
-                                            onclick="confirmDelete({{ $programa->id }})"><i
-                                                class="fa fa-trash-o"></i></button>
-                                    </td>
-                                </tr>
+                                </div>
+                                <td class="child-center"><button class="btn btn-danger" type="button"
+                                        onclick="confirmDelete({{ $programa->id }})"><i
+                                            class="fa fa-trash-o"></i></button>
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>

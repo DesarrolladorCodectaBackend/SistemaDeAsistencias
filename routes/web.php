@@ -5,6 +5,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradoresController;
+use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
@@ -12,7 +13,9 @@ use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
+use App\Http\Controllers\Registro_MantenimientoController;
 use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\Reuniones_ProgramadasController;
@@ -105,6 +108,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
     Route::post('colaboradores/filtrar', [ColaboradoresController::class, 'filtrarColaboradores'])->name('colaboradores.filtrar');   
     Route::post('colaboradores/search', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
+
+    //COMPUTADORA
+    Route::get('/colaborador/computadora/{colaborador_id}', [ColaboradoresController::class, 'getComputadoraColaborador'])->name('colaboradores.getComputadora');
+    Route::post('/computadora/storeComputadoraColab', [Computadora_colaboradorController::class, 'store'])->name('computadora.storeComputadoraColab');
+    Route::put('/computadora/updateComputadoraColab/{computadora_colaborador_id}', [Computadora_colaboradorController::class, 'update'])->name('computadora.updateComputadoraColab');
+    Route::put('/computadora/activarInactivar/{colaborador_id}/{computadora_id}', [Computadora_colaboradorController::class, 'activarInactivar'])->name('computadora.activarInactivar');
+
+    //REGISTRO MANTENIMIENTO
+    Route::post('/computadora/mantenimientoStore', [Registro_MantenimientoController::class, 'store'])->name('computadora.mantenimientoStore');
+    Route::put('/computadora/mantenimientoInactivar/{colaborador_id}/{registro_Mantenimiento_id}', [Registro_MantenimientoController::class, 'inactivar'])->name('computadora.mantenimientoInactivar');
+
+    //PROGRAMAS INSTALADOS
+    Route::post('/computadora/programasInstalados/selectProgramas/{computadora_id}', [Programas_instaladosController::class, 'selectProgramas'])->name('computadora.selectProgramas');
+    Route::put('/computadora/programasInstalados/Inactivate/{colaborador_id}/{id}', [Programas_instaladosController::class, 'inactivate'])->name('computadora.ProgramaInactivate');
 
     //AJUSTES
     Route::resource('ajustes', AjusteController::class);

@@ -11,7 +11,8 @@ class Programas_instalados extends Model
 
     protected $fillable = [
         'computadora_id',
-        'programa_id'
+        'programa_id',
+        'estado'
     ];
 
 
