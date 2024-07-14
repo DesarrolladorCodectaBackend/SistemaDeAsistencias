@@ -43,22 +43,26 @@ class Horario_Presencial_AsignadoController extends Controller
         try{
             // return $request;
             $request->validate([
-                "horario_presencial_id" => "required|integer",
+                "horario_presencial_id.*" => "required|integer",
                 "area_id" => "required|integer",
             ]);
 
-            if(!$request->horario_presencial_id){
-                return response()->json(["resp" => "Ingrese el horario presencial"]);
+            // if(!$request->horario_presencial_id){
+            //     return response()->json(["resp" => "Ingrese el horario presencial"]);
+            // }
+
+            // if(!$request->area_id){
+            //     return response()->json(["resp" => "Ingrese el area"]);
+            // }
+
+            foreach($request->horario_presencial_id as $horario_presencial_id) {
+
+                Horario_Presencial_Asignado::create([
+                    "horario_presencial_id" => $horario_presencial_id,
+                    "area_id" => $request->area_id
+                ]);
             }
 
-            if(!$request->area_id){
-                return response()->json(["resp" => "Ingrese el area"]);
-            }
-
-            Horario_Presencial_Asignado::create([
-                "horario_presencial_id" => $request->horario_presencial_id,
-                "area_id" => $request->area_id
-            ]);
 
             DB::commit();
             // return response()->json(["resp" => "Registro creado exitosamente"]);
@@ -126,23 +130,27 @@ class Horario_Presencial_AsignadoController extends Controller
     }
 
 
-    public function destroy($horario_presencial_asignado_id)
+    public function destroy($area_id, $horario_presencial_asignado_id)
     {
         DB::beginTransaction();
         try{
-            $horario_presencial_asignado = Horario_Presencial_Asignado::find($horario_presencial_asignado_id);
+            // return [$area_id, $horario_presencial_asignado_id];
+            
+            $horario_presencial_asignado = Horario_Presencial_Asignado::findOrFail($horario_presencial_asignado_id);
 
             if (!$horario_presencial_asignado){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
+                return redirect()->route('areas.getHorario', ['area_id' => $area_id]);
             }
 
             $horario_presencial_asignado->delete();
             
             DB::commit();
-            return response()->json(["resp" => "Candidato eliminado correctamente"]);
+            return redirect()->route('areas.getHorario', ['area_id' => $area_id]);
+            // return response()->json(["resp" => "Candidato eliminado correctamente"]);
         } catch (Exception $e){
             DB::rollBack();
-            return response()->json(["error" => $e]);
+            // return response()->json(["error" => $e]);
+            return redirect()->route('areas.getHorario', ['area_id' => $area_id]);
         }
 
 

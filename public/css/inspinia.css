@@ -165,7 +165,9 @@
 }
 
 .disabled {
-    cursor: not-allowed;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    opacity: 0.5;
 }
 .gap-10{
     gap: 10px;

@@ -211,24 +211,24 @@ class AreaController extends Controller
         }
         // Recorrer los horarios disponibles
         foreach($horariosDisponibles as $horario) {
-            //En caso sea igual al horario asignado, darle un campo "actual" true
+            //En caso sea igual al horario asignado, darle un campo "using" true
             //Si hasHorario es true
             if($hasHorario) {
                 //Se recorre cada horario Asignado
                 foreach($horarioAsignado as $horarioAsig) {
                     //Si el horario asignado es igual al horario disponible
                     if($horarioAsig->horario_presencial_id == $horario->id) {
-                        // Se marca como actual
-                        $horario->actual = true;
+                        // Se marca como en uso
+                        $horario->using = true;
                         break;
                     } else {
                         //Sino se marca como false
-                        $horario->actual = false;
+                        $horario->using = false;
                     }
                 }
             } else {
                 //Si no tiene horario asignado, se marca como false
-                $horario->actual = false;
+                $horario->using = false;
             }
         }
 

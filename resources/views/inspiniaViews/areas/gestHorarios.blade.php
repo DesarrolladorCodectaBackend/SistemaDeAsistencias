@@ -82,109 +82,173 @@
                                             <div class="col-lg-12">
                                                 <div class="ibox ">
                                                     <div class="ibox-content">
+                                                        <div class="row m-0">
+                                                            <div class="col-10">
+                                                                <h1>HORARIOS</h1>
+                                                            </div>
+                                                            <div class="col-2"><button onclick="addNewForm()"
+                                                                    type="button" id="addFormButton"
+                                                                    class="btn btn-primary p-2">Agregar Horario</button>
+                                                            </div>
+
+                                                        </div>
+                                                        <hr class="mt-0" />
                                                         @if($hasHorario)
-                                                        <h2>Cambiar Horario</h2>
-                                                        <?php $asignado = $horarioAsignado->first(); ?>
-                                                        <form action="{{ route('areas.horarioUpdate', $asignado->id) }}"
-                                                            role="form" method="POST">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input value="{{ $area->id }}" name="area_id"
-                                                                type="hidden" />
-                                                            <h3 class="m-t-none m-b">Seleccione uno de los horarios
-                                                                disponibles:</h3>
-                                                            <div class="row">
-                                                                @foreach($horariosDisponibles as $index => $horario)
-                                                                @if($index % 4 == 0)
-                                                            </div>
-                                                            <div class="row">
-                                                                @endif
-                                                                <div class="col-md-3">
-                                                                    <div class="ibox">
-                                                                        <div style="cursor: pointer"
-                                                                            class="ibox-content product-box"
-                                                                            onclick="toggleCheckbox(event, {{ $horario->id }})">
-                                                                            <div class="product-desc">
-                                                                                <div style="display: flex; gap:60%">
-                                                                                    <h1 class="product-name">{{
-                                                                                        $horario->dia }}
-                                                                                        @if($horario->actual === true)
-                                                                                        <span
-                                                                                            style="color: #f00; font-size: 13px">(Actual)</span>
-                                                                                        @endif
-                                                                                    </h1>
-                                                                                    <input type="checkbox"
-                                                                                        value="{{ $horario->id }}"
-                                                                                        name="horario_presencial_id"
-                                                                                        class="horario-checkbox"
-                                                                                        id="checkbox-{{ $horario->id }}"
-                                                                                        onchange="updateSubmitButton()" />
-                                                                                </div>
-                                                                                <div class="m-t-xs">Desde: {{
-                                                                                    $horario->hora_inicial }}</div>
-                                                                                <div class="m-t-xs">Hasta: {{
-                                                                                    $horario->hora_final }}</div>
+                                                        <div style="display: flex; flex-direction: column; gap: 50px"
+                                                            class="container">
+                                                            @foreach($horarioAsignado as $key => $asignado)
+                                                            <div class="container">
+                                                                <div class="row">
+                                                                    <div class="col-10">
+                                                                        <h2>Actualizar Horario {{$key+1}} </h2>
+                                                                    </div>
+                                                                    <div class="col-2"><button class="btn btn-danger"
+                                                                            onclick="confirmDelete({{$asignado->id}}, {{$area->id}})">Eliminar
+                                                                            Registro</button></div>
+                                                                </div>
 
+                                                                <form
+                                                                    action="{{ route('areas.horarioUpdate', $asignado->id) }}"
+                                                                    role="form" method="POST">
+                                                                    @csrf
+                                                                    @method('PUT')
+                                                                    <input value="{{ $area->id }}" name="area_id"
+                                                                        type="hidden" />
+                                                                    <h3 class="m-t-none m-b">Seleccione uno de los
+                                                                        horarios
+                                                                        disponibles:</h3>
+                                                                    <div class="row">
+                                                                        @foreach($horariosDisponibles as $horario)
+                                                                        <div
+                                                                            class="col-md-3 {{ $horario->using ? 'disabled' : '' }}">
+                                                                            <div class="ibox">
+                                                                                <div style="cursor: pointer"
+                                                                                    class="ibox-content product-box"
+                                                                                    onclick="toggleCheckbox(event, 'checkbox-update-{{$horario->id}}-{{$key}}', 'update-{{$key}}' )">
+                                                                                    <div class="product-desc">
+                                                                                        <div
+                                                                                            style="display: flex; gap:60%">
+                                                                                            <h1 class="product-name">{{
+                                                                                                $horario->dia }}
+                                                                                                @if($horario->using ===
+                                                                                                true)
+                                                                                                <span
+                                                                                                    class="text-danger font-bold small">(En
+                                                                                                    uso)
+                                                                                                </span>
+                                                                                                @if($horario->id ===
+                                                                                                $asignado->horario_presencial_id)
+                                                                                                <span
+                                                                                                    class="text-success font-bold small">(Actual)
+
+                                                                                                </span>
+
+                                                                                                @endif
+
+
+                                                                                                @endif
+                                                                                            </h1>
+                                                                                            <input type="checkbox"
+                                                                                                value="{{ $horario->id }}"
+                                                                                                name="horario_presencial_id"
+                                                                                                class="horario-checkbox-update-{{$key}}"
+                                                                                                id="checkbox-update-{{ $horario->id }}-{{$key}}"
+                                                                                                onchange="updateSubmitButton('update-{{$key}}')" />
+                                                                                        </div>
+                                                                                        <div class="m-t-xs">Desde: {{
+                                                                                            $horario->hora_inicial }}
+                                                                                        </div>
+                                                                                        <div class="m-t-xs">Hasta: {{
+                                                                                            $horario->hora_final }}
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
+                                                                        @endforeach
                                                                     </div>
-                                                                </div>
-                                                                @endforeach
+                                                                    <button
+                                                                        class="btn btn-success btn-sm m-t-n-xs float-right"
+                                                                        type="submit" id="submit-button-update-{{$key}}"
+                                                                        disabled>
+                                                                        <i class="fa fa-check"></i>&nbsp;Actualizar
+                                                                    </button>
+                                                                </form>
                                                             </div>
-                                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                                type="submit" id="submit-button" disabled>
-                                                                <i class="fa fa-check"></i>&nbsp;Enviar
-                                                            </button>
-                                                        </form>
 
-                                                        @else
-                                                        <h2>Asignar Horario</h2>
-                                                        <form action="{{ route('areas.horarioCreate') }}" role="form"
-                                                            method="POST">
-                                                            @csrf
-                                                            <input value="{{ $area->id }}" name="area_id"
-                                                                type="hidden" />
-                                                            <h3 class="m-t-none m-b">Seleccione uno de los horarios
-                                                                disponibles:</h3>
-                                                            <div class="row">
-                                                                @foreach($horariosDisponibles as $index => $horario)
-                                                                @if($index % 4 == 0)
-                                                            </div>
-                                                            <div class="row">
-                                                                @endif
-                                                                <div class="col-md-3">
-                                                                    <div class="ibox">
-                                                                        <div style="cursor: pointer"
-                                                                            class="ibox-content product-box"
-                                                                            onclick="toggleCheckbox(event, {{ $horario->id }})">
-                                                                            <div class="product-desc">
-                                                                                <div style="display: flex; gap:60%">
-                                                                                    <h1 class="product-name">{{
-                                                                                        $horario->dia }}</h1>
-                                                                                    <input type="checkbox"
-                                                                                        value="{{ $horario->id }}"
-                                                                                        name="horario_presencial_id"
-                                                                                        class="horario-checkbox"
-                                                                                        id="checkbox-{{ $horario->id }}"
-                                                                                        onchange="updateSubmitButton()" />
-                                                                                </div>
-                                                                                <div class="m-t-xs">Desde: {{
-                                                                                    $horario->hora_inicial }}</div>
-                                                                                <div class="m-t-xs">Hasta: {{
-                                                                                    $horario->hora_final }}</div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                @endforeach
-                                                            </div>
-                                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                                type="submit" id="submit-button" disabled>
-                                                                <i class="fa fa-check"></i>&nbsp;Enviar
-                                                            </button>
-                                                        </form>
+                                                            @endforeach
+                                                        </div>
+
 
                                                         @endif
+                                                        <form id="formStore" action="{{ route('areas.horarioCreate') }}"
+                                                            role="form" method="POST">
+                                                            @csrf
+                                                            <h2>Asignar Horario</h2>
+                                                            <input value="{{ $area->id }}" name="area_id"
+                                                                type="hidden" />
+
+                                                            <div id="storeFormContainer">
+                                                                <div class="storeForm" data-form-index="0">
+                                                                    <h3>NUEVO HORARIO:</h3>
+
+
+                                                                    <h3 class="m-t-none m-b">Seleccione uno de los
+                                                                        horarios disponibles:</h3>
+                                                                    <div class="row">
+                                                                        @foreach($horariosDisponibles as $index =>
+                                                                        $horario)
+                                                                        <div
+                                                                            class="col-md-3 {{ $horario->using ? 'disabled' : '' }}">
+                                                                            <div class="ibox">
+                                                                                <div style="cursor: pointer"
+                                                                                    class="ibox-content product-box"
+                                                                                    onclick="toggleCheckbox(event, 'checkbox-store-{{$horario->id}}-0', 'store-0')">
+                                                                                    <div class="product-desc">
+                                                                                        <div
+                                                                                            style="display: flex; gap:60%">
+                                                                                            <h1 class="product-name">{{
+                                                                                                $horario->dia }}
+                                                                                                @if($horario->using ===
+                                                                                                true)
+                                                                                                <span
+                                                                                                    class="text-danger font-bold small">(En
+                                                                                                    uso)
+                                                                                                </span>
+                                                                                                @endif
+                                                                                            </h1>
+                                                                                            <input type="checkbox"
+                                                                                                value="{{ $horario->id }}"
+                                                                                                name="horario_presencial_id[]"
+                                                                                                class="horario-checkbox-store-0"
+                                                                                                id="checkbox-store-{{ $horario->id }}-0" />
+                                                                                        </div>
+                                                                                        <div class="m-t-xs">Desde: {{
+                                                                                            $horario->hora_inicial }}
+                                                                                        </div>
+                                                                                        <div class="m-t-xs">Hasta: {{
+                                                                                            $horario->hora_final }}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <button type="button" onclick="addNewForm()"
+                                                                class="btn btn-secondary">Añadir nuevo horario</button>
+                                                            <button type="button" onclick="removeForm(this)"
+                                                                class="btn btn-danger btn-sm">Eliminar</button>
+                                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                                type="submit" id="submit-store-button" disabled>
+                                                                <i class="fa fa-check"></i>&nbsp;Enviar
+                                                            </button>
+                                                        </form>
+
+                                                        {{-- @endif --}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -221,27 +285,48 @@
         }
     </style>
     <script>
-        function toggleCheckbox(event, id) {
+        function confirmDelete(id, area_id) {
+            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+                if (e) {
+                    let form = document.createElement('form')
+                    form.method = 'POST'
+                    form.action = `/areas/horarioDelete/${area_id}/${id}`
+                    form.innerHTML = '@csrf @method('DELETE')'
+                    document.body.appendChild(form)
+                    form.submit()
+                } else {
+                    return false
+                }
+            });
+        }
+
+        function toggleCheckbox(event, id, type) {
+            console.log(id);
             if (event.target.tagName !== 'INPUT') {
-                const checkbox = document.getElementById(`checkbox-${id}`);
+                const checkbox = document.getElementById(id);
                 checkbox.checked = !checkbox.checked;
-                updateSubmitButton();
+                if (type.includes("update")) {
+                    updateSubmitButton(type);
+                } else if (type.includes("store")) {
+                    updateStoreSubmitButton();
+                }
             }
-            uncheckOthers(id);
+            uncheckOthers(id, type);
         }
     
-        function uncheckOthers(id) {
-            const checkboxes = document.querySelectorAll('.horario-checkbox');
+        function uncheckOthers(id, type) {
+            const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
             checkboxes.forEach(checkbox => {
-                if (checkbox.id !== `checkbox-${id}`) {
+                if (checkbox.id !== id) {
                     checkbox.checked = false;
                 }
             });
         }
     
-        function updateSubmitButton() {
-            const checkboxes = document.querySelectorAll('.horario-checkbox');
-            const submitButton = document.getElementById('submit-button');
+        function updateSubmitButton(type) {
+            console.log(type)
+            const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
+            const submitButton = document.getElementById(`submit-button-${type}`);
             let isAnyChecked = false;
             checkboxes.forEach(checkbox => {
                 if (checkbox.checked) {
@@ -250,7 +335,85 @@
             });
             submitButton.disabled = !isAnyChecked;
         }
+
+        function updateStoreSubmitButton() {
+            const formContainers = document.querySelectorAll('.storeForm');
+            let allFormsValid = true;
+
+            formContainers.forEach(container => {
+                const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+                let isAnyChecked = false;
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        isAnyChecked = true;
+                    }
+                });
+                if (!isAnyChecked) {
+                    allFormsValid = false;
+                }
+            });
+
+            const submitButton = document.getElementById('submit-store-button');
+            submitButton.disabled = !allFormsValid;
+        }
     </script>
+
+    <script>
+        let formCounter = 1;
+
+        function addNewForm() {
+            const originalForm = document.querySelector('.storeForm');
+            const newForm = originalForm.cloneNode(true);
+
+            // Incrementar el contador de formularios
+            const formIndex = formCounter++;
+
+            // Actualizar los atributos de los checkboxes en el nuevo formulario
+            newForm.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
+                checkbox.checked = false;
+                checkbox.classList.remove(`horario-checkbox-store-0`);
+                checkbox.classList.add(`horario-checkbox-store-${formIndex}`);
+                checkbox.id = checkbox.id.replace('-0', `-${formIndex}`);
+            });
+
+            // Actualizar Botón de envío
+            // newForm.querySelector('button[type="submit"]').forEach((button, index) => {
+            //     // button.classList.remove(`submit-button-store-0`);
+            //     // button.classList.add(`submit-button-store-${formIndex}`);
+            //     button.id = button.id.replace('-0', `-${formIndex}`)
+            // });
+
+            // Actualizar el evento onclick de los elementos product-box
+            newForm.querySelectorAll('.product-box').forEach((box, index) => {
+                const horarioId = box.querySelector('input[type="checkbox"]').value;
+                box.setAttribute('onclick', `toggleCheckbox(event, 'checkbox-store-${horarioId}-${formIndex}', 'store-${formIndex}')`);
+            });
+
+            // Actualizar el data-form-index
+            newForm.setAttribute('data-form-index', formIndex);
+
+            // Añadir botón de eliminación
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.className = 'btn btn-danger btn-sm';
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.setAttribute('onclick', 'removeForm(this)');
+            newForm.prepend(deleteButton);
+
+            // Añadir el nuevo formulario al contenedor
+            document.querySelector('#storeFormContainer').appendChild(newForm);
+
+            updateStoreSubmitButton();
+
+        }
+
+        function removeForm(button) {
+            const formContainer = button.closest('.storeForm');
+            formContainer.remove();
+        }
+    
+    </script>
+
 
 
 
