@@ -179,10 +179,14 @@
                                                 </p>
 
                                                 <div class="text-center mt-4">
-                                                    <form role="form" method="POST" action="{{route('computadora.activarInactivar', ["colaborador_id" => $colaborador->id, "computadora_id" => $computerColab->id])}}">
+                                                    <form role="form" method="POST"
+                                                        action="{{route('computadora.activarInactivar', ["colaborador_id"=> $colaborador->id, "computadora_id" => $computerColab->id])}}">
                                                         @method('put')
                                                         @csrf
-                                                        <button class="btn {{$computerColab->estado? 'btn-primary' : 'btn-danger'}} btn-md" type="submit"><strong>{{$computerColab->estado? 'Activo' : 'Inactivo'}}</strong></button>
+                                                        <button
+                                                            class="btn {{$computerColab->estado? 'btn-primary' : 'btn-danger'}} btn-md"
+                                                            type="submit"><strong>{{$computerColab->estado? 'Activo' :
+                                                                'Inactivo'}}</strong></button>
                                                     </form>
                                                 </div>
 
@@ -235,24 +239,22 @@
                                                 </dl>
                                             </div>
                                             <div class="col-sm-12 col-md-6 col-lg-3 b-r">
-                                                <form role="form">
-                                                    <dl class="row mb-3">
-                                                        <div class="col-sm-6 text-sm-left">
-                                                            <dt>Ultimo Mantenimiento</dt>
-                                                            <dd class="sm-2">{{($ultimaIncidencia) ?
-                                                                $ultimaIncidencia->fecha : 'No hay
-                                                                mantenimientos'}}</dd>
-                                                        </div>
-                                                    </dl>
-                                                    <dl class="row mb-4">
-                                                        <div class="col-sm-6 text-sm-left">
-                                                            <dt>Incidencias:</dt>
-                                                            <a data-toggle="modal"
-                                                                class="btn btn-primary btn-success fa fa-eye"
-                                                                style="font-size: 20px;" href="#modalIncidencias"></a>
-                                                        </div>
-                                                    </dl>
-                                                </form>
+                                                <dl class="row mb-3">
+                                                    <div class="col-sm-6 text-sm-left">
+                                                        <dt>Ultimo Mantenimiento</dt>
+                                                        <dd class="sm-2">{{($ultimaIncidencia) ?
+                                                            $ultimaIncidencia->fecha : 'No hay
+                                                            mantenimientos'}}</dd>
+                                                    </div>
+                                                </dl>
+                                                <dl class="row mb-4">
+                                                    <div class="col-sm-6 text-sm-left">
+                                                        <dt>Incidencias:</dt>
+                                                        <a data-toggle="modal"
+                                                            class="btn btn-primary btn-success fa fa-eye"
+                                                            style="font-size: 20px;" href="#modalIncidencias"></a>
+                                                    </div>
+                                                </dl>
                                             </div>
                                         </div>
                                         <div class="text-right">
@@ -436,10 +438,12 @@
                                                 <div class="col-lg-12">
                                                     <div class="ibox ">
                                                         <div class="ibox-content">
-                                                            <form method="POST" action="{{route('computadora.updateComputadoraColab', $computerColab->id)}}">
+                                                            <form method="POST"
+                                                                action="{{route('computadora.updateComputadoraColab', $computerColab->id)}}">
                                                                 @method('put')
                                                                 @csrf
-                                                                <input type="hidden" name="colaborador_id" value="{{$colaborador->id}}"/>
+                                                                <input type="hidden" name="colaborador_id"
+                                                                    value="{{$colaborador->id}}" />
                                                                 <div class="row">
                                                                     <div class="col-sm-6 b-r">
                                                                         <dl class="row mb-0">
@@ -494,9 +498,11 @@
                                                                                 <select class="form-control m-b"
                                                                                     name="procesador" required>
                                                                                     @foreach($procesadores as $procesador)
-                                                                                    <option @if($computerColab->procesador == $procesador)
+                                                                                    <option @if($computerColab->
+                                                                                        procesador == $procesador)
                                                                                         selected
-                                                                                    @endif > {{$procesador}}</option>
+                                                                                        @endif > {{$procesador}}
+                                                                                    </option>
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
@@ -505,16 +511,20 @@
                                                                             <div class="col-sm-12 text-sm-left">
                                                                                 <dt>Tarjeta Grafica:</dt>
                                                                                 <input style="padding: 1px 8px;"
-                                                                                    type="text" class="form-control" name="tarjeta_grafica"
-                                                                                    value="{{$computerColab->tarjeta_grafica}}" required></input>
+                                                                                    type="text" class="form-control"
+                                                                                    name="tarjeta_grafica"
+                                                                                    value="{{$computerColab->tarjeta_grafica}}"
+                                                                                    required></input>
                                                                             </div>
                                                                         </dl>
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
                                                                                 <dt>Memoria Grafica:</dt>
                                                                                 <input style="padding: 1px 8px;"
-                                                                                    type="text" class="form-control" name="memoria_grafica"
-                                                                                    value="{{$computerColab->memoria_grafica}}" required></input>
+                                                                                    type="text" class="form-control"
+                                                                                    name="memoria_grafica"
+                                                                                    value="{{$computerColab->memoria_grafica}}"
+                                                                                    required></input>
                                                                             </div>
                                                                         </dl>
                                                                         <dl class="row mb-0">
@@ -522,7 +532,8 @@
                                                                                 <dt>Ram:</dt>
                                                                                 <input style="padding: 1px 8px;"
                                                                                     type="text" class="form-control"
-                                                                                    value="{{$computerColab->ram}}" name="ram" required></input>
+                                                                                    value="{{$computerColab->ram}}"
+                                                                                    name="ram" required></input>
                                                                             </div>
                                                                         </dl>
                                                                         <dl class="row mb-0">
@@ -531,7 +542,10 @@
                                                                                 <select class="form-control m-b"
                                                                                     name="almacenamiento">
                                                                                     @foreach($almacenamientos as $almacenamiento)
-                                                                                    <option @if($computerColab->almacenamiento === $almacenamiento) selected @endif >{{$almacenamiento}}</option>
+                                                                                    <option @if($computerColab->
+                                                                                        almacenamiento ===
+                                                                                        $almacenamiento) selected @endif
+                                                                                        >{{$almacenamiento}}</option>
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
@@ -544,10 +558,8 @@
                                                                                     type="submit"><strong>
                                                                                         Guardar</strong></button>
                                                                                 <div>
-                                                                                    <a
-                                                                                        class="btn btn-sm btn-primary float-right m-t-n-xs  btn-success"
-                                                                                        href=""
-                                                                                        ><strong>
+                                                                                    <a class="btn btn-sm btn-primary float-right m-t-n-xs  btn-success"
+                                                                                        href=""><strong>
                                                                                             Descartar</strong></a>
                                                                                 </div>
                                                                             </div>
@@ -575,18 +587,22 @@
                         <div class="ibox-content product-box">
                             <div class="row">
                                 <div class="col-sm-12 col-md-4 flex-centered">
-                                    <a class="product-name"><h1>Programas</h1></a>
+                                    <a class="product-name">
+                                        <h1>Programas</h1>
+                                    </a>
                                 </div>
                                 <div class="col-sm-12 col-md-8">
-                                    <form method="POST" action="{{route('computadora.selectProgramas', $computerColab->id)}}" class="col-12 flex-centered gap-10">
+                                    <form method="POST"
+                                        action="{{route('computadora.selectProgramas', $computerColab->id)}}"
+                                        class="col-12 flex-centered gap-10">
                                         @csrf
-                                        <input type="hidden" name="colaborador_id" value="{{$colaborador->id}}"/>
+                                        <input type="hidden" name="colaborador_id" value="{{$colaborador->id}}" />
                                         <span class="font-bold">Programas Seleccionados: </span>
                                         <select name="programas_id[]" multiple required
                                             class="form-control multiple_programas_select">
                                             @foreach ($programas as $key => $programa)
-                                            <option value="{{ $programa->id }}"
-                                            @foreach($programasInstalados as $programaInstalado)
+                                            <option value="{{ $programa->id }}" 
+                                                @foreach($programasInstalados as $programaInstalado) 
                                                 @if($programaInstalado->programa_id ===
                                                 $programa->id)
                                                 selected
@@ -598,7 +614,7 @@
                                         </select>
                                         <button type="submit" class="btn btn-success">Guardar</button>
                                     </form>
-                                    
+
                                 </div>
                             </div>
                             <div class="row">
@@ -607,32 +623,42 @@
                                     <div class="ibox">
                                         <div class="ibox-content product-box">
                                             <div class="row">
-                                                <div style="display: flex; flex-direction: column;" class="col-sm-12 col-md-6 b-r">
+                                                <div style="display: flex; flex-direction: column;"
+                                                    class="col-sm-12 col-md-6 b-r">
                                                     <h4 class="text-center">
-                                                        ID: {{$key+1}}   
+                                                        ID: {{$key+1}}
                                                     </h4>
                                                     <p class="text-center">
-                                                        <img src="{{asset('storage/programas/'.$programaInstalado->programa->icono)}}" width="100px" height="100px" alt=""></img>
+                                                        <img src="{{asset('storage/programas/'.$programaInstalado->programa->icono)}}"
+                                                            width="100px" height="100px" alt=""></img>
                                                     </p>
-                                                    
+
                                                     <div class="text-center">
-                                                        <button type="button" onclick="confirmProgramaInactivate({{$colaborador->id}}, {{$programaInstalado->id}})" data-toggle="modal" class="btn btn-danger fa fa-trash mb-2 px-3" style="font-size: 20px;"></button>
+                                                        <button type="button"
+                                                            onclick="confirmProgramaInactivate({{$colaborador->id}}, {{$programaInstalado->id}})"
+                                                            data-toggle="modal"
+                                                            class="btn btn-danger fa fa-trash mb-2 px-3"
+                                                            style="font-size: 20px;"></button>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12 col-md-6 text-center">
                                                     <dl class="row mb-12">
-                                                        <div class="col-sm-12"><h3>Programa:</h3>
-                                                            <dd class="sm-2">{{$programaInstalado->programa->nombre}}</dd>
+                                                        <div class="col-sm-12">
+                                                            <h3>Programa:</h3>
+                                                            <dd class="sm-2">{{$programaInstalado->programa->nombre}}
+                                                            </dd>
                                                         </div>
                                                     </dl>
                                                     <dl class="row mb-12">
-                                                        <div class="col-sm-12"><h3>Descripcion:</h3>
-                                                            <dd class="sm-2">{{$programaInstalado->programa->descripcion}}</dd>
+                                                        <div class="col-sm-12">
+                                                            <h3>Descripcion:</h3>
+                                                            <dd class="sm-2">
+                                                                {{$programaInstalado->programa->descripcion}}</dd>
                                                         </div>
                                                     </dl>
                                                 </div>
                                             </div>
-                                        </div>    
+                                        </div>
                                     </div>
                                 </div>
                                 @endforeach

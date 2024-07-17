@@ -625,12 +625,12 @@ $query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
     }
 
 
-    public function destroy($cumplio_responsabilidad_semanal_id)
-    {
-        $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::findOrFail($cumplio_responsabilidad_semanal_id);
+    // public function destroy($cumplio_responsabilidad_semanal_id)
+    // {
+    //     $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::findOrFail($cumplio_responsabilidad_semanal_id);
 
-        $cumplio_responsabilidad_semanal->delete();
+    //     $cumplio_responsabilidad_semanal->delete();
 
-        return redirect()->route('cumplio_responsabilidad_semanal.index');
-    }
+    //     return redirect()->route('cumplio_responsabilidad_semanal.index');
+    // }
 }

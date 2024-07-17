@@ -56,11 +56,14 @@ class Horario_Presencial_AsignadoController extends Controller
             // }
 
             foreach($request->horario_presencial_id as $horario_presencial_id) {
-
-                Horario_Presencial_Asignado::create([
-                    "horario_presencial_id" => $horario_presencial_id,
-                    "area_id" => $request->area_id
-                ]);
+                $horarioExistente = Horario_Presencial_Asignado::where('horario_presencial_id', $horario_presencial_id)
+                    ->where('area_id', $request->area_id)->first();
+                if(!$horarioExistente){
+                    Horario_Presencial_Asignado::create([
+                        "horario_presencial_id" => $horario_presencial_id,
+                        "area_id" => $request->area_id
+                    ]);
+                }
             }
 
 
@@ -69,9 +72,9 @@ class Horario_Presencial_AsignadoController extends Controller
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         }catch(Exception $e){
             DB::rollBack();
-            return response()->json(["error" => $e]);
+            // return response()->json(["error" => $e]);
+            return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         }
-
     }
 
 

@@ -61,7 +61,7 @@ class ColaboradoresController extends Controller
         $hasComputer = false;
         $incidencias = [];
         $ultimaIncidencia = null;
-        $programas = Programas::get();
+        $programas = Programas::where('estado', true)->get();
         $programasInstalados = [];
         if($computerColab) {
             $hasComputer = true;

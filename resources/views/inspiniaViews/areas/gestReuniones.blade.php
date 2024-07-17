@@ -247,7 +247,7 @@
                                                                 onclick="document.getElementById('storeReuniones').submit();"
                                                                 data-style="expand-left">Guardar</button>
                                                             <a class="ladda-button btn btn-primary"
-                                                                data-style="expand-left" href="/candidatos">Cancelar</a>
+                                                                data-style="expand-left" href="">Cancelar</a>
                                                         </div>
 
 

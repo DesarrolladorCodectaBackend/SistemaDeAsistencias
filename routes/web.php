@@ -104,10 +104,12 @@ Route::middleware('auth')->group(function () {
     //COLABORADORES
     Route::resource('colaboradores', ColaboradoresController::class);
     Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
-    Route::resource('horarioClase', HorarioDeClasesController::class);
-    Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
     Route::post('colaboradores/filtrar', [ColaboradoresController::class, 'filtrarColaboradores'])->name('colaboradores.filtrar');   
     Route::post('colaboradores/search', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
+    
+    //HORARIO DE CLASES
+    Route::resource('horarioClase', HorarioDeClasesController::class);
+    Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');
 
     //COMPUTADORA
     Route::get('/colaborador/computadora/{colaborador_id}', [ColaboradoresController::class, 'getComputadoraColaborador'])->name('colaboradores.getComputadora');

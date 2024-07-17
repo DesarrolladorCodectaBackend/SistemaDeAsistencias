@@ -301,7 +301,6 @@
         }
 
         function toggleCheckbox(event, id, type) {
-            console.log(id);
             if (event.target.tagName !== 'INPUT') {
                 const checkbox = document.getElementById(id);
                 checkbox.checked = !checkbox.checked;
@@ -324,7 +323,6 @@
         }
     
         function updateSubmitButton(type) {
-            console.log(type)
             const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
             const submitButton = document.getElementById(`submit-button-${type}`);
             let isAnyChecked = false;
@@ -365,10 +363,8 @@
             const originalForm = document.querySelector('.storeForm');
             const newForm = originalForm.cloneNode(true);
 
-            // Incrementar el contador de formularios
             const formIndex = formCounter++;
 
-            // Actualizar los atributos de los checkboxes en el nuevo formulario
             newForm.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
                 checkbox.checked = false;
                 checkbox.classList.remove(`horario-checkbox-store-0`);
@@ -376,23 +372,13 @@
                 checkbox.id = checkbox.id.replace('-0', `-${formIndex}`);
             });
 
-            // Actualizar Botón de envío
-            // newForm.querySelector('button[type="submit"]').forEach((button, index) => {
-            //     // button.classList.remove(`submit-button-store-0`);
-            //     // button.classList.add(`submit-button-store-${formIndex}`);
-            //     button.id = button.id.replace('-0', `-${formIndex}`)
-            // });
-
-            // Actualizar el evento onclick de los elementos product-box
             newForm.querySelectorAll('.product-box').forEach((box, index) => {
                 const horarioId = box.querySelector('input[type="checkbox"]').value;
                 box.setAttribute('onclick', `toggleCheckbox(event, 'checkbox-store-${horarioId}-${formIndex}', 'store-${formIndex}')`);
             });
 
-            // Actualizar el data-form-index
             newForm.setAttribute('data-form-index', formIndex);
 
-            // Añadir botón de eliminación
             const deleteButton = document.createElement('button');
             deleteButton.type = 'button';
             deleteButton.className = 'btn btn-danger btn-sm';
@@ -400,7 +386,6 @@
             deleteButton.setAttribute('onclick', 'removeForm(this)');
             newForm.prepend(deleteButton);
 
-            // Añadir el nuevo formulario al contenedor
             document.querySelector('#storeFormContainer').appendChild(newForm);
 
             updateStoreSubmitButton();
