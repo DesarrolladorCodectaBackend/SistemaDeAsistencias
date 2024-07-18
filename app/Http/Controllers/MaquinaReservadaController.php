@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Maquina_reservada;
+use App\Models\Colaboradores_por_Area;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,15 +35,44 @@ class MaquinaReservadaController extends Controller
         return view('inspiniaViews.maquinareservada.index', compact('maquinareservada'));
     }
 
+    public function asignarColaborador(Request $request, $area_id, $maquina_id){
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'colaborador_area_id' => 'required|integer|min:1|max:100',
+            ]);
+
+            $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('id');
+
+            $maquinaReservada = Maquina_reservada::where('maquina_id', $maquina_id)->whereIn('colaborador_area_id', $colaboradoresAreaId)->first();
+
+            if($maquinaReservada){
+                $maquinaReservada->update(['colaborador_area_id' => $request->colaborador_area_id]);
+            } else{
+                Maquina_reservada::create([
+                    'maquina_id' => $maquina_id,
+                    'colaborador_area_id' => $request->colaborador_area_id,
+                ]);
+            }
+            DB::commit();
+            return redirect()->route('areas.getMaquinas', ['area_id' => $area_id]);
+            
+        } catch(Exception $e){
+            DB::rollBack();
+            return $e;
+            return redirect()->route('areas.getMaquinas', ['area_id' => $area_id]);
+        }
+    }
+
     public function store(Request $request)
     {
         $request->validate([
-            'horario_presencial_id' => 'required|string|min:1|max:100',
-            'maquina_id' => 'required|string|min:1|max:255'
+            'colaborador_area_id' => 'required|integer|min:1|max:100',
+            'maquina_id' => 'required|integer|min:1|max:255'
         ]);
 
         Maquina_reservada::create([
-            "horario_presencial_id" => $request->horario_presencial_id,
+            "colaborador_area_id" => $request->colaborador_area_id,
             "maquina_id" => $request->maquina_id
         ]);
 

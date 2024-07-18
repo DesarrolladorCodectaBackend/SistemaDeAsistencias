@@ -14,12 +14,17 @@ class Area extends Model
         'descripcion',
         'color_hex',
         'estado',
+        'salon_id',
         'icono',
     ];
 
 
     public function colaborador_por_area(){
         return $this->hasMany(Colaboradores_por_Area::class, 'area_id', 'id');
+    }
+
+    public function salon(){
+        return $this->belongsTo(Salones::class,'salon_id','id');
     }
 
 }

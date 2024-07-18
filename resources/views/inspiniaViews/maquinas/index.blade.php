@@ -14,7 +14,7 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Maquinas</h2>
+                <h2>Máquinas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="index.html">Home</a>
@@ -46,10 +46,10 @@
                                             <div class="col-sm-6 b-r">
                                                 <div class="form-group">
                                                     <label>
-                                                        <h3 class="m-t-none m-b">Maquina</h3>
+                                                        <h3 class="m-t-none m-b">Máquina</h3>
                                                     </label>
                                                     <input type="text" name="nombre" placeholder="Nombre Maquina..."
-                                                        class="form-control" required/>
+                                                        class="form-control" required />
                                                 </div>
 
 
@@ -85,8 +85,8 @@
                                                     </label>
                                                     <select class="form-control" name="salon_id" required>
                                                         @foreach ($salones as $salon)
-                                                            <option value="{{ $salon->id }}">{{ $salon->nombre }}
-                                                            </option>
+                                                        <option value="{{ $salon->id }}">{{ $salon->nombre }}
+                                                        </option>
                                                         @endforeach
                                                     </select>
 
@@ -115,8 +115,7 @@
                             </div>
                             <div class="product-desc">
                                 <span class="product-price" style="background: transparent">
-                                    <form method="POST"
-                                        action="{{ route('maquinas.activarInactivar', $maquina->id) }}">
+                                    <form method="POST" action="{{ route('maquinas.activarInactivar', $maquina->id) }}">
                                         @csrf
                                         <button type="submit"
                                             class="btn btn-{{ $maquina->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
@@ -154,7 +153,8 @@
                                     <a href="#" data-toggle="model"> <i></i> </a>
                                     <div class="ibox-content">
                                         <div class="text-right">
-                                            <button class="btn btn-primary btn-danger fa fa-trash" style="font-size: 20px;" type="button"
+                                            <button class="btn btn-primary btn-danger fa fa-trash"
+                                                style="font-size: 20px;" type="button"
                                                 onclick="confirmDelete({{ $maquina->id }})"></button>
                                             <a data-toggle="modal" class="btn btn-primary fa fa-edit"
                                                 style="font-size: 20px;"
@@ -223,9 +223,9 @@
                                                                                 value="{{ $maquina->salon_id }}">
                                                                                 {{ $maquina->salon->nombre }}</option>
                                                                             @foreach ($salones as $salon)
-                                                                                <option value="{{ $salon->id }}">
-                                                                                    {{ $salon->nombre }}
-                                                                                </option>
+                                                                            <option value="{{ $salon->id }}">
+                                                                                {{ $salon->nombre }}
+                                                                            </option>
                                                                             @endforeach
                                                                         </select>
 

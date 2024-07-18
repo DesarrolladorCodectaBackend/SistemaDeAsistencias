@@ -10,7 +10,7 @@ class Maquina_reservada extends Model
     use HasFactory;
 
     protected $fillable = [
-        'horario_presencial_id',
+        'colaborador_area_id',
         'maquina_id'
     ];
 
@@ -18,7 +18,7 @@ class Maquina_reservada extends Model
         return $this->belongsTo(Maquinas::class, 'maquina_id', 'id');
     }   
 
-    public function horario_presenciale(){
-        return $this->belongsTo(Horarios_Presenciales::class, 'horario_presencial_id', 'id');
+    public function colaborador_area(){
+        return $this->belongsTo(Colaboradores_por_Area::class, 'colaborador_area_id', 'id');
     }
 }

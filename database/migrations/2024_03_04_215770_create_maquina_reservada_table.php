@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('areas', function (Blueprint $table) {
+        Schema::create('maquina_reservadas', function (Blueprint $table) {
             $table->id();
-            $table->string('especializacion', 100);
-            $table->string('descripcion',255);
-            $table->char('color_hex', 7);
-            $table->boolean('estado')->default(true);
-            $table->string('icono');
+            $table->unSignedBigInteger('colaborador_area_id');
+            $table->foreign('colaborador_area_id')->references('id')->on('colaboradores_por__areas');
+            $table->unSignedBigInteger('maquina_id');
+            $table->foreign('maquina_id')->references('id')->on('maquinas');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('areas');
+        Schema::dropIfExists('maquina_reservadas');
     }
 };

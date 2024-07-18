@@ -19,6 +19,7 @@ use App\Http\Controllers\Registro_MantenimientoController;
 use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\Reuniones_ProgramadasController;
+use App\Http\Controllers\MaquinaReservadaController;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use Illuminate\Support\Facades\Route;
 
@@ -70,6 +71,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/areas/reunionCreate', [Reuniones_ProgramadasController::class, 'store'])->name('areas.reunionCreate');
     Route::put('/areas/reunionUpdate/{id}', [Reuniones_ProgramadasController::class, 'update'])->name('areas.reunionUpdate');
     Route::delete('/areas/reunionDelete/{id}', [Reuniones_ProgramadasController::class, 'destroy']);
+
+    //Maquina Reservada
+    Route::get('/area/maquinas/{area_id}', [AreaController::class, 'getMaquinasByArea'])->name('areas.getMaquinas');
+    Route::post('/area/maquinas/AsignarColab/{area_id}/{maquina_id}', [MaquinaReservadaController::class, 'asignarColaborador'])->name('areas.asignarMaquinaColab');
 
     //INSTITUCION
     Route::resource('institucion', InstitucionController::class);

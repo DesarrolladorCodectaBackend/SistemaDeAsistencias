@@ -7,6 +7,10 @@ use App\Models\Colaboradores_por_Area;
 use App\Models\Horario_de_Clases;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Horarios_Presenciales;
+use App\Models\Maquinas;
+use App\Models\Maquina_reservada;
+use App\Models\Candidatos;
+use App\Models\Colaboradores;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
@@ -25,7 +29,7 @@ class AreaController extends Controller
     public function index()
     {
         //Recurar todos los registros en áreas
-        $areas = Area::get();
+        $areas = Area::with('salon')->get();
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
         return view('inspiniaViews.areas.index', compact('areas'));
@@ -243,6 +247,69 @@ class AreaController extends Controller
         
     
     }
+
+
+    public function getMaquinasByArea($area_id){
+        $area = Area::findOrFail($area_id);
+        //Datos esta area
+        $horariosArea = Horario_Presencial_Asignado::where('area_id', $area->id)->pluck('horario_presencial_id');
+        $colaboradoresThisArea = Colaboradores_por_Area::with('colaborador')->where('area_id', $area->id)->get();
+        $colaboradoresThisAreaId = $colaboradoresThisArea->pluck('id');
+        $maquinasThisArea = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresThisAreaId)->get();
+
+        //Buscar otras areas con el mismo horario
+        $allAreasConcurrentes = Horario_Presencial_Asignado::with('area')->whereIn('horario_presencial_id', $horariosArea)
+            ->whereNot('area_id', $area->id)->get()->pluck('area');
+        
+        //Areas del mismo salon            
+        $salonAreasConcurrentesId = $allAreasConcurrentes->where('salon_id', $area->salon_id)->pluck('id');
+        $colaboradoresOtherAreas = Colaboradores_por_Area::whereIn('area_id', $salonAreasConcurrentesId)->get();
+        $colaboradoresOtherAreasId = $colaboradoresOtherAreas->pluck('id');
+        $maquinasOtherAreas = Maquina_reservada::whereIn('colaborador_area_id', $colaboradoresOtherAreasId)->get();
+
+        //Todas las maquinas de este salon
+        $maquinas = Maquinas::where('salon_id', $area->salon_id)->get();
+
+        foreach($maquinas as $maquina){
+            $maquina->otraArea = false;
+            $maquina->colaborador = 'Sin asignar';
+            $maquina->colaborador_id = null;
+            foreach($maquinasOtherAreas as $otherMaquina){
+                if($maquina->id === $otherMaquina->maquina_id){
+                    $maquina->otraArea = true;
+                    $maquina->colaborador = 'Asignada a otra area';
+                }
+            }
+            foreach($maquinasThisArea as $thisMaquina){
+                if($maquina->id === $thisMaquina->maquina_id){
+                    $colaborador = Colaboradores::with('candidato')->where('id', $thisMaquina->colaborador_area->colaborador_id)->first();
+                    $candidato = $colaborador->candidato;
+                    $maquina->colaborador = $candidato->nombre." ".$candidato->apellido;
+                    $maquina->colaborador_id = $thisMaquina->colaborador_area_id;
+                }
+            }
+        }
+
+        foreach($colaboradoresThisArea as $colaboradorArea){
+            $colaboradorArea->hasMaquina = false;
+            $candidato =  Candidatos::findOrFail($colaboradorArea->colaborador->candidato_id);
+            $colaboradorArea->nombre = $candidato->nombre." ".$candidato->apellido;
+
+            $maquina = Maquina_reservada::where('colaborador_area_id', $colaboradorArea->id)->first();
+            if($maquina){
+                $colaboradorArea->hasMaquina = true;
+            }
+
+        }
+
+        // return response()->json(['maquina' => $maquinas, 'colaboradoresArea' => $colaboradoresThisArea, 'area' => $area]);
+        return view('inspiniaViews.areas.maquinas', [
+            'maquinas' => $maquinas,
+            'area' => $area,
+            'colaboradoresArea' => $colaboradoresThisArea,
+        ]);
+    }
+
 
     /**
      *  STORE

@@ -109,6 +109,12 @@
                                             <button class="btn btn-success fa fa-video-camera"
                                                 style="font-size: 20px;"></button>
                                         </form>
+                                        <form role="form" method="GET" action="{{route('areas.getMaquinas', $area->id)}}">
+                                            <button class="btn btn-secondary fa fa-desktop"
+                                            style="font-size: 20px;">
+
+                                            </button>
+                                        </form>
                                         <div id="modal-form{{ $area->id }}" class="modal fade" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
