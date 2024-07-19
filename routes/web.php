@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
     //Maquina Reservada
     Route::get('/area/maquinas/{area_id}', [AreaController::class, 'getMaquinasByArea'])->name('areas.getMaquinas');
     Route::post('/area/maquinas/AsignarColab/{area_id}/{maquina_id}', [MaquinaReservadaController::class, 'asignarColaborador'])->name('areas.asignarMaquinaColab');
+    Route::delete('/area/maquinas/LiberarMaquina/{area_id}/{maquina_id}', [MaquinaReservadaController::class, 'liberarMaquina'])->name('areas.liberarMaquina');
 
     //INSTITUCION
     Route::resource('institucion', InstitucionController::class);

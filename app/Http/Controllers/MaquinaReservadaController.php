@@ -59,7 +59,22 @@ class MaquinaReservadaController extends Controller
             
         } catch(Exception $e){
             DB::rollBack();
-            return $e;
+            // return $e;
+            return redirect()->route('areas.getMaquinas', ['area_id' => $area_id]);
+        }
+    }
+
+    public function liberarMaquina($area_id, $maquina_id){
+        DB::beginTransaction();
+        try{
+            $maquina = Maquina_reservada::findOrFail($maquina_id);
+            if($maquina){
+                $maquina->delete();
+            }
+            DB::commit();
+            return redirect()->route('areas.getMaquinas', ['area_id' => $area_id]);
+        } catch(Exception $e){
+            DB::rollBack();
             return redirect()->route('areas.getMaquinas', ['area_id' => $area_id]);
         }
     }

@@ -271,21 +271,26 @@ class AreaController extends Controller
         $maquinas = Maquinas::where('salon_id', $area->salon_id)->get();
 
         foreach($maquinas as $maquina){
+            $maquina->estaArea = false;
             $maquina->otraArea = false;
+            $maquina->maquina_reservada_id = null;
             $maquina->colaborador = 'Sin asignar';
             $maquina->colaborador_id = null;
             foreach($maquinasOtherAreas as $otherMaquina){
                 if($maquina->id === $otherMaquina->maquina_id){
                     $maquina->otraArea = true;
                     $maquina->colaborador = 'Asignada a otra area';
+                    $maquina->maquina_reservada_id = $otherMaquina->id;
                 }
             }
             foreach($maquinasThisArea as $thisMaquina){
                 if($maquina->id === $thisMaquina->maquina_id){
+                    $maquina->estaArea = true;
                     $colaborador = Colaboradores::with('candidato')->where('id', $thisMaquina->colaborador_area->colaborador_id)->first();
                     $candidato = $colaborador->candidato;
                     $maquina->colaborador = $candidato->nombre." ".$candidato->apellido;
                     $maquina->colaborador_id = $thisMaquina->colaborador_area_id;
+                    $maquina->maquina_reservada_id = $thisMaquina->id;
                 }
             }
         }

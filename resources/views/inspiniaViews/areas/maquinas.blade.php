@@ -56,6 +56,13 @@
                                         type="button">
                                         Asignar Colaborador
                                     </button>
+                                    @if($maquina->estaArea === true)
+                                    <button class="btn btn-danger btn-md"
+                                        onclick="confirmLiberation({{$area->id}}, {{$maquina->maquina_reservada_id}})">
+                                        Liberar
+                                    </button>
+                                    @endif
+
                                     <div id="ModalAsignColabMachine-{{$maquina->id}}" class="modal fade"
                                         aria-hidden="true">
                                         <div class="modal-dialog">
@@ -109,6 +116,22 @@
     </div>
     </div>
 
+    <script>
+        function confirmLiberation(area_id, maquina_id) {
+        alertify.confirm("¿Deseas Liberar esta máquina de su colaborador?", function(e) {
+            if (e) {
+                let form = document.createElement('form')
+                form.method = 'POST'
+                form.action = `/area/maquinas/LiberarMaquina/${area_id}/${maquina_id}`
+                form.innerHTML = '@csrf @method('DELETE')'
+                document.body.appendChild(form)
+                form.submit()
+            } else {
+                return false
+            }
+        });
+    }
+    </script>
 
 </body>
 
