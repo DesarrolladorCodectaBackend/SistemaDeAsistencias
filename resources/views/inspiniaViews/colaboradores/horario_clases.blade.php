@@ -20,13 +20,13 @@
                 <h2>Tabs</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="index.html">Home</a>
+                        <a href="/dashboard">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a>UI Elements</a>
+                        <a href="/colaboradores">Colaboradores</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <strong>Tabs</strong>
+                        <strong>Horario de Clases</strong>
                     </li>
                 </ol>
             </div>

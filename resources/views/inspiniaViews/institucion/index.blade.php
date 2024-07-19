@@ -17,10 +17,10 @@
                 <h2>Dashboards</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="index.html">Home</a>
+                        <a href="/dashboard">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="configuracion.html">Ajustes</a>
+                        <a href="/ajustes">Ajustes</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Institucion</strong>

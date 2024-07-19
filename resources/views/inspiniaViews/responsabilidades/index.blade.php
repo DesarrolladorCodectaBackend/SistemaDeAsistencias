@@ -19,11 +19,8 @@
                     <li class="breadcrumb-item">
                         <a href="/dashboard">Home</a>
                     </li>
-                    <li class="breadcrumb-item">
-                        <a href="/responsabilidades">Responsabilidades</a>
-                    </li>
                     <li class="breadcrumb-item active">
-                        <strong>Áreas</strong>
+                        <strong>Responsabilidades - Áreas</strong>
                     </li>
                 </ol>
             </div>

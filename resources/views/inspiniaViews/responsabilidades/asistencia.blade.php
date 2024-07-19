@@ -19,7 +19,7 @@
                         <a href="/dashboard">Home</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <a href=""> <b> Responsabilidades - Semanas</b></a>
+                        <strong>Responsabilidades - Semanas</strong>
                     </li>
                 </ol>
             </div>

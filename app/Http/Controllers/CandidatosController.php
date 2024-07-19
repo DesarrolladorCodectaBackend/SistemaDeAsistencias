@@ -18,7 +18,7 @@ class CandidatosController extends Controller
 
     public function index()
     {
-        $candidatos = Candidatos::with('carrera', 'sede')->get();
+        $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 2)->get();
         $sedes = Sede::with('institucion')->where('estado', true)->orderBy('nombre', 'asc')->get();
         $carreras = Carrera::all();
 
@@ -156,6 +156,23 @@ class CandidatosController extends Controller
         return redirect()->route('candidatos.index');
     }
 
+    public function rechazarCandidato($candidato_id){
+        DB::beginTransaction();
+        try{
+            $candidato = Candidatos::findOrFail($candidato_id);
+            if($candidato){
+                if($candidato->estado == 1){
+                    //Estado "2" es igual a rechazado
+                    $candidato->update(["estado" => 2]);
+                }
+            }
+            DB::commit();
+            return redirect()->route('candidatos.index');
+        } catch(Exception $e){
+            DB::rollBack();
+            return redirect()->route('candidatos.index');
+        }
+    }
 
 
     public function destroy($candidato_id)

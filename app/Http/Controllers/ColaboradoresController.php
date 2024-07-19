@@ -181,7 +181,7 @@ class ColaboradoresController extends Controller
         //Se busca al candidato por su id
         $candidato = Candidatos::findOrFail($request->candidato_id);
         //Se verifica si el candidato está activo 
-        if ($candidato->estado == true) {
+        if ($candidato->estado == 1) {
             //Sí el candidato está activo, se crea un nuevo colaborador con el id del candidato
             $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
             //Se recorre el request de areas
@@ -203,8 +203,8 @@ class ColaboradoresController extends Controller
                     'dia' => $horario['dia']
                 ]);
             }
-            //Se actualiza el estado del candidato a false (inactivo)
-            $candidato->estado = false;
+            //Se actualiza el estado del candidato a 0, significa que es un colaborador
+            $candidato->estado = 0;
             $candidato->save();
         }
         //Se redirige a la vista de colaboradores

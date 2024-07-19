@@ -111,6 +111,7 @@ Route::middleware('auth')->group(function () {
     //CANDIDATOS
     Route::resource('candidatos', CandidatosController::class);
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
+    Route::post('candidato/rechazarCandidato/{candidato_id}', [CandidatosController::class, 'rechazarCandidato'])->name('candidatos.rechazarCandidato');
 
     //COLABORADORES
     Route::resource('colaboradores', ColaboradoresController::class);

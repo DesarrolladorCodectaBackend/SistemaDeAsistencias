@@ -17,10 +17,10 @@
                 <h2>Dashboards</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="index.html">Home</a>
+                        <a href="/dashboard">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="#">Personal</a>
+                        <a>Personal</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Candidatos</strong>
@@ -48,7 +48,7 @@
                                                     placeholder="Ingrese apellido" class="form-control" name="apellido"
                                                     required>
                                             </div>
-                                            <div class="form-group"><label>DNI</label> <input type="text"
+                                            <div class="form-group"><label>DNI</label> <input type="number"
                                                     placeholder="Ingrese dni" class="form-control" name="dni" required>
                                             </div>
                                             <div class="form-group"><label>Dirección</label> <input type="text"
@@ -186,13 +186,14 @@
                                                 </label><label for="">{{$candidato->carrera->nombre}}</label>
                                             </div>
                                             <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Estado:</h5>
+                                                    <h5 class="m-t-none m-b">Estado: </h5>
                                                 </label><label for="">
                                                     @if ($candidato->estado == 1)
-                                                    <span style="color: green"><strong>Activo</strong></span>
-
+                                                    <span style="color: green"><strong>Pendiente</strong></span>
+                                                    @elseif($candidato->estado == 0)
+                                                    <span style="color: gold"><strong>Colaborador</strong></span>
                                                     @else
-                                                    <span style="color: #F00"><strong>Inactivo</strong></span>
+                                                    <span style="color: #F00"><strong>Rechazado</strong></span>
                                                     @endif
                                                 </label></div>
                                             <div>
@@ -227,19 +228,34 @@
                                         {{ $candidato->nombre." ".$candidato->apellido}}
                                     </p>
                                     <p class="text-center">
-                                        @if ($candidato->estado == true)
-
-                                    <form class="text-center" method="GET"
-                                        action="{{ route('candidatos.form', $candidato->id) }}">
-                                        <button class="btn btn-primary" type="submit">
-                                            Agregar Colaborador
-                                        </button>
-                                    </form>
-                                    @else
+                                    @if ($candidato->estado == 1)
+                                    <div class="d-flex gap-10">
+                                        <form class="text-center" method="GET"
+                                            action="{{ route('candidatos.form', $candidato->id) }}">
+                                            <button class="btn btn-primary" type="submit">
+                                                Agregar Colaborador
+                                            </button>
+                                        </form>
+                                        <form class="text-center" method="POST"
+                                            action="{{ route('candidatos.rechazarCandidato', $candidato->id) }}">
+                                            @csrf
+                                            <button class="btn btn-danger" type="submit">
+                                                Rechazar
+                                            </button>
+                                        </form>
+                                    </div>
+                                    
+                                    @elseif($candidato->estado == 0)
                                     <button class="btn btn-secondary" type="button" disabled
                                         style="cursor: not-allowed">
                                         Agregar Colaborador
                                     </button>
+                                    @elseif($candidato->estado == 2)
+                                    <button class="btn btn-secondary" type="button" disabled
+                                        style="cursor: not-allowed">
+                                        Agregar Colaborador
+                                    </button>
+                                    <h1 class="text-danger">Rechazado</h1>
                                     @endif
 
                                     </p>
@@ -274,15 +290,16 @@
                                         <div class="mb-4">
                                             <button class="btn btn-success float-right mx-2" type="button"
                                                 href="#modal-form-view{{$candidato->id}}" data-toggle="modal"><i
-                                                    class="fa fa-eye"></i></button>
+                                                    style="font-size: 20px" class="fa fa-eye"></i></button>
 
-                                            <button class="btn btn-danger float-right mx-2" type="button"
+                                            {{-- <button class="btn btn-danger float-right mx-2" type="button"
                                                 onclick="confirmDelete({{ $candidato->id }})"><i
-                                                    class="fa fa-trash-o"></i></button>
+                                                    class="fa fa-trash-o"></i>
+                                            </button> --}}
 
                                             <button class="btn btn-info float-right mx-2" type="button"
                                                 href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
-                                                    class="fa fa-paste"></i></button>
+                                                    style="font-size: 20px" class="fa fa-paste"></i></button>
                                         </div>
                                         <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true">
                                             <div class="modal-dialog">
@@ -313,7 +330,7 @@
                                                                             required>
                                                                     </div>
                                                                     <div class="form-group"><label>DNI</label>
-                                                                        <input type="text" placeholder="....."
+                                                                        <input type="number" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
                                                                             value="{{ old('dni', $candidato->dni) }}"
                                                                             required>
@@ -532,20 +549,20 @@
             showModal('modal-form-update' + id);
         }
 
-        function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/candidatos/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
+        // function confirmDelete(id) {
+        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+        //         if (e) {
+        //             let form = document.createElement('form')
+        //             form.method = 'POST'
+        //             form.action = `/candidatos/${id}`
+        //             form.innerHTML = '@csrf @method('DELETE')'
+        //             document.body.appendChild(form)
+        //             form.submit()
+        //         } else {
+        //             return false
+        //         }
+        //     });
+        // }
 
     </script>
 

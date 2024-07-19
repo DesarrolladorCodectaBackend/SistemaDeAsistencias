@@ -16,7 +16,7 @@
                 <h2>Computadora y Programas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/">Home</a>
+                        <a href="/dashboard">Home</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Computadora y Programas</strong>

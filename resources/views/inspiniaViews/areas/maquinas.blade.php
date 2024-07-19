@@ -17,10 +17,10 @@
                 <h2>Área Máquinas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="index.html">Home</a>
+                        <a href="/dashboard">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a>Area</a>
+                        <a href="/areas">Area</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Maquinas</strong>
