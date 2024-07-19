@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nombre', 100);
             $table->boolean('estado')->default(True);
             $table->string('detalles_tecnicos', 400);
-            $table->integer('num_identificador')->unique();
+            $table->integer('num_identificador'); //used to be unique
             $table->unSignedBigInteger('salon_id');
             $table->foreign('salon_id')->references('id')->on('salones');
             $table->timestamps();

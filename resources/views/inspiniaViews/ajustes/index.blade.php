@@ -24,43 +24,49 @@
                 </ol>
             </div>
             <div class="col-lg-2">
-                <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal" type="button">Agregar</button>
-                                    <div id="modal-form-add" class="modal fade" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Ingrese los Datos</h3>
-        
-                                                            <!--
+                <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
+                    type="button">Agregar</button>
+                <div id="modal-form-add" class="modal fade" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-6 b-r">
+                                        <h3 class="m-t-none m-b">Ingrese los Datos</h3>
+
+                                        <!--
                                                                 <p>Sign in today for more expirience.</p> 
                                                             -->
-        
-                                                            <form role="form">
-                                                                <div class="form-group"><label>Tipo de Configuracion</label> <input type="text" placeholder="Ingrese un nombre" class="form-control"></div>                                                              
-                                                                <div>
-                                                                    <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                        <div class="col-sm-6"><h4>Subir Icono</h4>
-                                                            <p class="text-center">
-                                                                <a href=""><i class="fa fa-cloud-download big-icon"></i></a>
-                                                            </p>
-                                                    </div>
-                                                </div>
+
+                                        <form role="form">
+                                            <div class="form-group"><label>Tipo de Configuracion</label> <input
+                                                    type="text" placeholder="Ingrese un nombre" class="form-control">
                                             </div>
+                                            <div>
+                                                <button class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                    type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
                                             </div>
-                                        </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Subir Icono</h4>
+                                        <p class="text-center">
+                                            <a href=""><i class="fa fa-cloud-download big-icon"></i></a>
+                                        </p>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
-        
+
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="ibox ">    
+                    <div class="ibox ">
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
@@ -79,7 +85,7 @@
                 </div>
 
                 <div class="col-lg-5">
-                    <div class="ibox ">    
+                    <div class="ibox ">
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
@@ -100,7 +106,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="ibox ">    
+                    <div class="ibox ">
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
@@ -119,7 +125,7 @@
                 </div>
 
                 <div class="col-lg-5">
-                    <div class="ibox ">    
+                    <div class="ibox ">
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
@@ -141,7 +147,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="ibox ">    
+                    <div class="ibox ">
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
@@ -160,7 +166,7 @@
                 </div>
 
                 <div class="col-lg-5">
-                    <div class="ibox ">    
+                    <div class="ibox ">
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
@@ -178,7 +184,7 @@
                     </div>
                 </div>
                 <div class="col-lg-5">
-                    <div class="ibox ">    
+                    <div class="ibox ">
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
@@ -199,7 +205,7 @@
             </div>
         </div>
         @include('components.inspinia.footer-inspinia')
-        </div>
+    </div>
     </div>
 
 </body>

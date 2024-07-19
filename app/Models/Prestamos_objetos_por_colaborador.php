@@ -13,7 +13,8 @@ class Prestamos_objetos_por_colaborador extends Model
         'colaborador_id',
         'objeto_id',
         'fecha_prestamo',
-        'fecha_devolucion'
+        'fecha_devolucion',
+        'estado'
     ];
 
     public function colaborador(){

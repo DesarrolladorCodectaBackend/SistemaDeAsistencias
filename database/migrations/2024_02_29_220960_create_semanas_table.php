@@ -15,8 +15,6 @@ return new class extends Migration
     {
         Schema::create('semanas', function (Blueprint $table) {
             $table->id();
-            /*$table->unsignedBigInteger('mes_id');
-            $table->foreign('mes_id')->references('id')->on('meses');*/
             $table->date('fecha_lunes');
             $table->timestamps();
         });

@@ -11,7 +11,8 @@ class Objetos extends Model
 
     protected $fillable = [
         'nombre',
-        'descripcion'
+        'descripcion',
+        'estado'
     ];
 
     public function prestamo_objeto(){

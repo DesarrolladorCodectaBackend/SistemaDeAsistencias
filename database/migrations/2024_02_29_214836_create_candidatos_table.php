@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre', 100);
             $table->string('apellido', 100);
-            $table->string('dni', 8)->unique();
+            $table->string('dni', 8)->nullable(); //used to be unique
             $table->string('direccion', 100);
             $table->date('fecha_nacimiento');
             $table->integer('ciclo_de_estudiante');
@@ -26,8 +26,8 @@ return new class extends Migration
             $table->foreign('sede_id')->references('id')->on('sedes');
             $table->unSignedBigInteger('carrera_id');
             $table->foreign('carrera_id')->references('id')->on('carreras');
-            $table->string('correo')->unique()->nullable();
-            $table->string('celular')->unique()->nullable();
+            $table->string('correo')->nullable(); //used to be unique
+            $table->string('celular')->nullable(); //used to be unique
             $table->string('icono');
             $table->timestamps();
         });

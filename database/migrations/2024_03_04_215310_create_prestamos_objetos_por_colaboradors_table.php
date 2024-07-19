@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('objeto_id')->references('id')->on('objetos');
             $table->date('fecha_prestamo');
             $table->date('fecha_devolucion');
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }

@@ -21,10 +21,6 @@ class Colaboradores extends Model
 
     public function colaborador_por_area(){
         return $this->hasMany(Colaboradores_por_Area::class, 'colaborador_id', 'id');
-    }    
-
-    public function disponibilidad_presencial(){
-        return $this->hasMany(Disponibilidad_Presencial::class, 'colaborador_id', 'id');
     }
     
     public function horario_de_clases(){
