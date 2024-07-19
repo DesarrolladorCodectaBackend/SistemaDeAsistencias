@@ -58,10 +58,15 @@
                                             <button type="button" class="btn btn-link" id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
                                             </button>
+                                            <div class="form-group"><label>Salon</label>
+                                                <select class="form-control" name="salon_id" required>
+                                                    @foreach($salones as $key => $salon)
+                                                    <option value="{{ $salon->id }}">{{ $salon->nombre }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <div>
-                                            <a href="areas"
-                                                class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
                                             <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit"><i
                                                     class="fa fa-check"></i>&nbsp;Confirmar</button>
                                         </div>
@@ -92,8 +97,9 @@
                                     {{ $area->descripcion }}
                                 </div>
                                 <div style="display: flex; gap: 4px" class="m-t text-left">
-                                    <button class="btn btn-danger" type="button"
+                                    {{-- <button class="btn btn-danger" type="button"
                                         onclick="confirmDelete({{ $area->id }})"><i class="fa fa-trash-o"></i></button>
+                                    --}}
                                     <button class="btn btn-info" type="button" href="#modal-form{{ $area->id }}"
                                         data-toggle="modal"><i class="fa fa-paste"></i> Edit</button>
                                     <form role="form" method="GET" action="{{ route('areas.getHorario', $area->id) }}">
@@ -157,9 +163,17 @@
                                                                             document.getElementById('icono-{{ $area->id }}').click();
                                                                         });
                                                                 </script>
+                                                                <div class="form-group"><label>Salon</label>
+                                                                    <select class="form-control" name="salon_id"
+                                                                        required>
+                                                                        @foreach($salones as $key => $salon)
+                                                                        <option value="{{ $salon->id }}" @if($salon->id
+                                                                            == $area->salon_id) selected @endif
+                                                                            >{{ $salon->nombre }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
                                                                 <div>
-                                                                    <a href="areas"
-                                                                        class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
                                                                     <button
                                                                         class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                                         type="submit"><i
@@ -210,20 +224,20 @@
     </script>
 
     <script>
-        function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/areas/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
+        // function confirmDelete(id) {
+        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+        //         if (e) {
+        //             let form = document.createElement('form')
+        //             form.method = 'POST'
+        //             form.action = `/areas/${id}`
+        //             form.innerHTML = '@csrf @method('DELETE')'
+        //             document.body.appendChild(form)
+        //             form.submit()
+        //         } else {
+        //             return false
+        //         }
+        //     });
+        // }
     </script>
 
 

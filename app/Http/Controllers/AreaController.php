@@ -11,6 +11,7 @@ use App\Models\Maquinas;
 use App\Models\Maquina_reservada;
 use App\Models\Candidatos;
 use App\Models\Colaboradores;
+use App\Models\Salones;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
@@ -30,9 +31,10 @@ class AreaController extends Controller
     {
         //Recurar todos los registros en áreas
         $areas = Area::with('salon')->get();
+        $salones = Salones::get();
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
-        return view('inspiniaViews.areas.index', compact('areas'));
+        return view('inspiniaViews.areas.index', compact('areas', 'salones'));
     }
 
     public function indexpractica1()
@@ -344,12 +346,13 @@ class AreaController extends Controller
                 'especializacion' => 'required|string|min:1|max:100',
                 'descripcion' => 'required|string|min:1|max:255',
                 'color_hex' => 'required|string|min:1|max:7',
+                'salon_id' => 'required|integer',
                 'icono' => 'image|mimes:jpeg,png,jpg,gif'
             ]);
             //Validar que los datos no esten vacios
-            if(!$request->especializacion) return response()->json(["message" => "Debe ingresar la especialización"]);
-            if(!$request->descripcion) return response()->json(["message" => "Debe ingresar la descripcion"]);
-            if(!$request->color_hex) return response()->json(["message" => "Debe ingresar el color"]);
+            // if(!$request->especializacion) return response()->json(["message" => "Debe ingresar la especialización"]);
+            // if(!$request->descripcion) return response()->json(["message" => "Debe ingresar la descripcion"]);
+            // if(!$request->color_hex) return response()->json(["message" => "Debe ingresar el color"]);
             
             //Validar que la imagen haya sido ingresada
             if ($request->hasFile('icono')) {
@@ -370,6 +373,7 @@ class AreaController extends Controller
                 'especializacion' => $request->especializacion,
                 'descripcion' => $request->descripcion,
                 'color_hex' => $request->color_hex,
+                'salon_id' => $request->salon_id,
                 'icono' => $nombreIcono
             ]);
             //Se confirma la transacción
@@ -381,8 +385,9 @@ class AreaController extends Controller
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollback();
+            return redirect()->route('areas.index');
             //Se retorna un mensaje avisando que hubo un error con la información del error
-            return response()->json(["message" => "Error al crear el registro", "error" => $e->getMessage()]);
+            // return response()->json(["message" => "Error al crear el registro", "error" => $e->getMessage()]);
         }
     }
 
@@ -427,7 +432,8 @@ class AreaController extends Controller
                 'especializacion' => 'sometimes|string|min:1|max:100',
                 'descripcion' => 'sometimes|string|min:1|max:255',
                 'color_hex' => 'sometimes|string|min:1|max:7',
-                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
+                'salon_id' => 'sometimes|integer',
+                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
             ]);
 
             // return $request;
@@ -438,11 +444,13 @@ class AreaController extends Controller
             $especializacion = !$request->especializacion ? $area->especializacion : $request->especializacion;
             $descripcion = !$request->descripcion ? $area->descripcion : $request->descripcion;
             $color_hex = !$request->color_hex ? $area->color_hex : $request->color_hex;
+            $salon_id = !$request->salon_id ? $area->salon_id : $request->salon_id;
             //Se crea un array con los datos a actualizar
             $datosActualizar = [
                 "especializacion" => $especializacion, 
                 "descripcion" => $descripcion, 
-                "color_hex" => $color_hex
+                "color_hex" => $color_hex,
+                "salon_id" => $salon_id
             ];
             //Se verifica si se ingresó la imagen
             if ($request->hasFile('icono')) {
@@ -471,19 +479,20 @@ class AreaController extends Controller
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollBack();
+            return redirect()->route('areas.index');
             //Se retorna un mensaje avisando que hubo un error con la información del error
-            return response()->json(["message" => "Hubo un error", "error" => $e->getMessage()]);
+            // return response()->json(["message" => "Hubo un error", "error" => $e->getMessage()]);
         }
     }
 
 
 
-    public function destroy($area_id)
-    {
-        $area = Area::findOrFail($area_id);
+    // public function destroy($area_id)
+    // {
+    //     $area = Area::findOrFail($area_id);
 
-        $area->delete();
+    //     $area->delete();
 
-        return redirect()->route('areas.index');
-    }
+    //     return redirect()->route('areas.index');
+    // }
 }

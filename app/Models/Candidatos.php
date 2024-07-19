@@ -17,15 +17,15 @@ class Candidatos extends Model
         'fecha_nacimiento',
         'ciclo_de_estudiante',
         'estado',
-        'institucion_id',
+        'sede_id',
         'carrera_id',
         'correo',
         'celular',
         'icono',
     ];
 
-    public function institucion(){
-        return $this->belongsTo(Institucion::class, 'institucion_id', 'id');
+    public function sede(){
+        return $this->belongsTo(Sede::class, 'sede_id', 'id');
     }
 
     public function carrera(){

@@ -13,6 +13,7 @@ use App\Models\Carrera;
 use App\Models\Programas;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
+use App\Models\Sede;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -45,12 +46,13 @@ class ColaboradoresController extends Controller
     public function index()
     {
         $colaboradores = Colaboradores::with('candidato')->get();
+        $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $instituciones = Institucion::get();
         $carreras = Carrera::get();
         $areas = Area::get();
         $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
         // return $colaboradoresConArea;
-        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
+        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'sedes', 'instituciones', 'carreras', 'areas'));
     }
 
     public function getComputadoraColaborador($colaborador_id){
@@ -109,6 +111,7 @@ class ColaboradoresController extends Controller
         ]);
 
         $instituciones = Institucion::get();
+        $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $carreras = Carrera::get();
         $areas = Area::get();
 
@@ -147,10 +150,11 @@ class ColaboradoresController extends Controller
         //filtramos por los estados
         $colaboradoresCandidatoId = $colaboradoresArea->whereIn('estado', $requestEstados)->pluck('candidato_id');
 
-        //filtrar los candidatos por la carrera y la institucion
+        //filtrar los candidatos por la carrera y la sede - institucion
+        $sedesInstitucionesId = Sede::whereIn('institucion_id', $requestInstituciones)->pluck('id');
         $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
             ->whereIn('carrera_id', $requestCarreras) //filtrar por la carrera
-            ->whereIn('institucion_id', $requestInstituciones) //filtrar por la institucion
+            ->whereIn('sede_id', $sedesInstitucionesId) //filtrar por la sede
             ->pluck('id');
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->get();
@@ -160,7 +164,7 @@ class ColaboradoresController extends Controller
 
 
         //return $colaboradoresConArea;
-        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
+        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'sedes', 'carreras', 'areas'));
     }
 
 
@@ -207,106 +211,97 @@ class ColaboradoresController extends Controller
         return redirect()->route('colaboradores.index');
     }
 
-
-
-    public function show($colaborador_id)
-    {
-        try {
-            $colaborador = Colaboradores::with('candidatos')->find($colaborador_id);
-            if (!$colaborador) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
-            return response()->json(["data" => $colaborador]);
-        } catch (Exception $e) {
-            return response()->json(["error" => $e]);
-        }
-
-    }
-
-
     public function update(Request $request, $colaborador_id)
     {
-        $request->validate([
-            'nombre' => 'sometimes|string|min:1|max:100',
-            'apellido' => 'sometimes|string|min:1|max:100',
-            'dni' => 'sometimes|string|min:1|max:8',
-            'direccion' => 'sometimes|string|min:1|max:100',
-            'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
-            'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
-            'institucion_id' => 'sometimes|integer|min:1|max:20',
-            'carrera_id' => 'sometimes|integer|min:1|max:20',
-            'correo' => 'sometimes|string|min:1|max:255',
-            'celular' => 'sometimes|string|min:1|max:20',
-            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
-            'areas_id.*' => 'sometimes|integer'
-
-        ]);
-        //Encontrar al colaborador con su candidato por su id
-        $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
-        //Asignar el candidato a una variable
-        $candidato = $colaborador->candidato;
-        //Recorrer cada area enviado en el request
-        foreach($request->areas_id as $area_id){
-            //Buscar Si hay colaborador por area y colaborador
-            $colaborador_por_area = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('area_id', $area_id)->first();
-            //Si no se encuentra un colaborador con esta area
-            if (!$colaborador_por_area) {
-                //Se crea un nuevo registro con esta area y colaborador
-                Colaboradores_por_Area::create([
-                    'colaborador_id' => $colaborador->id,
-                    'area_id' => $area_id,
-                    'semana_inicio_id' => null,
-                    'estado' => true,
-                ]);
-                //Si se encuentra un colaborador con esta area y esta inactivo
-            } else if ($colaborador_por_area->estado == false) {
-                //Se actualiza el estado a activo
-                $colaborador_por_area->update(['estado' => true]);
-            } 
-        }
-        // Buscar las areas que no estan en el request y que estan asociadas al colaborador
-        $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->whereNotIn('area_id', $request->areas_id)->get();
-        // Por cada registro encontrado
-        foreach ($areasInactivas as $areaInactiva) {
-            //Se inactiva su estado
-            $areaInactiva->update(['estado' => false]);
-        }
-        //Se crea un array de datos a actualizar para el candidato, exceptuando el icono y area_id
-        $datosActualizar = $request->except(['icono', 'areas_id']);
-
-        //Realizar la asignación y actualización del icono si se envía uno nuevo en la solicitud
-        if ($request->hasFile('icono')) {
-            $rutaPublica = public_path('storage/candidatos');
-            if ($candidato->icono && $candidato->icono != 'Default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
-                unlink($rutaPublica . '/' . $candidato->icono);
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'sometimes|string|min:1|max:100',
+                'apellido' => 'sometimes|string|min:1|max:100',
+                'dni' => 'sometimes|string|min:1|max:8',
+                'direccion' => 'sometimes|string|min:1|max:100',
+                'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
+                'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
+                'sede_id' => 'sometimes|integer|min:1|max:20',
+                'carrera_id' => 'sometimes|integer|min:1|max:20',
+                'correo' => 'sometimes|string|min:1|max:255',
+                'celular' => 'sometimes|string|min:1|max:20',
+                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
+                'areas_id.*' => 'sometimes|integer'
+    
+            ]);
+            //Encontrar al colaborador con su candidato por su id
+            $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
+            //Asignar el candidato a una variable
+            $candidato = $colaborador->candidato;
+            //Recorrer cada area enviado en el request
+            foreach($request->areas_id as $area_id){
+                //Buscar Si hay colaborador por area y colaborador
+                $colaborador_por_area = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('area_id', $area_id)->first();
+                //Si no se encuentra un colaborador con esta area
+                if (!$colaborador_por_area) {
+                    //Se crea un nuevo registro con esta area y colaborador
+                    Colaboradores_por_Area::create([
+                        'colaborador_id' => $colaborador->id,
+                        'area_id' => $area_id,
+                        'semana_inicio_id' => null,
+                        'estado' => true,
+                    ]);
+                    //Si se encuentra un colaborador con esta area y esta inactivo
+                } else if ($colaborador_por_area->estado == false) {
+                    //Se actualiza el estado a activo
+                    $colaborador_por_area->update(['estado' => true]);
+                } 
             }
-
-            $icono = $request->file('icono');
-            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-
-            $icono->move($rutaPublica, $nombreIcono);
-
-            $datosActualizar['icono'] = $nombreIcono;
+            // Buscar las areas que no estan en el request y que estan asociadas al colaborador
+            $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->whereNotIn('area_id', $request->areas_id)->get();
+            // Por cada registro encontrado
+            foreach ($areasInactivas as $areaInactiva) {
+                //Se inactiva su estado
+                $areaInactiva->update(['estado' => false]);
+            }
+            //Se crea un array de datos a actualizar para el candidato, exceptuando el icono y area_id
+            $datosActualizar = $request->except(['icono', 'areas_id']);
+    
+            //Realizar la asignación y actualización del icono si se envía uno nuevo en la solicitud
+            if ($request->hasFile('icono')) {
+                $rutaPublica = public_path('storage/candidatos');
+                if ($candidato->icono && $candidato->icono != 'Default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
+                    unlink($rutaPublica . '/' . $candidato->icono);
+                }
+    
+                $icono = $request->file('icono');
+                $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+    
+                $icono->move($rutaPublica, $nombreIcono);
+    
+                $datosActualizar['icono'] = $nombreIcono;
+            }
+    
+            //Se actualizan los datos del candidato
+            $candidato->update($datosActualizar);
+            DB::commit();
+    
+            //Se redirige a la vista 
+            return redirect()->route('colaboradores.index');
+        } catch(Exception $e){
+            DB::rollBack();
+            // return $e;
+            return redirect()->route('colaboradores.index');
         }
-
-        //Se actualizan los datos del candidato
-        $candidato->update($datosActualizar);
-
-        //Se redirige a la vista 
-        return redirect()->route('colaboradores.index');
-
+        
     }
 
 
-    public function destroy($colaborador_id)
-    {
-        $colaborador = Colaboradores::findOrFail($colaborador_id);
+    // public function destroy($colaborador_id)
+    // {
+    //     $colaborador = Colaboradores::findOrFail($colaborador_id);
 
-        $colaborador->delete();
+    //     $colaborador->delete();
 
-        return redirect()->route('colaboradores.index');
+    //     return redirect()->route('colaboradores.index');
 
-    }
+    // }
 
 
     public function activarInactivar(Request $request, $colaborador_id)

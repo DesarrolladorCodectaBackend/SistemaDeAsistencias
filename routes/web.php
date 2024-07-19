@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
 use App\Http\Controllers\Registro_MantenimientoController;
+use App\Http\Controllers\SedeController;
 use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\Reuniones_ProgramadasController;
@@ -102,6 +103,10 @@ Route::middleware('auth')->group(function () {
     //MAQUINAS
     Route::resource('maquinas', MaquinasController::class);
     Route::post('maquinas/{maquinas}/activar-inactivar', [MaquinasController::class, 'activarInactivar'])->name('maquinas.activarInactivar');
+    
+    //SEDES
+    Route::resource('sedes', SedeController::class);
+    Route::post('sedes/activar-inactivar/{sede_id}', [SedeController::class, 'activarInactivar'])->name('sedes.activarInactivar');
 
     //CANDIDATOS
     Route::resource('candidatos', CandidatosController::class);

@@ -41,8 +41,9 @@
 
                 <div class="ibox-content">
                     <div class="text-center flex-centered gap-20">
-                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form1"> Agregar <i
-                                class="fa fa-long-arrow-right"></i></a>
+                        <a class="btn btn-primary" href="/candidatos"> 
+                            Agregar <i class="fa fa-long-arrow-right"></i>
+                        </a>
                         <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar <i
                                 class="fa fa-long-arrow-right"></i></a>
                     </div>
@@ -175,9 +176,8 @@
                                                 </label><label for="">{{$colaborador->candidato->direccion}}</label>
                                             </div>
                                             <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Institucion:</h5>
-                                                </label><label
-                                                    for="">{{$colaborador->candidato->institucion->nombre}}</label>
+                                                    <h5 class="m-t-none m-b">Institucion - Sede:</h5>
+                                                </label><label for="">{{$colaborador->candidato->sede->nombre}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Ciclo:</h5>
@@ -244,15 +244,15 @@
 
                                         </div>
                                         <div style="display: flex; gap:2px">
-                                            <form id="getComputadoraColab{{$colaborador->id}}" action="{{route('colaboradores.getComputadora', $colaborador->id)}}"></form>
+                                            <form id="getComputadoraColab{{$colaborador->id}}"
+                                                action="{{route('colaboradores.getComputadora', $colaborador->id)}}">
+                                            </form>
                                             <a href="#" class="btn btn-primary btn-success fa fa-desktop"
                                                 style="width: 100px; font-size: 18px;"
                                                 onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
                                             </a>
-                                            <a data-toggle="modal"
-                                                class="btn btn-primary btn-success fa fa-dropbox"
-                                                style="width: 100px; font-size: 18px;"
-                                                href=""></a>
+                                            <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
+                                                style="width: 100px; font-size: 18px;" href=""></a>
                                         </div>
 
                                     </div>
@@ -321,15 +321,15 @@
                                         action="{{route('colaboradores.horarioClase', $colaborador->id)}}">
                                     </form>
                                     <div class="ibox-content">
-                                        <div class="text-right">
-                                            <button class="btn btn-primary btn-danger fa fa-trash"
+                                        <div class="text-center">
+                                            {{-- <button class="btn btn-primary btn-danger fa fa-trash"
                                                 style="font-size: 20px;" type="button"
-                                                onclick="confirmDelete({{ $colaborador->id }})"></button>
+                                                onclick="confirmDelete({{ $colaborador->id }})"></button> --}}
                                             <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
                                                 style="font-size: 20px;"
                                                 onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
-                                            <button class="btn btn-primary btn-warning fa fa-book mx-1"
-                                                style="font-size: 20px;"></button>
+                                            {{-- <button class="btn btn-primary btn-warning fa fa-book mx-1"
+                                                style="font-size: 20px;"></button> --}}
                                             <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                 style="font-size: 20px;"
                                                 href="#modal-form-view{{$colaborador->id}}"></button>
@@ -375,17 +375,15 @@
                                                                             value="{{ old('direccion', $colaborador->candidato->direccion) }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
-                                                                            <h5 class="m-t-none">Institucion:</h5>
+                                                                            <h5 class="m-t-none">Institucion - Sede:
+                                                                            </h5>
                                                                         </label>
-                                                                        <select class="form-control"
-                                                                            name="institucion_id">
-                                                                            @foreach ($instituciones as $institucion)
-                                                                            <option value="{{ $institucion->id }}"
-                                                                                @if($institucion->id
-                                                                                ==old('institucion_id',
-                                                                                $colaborador->candidato->institucion_id))
+                                                                        <select class="form-control" name="sede_id">
+                                                                            @foreach ($sedes as $sede)
+                                                                            <option value="{{ $sede->id }}" @if($sede->
+                                                                                id == $colaborador->candidato->sede_id)
                                                                                 selected @endif>
-                                                                                {{ $institucion->nombre }}
+                                                                                {{ $sede->nombre }}
                                                                             </option>
                                                                             @endforeach
                                                                         </select>
@@ -438,7 +436,7 @@
                                                                             class="form-control multiple_areas_select">
                                                                             @foreach ($areas as $key => $area)+
                                                                             <option value="{{ $area->id }}"
-                                                                            @foreach($colaborador->areas as $areaNombre)
+                                                                                @foreach($colaborador->areas as $areaNombre)
                                                                                 @if($area->especializacion ==
                                                                                 $areaNombre)
                                                                                 selected
@@ -466,30 +464,12 @@
                                                                         </select>
                                                                     </div>
 
-
-
-
-                                                                    <div class="form-group"><label>Estado: </label>
-                                                                        <input type="checkbox" class="js-switch"
-                                                                            checked />
-                                                                        <br>
-                                                                        <br>
-
-                                                                    </div>
-
-                                                                    <div>
+                                                                    <div class="mt-4 text-center">
                                                                         <button
                                                                             class="btn btn-sm btn-primary float-left m-t-n-xs btn-success"
                                                                             type="submit">
                                                                             <strong>Guardar</strong>
                                                                         </button>
-
-                                                                        <a class="btn btn-sm btn-primary float-right m-t-n-xs  btn-success"
-                                                                            style="color: #FFF" href="colaboradores">
-                                                                            <strong>Descartar</strong>
-                                                                        </a>
-
-
 
                                                                     </div>
 
@@ -519,7 +499,8 @@
                                                                         </script>
                                                                     </div>
                                                                     <div style="display: flex; gap:2px">
-                                                                        <a href="#" class="btn btn-primary btn-success fa fa-desktop"
+                                                                        <a href="#"
+                                                                            class="btn btn-primary btn-success fa fa-desktop"
                                                                             style="width: 100px; font-size: 18px;"
                                                                             onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
                                                                         </a>
@@ -638,20 +619,20 @@
             showModal('modal-form-update' + id);
         }
 
-        function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/colaboradores/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
+        // function confirmDelete(id) {
+        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+        //         if (e) {
+        //             let form = document.createElement('form')
+        //             form.method = 'POST'
+        //             form.action = `/colaboradores/${id}`
+        //             form.innerHTML = '@csrf @method('DELETE')'
+        //             document.body.appendChild(form)
+        //             form.submit()
+        //         } else {
+        //             return false
+        //         }
+        //     });
+        // }
 
 
 
@@ -726,7 +707,7 @@
 
 
     </script>
-    
+
     <script>
         //JQuery para select multiple de areas
         $(document).ready(function() {

@@ -22,8 +22,8 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->integer('ciclo_de_estudiante');
             $table->boolean('estado')->default(True);
-            $table->unSignedBigInteger('institucion_id');
-            $table->foreign('institucion_id')->references('id')->on('institucions');
+            $table->unSignedBigInteger('sede_id');
+            $table->foreign('sede_id')->references('id')->on('sedes');
             $table->unSignedBigInteger('carrera_id');
             $table->foreign('carrera_id')->references('id')->on('carreras');
             $table->string('correo')->unique()->nullable();

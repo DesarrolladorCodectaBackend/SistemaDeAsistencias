@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ProgramaSeeder::class,
             SemanaSeeder::class,
             ResponsabilidadSemanalSeeder::class,
+            SedeSeeder::class,
             CandidatosSeeder::class,
             HorarioPresencialAsignadoSeeder::class,
             ColaboradoresSeeder::class,

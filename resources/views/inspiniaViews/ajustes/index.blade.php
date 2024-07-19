@@ -186,10 +186,10 @@
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Herramientas</p>
+                                    <p>Sedes</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href=""><i class="fa fa-cog"></i></a>
+                                    <a class="btn btn-success" href="/sedes"><i class="fa fa-cog"></i></a>
                                 </div>
                             </div>
                         </div>
