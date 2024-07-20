@@ -61,13 +61,9 @@
                                             </div>
                                             <div class="form-group"><label>Ciclo de Estudiante</label>
                                                 <select name="ciclo_de_estudiante" class="form-control" required>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                    <option value="6">6</option>
-                                                    <option value="7">7</option>
-                                                    <option value="8">8</option>
-                                                    <option value="9">9</option>
-                                                    <option value="10">10</option>
+                                                    @for($i = 4; $i <= 10; $i++)
+                                                    <option value="{{$i}}">{{$i}}</option>
+                                                    @endfor
                                                 </select>
                                             </div>
 
@@ -125,10 +121,6 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 @foreach ($candidatos as $index => $candidato)
-                @if ($index % 2 == 0)
-            </div>
-            <div class="row">
-                @endif
                 <div id="modal-form-view{{$candidato->id}}" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -216,7 +208,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <div class="ibox ">
                         <div class="ibox-content">
                             <div class="row">
@@ -356,17 +348,9 @@
                                                                         <select name="ciclo_de_estudiante"
                                                                             id="ciclo_de_estudiante"
                                                                             class="form-control" required>
-                                                                            <option style="background: #999"
-                                                                                value="{{ old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante) }}">
-                                                                                {{$candidato->ciclo_de_estudiante}}
-                                                                            </option>
-                                                                            <option value="4">4</option>
-                                                                            <option value="5">5</option>
-                                                                            <option value="6">6</option>
-                                                                            <option value="7">7</option>
-                                                                            <option value="8">8</option>
-                                                                            <option value="9">9</option>
-                                                                            <option value="10">10</option>
+                                                                            @for($i = 4; $i <= 10; $i++)
+                                                                            <option @if($i === $candidato->ciclo_de_estudiante) selected @endif value="{{$i}}">{{$i}}</option>
+                                                                            @endfor
                                                                         </select>
                                                                     </div>
 

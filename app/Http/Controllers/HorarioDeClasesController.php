@@ -52,6 +52,8 @@ class HorarioDeClasesController extends Controller
             "22:00",
         ];
 
+        $days = FunctionHelperController::getDays();
+
         foreach ($horariosDeClases as $horario) {
             $horaInicial = (int) date('H', strtotime($horario->hora_inicial));
             $horaFinal = (int) date('H', strtotime($horario->hora_final));
@@ -68,6 +70,7 @@ class HorarioDeClasesController extends Controller
             'horariosFormateados' => $horariosFormateados,
             'colaborador' => $colaborador,
             'horas' => $horas,
+            'days' => $days,
         ]);
     }
 

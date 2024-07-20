@@ -216,18 +216,9 @@
                                                                                                 <select
                                                                                                     class="form-control m-b"
                                                                                                     name="horarios[0][dia]">
-                                                                                                    <option>Lunes
-                                                                                                    </option>
-                                                                                                    <option>Martes
-                                                                                                    </option>
-                                                                                                    <option>Miércoles
-                                                                                                    </option>
-                                                                                                    <option>Jueves
-                                                                                                    </option>
-                                                                                                    <option>Viernes
-                                                                                                    </option>
-                                                                                                    <option>Sabado
-                                                                                                    </option>
+                                                                                                    @foreach($days as $day)
+                                                                                                        <option>{{$day}}</option>
+                                                                                                    @endforeach
                                                                                                 </select>
                                                                                             </div>
                                                                                         </div>
@@ -332,30 +323,9 @@
                                                                         <select class="form-control m-b" name="dia"
                                                                             value="{{ old('dia', $horario->dia) }}"
                                                                             id="dia">
-                                                                            <option style="background: #999">
-                                                                                {{
-                                                                                old('dia',
-                                                                                $horario->dia)
-                                                                                }}
-                                                                            </option>
-                                                                            <option>
-                                                                                Lunes
-                                                                            </option>
-                                                                            <option>
-                                                                                Martes
-                                                                            </option>
-                                                                            <option>
-                                                                                Miércoles
-                                                                            </option>
-                                                                            <option>
-                                                                                Jueves
-                                                                            </option>
-                                                                            <option>
-                                                                                Viernes
-                                                                            </option>
-                                                                            <option>
-                                                                                Sabado
-                                                                            </option>
+                                                                            @foreach($days as $day)
+                                                                                <option @if($day === $horario->dia) selected @endif>{{$day}}</option>
+                                                                            @endforeach
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group">
@@ -487,7 +457,7 @@
             var selectHoraInicial = construirSelectHora('horarios[' + contadorFilas + '][hora_inicial]');
             var selectHoraFinal = construirSelectHora('horarios[' + contadorFilas + '][hora_final]');
     
-            celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sabado</option></select></div></div>';
+            celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select></div></div>';
             celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraInicial + '</div>';
             celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
             celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
@@ -552,7 +522,7 @@
                     numeroDia = 8;
                 } else if(horario.dia == "Viernes"){
                     numeroDia = 9;
-                } else if(horario.dia == "Sabado"){
+                } else if(horario.dia == "Sábado"){
                     numeroDia = 10;
                 } else if(horario.dia == "Domingo"){
                     numeroDia = 4;
@@ -618,7 +588,7 @@
                     editable: false
                 },
                 {
-                    title: 'Sabado',
+                    title: 'Sábado',
                     start: new Date(2024, 1, 10, 9, 0),
                     end: new Date(2024, 1, 10, 13, 30),
                     allDay: true,

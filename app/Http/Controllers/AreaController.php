@@ -169,9 +169,6 @@ class AreaController extends Controller
         $area = Area::findOrFail($area_id);
         //Datos esta area
         $horariosArea = Horario_Presencial_Asignado::where('area_id', $area->id)->pluck('horario_presencial_id');
-        $colaboradoresThisArea = Colaboradores_por_Area::with('colaborador')->where('area_id', $area->id)->get();
-        $colaboradoresThisAreaId = $colaboradoresThisArea->pluck('id');
-        $maquinasThisArea = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresThisAreaId)->get();
 
         //Buscar otras areas con el mismo horario
         $allAreasConcurrentes = Horario_Presencial_Asignado::with('area')->whereIn('horario_presencial_id', $horariosArea)
@@ -179,10 +176,30 @@ class AreaController extends Controller
         
         //Areas del mismo salon            
         $salonAreasConcurrentesId = $allAreasConcurrentes->where('salon_id', $area->salon_id)->pluck('id');
-        $colaboradoresOtherAreas = Colaboradores_por_Area::whereIn('area_id', $salonAreasConcurrentesId)->get();
-        $colaboradoresOtherAreasId = $colaboradoresOtherAreas->pluck('id');
-        $maquinasOtherAreas = Maquina_reservada::whereIn('colaborador_area_id', $colaboradoresOtherAreasId)->get();
+        $colaboradoresOtherAreas = Colaboradores_por_Area::with('colaborador')->whereIn('area_id', $salonAreasConcurrentesId)->get();
 
+        $colaboradoresThisArea = Colaboradores_por_Area::with('colaborador')->where('area_id', $area->id)->get();
+
+        foreach($colaboradoresThisArea as $colabHere){
+            foreach($colaboradoresOtherAreas as $key => $colabThere){
+                if($colabHere->colaborador_id == $colabThere->colaborador_id) {
+                    //Añadir el colab there a la lista de colaboradores de esta area
+                    $colaboradoresThisArea->push($colabThere);
+                    //Quitar colabThere de su colección original
+                    $colaboradoresOtherAreas->forget($key);
+                }
+
+            }
+        }
+        $colaboradoresOtherAreasId = $colaboradoresOtherAreas->pluck('id');
+        $maquinasOtherAreas = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresOtherAreasId)->get();
+
+        // return ["this" => $colaboradoresThisArea, "other" => $colaboradoresOtherAreas];
+        $colaboradoresThisAreaId = $colaboradoresThisArea->pluck('id');
+        $maquinasThisArea = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresThisAreaId)->get();
+
+
+        // return $colaboradoresThisArea->pluck('id');
         //Todas las maquinas de este salon
         $maquinas = Maquinas::where('salon_id', $area->salon_id)->get();
 
@@ -194,8 +211,9 @@ class AreaController extends Controller
             $maquina->colaborador_id = null;
             foreach($maquinasOtherAreas as $otherMaquina){
                 if($maquina->id === $otherMaquina->maquina_id){
+                    $areaNombre = $otherMaquina->colaborador_area->area->especializacion;
                     $maquina->otraArea = true;
-                    $maquina->colaborador = 'Asignada a otra area';
+                    $maquina->colaborador = 'Asignada a otra area ('.$areaNombre.')';
                     $maquina->maquina_reservada_id = $otherMaquina->id;
                 }
             }

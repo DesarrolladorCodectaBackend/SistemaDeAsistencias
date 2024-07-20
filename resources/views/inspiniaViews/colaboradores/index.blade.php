@@ -41,8 +41,8 @@
 
                 <div class="ibox-content">
                     <div class="text-center flex-centered gap-20">
-                        <a class="btn btn-primary" href="/candidatos"> 
-                            Agregar <i class="fa fa-long-arrow-right"></i>
+                        <a class="btn btn-primary" href="/candidatos">
+                            <i class="fa fa-long-arrow-left"></i> Agregar 
                         </a>
                         <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar </a>
                     </div>
@@ -152,85 +152,79 @@
 
                                     <div class="col-sm-6 b-r">
                                         <h3 class="m-t-none m-b">Informacion Personal </h3>
+                                        <style>
+                                            .form-group {
+                                                margin-bottom: 0rem;
+                                            }
+                                        </style>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Nombres:</h5>
+                                            </label><label for="">{{$colaborador->candidato->nombre}}</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Apellidos:</h5>
+                                            </label><label for="">{{$colaborador->candidato->apellido}}</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Direccion:</h5>
+                                            </label><label for="">{{$colaborador->candidato->direccion}}</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Institucion - Sede:</h5>
+                                            </label><label for="">{{$colaborador->candidato->sede->nombre}}</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Ciclo:</h5>
+                                            </label><label
+                                                for="">{{$colaborador->candidato->ciclo_de_estudiante}}°</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Correo:</h5>
+                                            </label><label for="">{{$colaborador->candidato->correo}}</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">fecha de
+                                                    Nacimiento:</h5>
+                                            </label><label for="">{{$colaborador->candidato->fecha_nacimiento}}</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">DNI:</h5>
+                                            </label><label for="">{{$colaborador->candidato->dni}}</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Celular:</h5>
+                                            </label><label for="">{{$colaborador->candidato->celular}}</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>
+                                                <h5 class="m-t-none m-b">Area:</h5>
+                                            </label>
+                                            @foreach($colaborador->areas as $area)
+                                            <label>{{$area}}</label>
+                                            @endforeach
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Carrera:</h5>
+                                            </label><label for="">{{$colaborador->candidato->carrera->nombre}}</label>
+                                        </div>
+                                        <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">Estado:</h5>
+                                            </label><label for="">
+                                                @if ($colaborador->estado == 1)
+                                                <span style="color: green"><strong>Activo</strong></span>
 
+                                                @else
+                                                <span style="color: #F00"><strong>Inactivo</strong></span>
+                                                @endif
+                                            </label></div>
+                                        <div>
+                                            <a data-toggle="modal"
+                                                class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
+                                                onclick="abrirModalEdicion({{$colaborador->id}});"
+                                                style="font-size: 20px; width: 60px;"
+                                                href="#modal-form-update{{$colaborador->id}}"></a>
 
-                                        <form role="form">
-                                            <style>
-                                                .form-group {
-                                                    margin-bottom: 0rem;
-                                                }
-                                            </style>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Nombres:</h5>
-                                                </label><label for="">{{$colaborador->candidato->nombre}}</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Apellidos:</h5>
-                                                </label><label for="">{{$colaborador->candidato->apellido}}</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Direccion:</h5>
-                                                </label><label for="">{{$colaborador->candidato->direccion}}</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Institucion - Sede:</h5>
-                                                </label><label for="">{{$colaborador->candidato->sede->nombre}}</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Ciclo:</h5>
-                                                </label><label
-                                                    for="">{{$colaborador->candidato->ciclo_de_estudiante}}°</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Correo:</h5>
-                                                </label><label for="">{{$colaborador->candidato->correo}}</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">fecha de
-                                                        Nacimiento:</h5>
-                                                </label><label
-                                                    for="">{{$colaborador->candidato->fecha_nacimiento}}</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">DNI:</h5>
-                                                </label><label for="">{{$colaborador->candidato->dni}}</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Celular:</h5>
-                                                </label><label for="">{{$colaborador->candidato->celular}}</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>
-                                                    <h5 class="m-t-none m-b">Area:</h5>
-                                                </label>
-                                                @foreach($colaborador->areas as $area)
-                                                <label>{{$area}}</label>
-                                                @endforeach
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Carrera:</h5>
-                                                </label><label
-                                                    for="">{{$colaborador->candidato->carrera->nombre}}</label>
-                                            </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Estado:</h5>
-                                                </label><label for="">
-                                                    @if ($colaborador->estado == 1)
-                                                    <span style="color: green"><strong>Activo</strong></span>
-
-                                                    @else
-                                                    <span style="color: #F00"><strong>Inactivo</strong></span>
-                                                    @endif
-                                                </label></div>
-                                            <div>
-                                                <a data-toggle="modal"
-                                                    class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
-                                                    onclick="abrirModalEdicion({{$colaborador->id}});"
-                                                    style="font-size: 20px; width: 60px;"
-                                                    href="#modal-form-update{{$colaborador->id}}"></a>
-
-                                            </div>
-                                        </form>
+                                        </div>
                                     </div>
                                     <div class="col-sm-6 text-center text-danger">
                                         <h2><strong> Colaborador </strong></h2>
@@ -268,10 +262,12 @@
                             </div>
                             <div class="product-desc">
                                 <span class="product-price btn-Default" style="background-color: transparent;">
-                                    <form method="POST"
-                                        action="{{ route('colaboradores.activarInactivar', ["colaborador_id" => $colaborador->id]) }}">
+                                    <form method="POST" action="{{ route('colaboradores.activarInactivar', ["colaborador_id"=> $colaborador->id]) }}">
                                         @csrf
+                                        @isset($pageData->currentURL)
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                        @endisset
+                                        
                                         <button type="submit"
                                             class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
                                             <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -347,7 +343,10 @@
                                                                     margin-bottom: 0rem;
                                                                 }
                                                             </style>
-                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                                            @isset($pageData->currentURL)
+                                                            <input type="hidden" name="currentURL"
+                                                                value="{{ $pageData->currentURL }}">
+                                                            @endisset
                                                             <div class="row">
                                                                 <div class="col-sm-4 b-r">
                                                                     <h3 class="m-t-none m-b">Informacion Personal
@@ -390,13 +389,16 @@
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Ciclo:</h5>
                                                                         </label>
-                                                                        <select name="ciclo_de_estudiante" class="form-control" required>
-                                                                            @for($i = 4; $i <= 10; $i++)
-                                                                            <option @if($i == $colaborador->candidato->ciclo_de_estudiante) selected @endif >{{$i}}</option>
-                                                                            @endfor
-                                                                            
+                                                                        <select name="ciclo_de_estudiante"
+                                                                            class="form-control" required>
+                                                                            @for($i = 4; $i <= 10; $i++) <option
+                                                                                @if($i==$colaborador->
+                                                                                candidato->ciclo_de_estudiante) selected
+                                                                                @endif >{{$i}}</option>
+                                                                                @endfor
+
                                                                         </select>
-                                                                        
+
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Correo:</h5>
@@ -436,7 +438,7 @@
                                                                         </label>
                                                                         <select name="areas_id[]" multiple required
                                                                             class="form-control multiple_areas_select">
-                                                                            @foreach ($areas as $key => $area)+
+                                                                            @foreach ($areas as $key => $area)
                                                                             <option value="{{ $area->id }}"
                                                                                 @foreach($colaborador->areas as $areaNombre)
                                                                                 @if($area->especializacion ==
@@ -533,50 +535,57 @@
                 @endforeach
             </div>
             @if($hasPagination === true)
-                <div class="row mb-5 mb-md-4">
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
-                            <a href="{{ $colaboradores->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
-                            </a>
-                        @endif
-                        @if($pageData->currentPage > 1)
-                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> Anterior
-                            </a>
-                        @endif
-                    </div>
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
-                        @if($pageData->currentPage < $pageData->lastPage)
-                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Siguiente <i class="fa fa-arrow-circle-right"></i>
-                            </a>
+            <div class="row mb-5 mb-md-4">
+                <div
+                    class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
+                    @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
+                    <a href="{{ $colaboradores->url(1) }}" class="btn btn-outline-dark rounded-5">
+                        <i class="fa fa-arrow-circle-left"></i> First
+                    </a>
+                    @endif
+                    @if($pageData->currentPage > 1)
+                    <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
+                        <i class="fa fa-arrow-circle-left"></i> Anterior
+                    </a>
+                    @endif
+                </div>
+                <div
+                    class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
+                    @if($pageData->currentPage < $pageData->lastPage)
+                        <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
+                            Siguiente <i class="fa fa-arrow-circle-right"></i>
+                        </a>
                         @endif
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
-                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
-                            </a>
+                        <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
+                            Last <i class="fa fa-arrow-circle-right"></i>
+                        </a>
                         @endif
-                    </div>
                 </div>
+            </div>
             @endif
 
             {{-- <div class="row mb-4">
                 <div class="col-6 d-flex justify-content-start align-items-center gap-10">
                     @if($colaboradores->lastPag > 2 && $colaboradores->currentPage() !== 1)
-                        <a href="{{ $colaboradores->url(1) }}" class="btn btn-outline-dark rounded-5"><i class="fa fa-arrow-circle-left"></i> First</a>
+                    <a href="{{ $colaboradores->url(1) }}" class="btn btn-outline-dark rounded-5"><i
+                            class="fa fa-arrow-circle-left"></i> First</a>
                     @endif
                     @if($colaboradores->currentPage() > 1)
-                        <a href="{{$colaboradores->previousPageUrl()}}" class="btn btn-outline-dark rounded-5"> <i class="fa fa-arrow-circle-left"></i> Anterior </a>
+                    <a href="{{$colaboradores->previousPageUrl()}}" class="btn btn-outline-dark rounded-5"> <i
+                            class="fa fa-arrow-circle-left"></i> Anterior </a>
                     @endif
                 </div>
                 <div class="col-6 d-flex justify-content-end align-items-center gap-10">
                     @if($colaboradores->currentPage() < $colaboradores->lastPage())
-                        <a href="{{ $colaboradores->nextPageUrl() }}" class="btn btn-outline-dark rounded-5"> Siguiente <i class="fa fa-arrow-circle-right"></i></a>
-                    @endif
-                    @if($colaboradores->lastPage() > 2 && $colaboradores->currentPage() !== $colaboradores->lastPage())
-                        <a href="{{ $colaboradores->url($colaboradores->lastPage()) }}" class="btn btn-outline-dark rounded-5">Last <i class="fa fa-arrow-circle-right"></i></a>
-                    @endif
+                        <a href="{{ $colaboradores->nextPageUrl() }}" class="btn btn-outline-dark rounded-5"> Siguiente
+                            <i class="fa fa-arrow-circle-right"></i></a>
+                        @endif
+                        @if($colaboradores->lastPage() > 2 && $colaboradores->currentPage() !==
+                        $colaboradores->lastPage())
+                        <a href="{{ $colaboradores->url($colaboradores->lastPage()) }}"
+                            class="btn btn-outline-dark rounded-5">Last <i class="fa fa-arrow-circle-right"></i></a>
+                        @endif
                 </div>
             </div> --}}
         </div>

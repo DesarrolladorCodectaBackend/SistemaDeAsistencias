@@ -205,13 +205,8 @@
                                                                             </h3>
                                                                         </label>
                                                                         <select class="form-control" name="salon_id">
-                                                                            <option style="background: #999"
-                                                                                value="{{ $maquina->salon_id }}">
-                                                                                {{ $maquina->salon->nombre }}</option>
                                                                             @foreach ($salones as $salon)
-                                                                            <option value="{{ $salon->id }}">
-                                                                                {{ $salon->nombre }}
-                                                                            </option>
+                                                                            <option @if($salon->id === $maquina->salon_id) selected @endif value="{{ $salon->id }}">{{ $salon->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
 

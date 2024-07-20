@@ -95,8 +95,6 @@ Route::middleware('auth')->group(function () {
     //SALONES
     Route::resource('salones', SalonesController::class);
     Route::post('salones/{salones}/activar-inactivar', [SalonesController::class, 'activarInactivar'])->name('salones.activarInactivar');
-    Route::post('salones/{maquina}/activar-inactivar-maquina', [SalonesController::class, 'activarInactivarMaquina'])->name('salones.activarInactivarMaquina');
-    Route::get('/salones/{salon}/maquinas', [SalonesController::class, 'salonMaquinas']);
 
     //MAQUINAS
     Route::resource('maquinas', MaquinasController::class);

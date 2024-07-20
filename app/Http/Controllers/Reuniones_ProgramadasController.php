@@ -34,15 +34,7 @@ class Reuniones_ProgramadasController extends Controller
     public function reunionesGest($area_id){
         $area = Area::findOrFail($area_id);
         $reuniones = Reuniones_Programadas::with('area')->where('area_id', $area_id)->get();
-        $dias = [
-            "Lunes",
-            "Martes",
-            "Miércoles",
-            "Jueves",
-            "Viernes",
-            "Sábado",
-            "Domingo",
-        ];
+        $dias = FunctionHelperController::getDays();
         $horas = [
             "01:00",
             "02:00",

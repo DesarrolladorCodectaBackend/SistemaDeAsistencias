@@ -78,4 +78,19 @@ class FunctionHelperController extends Controller
 
         return $Meses;
     }
+
+    public static function getDays(){
+        $days = [
+            "Lunes",
+            "Martes",
+            "Miércoles",
+            "Jueves",
+            "Viernes",
+            "Sábado",
+            "Domingo"
+        ];
+
+        return $days;
+    }
+
 }

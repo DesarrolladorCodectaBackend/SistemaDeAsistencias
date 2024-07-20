@@ -21,8 +21,10 @@ class SalonesController extends Controller
             $maquinas = Maquinas::where('salon_id', $salon->id)->get();
             $conteoMaquinas = $maquinas->count();
             $salon->cant_maquinas = $conteoMaquinas;
+            $salon->maquinas = $maquinas;
         }
 
+        // return $salones;
         $pageDate = FunctionHelperController::getPageData($salones);
         $hasPagination = true;
 
@@ -31,11 +33,6 @@ class SalonesController extends Controller
             'pageData' => $pageDate, 
             'hasPagination' => $hasPagination
         ]);
-    }
-    
-    public function salonMaquinas($salon_id){
-        $maquinas = Maquinas::where('salon_id', $salon_id)->get();
-        return response()->json($maquinas);
     }
     
     // public function create(Request $request)
@@ -158,16 +155,5 @@ class SalonesController extends Controller
             }
 
         }
-    }
-
-    public function activarInactivarMaquina($maquina_id)
-    {
-        $maquina = Maquinas::findOrFail($maquina_id);
-
-        $maquina->estado = !$maquina->estado;
-
-        $maquina->save();
-
-        return redirect()->route('salones.index');
     }
 }

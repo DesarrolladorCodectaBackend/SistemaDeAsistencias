@@ -49,10 +49,10 @@
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
                                             <div class="form-group"><label>Categoria</label> <input type="text"
-                                                placeholder="Ingrese un nombre" name="categoria" class="form-control">
+                                                placeholder="Ingrese categoria" name="categoria" class="form-control">
                                             </div>
                                             <div class="form-group"><label>Duracion</label> <input type="text"
-                                                placeholder="Ingrese un nombre" name="duracion" class="form-control">
+                                                placeholder="Ingrese duracion" name="duracion" class="form-control">
                                             </div>
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"

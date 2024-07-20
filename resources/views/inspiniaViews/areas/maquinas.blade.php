@@ -46,7 +46,7 @@
 
                                 <small class="text-muted text-center mt-5">
                                     <h4>
-                                        <strong>Colaborador Asignado:</strong> <span>{{ $maquina->colaborador }}</span>
+                                        <strong>Colaborador Asignado:</strong> <span class="{{ $maquina->otraArea ? 'text-danger' : '' }}">{{ $maquina->colaborador }}</span>
                                     </h4>
                                 </small>
                                 <hr>
@@ -94,7 +94,6 @@
                                                             <div>
                                                                 <button class="btn btn-success"
                                                                     type="submit">Asignar</button>
-                                                                <a href="" class="btn btn-secondary">Cancelar</a>
                                                             </div>
                                                         </div>
                                                     </form>

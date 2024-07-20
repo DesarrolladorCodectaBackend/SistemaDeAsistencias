@@ -28,8 +28,7 @@
 
                 <div class="ibox-content">
                     <div class="text-center">
-                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form1"> Agregar <i
-                                class="fa fa-long-arrow-right"></i></a>
+                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form1"> Agregar </a>
                     </div>
                     <div id="modal-form1" class="modal fade" aria-hidden="true">
                         <form role="form" method="POST" action="{{ route('salones.store') }}">
@@ -74,11 +73,7 @@
         <div class="wrapper wrapper-content animated fadeInRight col-md-12">
             <div class="row">
                 @foreach ($salones as $index => $salon)
-                @if ($index % 4 == 0)
-            </div>
-            <div class="row">
-                @endif
-                <div class="col-md-3">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                     <div class="ibox">
                         <div class="ibox-content product-box">
 
@@ -158,8 +153,63 @@
                                                             </div>
                                                         </div>
                                                         <hr>
-                                                        <div id="maquinas-content" class="row">
+                                                        <div id="" class="row">
                                                             <!-- Aquí se cargarán dinámicamente las máquinas -->
+                                                            @foreach($salon->maquinas as $key => $maquina)
+                                                            <div class="col-sm-12 col-md-6 col-lg-4">
+                                                                <div class="ibox">
+                                                                    <div class="ibox-content product-box">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12 col-md-6 b-r text-center">
+                                                                                <div class="d-flex justify-center align-content-center flex-column py-2">
+                                                                                    <h2 class="text-center">
+                                                                                        {{$maquina->nombre}}
+                                                                                    </h2>
+                                                                                    <p class="text-center">
+                                                                                        <img src="{{asset('img/pc.jpg')}}" class="rounded-circle h-150">
+                                                                                    </p>
+                                                                                    <form method="POST" action="{{route('maquinas.activarInactivar', $maquina->id)}}">
+                                                                                        @csrf
+                                                                                        @isset($pageData->currentURL)
+                                                                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                                                                        @endisset
+                                                                                        <button class="btn {{$maquina->estado ? 'btn-primary' : 'btn-danger' }} btn-xs" type="submit">
+                                                                                            <span>{{$maquina->estado ? 'Activo' : 'Inactivo'}}</span>
+                                                                                        </button>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12 col-md-6 py-3">
+                                                                                <div class="text-md-left text-sm-center p-2 mb-2">
+                                                                                    <div class="text-md-left text-sm-center">
+                                                                                        <dt class="text-md-left text-sm-center">ID:</dt>
+                                                                                        <dd class="sm-2 text-md-left text-sm-center">{{$maquina->id}}</dd>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="text-md-left text-sm-center p-2 mb-2">
+                                                                                    <div class="text-md-left text-sm-center">
+                                                                                        <dt class="text-md-left text-sm-center">Detalles Tecnicos:</dt>
+                                                                                        <dd class="sm-2 text-md-left text-sm-center">{{$maquina->detalles_tecnicos}}</dd>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="text-md-left text-sm-center p-2 mb-2">
+                                                                                    <div class="text-md-left text-sm-center">
+                                                                                        <dt class="text-md-left text-sm-center">Numero Identificador:</dt>
+                                                                                        <dd class="sm-2 text-md-left text-sm-center">{{$maquina->num_identificador}}</dd>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="text-md-left text-sm-center p-2 mb-2">
+                                                                                    <div class="text-md-left text-sm-center">
+                                                                                        <dt class="text-md-left text-sm-center">Salon Asignado:</dt>
+                                                                                        <dd class="sm-2 text-md-left text-sm-center">{{$maquina->nombre}}</dd>
+                                                                                    </div>
+                                                                                </div>                                                     
+                                                                            </div>
+                                                                        </div>    
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            @endforeach
                                                         </div>
                                                     </div>
                                                 </div>
@@ -289,80 +339,6 @@
             });
         }
         */
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('.modal').on('show.bs.modal', function(event) {
-                var salonId = $(event.relatedTarget).data('salon-id');
-                var modal = $(this);
-                $.ajax({
-                    url: '/salones/' + salonId + '/maquinas',
-                    method: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-                        var maquinasHtml = '';
-                        $.each(response, function(index, maquina) {
-                            maquinasHtml += '<div class="col-md-4">';
-                            maquinasHtml += '<div class="ibox">';
-                            maquinasHtml += '<div class="ibox-content product-box">';
-                            maquinasHtml += '<div class="row">';
-                            maquinasHtml += '<div class="col-sm-6 b-r>';
-
-                            maquinasHtml += '<h2 class="text-center"> ' + maquina.nombre + '</h2>';
-                            maquinasHtml += '<p class="text-center"><img src="{{asset('img/pc.jpg')}}" class="rounded-circle h-150"></p>';
-                            
-                            maquinasHtml += '<form method="POST" action="/salones/' + maquina.id + '/activar-inactivar-maquina">';
-                            maquinasHtml += '@csrf'; 
-                            maquinasHtml += '<button type="submit" class="btn btn-' + (maquina.estado ? 'outline-success' : 'danger') + ' btn-primary dim btn-xs">';
-                            maquinasHtml += '<span>' + (maquina.estado ? 'Activo' : 'Inactivo') + '</span>';
-                            maquinasHtml += '</button>';
-                            maquinasHtml += '</form>';
-
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '<div class="col-md-6">';
-                            maquinasHtml += '<form role="form">';
-                            maquinasHtml += '<dl class="row mb-2">';
-                            maquinasHtml += '<div class="col-sm-12 text-sm-left">';
-                            maquinasHtml += '<dt>ID:</dt>';
-                            maquinasHtml += '<dd class="sm-2">' + maquina.id + '</dd>';
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '</dl>';
-                            maquinasHtml += '<dl class="row mb-2">';
-                            maquinasHtml += '<div class="col-sm-12 text-sm-left">';
-                            maquinasHtml += '<dt>Detalles Tecnicos:</dt>';
-                            maquinasHtml += '<dd class="sm-2">' + maquina.detalles_tecnicos + '</dd>';
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '</dl>';
-                            maquinasHtml += '<dl class="row mb-2">';
-                            maquinasHtml += '<div class="col-sm-12 text-sm-left">';
-                            maquinasHtml += '<dt>Numero Identificador:</dt>';
-                            maquinasHtml += '<dd class="sm-2">' + maquina.num_identificador + '</dd>';
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '</dl>';
-                            maquinasHtml += '<dl class="row mb-2">';
-                            maquinasHtml += '<div class="col-sm-12 text-sm-left">';
-                            maquinasHtml += '<dt>Salon Asignado</dt>';
-                            maquinasHtml += '<dd class="sm-2">' + maquina.salon_id + '</dd>';
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '</dl>';
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '</form>';
-                            
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '</div>';
-                            maquinasHtml += '</div>';
-                        });
-                        modal.find('#maquinas-content').html(maquinasHtml);
-                    },
-                    error: function() {
-                        alert('Error al cargar las máquinas del salón.');
-                    }
-                });
-            });
-        });
     </script>
 
 

@@ -181,12 +181,9 @@
                                                                                                 <select
                                                                                                     class="form-control m-b"
                                                                                                     name="reuniones[0][dia]">
-                                                                                                    @foreach($dias
-                                                                                                    as $key => $dia)
-                                                                                                    <option>{{$dia}}
-                                                                                                    </option>
+                                                                                                    @foreach($dias as $key => $dia)
+                                                                                                    <option>{{$dia}}</option>
                                                                                                     @endforeach
-
                                                                                                 </select>
                                                                                             </div>
                                                                                         </div>
@@ -279,18 +276,9 @@
                                                                         <select class="form-control m-b" name="dia"
                                                                             value="{{ old('dia', $reunion->dia) }}"
                                                                             id="dia">
-                                                                            <option style="background: #999">
-                                                                                {{
-                                                                                old('dia',
-                                                                                $reunion->dia)
-                                                                                }}
-                                                                            </option>
                                                                             @foreach($dias as $key => $dia)
-                                                                            <option>
-                                                                                {{$dia}}
-                                                                            </option>
+                                                                            <option @if($dia === $reunion->dia) selected @endif>{{$dia}}</option>
                                                                             @endforeach
-
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group">
@@ -298,44 +286,24 @@
                                                                             Inicial</label>
                                                                         <select class="form-control" name="hora_inicial"
                                                                             id="hora_inicial">
-                                                                            <option style="background: #999"
-                                                                                value="{{ old('hora_inicial', $reunion->hora_inicial) }}">
-                                                                                {{$reunion->hora_inicial}}</option>
-                                                                            @foreach($horas as $key
-                                                                            => $hora)
-                                                                            <option value="{{ $hora }}">
-                                                                                {{ $hora }}</option>
-
+                                                                            @foreach($horas as $key => $hora)
+                                                                            <option @if($hora === $reunion->hora_inicial) selected @endif">{{ $hora }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label>Hora
-                                                                            Final</label>
-                                                                        <!--
-                                                                        <input type="time" class="form-control"
-                                                                            name="hora_final" id="hora_final"
-                                                                            value="{{ old('hora_final', $reunion->hora_final) }}"> -->
+                                                                        <label>Hora Final</label>
                                                                         <select class="form-control" name="hora_final"
                                                                             id="hora_final">
-                                                                            <option style="background: #999"
-                                                                                value="{{ old('hora_final', $reunion->hora_final) }}">
-                                                                                {{$reunion->hora_final}}</option>
-                                                                            @foreach($horas as $key
-                                                                            => $hora)
-                                                                            <option value="{{ $hora }}">
-                                                                                {{ $hora }}</option>
-
+                                                                            @foreach($horas as $key => $hora)
+                                                                            <option @if($hora === $reunion->hora_final) selected @endif">{{ $hora }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
                                                                     <div>
-                                                                        <a href=""
-                                                                            class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
                                                                         <button
                                                                             class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                                            type="submit"><i
-                                                                                class="fa fa-check"></i>&nbsp;Confirmar</button>
+                                                                            type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -558,7 +526,7 @@
                     editable: false
                 },
                 {
-                    title: 'Sabado',
+                    title: 'Sábado',
                     start: new Date(2024, 1, 10, 9, 0),
                     end: new Date(2024, 1, 10, 13, 30),
                     allDay: true,

@@ -35,11 +35,7 @@
 
             <div class="row">
                 @foreach ($Years as $year)
-                @if ($loop->iteration % 4 == 1 && !$loop->first)
-            </div>
-            <div class="row">
-                @endif
-                <div class="col-md-3">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                     <div class="ibox">
                         <div class="ibox-content product-box">
                             <div class="product-desc text-center">

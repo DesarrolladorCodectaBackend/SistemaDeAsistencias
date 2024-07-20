@@ -152,7 +152,7 @@ class ColaboradoresController extends Controller
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->get();
 
 
-        $colaboradores->data = $this->colaboradoresConArea($colaboradores);
+        $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
         $hasPagination = false;
         $pageData = [];
 
@@ -388,7 +388,7 @@ class ColaboradoresController extends Controller
         $areas = Area::get();
         $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
 
-        $colaboradores->data = $this->colaboradoresConArea($colaboradores);
+        $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
         $hasPagination = false;
         $pageData = [];
         
