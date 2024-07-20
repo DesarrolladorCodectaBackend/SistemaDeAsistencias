@@ -251,11 +251,9 @@
                                         Agregar Colaborador
                                     </button>
                                     @elseif($candidato->estado == 2)
-                                    <button class="btn btn-secondary" type="button" disabled
-                                        style="cursor: not-allowed">
-                                        Agregar Colaborador
-                                    </button>
-                                    <h1 class="text-danger">Rechazado</h1>
+                                    <div class="text-center">
+                                        <h1 class="text-danger font-bold">Rechazado</h1>
+                                    </div>  
                                     @endif
 
                                     </p>

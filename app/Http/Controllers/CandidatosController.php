@@ -18,7 +18,7 @@ class CandidatosController extends Controller
 
     public function index()
     {
-        $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 2)->get();
+        $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 1)->get();
         $sedes = Sede::with('institucion')->where('estado', true)->orderBy('nombre', 'asc')->get();
         $carreras = Carrera::all();
 

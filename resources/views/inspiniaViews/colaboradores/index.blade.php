@@ -44,10 +44,8 @@
                         <a class="btn btn-primary" href="/candidatos"> 
                             Agregar <i class="fa fa-long-arrow-right"></i>
                         </a>
-                        <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar <i
-                                class="fa fa-long-arrow-right"></i></a>
+                        <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar </a>
                     </div>
-                    <!-- Modal view here-->
                     <div id="modal-filtrar" class="modal fade" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -55,9 +53,9 @@
                                     <form role="form" method="POST" action="{{ route('colaboradores.filtrar') }}"
                                         enctype="multipart/form-data">
                                         @csrf
+                                        <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
                                         <div class="row">
-                                            <div class="col-sm-6 b-r">
-                                                <h2 class="m-t-none m-b">Filtrar Colaboradores</h2>
+                                            <div class="col-sm-12 col-md-6 b-r">
                                                 <div class="form-group">
                                                     <label>
                                                         <h4 class="m-t-none m-b">Areas:</h4>
@@ -93,7 +91,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6 b-r">
+                                            <div class="col-sm-12 col-md-6 b-r">
                                                 <div class="form-group">
                                                     <label>
                                                         <h4 class="m-t-none m-b">Carreras:</h4>
@@ -128,9 +126,8 @@
                                                     </div>
                                                     @endforeach
                                                 </div>
-                                                <div class="form-group">
-                                                    <button type="submit" class="btn btn-primary">Filtrar</button>
-                                                    <a class="btn btn-warning" href="">Cancelar</a>
+                                                <div class="form-group mt-3 text-center">
+                                                    <button type="submit" class="btn btn-primary px-5">Filtrar</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -146,7 +143,7 @@
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
-                @foreach($colaboradoresConArea as $index => $colaborador)
+                @foreach($colaboradores->data as $index => $colaborador)
                 <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -530,6 +527,53 @@
                 </div>
                 @endforeach
             </div>
+            @if($hasPagination === true)
+                <div class="row mb-5 mb-md-4">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
+                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
+                            <a href="{{ $colaboradores->url(1) }}" class="btn btn-outline-dark rounded-5">
+                                <i class="fa fa-arrow-circle-left"></i> First
+                            </a>
+                        @endif
+                        @if($pageData->currentPage > 1)
+                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
+                                <i class="fa fa-arrow-circle-left"></i> Anterior
+                            </a>
+                        @endif
+                    </div>
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
+                        @if($pageData->currentPage < $pageData->lastPage)
+                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
+                                Siguiente <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        @endif
+                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
+                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
+                                Last <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            @endif
+
+            {{-- <div class="row mb-4">
+                <div class="col-6 d-flex justify-content-start align-items-center gap-10">
+                    @if($colaboradores->lastPag > 2 && $colaboradores->currentPage() !== 1)
+                        <a href="{{ $colaboradores->url(1) }}" class="btn btn-outline-dark rounded-5"><i class="fa fa-arrow-circle-left"></i> First</a>
+                    @endif
+                    @if($colaboradores->currentPage() > 1)
+                        <a href="{{$colaboradores->previousPageUrl()}}" class="btn btn-outline-dark rounded-5"> <i class="fa fa-arrow-circle-left"></i> Anterior </a>
+                    @endif
+                </div>
+                <div class="col-6 d-flex justify-content-end align-items-center gap-10">
+                    @if($colaboradores->currentPage() < $colaboradores->lastPage())
+                        <a href="{{ $colaboradores->nextPageUrl() }}" class="btn btn-outline-dark rounded-5"> Siguiente <i class="fa fa-arrow-circle-right"></i></a>
+                    @endif
+                    @if($colaboradores->lastPage() > 2 && $colaboradores->currentPage() !== $colaboradores->lastPage())
+                        <a href="{{ $colaboradores->url($colaboradores->lastPage()) }}" class="btn btn-outline-dark rounded-5">Last <i class="fa fa-arrow-circle-right"></i></a>
+                    @endif
+                </div>
+            </div> --}}
         </div>
 
 

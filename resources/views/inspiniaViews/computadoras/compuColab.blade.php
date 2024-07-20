@@ -18,6 +18,9 @@
                     <li class="breadcrumb-item">
                         <a href="/dashboard">Home</a>
                     </li>
+                    <li class="breadcrumb-item">
+                        <a href="/colaboradores">Colaboradores</a>
+                    </li>
                     <li class="breadcrumb-item active">
                         <strong>Computadora y Programas</strong>
                     </li>

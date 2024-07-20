@@ -23,10 +23,10 @@ use Exception;
 class ColaboradoresController extends Controller
 {
 
-    public function colaboradoresConArea($colaboradores){
+    public function colaboradoresConArea($colaboradoresBase){
         $colaboradoresConArea = [];
 
-        foreach ($colaboradores as $colaborador) {
+        foreach ($colaboradoresBase as $colaborador) {
             $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->where('estado', true)->get();
             if (count($colaboradorArea)>0) {
                 $areas = [];
@@ -43,16 +43,39 @@ class ColaboradoresController extends Controller
         return $colaboradoresConArea;
     }
 
+    public function getPageData($collection){
+        $pageData = [
+            'currentPage' => $collection->currentPage(),
+            'lastPage' => $collection->lastPage(),
+            'nextPageUrl' => $collection->nextPageUrl(),
+            'previousPageUrl' => $collection->previousPageUrl(),
+            'lastPageUrl' => $collection->url($collection->lastPage()),
+        ];
+        $pageData = json_decode(json_encode($pageData));
+        return $pageData;
+    }
+
     public function index()
     {
-        $colaboradores = Colaboradores::with('candidato')->get();
+        $colaboradores = Colaboradores::with('candidato')->paginate(3);
         $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $instituciones = Institucion::get();
         $carreras = Carrera::get();
         $areas = Area::get();
-        $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
-        // return $colaboradoresConArea;
-        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'sedes', 'instituciones', 'carreras', 'areas'));
+        $colaboradoresConArea = $this->colaboradoresConArea($colaboradores->items());
+        $colaboradores->data = $colaboradoresConArea;
+        $pageData = $this->getPageData($colaboradores);
+        $hasPagination = true;
+
+        return view('inspiniaViews.colaboradores.index', [
+            'colaboradores' => $colaboradores,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
+            'sedes' => $sedes,
+            'instituciones' => $instituciones,
+            'carreras' => $carreras,
+            'areas' => $areas,
+        ]);
     }
 
     public function getComputadoraColaborador($colaborador_id){
@@ -160,11 +183,21 @@ class ColaboradoresController extends Controller
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->get();
 
 
-        $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
+        $colaboradores->data = $this->colaboradoresConArea($colaboradores);
+        $hasPagination = false;
+        $pageData = [];
 
 
         //return $colaboradoresConArea;
-        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'sedes', 'carreras', 'areas'));
+        return view('inspiniaViews.colaboradores.index', [
+            'colaboradores' => $colaboradores,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
+            'sedes' => $sedes,
+            'instituciones' => $instituciones,
+            'carreras' => $carreras,
+            'areas' => $areas,
+        ]);
     }
 
 
@@ -343,7 +376,7 @@ class ColaboradoresController extends Controller
         //Obtener todos los colabs con candidato por function query
         $colaboradoresTotales = Colaboradores::with([
             'candidato' => function ($query) {
-                $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'institucion_id', 'carrera_id', 'icono', 'correo', 'celular'); }
+                $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'sede_id', 'carrera_id', 'icono', 'correo', 'celular'); }
         ]);
         //Filtrar por nombre y apellido de candidato                
         $colaboradoresPorNombre = $colaboradoresTotales->whereHas('candidato', function ($query) use ($busqueda) {
@@ -362,12 +395,23 @@ class ColaboradoresController extends Controller
         $instituciones = Institucion::get();
         $carreras = Carrera::get();
         $areas = Area::get();
+        $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
 
-        $colaboradoresConArea = $this->colaboradoresConArea($colaboradores);
-
+        $colaboradores->data = $this->colaboradoresConArea($colaboradores);
+        $hasPagination = false;
+        $pageData = [];
+        
         //return $colaboradoresConArea;
 
-        return view('inspiniaViews.colaboradores.index', compact('colaboradoresConArea', 'instituciones', 'carreras', 'areas'));
+        return view('inspiniaViews.colaboradores.index', [
+            'colaboradores' => $colaboradores,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
+            'sedes' => $sedes,
+            'instituciones' => $instituciones,
+            'carreras' => $carreras,
+            'areas' => $areas,
+        ]);
 
     }
 }

@@ -23,7 +23,7 @@
                         <a href="/dashboard">Home</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>Horario General</strong>
+                        <strong>Reuniones Generales</strong>
                     </li>
                 </ol>
             </div>

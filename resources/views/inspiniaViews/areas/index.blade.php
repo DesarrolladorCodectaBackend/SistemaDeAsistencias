@@ -58,7 +58,7 @@
                                             <button type="button" class="btn btn-link" id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
                                             </button>
-                                            <div class="form-group"><label>Salon</label>
+                                            <div class="form-group"><label>Salón</label>
                                                 <select class="form-control" name="salon_id" required>
                                                     @foreach($salones as $key => $salon)
                                                     <option value="{{ $salon->id }}">{{ $salon->nombre }}</option>
@@ -163,7 +163,7 @@
                                                                             document.getElementById('icono-{{ $area->id }}').click();
                                                                         });
                                                                 </script>
-                                                                <div class="form-group"><label>Salon</label>
+                                                                <div class="form-group"><label>Salón</label>
                                                                     <select class="form-control" name="salon_id"
                                                                         required>
                                                                         @foreach($salones as $key => $salon)
