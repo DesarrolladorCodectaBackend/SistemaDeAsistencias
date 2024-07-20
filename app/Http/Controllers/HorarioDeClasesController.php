@@ -74,113 +74,58 @@ class HorarioDeClasesController extends Controller
 
     public function store(Request $request)
     {
-        // return $request;
-        $request->validate([
-            'colaborador_id' => 'required|integer',
-            'horarios' => 'required|array',
-            'horarios.*.hora_inicial' => 'required|date_format:H:i',
-            'horarios.*.hora_final' => 'required|date_format:H:i',
-            'horarios.*.dia' => 'required|string'
-        ]);
-        foreach ($request->horarios as $horario) {
-            Horario_de_Clases::create([
-                'colaborador_id' => $request->colaborador_id,
-                'hora_inicial' => $horario['hora_inicial'],
-                'hora_final' => $horario['hora_final'],
-                'dia' => $horario['dia']
-            ]);
-        }
-        return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $request->colaborador_id]);
-    }
-
-    /*
-    public function create(Request $request)
-    {
         DB::beginTransaction();
         try{
-            if(!$request->colaborador_id){
-                return response()->json(["resp" => "Ingrese colaborador"]);
-            }
-
-            if(!$request->hora_inicial){
-                return response()->json(["resp" => "Ingrese hora inicial"]);
-            }
-
-            if(!$request->hora_final){
-                return response()->json(["resp" => "Ingrese hora final"]);
-            }
-
-            if(!$request->dia){
-                return response()->json(["resp" => "Ingrese dia"]);
-            }
-
-            if(!is_integer($request->colaborador_id)){
-                return response()->json(["resp" => "El id del colaborador debe ser un número entero"]);
-            }
-
-            if(!is_string($request->hora_inicial)){
-                return response()->json(["resp" => "La hora inicial debe ser un texto"]);
-            }
-
-            if(!is_string($request->hora_final)){
-                return response()->json(["resp" => "La hora final debe ser un texto"]);
-            }
-
-            if(!is_string($request->dia)){
-                return response()->json(["resp" => "El dia debe ser un texto"]);
-            }
-
-            Horario_de_Clases::create([
-                "colaborador_id" => $request->colaborador_id,
-                "hora_inicial" => $request->hora_inicial,
-                "hora_final" => $request->hora_final,
-                "dia" => $request->dia
+            $request->validate([
+                'colaborador_id' => 'required|integer',
+                'horarios' => 'required|array',
+                'horarios.*.hora_inicial' => 'required|date_format:H:i',
+                'horarios.*.hora_final' => 'required|date_format:H:i',
+                'horarios.*.dia' => 'required|string'
             ]);
-            DB::commit();
-            return response()->json(["resp" => "Registro creado correctamente"]);
-        } catch (Exception $e){
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
-    }
-    */
-
-
-    public function show($horario_de_clases_id)
-    {
-        try {
-            $horario_de_clases = Horario_de_Clases::with('colaboradores')->find($horario_de_clases_id);
-
-            if (!$horario_de_clases) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
+            foreach ($request->horarios as $horario) {
+                Horario_de_Clases::create([
+                    'colaborador_id' => $request->colaborador_id,
+                    'hora_inicial' => $horario['hora_inicial'],
+                    'hora_final' => $horario['hora_final'],
+                    'dia' => $horario['dia']
+                ]);
             }
+            DB::commit();
+            return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $request->colaborador_id]);
+        } catch(Exception $e) {
+            DB::rollBack();
+            return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $request->colaborador_id]);
 
-            return response()->json(["data" => $horario_de_clases]);
-        } catch (Exception $e) {
-            return response()->json(["error" => $e]);
         }
-
     }
 
 
     public function update(Request $request, $horario_de_clases_id)
     {
-        $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
-
-        $request->validate([
-            'dia' => 'sometimes|string|min:1|max:100',
-            'hora_inicial' => 'sometimes',
-            'hora_final' => 'sometimes',
-        ]);
-
-        //$horario_de_clases->update($request->all());
-        $horario_de_clases->fill([
-            "hora_inicial" => $request->hora_inicial,
-            "hora_final" => $request->hora_final,
-            "dia" => $request->dia
-        ])->save();
-
-        return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $horario_de_clases->colaborador_id]);
+        DB::beginTransaction();
+        try{
+            $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
+    
+            $request->validate([
+                'dia' => 'sometimes|string|min:1|max:100',
+                'hora_inicial' => 'sometimes',
+                'hora_final' => 'sometimes',
+            ]);
+    
+            //$horario_de_clases->update($request->all());
+            $horario_de_clases->fill([
+                "hora_inicial" => $request->hora_inicial,
+                "hora_final" => $request->hora_final,
+                "dia" => $request->dia
+            ])->save();
+            DB::commit();
+            return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $horario_de_clases->colaborador_id]);
+        } catch(Exception $e) {
+            DB::rollBack();
+            return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $horario_de_clases->colaborador_id]);
+            
+        }
     }
 
 

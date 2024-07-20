@@ -261,7 +261,7 @@ class AreaController extends Controller
                 'descripcion' => 'required|string|min:1|max:255',
                 'color_hex' => 'required|string|min:1|max:7',
                 'salon_id' => 'required|integer',
-                'icono' => 'image|mimes:jpeg,png,jpg,gif'
+                'icono' => 'image'
             ]);
             //Validar que los datos no esten vacios
             // if(!$request->especializacion) return response()->json(["message" => "Debe ingresar la especialización"]);
@@ -313,21 +313,6 @@ class AreaController extends Controller
         }
     }
 
-    public function show($area_id)
-    {
-        $area = Area::find($area_id);
-
-        return response()->json(["data" => $area]);
-    }
-
-
-    public function edit($area_id)
-    {
-        $area = Area::findOrFail($area_id);
-
-        return view('inspiniaViews.areas.edit', compact('area'));
-    }
-
     /**
      *  UPDATE
      *  
@@ -355,7 +340,7 @@ class AreaController extends Controller
                 'descripcion' => 'sometimes|string|min:1|max:255',
                 'color_hex' => 'sometimes|string|min:1|max:7',
                 'salon_id' => 'sometimes|integer',
-                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
+                'icono' => 'sometimes|image',
             ]);
 
             // return $request;

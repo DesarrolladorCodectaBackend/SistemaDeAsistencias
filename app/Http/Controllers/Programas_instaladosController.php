@@ -19,38 +19,6 @@ class Programas_instaladosController extends Controller
     }
 
 
-    public function create(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            if(!$request->computadora_id){
-                return response()->json(["resp"=> "ingrese computadora"]);
-            }
-
-            if(!$request->programa_id){
-                return response()->json(["resp" => "ingrese programa"]);
-            }
-
-            if (!is_integer($request->computadora_id)){
-                return response()->json(["resp"=> "El id de la computadora debe ser un número entero"]);
-            }
-
-            if (!is_integer($request->programa_id)){
-                return response()->json(["resp"=> "El id del programa debe ser un número entero"]);
-            }
-
-            Programas_instalados::create([
-                "computadora_id" => $request->computadora_id,
-                "programa_id" => $request->programa_id
-            ]);
-            DB::commit();
-            return response()->json(["resp" => "Registro creado correctamente"]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error"=> $e]);
-        }
-
-    }
 
     public function store(Request $request)
     {

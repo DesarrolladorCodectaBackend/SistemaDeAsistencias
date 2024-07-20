@@ -209,6 +209,7 @@
                     @csrf
                     <input type="hidden" name="year" value="{{$year}}">
                     <input type="hidden" name="mes" value="{{$mes}}">
+                    <input type="hidden" name="area_id" value="{{$area->id}}">
                     <thead>
                         <tr>
                             <th> Colaboradores / Responsabilidades </th>

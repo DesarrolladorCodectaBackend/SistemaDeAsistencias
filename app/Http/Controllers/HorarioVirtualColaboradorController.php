@@ -9,6 +9,7 @@ use Exception;
 
 class HorarioVirtualColaboradorController extends Controller
 {
+    //NOT USING YET
     
     public function index()
     {

@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Models\Programas;
 use App\Models\Area;
+use Illuminate\Support\Facades\DB;
 
 class ProgramasController extends Controller
 {
     public function index()
     {
-        $programas = Programas::paginate(3);
+        $programas = Programas::paginate(12);
         $pageData = FunctionHelperController::getPageData($programas);
         $hasPagination = true;
 
@@ -37,32 +39,43 @@ class ProgramasController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|min:1|max:100',
-            'descripcion' => 'required|string|min:1|max:255',
-            'icono' => 'image'
-        ]);
+        DB::beginTransaction();
+        try{
 
-        if ($request->hasFile('icono')) {
-            $icono = $request->file('icono');
-            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-            $icono->move(public_path('storage/programas'), $nombreIcono);
-        } else {
-            $nombreIcono = 'default.png';
-        }
-
-
-        Programas::create([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'icono' => $nombreIcono
-        ]);
-
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('programas.index');
+            $request->validate([
+                'nombre' => 'required|string|min:1|max:100',
+                'descripcion' => 'required|string|min:1|max:255',
+                'icono' => 'image'
+            ]);
+    
+            if ($request->hasFile('icono')) {
+                $icono = $request->file('icono');
+                $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+                $icono->move(public_path('storage/programas'), $nombreIcono);
+            } else {
+                $nombreIcono = 'default.png';
+            }
+    
+    
+            Programas::create([
+                'nombre' => $request->nombre,
+                'descripcion' => $request->descripcion,
+                'icono' => $nombreIcono
+            ]);
+    
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('programas.index');
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('programas.index');
+            }
         }
     }
 
@@ -77,39 +90,50 @@ class ProgramasController extends Controller
 
     public function update(Request $request, $programa_id)
     {
-        $request->validate([
-            "nombre" => "required|string|min:1|max:255",
-            "descripcion" => "sometimes|string|min:1|max:500",
-            "icono" => "image|mimes:jpeg,png,jpg,gif"
-        ]);
+        DB::beginTransaction();
+        try{
 
-        $programa = Programas::findOrFail($programa_id);
-
-        $datosActualizar = $request->except(['icono']);
-
-        if ($request->hasFile('icono')) {
-            $rutaPublica = public_path('storage/programas');
-        
-            // Verificar si el icono actual no es el predeterminado
-            if ($programa->icono && $programa->icono !== "default.png") {
-                // Eliminar el icono actual si no es el predeterminado
-                unlink($rutaPublica . '/' . $programa->icono);
+            $request->validate([
+                "nombre" => "required|string|min:1|max:255",
+                "descripcion" => "sometimes|string|min:1|max:500",
+                "icono" => "image"
+            ]);
+    
+            $programa = Programas::findOrFail($programa_id);
+    
+            $datosActualizar = $request->except(['icono']);
+    
+            if ($request->hasFile('icono')) {
+                $rutaPublica = public_path('storage/programas');
+            
+                // Verificar si el icono actual no es el predeterminado
+                if ($programa->icono && $programa->icono !== "default.png") {
+                    // Eliminar el icono actual si no es el predeterminado
+                    unlink($rutaPublica . '/' . $programa->icono);
+                }
+            
+                $icono = $request->file('icono');
+                $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+            
+                $icono->move($rutaPublica, $nombreIcono);
+            
+                $datosActualizar['icono'] = $nombreIcono;
             }
-        
-            $icono = $request->file('icono');
-            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-        
-            $icono->move($rutaPublica, $nombreIcono);
-        
-            $datosActualizar['icono'] = $nombreIcono;
-        }
-
-        $programa->update($datosActualizar);
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('programas.index');
+    
+            $programa->update($datosActualizar);
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('programas.index');
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('programas.index');
+            }
         }
     }
 
@@ -126,16 +150,26 @@ class ProgramasController extends Controller
 
     public function activarInactivar(Request $request, $programa_id)
     {
-        $programa = Programas::findOrFail($programa_id);
-
-        $programa->estado = !$programa->estado;
-
-        $programa->save();
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('programas.index');
+        DB::beginTransaction();
+        try{
+            $programa = Programas::findOrFail($programa_id);
+    
+            $programa->estado = !$programa->estado;
+    
+            $programa->save();
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('programas.index');
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('programas.index');
+            }
         }
     }
 }

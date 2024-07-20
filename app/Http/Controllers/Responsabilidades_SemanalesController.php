@@ -9,6 +9,7 @@ use Exception;
 
 class Responsabilidades_SemanalesController extends Controller
 {
+    //NOT USING YET
     public function index()
     {
         $responsabilidad_semanal = Responsabilidades_semanales::all();

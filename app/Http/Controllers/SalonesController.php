@@ -7,6 +7,8 @@ use App\Models\Salones;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreSalonesRequest;
 use App\Http\Requests\UpdateSalonesRequest;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class SalonesController extends Controller
 {
@@ -48,24 +50,35 @@ class SalonesController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|min:1|max:100',
-            'descripcion' => 'required|string|min:1|max:255',
-        ]);
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'required|string|min:1|max:100',
+                'descripcion' => 'required|string|min:1|max:255',
+            ]);
+    
+     
+            //Salones::create($request->all());
+    
+            Salones::create([
+                'nombre' => $request->nombre,
+                'descripcion' => $request->descripcion,
+            ]);
+    
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('salones.index');
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('salones.index');
+            }
 
- 
-        //Salones::create($request->all());
-
-        Salones::create([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-        ]);
-
-        
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('salones.index');
         }
 
     }
@@ -81,23 +94,31 @@ class SalonesController extends Controller
     
     public function update(Request $request, $salon_id)
     {
-        $request->validate([
-            'nombre' => 'required|string|min:1|max:100',
-            'descripcion' => 'required|string|min:1|max:255',
-        ]);
-
-
-        
-        $salon = Salones::findOrFail($salon_id);
-        
-        $datosActualizar = $request->all();
-
-        $salon->update($datosActualizar);
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('salones.index');
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'required|string|min:1|max:100',
+                'descripcion' => 'required|string|min:1|max:255',
+            ]);
+            
+            $salon = Salones::findOrFail($salon_id);
+            
+            $datosActualizar = $request->all();
+    
+            $salon->update($datosActualizar);
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('salones.index');
+            }
+        } catch(Exception $e) {
+            DB::rollback();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('salones.index');
+            }
         }
 
     }
@@ -114,16 +135,28 @@ class SalonesController extends Controller
 
     public function activarInactivar(Request $request, $salon_id)
     {
-        $salon = Salones::findOrFail($salon_id);
+        DB::beginTransaction();
+        try{
+            $salon = Salones::findOrFail($salon_id);
+    
+            $salon->estado = !$salon->estado;
+    
+            $salon->save();
+    
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('salones.index');
+            }
+        } catch(Exception $e) {
+            DB::rollback();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('salones.index');
+            }
 
-        $salon->estado = !$salon->estado;
-
-        $salon->save();
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('salones.index');
         }
     }
 

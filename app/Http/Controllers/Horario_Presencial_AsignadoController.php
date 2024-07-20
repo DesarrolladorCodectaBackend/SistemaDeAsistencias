@@ -47,14 +47,6 @@ class Horario_Presencial_AsignadoController extends Controller
                 "area_id" => "required|integer",
             ]);
 
-            // if(!$request->horario_presencial_id){
-            //     return response()->json(["resp" => "Ingrese el horario presencial"]);
-            // }
-
-            // if(!$request->area_id){
-            //     return response()->json(["resp" => "Ingrese el area"]);
-            // }
-
             foreach($request->horario_presencial_id as $horario_presencial_id) {
                 $horarioExistente = Horario_Presencial_Asignado::where('horario_presencial_id', $horario_presencial_id)
                     ->where('area_id', $request->area_id)->first();
@@ -66,7 +58,6 @@ class Horario_Presencial_AsignadoController extends Controller
                 }
             }
 
-
             DB::commit();
             // return response()->json(["resp" => "Registro creado exitosamente"]);
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
@@ -74,25 +65,6 @@ class Horario_Presencial_AsignadoController extends Controller
             DB::rollBack();
             // return response()->json(["error" => $e]);
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
-        }
-    }
-
-
-    public function show($horario_presencial_asignado_id)
-    {
-        try{
-            $horario_presencial_asignado = Horario_Presencial_Asignado::/*with([
-                'institucion' => function ($query) {
-                    $query->select('id', 'nombre'); },
-                'carrera' => function ($query) {
-                    $query->select('id', 'nombre'); }
-            ])->*/find($horario_presencial_asignado_id);
-            if (!$horario_presencial_asignado){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
-            return response()->json(["Data" => $horario_presencial_asignado]);
-        } catch (Exception $e){
-            return response()->json(["error" => $e]);
         }
     }
 

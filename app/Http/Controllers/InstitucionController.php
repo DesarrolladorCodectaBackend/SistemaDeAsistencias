@@ -14,7 +14,7 @@ class InstitucionController extends Controller
 
     public function index()
     {
-        $institucion = Institucion::paginate(2);
+        $institucion = Institucion::paginate(12);
 
         $pageData = FunctionHelperController::getPageData($institucion);
         $hasPagination = true;
@@ -28,79 +28,59 @@ class InstitucionController extends Controller
 
     }
 
-
-    public function create(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-
-            if (!$request->nombre) {
-                return response()->json(["resp" => "Ingrese el nombre de la institucion"]);
-            }
-
-            if (!is_string($request->nombre)) {
-                return response()->json(["resp" => "El nombre debe ser una cadena de texto"]);
-            }
-
-            if (strlen($request->nombre) > 100) {
-                return response()->json(["resp" => "El nombre es demasiado largo"]);
-            }
-
-            Institucion::create([
-                "Nombre" => $request->nombre,
-            ]);
-
-            DB::commit();
-            return response()->json(["resp" => "Institución creada con nombre " . $request->nombre]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(["error" => $e]);
-        }
-    }
-
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|min:1|max:100',
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                        'nombre' => 'required|string|min:1|max:100',
+                    ]);
 
-        ]);
-
-        institucion::create([
-            'nombre' => $request->nombre,
-        ]);
-        
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('institucion.index');
+            institucion::create([
+                'nombre' => $request->nombre,
+            ]);
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('institucion.index');
+            }
+        } catch(Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('institucion.index');
+            }
         }
-
     }
-
-
-    public function show($institucion_id)
-    {
-        $institucion = Institucion::find($institucion_id);
-
-        return response()->json(["data" => $institucion]);
-    }
-
 
     public function update(Request $request, $institucion_id)
     {
-        $request->validate([
-            'nombre' => 'sometimes|string|min:1|max:100',
-            'estado' => 'sometimes|boolean'
-        ]);
-
-        $institucion = Institucion::findOrFail($institucion_id);
-
-        $institucion->update($request->all());
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('institucion.index');
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'sometimes|string|min:1|max:100',
+                'estado' => 'sometimes|boolean'
+            ]);
+    
+            $institucion = Institucion::findOrFail($institucion_id);
+    
+            $institucion->update($request->all());
+            
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('institucion.index');
+            }
+        } catch(Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('institucion.index');
+            }
         }
 
     }
@@ -118,16 +98,27 @@ class InstitucionController extends Controller
 
     public function activarInactivar(Request $request,$institucion_id)
     {
-        $institucion = Institucion::findOrFail($institucion_id);
-
-        $institucion->estado = !$institucion->estado;
-
-        $institucion->save();
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('institucion.index');
+        DB::beginTransaction();
+        try{
+            $institucion = Institucion::findOrFail($institucion_id);
+    
+            $institucion->estado = !$institucion->estado;
+    
+            $institucion->save();
+    
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('institucion.index');
+            }
+        } catch(Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('institucion.index');
+            }
         }
     }
 }

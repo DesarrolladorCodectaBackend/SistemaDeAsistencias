@@ -11,7 +11,7 @@ class CursosController extends Controller
 {
     public function index()
     {
-        $cursos = Cursos::paginate(2);
+        $cursos = Cursos::paginate(12);
 
         $pageData = FunctionHelperController::getPageData($cursos);
         $hasPagination = true;
@@ -26,6 +26,7 @@ class CursosController extends Controller
 
     public function store(Request $request)
     {
+        DB::beginTransaction();
         try{
             $request->validate([
                 'nombre' => 'required|string|min:1|max:100',
@@ -39,12 +40,14 @@ class CursosController extends Controller
                 'duracion' => $request->duracion
             ]);
 
+            DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('cursos.index');
             }
         } catch(Exception $e){
+            DB::rollBack();
             if($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
@@ -54,74 +57,77 @@ class CursosController extends Controller
         
         
     }
-
-
-    public function show($curso_id)
-    {
-        try {
-            $curso = Cursos::find($curso_id);
-
-            if ($curso == null) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
-
-            return response()->json(["data" => $curso]);
-        } catch (Exception $e) {
-            return response()->json(["error" => $e]);
-        }
-       
-    }
-
-
     public function update(Request $request, $curso_id)
     {
-        
-        $request->validate([
-            'nombre' => 'sometimes|string|min:1|max:100',
-            'categoria' => 'sometimes|string|min:1|max:255',
-            'duracion' =>  'sometimes|string|min:1|max:15'
-        ]);
-        
-        $curso = Cursos::findOrFail($curso_id);
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'sometimes|string|min:1|max:100',
+                'categoria' => 'sometimes|string|min:1|max:255',
+                'duracion' =>  'sometimes|string|min:1|max:15'
+            ]);
+            
+            $curso = Cursos::findOrFail($curso_id);
+    
+            
+            $curso->fill([
+                "nombre" => $request->nombre,
+                "categoria" => $request->categoria,
+                "duracion" => $request->duracion
+            ])->save();
+    
+            DB::commit();
 
-        
-        $curso->fill([
-            "nombre" => $request->nombre,
-            "categoria" => $request->categoria,
-            "duracion" => $request->duracion
-        ])->save();
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('cursos.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('cursos.index');
+            }
+        } catch(Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('cursos.index');
+            }
         }
 
     }
 
 
-    public function destroy($curso_id)
-    {
-        $curso = Cursos::findOrFail($curso_id);
+    // public function destroy($curso_id)
+    // {
+    //     $curso = Cursos::findOrFail($curso_id);
 
-        $curso->delete();
+    //     $curso->delete();
 
-        return redirect()->route('cursos.index');
+    //     return redirect()->route('cursos.index');
 
-    }
+    // }
 
     public function activarInactivar(Request $request, $curso_id)
     {
-        $curso = Cursos::findOrFail($curso_id);
-
-        $curso->estado = !$curso->estado;
-
-        $curso->save();
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('cursos.index');
+        DB::beginTransaction();
+        try{
+            $curso = Cursos::findOrFail($curso_id);
+    
+            $curso->estado = !$curso->estado;
+    
+            $curso->save();
+    
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('cursos.index');
+            }
+        } catch(Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('cursos.index');
+            }
         }
     }
 }

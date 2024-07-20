@@ -479,118 +479,93 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             "lastWeek" => $lastWeek
         ]);
     }
-
-    public function create(Request $request)
-    {
-        //
-    }
     
     public function store(Request $request)
     {
-        //return $request;
+        DB::beginTransaction();
+        try{
 
-        $request->validate([
-            'colaborador_area_id.*' => 'required|integer|min:1|max:100',
-            'responsabilidad_id.*' => 'required|integer|min:1|max:255',
-            'semana_id' => 'required|integer|min:1|max:100',
-            'cumplio.*' => 'required|boolean|min:0|max:1',
-            'year' => 'required|integer',
-            'mes' => 'required|string',
-        ]);
-        $year = $request->year;
-        $mes = $request->mes;
-        
-        $colab_id = $request->colaborador_area_id[0];
-        $colab = Colaboradores_por_Area::find($colab_id);
-        $area_id = $colab->area_id;
-
-
-        $responsabilidades = Responsabilidades_semanales::get();
-        $responsabilidadesIds = $responsabilidades->pluck('id');
-
-
-        $contador = 0;
-        $indiceColab = 0;
-        foreach ($request->responsabilidad_id as $keyResp => $responsabilidad_id) {
-            $colaborador_area_id = $request->colaborador_area_id[$indiceColab];
-
-            Cumplio_Responsabilidad_Semanal::create([
-                "colaborador_area_id" => $colaborador_area_id,
-                "responsabilidad_id" => $responsabilidad_id,
-                "semana_id" => $request->semana_id,
-                "cumplio" => $request->cumplio[$keyResp]
+            $request->validate([
+                'colaborador_area_id.*' => 'required|integer|min:1|max:100',
+                'responsabilidad_id.*' => 'required|integer|min:1|max:255',
+                'semana_id' => 'required|integer|min:1|max:100',
+                'cumplio.*' => 'required|boolean|min:0|max:1',
+                'year' => 'required|integer',
+                'mes' => 'required|string',
+                'area_id' => 'required|integer',
             ]);
-
-            $contador++;
-
-            if ($contador >= count($responsabilidadesIds)) {
-                $contador = 0;
-                $indiceColab++;
+            $year = $request->year;
+            $mes = $request->mes;
+            $area_id = $request->area_id;
+            
+            // $colab_id = $request->colaborador_area_id[0];
+            // $colab = Colaboradores_por_Area::find($colab_id);
+    
+    
+            $responsabilidades = Responsabilidades_semanales::get();
+            $responsabilidadesIds = $responsabilidades->pluck('id');
+    
+    
+            $contador = 0;
+            $indiceColab = 0;
+            foreach ($request->responsabilidad_id as $keyResp => $responsabilidad_id) {
+                $colaborador_area_id = $request->colaborador_area_id[$indiceColab];
+    
+                Cumplio_Responsabilidad_Semanal::create([
+                    "colaborador_area_id" => $colaborador_area_id,
+                    "responsabilidad_id" => $responsabilidad_id,
+                    "semana_id" => $request->semana_id,
+                    "cumplio" => $request->cumplio[$keyResp]
+                ]);
+    
+                $contador++;
+    
+                if ($contador >= count($responsabilidadesIds)) {
+                    $contador = 0;
+                    $indiceColab++;
+                }
             }
-        }
+            DB::commit();
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return redirect()->route('responsabilidades.asis', ['year' => $request->$year, 'mes' => $request->$mes,'area_id' => $request->$area_id]);
 
-        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+        }
         
 
     }
-
-
-    public function show($cumplio_responsabilidad_semanal_id)
-    {
-        try {
-            $cumplio_responsabilidad_semanal = Cumplio_Responsabilidad_Semanal::/*with([
-'computadora_colaborador' => function ($query) {
-$query->select(
-'id',
-'colaborador_id',
-'procesador',
-'tarjeta_grafica',
-'ram',
-'almacenamiento',
-'es_laptop',
-'codigo_serie'
-);
-},
-'programas' => function ($query) {
-$query->select('id', 'nombre', 'descripcion', 'memoria_grafica', 'ram'); }
-])->*/ find($cumplio_responsabilidad_semanal_id);
-
-            if (!$cumplio_responsabilidad_semanal) {
-                return response()->json(["resp" => "No existe un registro con ese id"]);
-            }
-
-            return response()->json(["data" => $cumplio_responsabilidad_semanal]);
-        } catch (Exception $e) {
-            return response()->json(["error" => $e]);
-        }
-
-    }
-
 
     public function actualizar(Request $request, $semana_id, $area_id)
     {
-        $request->validate([
-            'colaborador_area_id.*' => 'sometimes|integer|min:1|max:100',
-            'responsabilidad_id.*' => 'sometimes|integer|min:1|max:255',
-            'cumplio.*' => 'sometimes|boolean|min:0|max:1',
-            'year' => 'required|integer',
-            'mes' => 'required|string',
-        ]);
-        $year = $request->year;
-        $mes = $request->mes;
-
-        $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('id');
-
-        $registros = Cumplio_Responsabilidad_Semanal::where('semana_id', $semana_id)->whereIn('colaborador_area_id', $colaboradoresAreaId)->get();
-
-        foreach ($registros as $index => $registro) {
-            $registro->cumplio = $request->cumplio[$index];
-            $registro->save();
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'colaborador_area_id.*' => 'sometimes|integer|min:1|max:100',
+                'responsabilidad_id.*' => 'sometimes|integer|min:1|max:255',
+                'cumplio.*' => 'sometimes|boolean|min:0|max:1',
+                'year' => 'required|integer',
+                'mes' => 'required|string',
+            ]);
+            $year = $request->year;
+            $mes = $request->mes;
+    
+            $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('id');
+    
+            $registros = Cumplio_Responsabilidad_Semanal::where('semana_id', $semana_id)->whereIn('colaborador_area_id', $colaboradoresAreaId)->get();
+    
+            foreach ($registros as $index => $registro) {
+                $registro->cumplio = $request->cumplio[$index];
+                $registro->save();
+            }
+    
+            DB::commit();
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+        } catch(Exception $e){
+            DB::rollback();
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
         }
-
-        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
-
-
+        
     }
 
 

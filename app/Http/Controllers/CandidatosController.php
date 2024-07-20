@@ -73,7 +73,7 @@ class CandidatosController extends Controller
                 'carrera_id' => 'required|integer|min:1|max:20',
                 'correo' => 'required|string|min:1|max:255',
                 'celular' => 'required|string|min:1|max:20',
-                'icono' => 'image|mimes:jpeg,png,jpg,gif'
+                'icono' => 'image'
             ]);
     
             if ($request->hasFile('icono')) {
@@ -116,65 +116,61 @@ class CandidatosController extends Controller
 
     }
 
-
-    public function show($candidato_id)
-    {
-        $candidato = Candidatos::with([
-            'institucion' => function ($query) {
-                $query->select('id', 'nombre');
-            },
-            'carrera' => function ($query) {
-                $query->select('id', 'nombre');
-            }
-        ])->find($candidato_id);
-        return response()->json(["Data" => $candidato]);
-    }
-
-
     public function update(Request $request, $candidato_id)
     {
-        $request->validate([
-            'nombre' => 'sometimes|string|min:1|max:100',
-            'apellido' => 'sometimes|string|min:1|max:100',
-            'dni' => 'sometimes|string|min:1|max:8',
-            'direccion' => 'sometimes|string|min:1|max:100',
-            'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
-            'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
-            'sede_id' => 'sometimes|integer|min:1|max:20',
-            'carrera_id' => 'sometimes|integer|min:1|max:20',
-            'correo' => 'sometimes|string|min:1|max:255',
-            'celular' => 'sometimes|string|min:1|max:20',
-            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif'
-        ]);
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'sometimes|string|min:1|max:100',
+                'apellido' => 'sometimes|string|min:1|max:100',
+                'dni' => 'sometimes|string|min:1|max:8',
+                'direccion' => 'sometimes|string|min:1|max:100',
+                'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
+                'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
+                'sede_id' => 'sometimes|integer|min:1|max:20',
+                'carrera_id' => 'sometimes|integer|min:1|max:20',
+                'correo' => 'sometimes|string|min:1|max:255',
+                'celular' => 'sometimes|string|min:1|max:20',
+                'icono' => 'sometimes|image'
+            ]);
 
-        $candidato = Candidatos::findOrFail($candidato_id);
-        $datosActualizar = $request->except(['icono']);
+            $candidato = Candidatos::findOrFail($candidato_id);
+            $datosActualizar = $request->except(['icono']);
 
-        if ($request->hasFile('icono')) {
-            $rutaPublica = public_path('storage/candidatos');
+            if ($request->hasFile('icono')) {
+                $rutaPublica = public_path('storage/candidatos');
 
-            // Verificar si el icono actual no es el predeterminado
-            if ($candidato->icono && $candidato->icono !== 'default.png') {
-                // Eliminar el icono actual si no es el predeterminado
-                unlink($rutaPublica . '/' . $candidato->icono);
+                // Verificar si el icono actual no es el predeterminado
+                if ($candidato->icono && $candidato->icono !== 'default.png') {
+                    // Eliminar el icono actual si no es el predeterminado
+                    unlink($rutaPublica . '/' . $candidato->icono);
+                }
+
+                $icono = $request->file('icono');
+                $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+
+                $icono->move($rutaPublica, $nombreIcono);
+
+                $datosActualizar['icono'] = $nombreIcono;
             }
 
-            $icono = $request->file('icono');
-            $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
+            $candidato->update($datosActualizar);
 
-            $icono->move($rutaPublica, $nombreIcono);
-
-            $datosActualizar['icono'] = $nombreIcono;
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
+        } catch(Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
         }
-
-        $candidato->update($datosActualizar);
-
-        if($request->currentURL) {
-            return redirect($request->currentURL);
-        } else {
-            return redirect()->route('candidatos.index');
-        }
-    }
+}
 
     public function rechazarCandidato(Request $request, $candidato_id){
         DB::beginTransaction();

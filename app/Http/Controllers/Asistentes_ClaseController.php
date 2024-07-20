@@ -9,6 +9,7 @@ use Exception;
 
 class Asistentes_ClaseController extends Controller
 {
+    //NOT USING YET
     public function index()
     {
         $asistente_clase = Asistentes_Clase::all();

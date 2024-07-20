@@ -26,7 +26,6 @@ class Reuniones_ProgramadasController extends Controller
             $horario->horario_modificado = $horariosFormateados;
         }
 
-
         // return $reuniones;
 
         return view('InspiniaViews.horarios.reuniones_generales', ['reuniones'=> $reuniones]);
@@ -119,12 +118,12 @@ class Reuniones_ProgramadasController extends Controller
 
             // return response()->json(["resp" => "Registro Creado Correctamente"]);
 
-            return redirect()->route('areas.getReuniones', $request->area_id)->with('success', 'Registro creado correctamente');
+            return redirect()->route('areas.getReuniones', $request->area_id);
 
         } catch(Exception $e){
             DB::rollBack();
             // return response()->json(["error" => $e->getMessage()]);
-            return redirect()->route('areas.getReuniones', $request->area_id)->with('error', 'Error al crear el registro');
+            return redirect()->route('areas.getReuniones', $request->area_id);
         }
     }
 
@@ -143,12 +142,12 @@ class Reuniones_ProgramadasController extends Controller
             $reunion->update($request->all());
             DB::commit();
             // return response()->json(["resp" => "Registro Actualizado Correctamente"]);
-            return redirect()->route('areas.getReuniones', $area_id)->with('success', 'Registro actualizado correctamente');
+            return redirect()->route('areas.getReuniones', $area_id);
 
         } catch(Exception $e){
             DB::rollBack();
             // return response()->json(["error" => $e->getMessage()]);
-            return redirect()->route('areas.getReuniones', $area_id)->with('error', 'Error al actualizar el registro');
+            return redirect()->route('areas.getReuniones', $area_id);
         }
     }
 

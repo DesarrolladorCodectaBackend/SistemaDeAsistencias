@@ -9,6 +9,7 @@ use Exception;
 
 class SemanasController extends Controller
 {
+    //NOT USING
     public function index()
     {
         $semanas = Semanas::all();

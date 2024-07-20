@@ -172,45 +172,54 @@ class ColaboradoresController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'candidato_id' => 'required|integer',
-            'areas_id.*' => 'required|integer',
-            'horarios' => 'required|array',
-            'horarios.*.hora_inicial' => 'required|date_format:H:i',
-            'horarios.*.hora_final' => 'required|date_format:H:i',
-            'horarios.*.dia' => 'required|string'
-        ]);
-        //Se busca al candidato por su id
-        $candidato = Candidatos::findOrFail($request->candidato_id);
-        //Se verifica si el candidato está activo 
-        if ($candidato->estado == 1) {
-            //Sí el candidato está activo, se crea un nuevo colaborador con el id del candidato
-            $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
-            //Se recorre el request de areas
-            foreach($request->areas_id as $area_id){
-                //Se crea un nuevo registro en la tabla Colaboradores_por_Area con el id del colaborador y el id del área
-                Colaboradores_por_Area::create([
-                    'colaborador_id' => $colaborador->id,
-                    'area_id' => $area_id,
-                    'semana_inicio_id' => null
-                ]);
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'candidato_id' => 'required|integer',
+                'areas_id.*' => 'required|integer',
+                'horarios' => 'required|array',
+                'horarios.*.hora_inicial' => 'required|date_format:H:i',
+                'horarios.*.hora_final' => 'required|date_format:H:i',
+                'horarios.*.dia' => 'required|string'
+            ]);
+            //Se busca al candidato por su id
+            $candidato = Candidatos::findOrFail($request->candidato_id);
+            //Se verifica si el candidato está activo 
+            if ($candidato->estado == 1) {
+                //Sí el candidato está activo, se crea un nuevo colaborador con el id del candidato
+                $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
+                //Se recorre el request de areas
+                foreach($request->areas_id as $area_id){
+                    //Se crea un nuevo registro en la tabla Colaboradores_por_Area con el id del colaborador y el id del área
+                    Colaboradores_por_Area::create([
+                        'colaborador_id' => $colaborador->id,
+                        'area_id' => $area_id,
+                        'semana_inicio_id' => null
+                    ]);
+                }
+                //Se recorre el request de horarios
+                foreach ($request->horarios as $horario) {
+                    //Se crea un nuevo registro en la tabla Horario_de_Clases con el id del colaborador y los datos del horario
+                    Horario_de_Clases::create([
+                        'colaborador_id' => $colaborador->id,
+                        'hora_inicial' => $horario['hora_inicial'],
+                        'hora_final' => $horario['hora_final'],
+                        'dia' => $horario['dia']
+                    ]);
+                }
+                //Se actualiza el estado del candidato a 0, significa que es un colaborador
+                $candidato->estado = 0;
+                $candidato->save();
             }
-            //Se recorre el request de horarios
-            foreach ($request->horarios as $horario) {
-                //Se crea un nuevo registro en la tabla Horario_de_Clases con el id del colaborador y los datos del horario
-                Horario_de_Clases::create([
-                    'colaborador_id' => $colaborador->id,
-                    'hora_inicial' => $horario['hora_inicial'],
-                    'hora_final' => $horario['hora_final'],
-                    'dia' => $horario['dia']
-                ]);
-            }
-            //Se actualiza el estado del candidato a 0, significa que es un colaborador
-            $candidato->estado = 0;
-            $candidato->save();
+
+            DB::commit();
+            //Se redirige a la vista de colaboradores
+            return redirect()->route('colaboradores.index');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->route('colaboradores.index');
+
         }
-        //Se redirige a la vista de colaboradores
-        return redirect()->route('colaboradores.index');
         
     }
 

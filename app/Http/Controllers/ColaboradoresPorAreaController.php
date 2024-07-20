@@ -9,7 +9,7 @@ use Exception;
 
 class ColaboradoresPorAreaController extends Controller
 {
-    
+    //NOT USING
     public function index()
     {
         $colaboradores_por_area = Colaboradores_por_Area::all();

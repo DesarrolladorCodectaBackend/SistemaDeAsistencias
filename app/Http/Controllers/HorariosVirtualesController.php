@@ -11,7 +11,7 @@ use Exception;
 
 class HorariosVirtualesController extends Controller
 {
-    
+    //NOT USING YET
     public function index()
     {
         $horarios_virtuales = Horarios_Virtuales::all();
