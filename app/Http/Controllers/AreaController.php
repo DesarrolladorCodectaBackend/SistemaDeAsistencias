@@ -410,4 +410,10 @@ class AreaController extends Controller
 
     //     return redirect()->route('areas.index');
     // }
+
+
+    public function activarInactivar(Request $request, $area_id){
+        
+    }
+
 }

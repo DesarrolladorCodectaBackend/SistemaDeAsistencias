@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('objeto_id');
             $table->foreign('objeto_id')->references('id')->on('objetos');
             $table->date('fecha_prestamo');
-            $table->date('fecha_devolucion');
+            $table->date('fecha_devolucion')->nullable()->default(null);
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

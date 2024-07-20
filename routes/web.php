@@ -12,6 +12,7 @@ use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
+use App\Http\Controllers\ObjetoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
@@ -104,6 +105,10 @@ Route::middleware('auth')->group(function () {
     //SEDES
     Route::resource('sedes', SedeController::class);
     Route::post('sedes/activar-inactivar/{sede_id}', [SedeController::class, 'activarInactivar'])->name('sedes.activarInactivar');
+
+
+    //OBJETOS
+    Route::resource('objetos', ObjetoController::class);
 
     //CANDIDATOS
     Route::resource('candidatos', CandidatosController::class);
