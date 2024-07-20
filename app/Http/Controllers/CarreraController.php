@@ -40,9 +40,12 @@ class CarreraController extends Controller
         ]);
 
 
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('carreras.index');
+        }
 
-
-        return redirect()->route('carreras.index');
 
     }
 
@@ -66,7 +69,11 @@ class CarreraController extends Controller
 
         $carrera->update($request->all());
 
-        return redirect()->route('carreras.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('carreras.index');
+        }
 
     }
 
@@ -81,7 +88,7 @@ class CarreraController extends Controller
 
     }
 
-    public function activarInactivar($carrera_id)
+    public function activarInactivar(Request $request,$carrera_id)
     {
         $carrera = Carrera::findOrFail($carrera_id);
 
@@ -89,7 +96,11 @@ class CarreraController extends Controller
 
         $carrera->save();
 
-        return redirect()->route('carreras.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('carreras.index');
+        }
     }
 
 }

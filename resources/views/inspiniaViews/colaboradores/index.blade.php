@@ -269,8 +269,9 @@
                             <div class="product-desc">
                                 <span class="product-price btn-Default" style="background-color: transparent;">
                                     <form method="POST"
-                                        action="{{ route('colaboradores.activarInactivar', $colaborador->id) }}">
+                                        action="{{ route('colaboradores.activarInactivar', ["colaborador_id" => $colaborador->id]) }}">
                                         @csrf
+                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         <button type="submit"
                                             class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
                                             <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -346,6 +347,7 @@
                                                                     margin-bottom: 0rem;
                                                                 }
                                                             </style>
+                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             <div class="row">
                                                                 <div class="col-sm-4 b-r">
                                                                     <h3 class="m-t-none m-b">Informacion Personal
@@ -387,11 +389,14 @@
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Ciclo:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control"
-                                                                            name="ciclo_de_estudiante"
-                                                                            id="ciclo_de_estudiante"
-                                                                            value="{{ old('ciclo_de_estudiante', $colaborador->candidato->ciclo_de_estudiante) }}">
+                                                                        </label>
+                                                                        <select name="ciclo_de_estudiante" class="form-control" required>
+                                                                            @for($i = 4; $i <= 10; $i++)
+                                                                            <option @if($i == $colaborador->candidato->ciclo_de_estudiante) selected @endif >{{$i}}</option>
+                                                                            @endfor
+                                                                            
+                                                                        </select>
+                                                                        
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Correo:</h5>

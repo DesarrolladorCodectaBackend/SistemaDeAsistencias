@@ -11,7 +11,7 @@ class CursosController extends Controller
 {
     public function index()
     {
-        $cursos = Cursos::paginate(12);
+        $cursos = Cursos::paginate(2);
 
         $pageData = FunctionHelperController::getPageData($cursos);
         $hasPagination = true;
@@ -26,21 +26,33 @@ class CursosController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|min:1|max:100',
-            'estado' => 'required|string|min:1|max:255',
-            'duracion' =>  'required|integer|min:1|max:15'
-        ]);
+        try{
+            $request->validate([
+                'nombre' => 'required|string|min:1|max:100',
+                'categoria' => 'required|string|min:1|max:100',
+                'duracion' =>  'required|string|min:1|max:15'
+            ]);
 
-        Cursos::create([
-            'nombre' => $request->nombre,
-            'categoria' => $request->categoria,
-            'duracion' => $request->duracion
-        ]);
+            Cursos::create([
+                'nombre' => $request->nombre,
+                'categoria' => $request->categoria,
+                'duracion' => $request->duracion
+            ]);
 
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('cursos.index');
+            }
+        } catch(Exception $e){
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('cursos.index');
+            }
+        }
         
-        return redirect()->route('cursos.index');
-
+        
     }
 
 
@@ -79,7 +91,11 @@ class CursosController extends Controller
             "duracion" => $request->duracion
         ])->save();
 
-        return redirect()->route('cursos.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('cursos.index');
+        }
 
     }
 
@@ -94,7 +110,7 @@ class CursosController extends Controller
 
     }
 
-    public function activarInactivar($curso_id)
+    public function activarInactivar(Request $request, $curso_id)
     {
         $curso = Cursos::findOrFail($curso_id);
 
@@ -102,6 +118,10 @@ class CursosController extends Controller
 
         $curso->save();
 
-        return redirect()->route('cursos.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('cursos.index');
+        }
     }
 }

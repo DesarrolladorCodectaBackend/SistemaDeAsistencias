@@ -37,6 +37,7 @@
                                 <form role="form" method="POST" action="{{ route('candidatos.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -239,6 +240,7 @@
                                         <form class="text-center" method="POST"
                                             action="{{ route('candidatos.rechazarCandidato', $candidato->id) }}">
                                             @csrf
+                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             <button class="btn btn-danger" type="submit">
                                                 Rechazar
                                             </button>
@@ -308,6 +310,7 @@
                                                             enctype="multipart/form-data">
                                                             @csrf
                                                             @method('PUT')
+                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             <div class="row">
                                                                 <div class="col-sm-6 b-r">
                                                                     <h3 class="m-t-none m-b">Ingrese los Datos</h3>

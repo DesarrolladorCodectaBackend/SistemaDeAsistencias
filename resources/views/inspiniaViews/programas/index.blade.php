@@ -37,6 +37,7 @@
                                 <form role="form" method="POST" action="{{ route('programas.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -105,7 +106,7 @@
                                 <th class="col-lg-1 child-center">Estado</th>
                                 <th class="col-lg-1 child-center">Imagen</th>
                                 <th class="col-lg-1 child-center">Editar</th>
-                                <th class="col-lg-1 child-center">Borrar</th>
+                                {{-- <th class="col-lg-1 child-center">Borrar</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -118,6 +119,7 @@
                                     <form method="POST"
                                         action="{{ route('programas.activarInactivar', $programa->id) }}">
                                         @csrf
+                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         <button type="submit"
                                             class="btn btn-{{ $programa->estado ? 'outline-success' : 'danger' }} btn-primary dim">
                                             <span>{{ $programa->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -139,6 +141,7 @@
                                                     enctype="multipart/form-data">
                                                     @csrf
                                                     @method('PUT')
+                                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                     <div class="row">
                                                         <div class="col-sm-6 b-r">
                                                             <h3 class="m-t-none m-b">Editar</h3>
@@ -182,10 +185,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <td class="child-center"><button class="btn btn-danger" type="button"
+                                {{-- <td class="child-center"><button class="btn btn-danger" type="button"
                                         onclick="confirmDelete({{ $programa->id }})"><i
                                             class="fa fa-trash-o"></i></button>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -236,20 +239,20 @@
         });
     </script>
     <script>
-        function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/programas/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
+        // function confirmDelete(id) {
+        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+        //         if (e) {
+        //             let form = document.createElement('form')
+        //             form.method = 'POST'
+        //             form.action = `/programas/${id}`
+        //             form.innerHTML = '@csrf @method('DELETE')'
+        //             document.body.appendChild(form)
+        //             form.submit()
+        //         } else {
+        //             return false
+        //         }
+        //     });
+        // }
     </script>
 
 

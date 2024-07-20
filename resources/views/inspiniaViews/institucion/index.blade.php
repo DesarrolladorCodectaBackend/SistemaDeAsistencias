@@ -44,6 +44,7 @@
 
                                         <form role="form" method="POST" action="{{ route('institucion.store') }}">
                                             @csrf
+                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             <div class="form-group"><label>Institucion</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
@@ -93,7 +94,7 @@
                                 <th class="col-lg-5">Institucion</th>
                                 <th class="col-lg-1">Estado</th>
                                 <th class="col-lg-1">Editar</th>
-                                <th class="col-lg-1">Borrar</th>
+                                {{-- <th class="col-lg-1">Borrar</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -102,6 +103,7 @@
                                 <td>{{ $insti->id }}</td>
                                 <td>{{ $insti->nombre }}</td>
                                 <td><form method="POST" action="{{ route('institucion.activarInactivar', $insti->id) }}">
+                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     @csrf
                                     <button type="submit" class="btn btn-{{ $insti->estado ? 'outline-success' : 'danger' }} btn-primary dim">
                                         <span>{{ $insti->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -125,6 +127,7 @@
                                                             action="{{ route('institucion.update', $insti->id) }}">
                                                             @csrf
                                                             @method('PUT')
+                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             <label class="col-form-label">Institucion</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
@@ -144,10 +147,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <td><button class="btn btn-danger" type="button"
+                                {{-- <td><button class="btn btn-danger" type="button"
                                     onclick="confirmDelete({{ $insti->id }})"><i
                                         class="fa fa-trash-o"></i></button>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -191,20 +194,20 @@
     </div>
 
     <script>
-        function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/institucion/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
+        // function confirmDelete(id) {
+        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+        //         if (e) {
+        //             let form = document.createElement('form')
+        //             form.method = 'POST'
+        //             form.action = `/institucion/${id}`
+        //             form.innerHTML = '@csrf @method('DELETE')'
+        //             document.body.appendChild(form)
+        //             form.submit()
+        //         } else {
+        //             return false
+        //         }
+        //     });
+        // }
     </script>
 
 

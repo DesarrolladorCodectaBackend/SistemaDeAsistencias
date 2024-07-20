@@ -112,7 +112,7 @@ Route::middleware('auth')->group(function () {
 
     //COLABORADORES
     Route::resource('colaboradores', ColaboradoresController::class);
-    Route::post('colaboradores/{colaboradores}/activar-inactivar', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
+    Route::post('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
     Route::post('colaboradores/filtrar', [ColaboradoresController::class, 'filtrarColaboradores'])->name('colaboradores.filtrar');   
     Route::post('colaboradores/search', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
     

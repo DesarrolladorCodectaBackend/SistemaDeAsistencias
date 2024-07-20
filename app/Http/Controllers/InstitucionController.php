@@ -14,7 +14,7 @@ class InstitucionController extends Controller
 
     public function index()
     {
-        $institucion = Institucion::paginate(12);
+        $institucion = Institucion::paginate(2);
 
         $pageData = FunctionHelperController::getPageData($institucion);
         $hasPagination = true;
@@ -68,11 +68,12 @@ class InstitucionController extends Controller
         institucion::create([
             'nombre' => $request->nombre,
         ]);
-
-
-
-
-        return redirect()->route('institucion.index');
+        
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('institucion.index');
+        }
 
     }
 
@@ -96,7 +97,11 @@ class InstitucionController extends Controller
 
         $institucion->update($request->all());
 
-        return redirect()->route('institucion.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('institucion.index');
+        }
 
     }
 
@@ -111,7 +116,7 @@ class InstitucionController extends Controller
 
     }
 
-    public function activarInactivar($institucion_id)
+    public function activarInactivar(Request $request,$institucion_id)
     {
         $institucion = Institucion::findOrFail($institucion_id);
 
@@ -119,6 +124,10 @@ class InstitucionController extends Controller
 
         $institucion->save();
 
-        return redirect()->route('institucion.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('institucion.index');
+        }
     }
 }

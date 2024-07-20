@@ -98,11 +98,19 @@ class CandidatosController extends Controller
                 'icono' => $nombreIcono
             ]);
             DB::commit();
-            return redirect()->route('candidatos.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
         } catch(Exception $e) {
             DB::rollBack();
             // return $e;
-            return redirect()->route('candidatos.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
         }
         
 
@@ -161,10 +169,14 @@ class CandidatosController extends Controller
 
         $candidato->update($datosActualizar);
 
-        return redirect()->route('candidatos.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('candidatos.index');
+        }
     }
 
-    public function rechazarCandidato($candidato_id){
+    public function rechazarCandidato(Request $request, $candidato_id){
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);
@@ -175,10 +187,18 @@ class CandidatosController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->route('candidatos.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
         } catch(Exception $e){
             DB::rollBack();
-            return redirect()->route('candidatos.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
         }
     }
 

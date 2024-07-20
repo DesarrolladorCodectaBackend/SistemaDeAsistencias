@@ -10,7 +10,7 @@ class ProgramasController extends Controller
 {
     public function index()
     {
-        $programas = Programas::paginate(12);
+        $programas = Programas::paginate(3);
         $pageData = FunctionHelperController::getPageData($programas);
         $hasPagination = true;
 
@@ -40,7 +40,7 @@ class ProgramasController extends Controller
         $request->validate([
             'nombre' => 'required|string|min:1|max:100',
             'descripcion' => 'required|string|min:1|max:255',
-            'icono' => 'image|mimes:jpeg,png,jpg,gif'
+            'icono' => 'image'
         ]);
 
         if ($request->hasFile('icono')) {
@@ -59,7 +59,11 @@ class ProgramasController extends Controller
         ]);
 
 
-        return redirect()->route('programas.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('programas.index');
+        }
     }
 
 
@@ -102,7 +106,11 @@ class ProgramasController extends Controller
 
         $programa->update($datosActualizar);
 
-        return redirect()->route('programas.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('programas.index');
+        }
     }
 
 
@@ -116,7 +124,7 @@ class ProgramasController extends Controller
         return redirect()->route('programas.index');
     }
 
-    public function activarInactivar($programa_id)
+    public function activarInactivar(Request $request, $programa_id)
     {
         $programa = Programas::findOrFail($programa_id);
 
@@ -124,6 +132,10 @@ class ProgramasController extends Controller
 
         $programa->save();
 
-        return redirect()->route('programas.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('programas.index');
+        }
     }
 }

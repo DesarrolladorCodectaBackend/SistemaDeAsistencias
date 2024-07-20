@@ -44,6 +44,7 @@
 
                                         <form role="form" method="POST" action="{{ route('carreras.store') }}">
                                             @csrf
+                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             <div class="form-group"><label>Carrera</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control" required>
                                             </div>
@@ -93,7 +94,7 @@
                                 <th class="col-lg-5">Carrera</th>
                                 <th class="col-lg-1">Estado</th>
                                 <th class="col-lg-1">Editar</th>
-                                <th class="col-lg-1">Borrar</th>
+                                {{-- <th class="col-lg-1">Borrar</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -103,6 +104,7 @@
                                 <td>{{ $carrera->nombre }}</td>
                                 <td><form method="POST" action="{{ route('carreras.activarInactivar', $carrera->id) }}">
                                     @csrf
+                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     <button type="submit" class="btn btn-{{ $carrera->estado ? 'outline-success' : 'danger' }} btn-primary dim">
                                         <span>{{ $carrera->estado ? 'Activo' : 'Inactivo' }}</span>
                                     </button>
@@ -125,6 +127,7 @@
                                                             action="{{ route('carreras.update', $carrera->id) }}">
                                                             @csrf
                                                             @method('PUT')
+                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             <label class="col-form-label">Carrera</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
@@ -144,10 +147,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <td><button class="btn btn-danger" type="button"
+                                {{-- <td><button class="btn btn-danger" type="button"
                                     onclick="confirmDelete({{ $carrera->id }})"><i
                                         class="fa fa-trash-o"></i></button>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -190,20 +193,20 @@
     </div>
 
     <script>
-        function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/carreras/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
+        // function confirmDelete(id) {
+        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+        //         if (e) {
+        //             let form = document.createElement('form')
+        //             form.method = 'POST'
+        //             form.action = `/carreras/${id}`
+        //             form.innerHTML = '@csrf @method('DELETE')'
+        //             document.body.appendChild(form)
+        //             form.submit()
+        //         } else {
+        //             return false
+        //         }
+        //     });
+        // }
     </script>
 
 </body>

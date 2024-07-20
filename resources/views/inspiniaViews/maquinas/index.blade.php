@@ -34,6 +34,7 @@
                         <form role="form" method="POST" action="{{ route('maquinas.store') }}"
                             enctype="multipart/form-data">
                             @csrf
+                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-body">
@@ -108,6 +109,7 @@
                                 <span class="product-price" style="background: transparent">
                                     <form method="POST" action="{{ route('maquinas.activarInactivar', $maquina->id) }}">
                                         @csrf
+                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         <button type="submit"
                                             class="btn btn-{{ $maquina->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
                                             <span>{{ $maquina->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -144,9 +146,6 @@
                                     <a href="#" data-toggle="model"> <i></i> </a>
                                     <div class="ibox-content">
                                         <div class="text-right">
-                                            <button class="btn btn-primary btn-danger fa fa-trash"
-                                                style="font-size: 20px;" type="button"
-                                                onclick="confirmDelete({{ $maquina->id }})"></button>
                                             <a data-toggle="modal" class="btn btn-primary fa fa-edit"
                                                 style="font-size: 20px;"
                                                 href="#modal-form-update-{{ $maquina->id }}"></a>
@@ -157,6 +156,7 @@
                                                 action="{{ route('maquinas.update', $maquina->id) }}">
                                                 @method('PUT')
                                                 @csrf
+                                                <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-body">

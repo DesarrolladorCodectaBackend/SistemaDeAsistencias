@@ -294,12 +294,20 @@ class AreaController extends Controller
             DB::commit();
             //return response()->json(["resp" => "Área creada correctamente"]);
             //Se redirige a la vista index.blade.php de la carpeta areas
-            return redirect()->route('areas.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('areas.index');
+            }
         } catch (\Exception $e) {
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollback();
-            return redirect()->route('areas.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('areas.index');
+            }
             //Se retorna un mensaje avisando que hubo un error con la información del error
             // return response()->json(["message" => "Error al crear el registro", "error" => $e->getMessage()]);
         }
@@ -388,12 +396,20 @@ class AreaController extends Controller
             //Se confirma la transacción
             DB::commit();
             //Se redirige a la vista index.blade.php de la carpeta areas
-            return redirect()->route('areas.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('areas.index');
+            }
         } catch (\Exception $e) {
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollBack();
-            return redirect()->route('areas.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('areas.index');
+            }
             //Se retorna un mensaje avisando que hubo un error con la información del error
             // return response()->json(["message" => "Hubo un error", "error" => $e->getMessage()]);
         }

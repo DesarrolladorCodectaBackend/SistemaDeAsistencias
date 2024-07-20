@@ -44,6 +44,7 @@
 
                                         <form role="form" method="POST" action="{{ route('cursos.store') }}">
                                             @csrf
+                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             <div class="form-group"><label>Curso</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
@@ -101,7 +102,7 @@
                                 <th class="col-lg-1">Duracion</th>
                                 <th class="col-lg-1">Estado</th>
                                 <th class="col-lg-1">Editar</th>
-                                <th class="col-lg-1">Borrar</th>
+                                {{-- <th class="col-lg-1">Borrar</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -113,6 +114,7 @@
                                 <td>{{ $curso->duracion }}</td>
                                 <td><form method="POST" action="{{ route('cursos.activarInactivar', $curso->id) }}">
                                     @csrf
+                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     <button type="submit" class="btn btn-{{ $curso->estado ? 'outline-success' : 'danger' }} btn-primary dim">
                                         <span>{{ $curso->estado ? 'Activo' : 'Inactivo' }}</span>
                                     </button>
@@ -135,6 +137,7 @@
                                                             action="{{ route('cursos.update', $curso->id) }}">
                                                             @csrf
                                                             @method('PUT')
+                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             <label class="col-form-label">Cursos</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
@@ -160,10 +163,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <td><button class="btn btn-danger" type="button"
+                                {{-- <td><button class="btn btn-danger" type="button"
                                     onclick="confirmDelete({{ $curso->id }})"><i
                                         class="fa fa-trash-o"></i></button>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -205,20 +208,20 @@
     </div>
 
     <script>
-        function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/cursos/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
+        // function confirmDelete(id) {
+        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+        //         if (e) {
+        //             let form = document.createElement('form')
+        //             form.method = 'POST'
+        //             form.action = `/cursos/${id}`
+        //             form.innerHTML = '@csrf @method('DELETE')'
+        //             document.body.appendChild(form)
+        //             form.submit()
+        //         } else {
+        //             return false
+        //         }
+        //     });
+        // }
     </script>
 
 </body>

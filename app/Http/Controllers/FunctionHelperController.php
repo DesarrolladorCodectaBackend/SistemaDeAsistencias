@@ -33,6 +33,7 @@ class FunctionHelperController extends Controller
     public static function getPageData($collection){
         $pageData = [
             'currentPage' => $collection->currentPage(),
+            'currentURL' => $collection->url($collection->currentPage()),
             'lastPage' => $collection->lastPage(),
             'nextPageUrl' => $collection->nextPageUrl(),
             'previousPageUrl' => $collection->previousPageUrl(),

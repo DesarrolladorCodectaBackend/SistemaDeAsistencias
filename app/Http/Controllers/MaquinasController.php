@@ -57,7 +57,11 @@ class MaquinasController extends Controller
             "salon_id" => $request->salon_id
         ]);
 
-        return redirect()->route('maquinas.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('maquinas.index');
+        }
 
     }
 
@@ -84,7 +88,11 @@ class MaquinasController extends Controller
         
         $maquina->update($request->all());
         
-        return redirect()->route('maquinas.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('maquinas.index');
+        }
     }
 
     public function destroy($maquina_id)
@@ -96,7 +104,7 @@ class MaquinasController extends Controller
         return redirect()->route('maquinas.index');
     }
 
-    public function activarInactivar($maquina_id)
+    public function activarInactivar(Request $request, $maquina_id)
     {
         $maquina = Maquinas::findOrFail($maquina_id);
 
@@ -104,7 +112,11 @@ class MaquinasController extends Controller
 
         $maquina->save();
 
-        return redirect()->route('maquinas.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('maquinas.index');
+        }
     }
 
 }

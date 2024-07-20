@@ -34,6 +34,7 @@ class ColaboradoresController extends Controller
         $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
+        // return $pageData;
 
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
@@ -210,6 +211,7 @@ class ColaboradoresController extends Controller
         }
         //Se redirige a la vista de colaboradores
         return redirect()->route('colaboradores.index');
+        
     }
 
     public function update(Request $request, $colaborador_id)
@@ -228,7 +230,8 @@ class ColaboradoresController extends Controller
                 'correo' => 'sometimes|string|min:1|max:255',
                 'celular' => 'sometimes|string|min:1|max:20',
                 'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
-                'areas_id.*' => 'sometimes|integer'
+                'areas_id.*' => 'sometimes|integer',
+                'currentURL' => 'sometimes|string',
     
             ]);
             //Encontrar al colaborador con su candidato por su id
@@ -284,13 +287,20 @@ class ColaboradoresController extends Controller
             DB::commit();
     
             //Se redirige a la vista 
-            return redirect()->route('colaboradores.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
         } catch(Exception $e){
             DB::rollBack();
             // return $e;
-            return redirect()->route('colaboradores.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
         }
-        
     }
 
 
@@ -307,26 +317,30 @@ class ColaboradoresController extends Controller
 
     public function activarInactivar(Request $request, $colaborador_id)
     {
-        $colaborador = Colaboradores::findOrFail($colaborador_id);
+        DB::beginTransaction();
+        try{
+            $colaborador = Colaboradores::findOrFail($colaborador_id);
 
-        $colaborador->estado = !$colaborador->estado;
+            $colaborador->estado = !$colaborador->estado;
 
-        $colaborador->save();
+            $colaborador->save();
+            DB::commit();
 
-        //$url = URL::current();
-
-        //Session::put('previousUrl', url()->previous());
-
-        //return redirect()->route('colaboradores.index');
-
-        //$params = $request->except('_token');
-
-        // Redirigir a la URL anterior con los parámetros de filtro
-        //return redirect()->route('colaboradores.index', $params);
-
-        return redirect()->route('colaboradores.index');
-        //return back();
-        //return redirect($url);
+            // return redirect()->route('colaboradores.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
+        } catch(Exception $e) {
+            DB::rollBack();
+            // return redirect()->route('colaboradores.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
+        }
     }
 
 

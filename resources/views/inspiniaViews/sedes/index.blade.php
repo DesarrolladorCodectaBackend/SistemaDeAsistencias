@@ -39,6 +39,7 @@
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                         <form role="form" method="POST" action="{{ route('sedes.store') }}">
                                             @csrf
+                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             <div class="form-group">
                                                 <label>Nombre: </label>
                                                 <input type="text" placeholder="Ingrese un nombre" name="nombre"
@@ -113,6 +114,7 @@
                                 <td class="text-center">
                                     <form method="POST" action="{{ route('sedes.activarInactivar', $sede->id) }}">
                                         @csrf
+                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         <button type="submit"
                                             class="btn btn-{{ $sede->estado ? 'outline-success' : 'danger' }} btn-primary dim">
                                             <span>{{ $sede->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -134,6 +136,7 @@
                                                             action="{{ route('sedes.update', $sede->id) }}">
                                                             @csrf
                                                             @method('PUT')
+                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             <label class="col-form-label">Institucion</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."

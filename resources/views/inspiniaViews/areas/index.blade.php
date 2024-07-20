@@ -33,6 +33,7 @@
                                 <form role="form" method="POST" action="{{ route('areas.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -124,6 +125,7 @@
                                                         enctype="multipart/form-data">
                                                         @csrf
                                                         @method('PUT')
+                                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                         <div class="row">
                                                             <div class="col-sm-6 b-r">
                                                                 <h3 class="m-t-none m-b">Ingrese los Datos</h3>

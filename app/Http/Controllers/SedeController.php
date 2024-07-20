@@ -41,10 +41,18 @@ class SedeController extends Controller
                 ]);
             }
             DB::commit();
-            return redirect()->route('sedes.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('sedes.index');
+            }
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->route('sedes.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('sedes.index');
+            }
         }
     }
 
@@ -66,14 +74,22 @@ class SedeController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->route('sedes.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('sedes.index');
+            }
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->route('sedes.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('sedes.index');
+            }
         }
     }
 
-    public function activarInactivar($sede_id){
+    public function activarInactivar(Request $request, $sede_id){
         DB::beginTransaction();
         try{
             $sede = Sede::findOrFail($sede_id);
@@ -83,10 +99,18 @@ class SedeController extends Controller
                 ]);
             }
             DB::commit();
-            return redirect()->route('sedes.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('sedes.index');
+            }
         } catch(Exception $e){
             DB::rollBack();
-            return redirect()->route('sedes.index');
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('sedes.index');
+            }
         }
     }
 

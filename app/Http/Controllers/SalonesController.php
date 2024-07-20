@@ -62,7 +62,12 @@ class SalonesController extends Controller
         ]);
 
         
-        return redirect()->route('salones.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('salones.index');
+        }
+
     }
 
     
@@ -89,7 +94,11 @@ class SalonesController extends Controller
 
         $salon->update($datosActualizar);
 
-        return redirect()->route('salones.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('salones.index');
+        }
 
     }
 
@@ -103,7 +112,7 @@ class SalonesController extends Controller
         return redirect()->route('salones.index');
     }
 
-    public function activarInactivar($salon_id)
+    public function activarInactivar(Request $request, $salon_id)
     {
         $salon = Salones::findOrFail($salon_id);
 
@@ -111,7 +120,11 @@ class SalonesController extends Controller
 
         $salon->save();
 
-        return redirect()->route('salones.index');
+        if($request->currentURL) {
+            return redirect($request->currentURL);
+        } else {
+            return redirect()->route('salones.index');
+        }
     }
 
     public function activarInactivarMaquina($maquina_id)
