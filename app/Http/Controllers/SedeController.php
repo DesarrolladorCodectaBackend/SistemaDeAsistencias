@@ -12,11 +12,17 @@ class SedeController extends Controller
 {
     public function index()
     {
-        $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->paginate(12);
         $instituciones = Institucion::orderBy('nombre', 'asc')->get();
+
+        $pageData = FunctionHelperController::getPageData($sedes);
+        $hasPagination = true;
+
         return view('inspiniaViews.sedes.index', [
             "sedes" => $sedes,
             "instituciones" => $instituciones,
+            "pageData" => $pageData,
+            "hasPagination" => $hasPagination,
         ]);
     }
 

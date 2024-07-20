@@ -11,9 +11,16 @@ class CursosController extends Controller
 {
     public function index()
     {
-        $cursos = Cursos::all();
+        $cursos = Cursos::paginate(12);
 
-        return view('inspiniaViews.cursos.index', compact('cursos'));
+        $pageData = FunctionHelperController::getPageData($cursos);
+        $hasPagination = true;
+
+        return view('inspiniaViews.cursos.index', [
+            'cursos' => $cursos,
+            'pageData' => $pageData,
+            'hasPagination' => $hasPagination
+        ]);
     }
 
 

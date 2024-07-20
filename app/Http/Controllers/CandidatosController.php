@@ -18,11 +18,19 @@ class CandidatosController extends Controller
 
     public function index()
     {
-        $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 1)->get();
+        $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 1)->paginate(6);
         $sedes = Sede::with('institucion')->where('estado', true)->orderBy('nombre', 'asc')->get();
         $carreras = Carrera::all();
-
-        return view('inspiniaViews.candidatos.index', compact('candidatos', 'sedes', 'carreras'));
+        $pageData = FunctionHelperController::getPageData($candidatos);
+        $hasPagination = true;
+        // return $pageData;
+        return view('inspiniaViews.candidatos.index', [
+            'candidatos' => $candidatos,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
+            'sedes' => $sedes,
+            'carreras' => $carreras
+        ]);
     }
 
     public function getFormToColab($candidato_id)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\FunctionHelperController;
 use App\Models\Area;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
@@ -22,49 +23,16 @@ use Exception;
 
 class ColaboradoresController extends Controller
 {
-
-    public function colaboradoresConArea($colaboradoresBase){
-        $colaboradoresConArea = [];
-
-        foreach ($colaboradoresBase as $colaborador) {
-            $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->where('estado', true)->get();
-            if (count($colaboradorArea)>0) {
-                $areas = [];
-
-                foreach($colaboradorArea as $colArea){
-                    $areas[] = $colArea->area->especializacion;
-                }
-                $colaborador->areas = $areas;
-            } else {
-                $colaborador->areas = ['Sin área asignada'];
-            }
-            $colaboradoresConArea[] = $colaborador;
-        }
-        return $colaboradoresConArea;
-    }
-
-    public function getPageData($collection){
-        $pageData = [
-            'currentPage' => $collection->currentPage(),
-            'lastPage' => $collection->lastPage(),
-            'nextPageUrl' => $collection->nextPageUrl(),
-            'previousPageUrl' => $collection->previousPageUrl(),
-            'lastPageUrl' => $collection->url($collection->lastPage()),
-        ];
-        $pageData = json_decode(json_encode($pageData));
-        return $pageData;
-    }
-
     public function index()
     {
-        $colaboradores = Colaboradores::with('candidato')->paginate(3);
+        $colaboradores = Colaboradores::with('candidato')->paginate(12);
         $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $instituciones = Institucion::get();
         $carreras = Carrera::get();
         $areas = Area::get();
-        $colaboradoresConArea = $this->colaboradoresConArea($colaboradores->items());
+        $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colaboradores->items());
         $colaboradores->data = $colaboradoresConArea;
-        $pageData = $this->getPageData($colaboradores);
+        $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
 
         return view('inspiniaViews.colaboradores.index', [

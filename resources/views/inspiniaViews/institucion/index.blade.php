@@ -154,60 +154,41 @@
                     </table>
                 </div>
             </div>
-
+            @if($hasPagination === true)
+                <div class="row mb-5 mb-md-4">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
+                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
+                            <a href="{{ $institucion->url(1) }}" class="btn btn-outline-dark rounded-5">
+                                <i class="fa fa-arrow-circle-left"></i> First
+                            </a>
+                        @endif
+                        @if($pageData->currentPage > 1)
+                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
+                                <i class="fa fa-arrow-circle-left"></i> Anterior
+                            </a>
+                        @endif
+                    </div>
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
+                        @if($pageData->currentPage < $pageData->lastPage)
+                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
+                                Siguiente <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        @endif
+                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
+                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
+                                Last <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            @endif
         </div>
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         @include('components.inspinia.footer-inspinia')
 
     </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ajustes = document.getElementById('ajustesCont');
-            if (ajustes) {
-                ajustes.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'ajustesCont' no se encontró en el DOM.");
-            }
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            const institucion = document.getElementById('instituciones');
-            if (institucion) {
-                institucion.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'instituciones' no se encontró en el DOM.");
-            }
-        });
-    </script>
 
     <script>
         function confirmDelete(id) {
@@ -224,21 +205,6 @@
                 }
             });
         }
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var estadoCheckbox = document.getElementById('estado');
-            var estadoHidden = document.getElementById('estado_hidden');
-            
-            estadoCheckbox.addEventListener('change', function () {
-                if (this.checked) {
-                    estadoHidden.value = '1';
-                } else {
-                    estadoHidden.value = '0';
-                }
-            });
-        });
     </script>
 
 

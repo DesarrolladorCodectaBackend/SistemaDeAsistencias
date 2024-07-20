@@ -16,54 +16,23 @@ use Exception;
 
 class Cumplio_Responsabilidad_SemanalController extends Controller
 {
-
-    public function years()
-    {
-        $TotalSemanas = Semanas::get();
-        $Years = [];
-
-        foreach ($TotalSemanas as $semana) {
-            $semanaYear = date('Y', strtotime($semana->fecha_lunes));
-            if (!in_array($semanaYear, $Years)) {
-                $Years[] = $semanaYear;
-            }
-        }
-
-        return $Years;
-    }
-
-    public function meses()
-    {
-        $Meses = [
-            "Enero" => ["nombre" => "Enero", "id" => "01"],
-            "Febrero" => ["nombre" => "Febrero", "id" => "02"],
-            "Marzo" => ["nombre" => "Marzo", "id" => "03"],
-            "Abril" => ["nombre" => "Abril", "id" => "04"],
-            "Mayo" => ["nombre" => "Mayo", "id" => "05"],
-            "Junio" => ["nombre" => "Junio", "id" => "06"],
-            "Julio" => ["nombre" => "Julio", "id" => "07"],
-            "Agosto" => ["nombre" => "Agosto", "id" => "08"],
-            "Septiembre" => ["nombre" => "Septiembre", "id" => "09"],
-            "Octubre" => ["nombre" => "Octubre", "id" => "10"],
-            "Noviembre" => ["nombre" => "Noviembre", "id" => "11"],
-            "Diciembre" => ["nombre" => "Diciembre", "id" => "12"],
-        ];
-
-        return $Meses;
-    }
-
     public function index()
     {
-        $areas = Area::get();
+        $areas = Area::with('salon')->where('estado', 1)->paginate(12);
 
-        $Years = $this->years();
+        $Years = FunctionHelperController::getYears();
         $countYears = count($Years);
         $currentYear = last($Years);
+
+        $pageData = FunctionHelperController::getPageData($areas);
+        $hasPagination = true;
 
         return view('inspiniaViews.responsabilidades.index', [
             'countYears' => $countYears,
             'currentYear' => $currentYear,
-            'areas' => $areas
+            'areas' => $areas,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
         ]);
 
     }
@@ -71,7 +40,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     public function getYearsArea($area_id)
     {
 
-        $Years = $this->years();
+        $Years = FunctionHelperController::getYears();
 
         return view(
             'inspiniaViews.responsabilidades.years',
@@ -84,7 +53,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
     public function getMesesAreas($year, $area_id)
     {
-        $Meses = $this->meses();
+        $Meses = FunctionHelperController::getMonths();
 
         $area = Area::findOrFail($area_id);
 
@@ -135,7 +104,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $colaboradoresAreaId = $colaboradoresArea->pluck('id');
         //return $registros;
 
-        $Meses = $this->meses();
+        $Meses = FunctionHelperController::getMonths();
 
         //Obtener las semanas del mes
         $semanasMes = [];
@@ -190,7 +159,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->with('colaborador')->get();
         $colaboradoresAreaId = $colaboradoresArea->pluck('id');
 
-        $Meses = $this->meses();
+        $Meses = FunctionHelperController::getMonths();
 
         $semanasMes = [];
         $semanasMesId = [];
@@ -339,7 +308,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $year = $request->year;
         $selectedMonths = json_decode($request->input('selected_months'), true);
 
-        $Meses = $this->meses();
+        $Meses = FunctionHelperController::getMonths();
 
         $totalSemanasCumplidasCount = 0;
         $totalDataProm = [];

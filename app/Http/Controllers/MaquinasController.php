@@ -13,11 +13,19 @@ class MaquinasController extends Controller
     
     public function index()
     {
-        $maquinas = Maquinas::get();
+        $maquinas = Maquinas::orderBy('salon_id', 'asc')->paginate(12);
 
         $salones = Salones::get();
 
-        return view('inspiniaViews.maquinas.index', compact('maquinas', 'salones'));
+        $pageData = FunctionHelperController::getPageData($maquinas);
+        $hasPagination = true;
+
+        return view('inspiniaViews.maquinas.index', [
+            'maquinas' => $maquinas,
+            'salones' => $salones,
+            'pageData' => $pageData,
+            'hasPagination' => $hasPagination,
+        ]);
     }
 
     

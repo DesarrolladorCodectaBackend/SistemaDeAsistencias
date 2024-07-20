@@ -28,8 +28,7 @@
 
                 <div class="ibox-content">
                     <div class="text-center">
-                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form1"> Agregar <i
-                                class="fa fa-long-arrow-right"></i></a>
+                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form1"> Agregar </a>
                     </div>
                     <div id="modal-form1" class="modal fade" aria-hidden="true">
                         <form role="form" method="POST" action="{{ route('maquinas.store') }}"
@@ -61,11 +60,6 @@
                                                         class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-check"
                                                         type="submit"
                                                         style="margin: 5x"><strong>Agregar</strong></button>
-                                                    <button
-                                                        class="btn btn-sm btn-blank float-right m-t-n-xs fa fa-trash"
-                                                        href="maquinas">
-                                                        <strong>Cancelar</strong>
-                                                    </button>
                                                 </div>
 
                                             </div>
@@ -193,11 +187,6 @@
                                                                             class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-check"
                                                                             type="submit"
                                                                             style="margin: 5x"><strong>Aceptar</strong></button>
-                                                                        <button
-                                                                            class="btn btn-sm btn-blank float-right m-t-n-xs fa fa-trash"
-                                                                            href="maquinas">
-                                                                            <strong>Cancelar</strong>
-                                                                        </button>
                                                                     </div>
 
                                                                 </div>
@@ -243,6 +232,34 @@
                 </div>
                 @endforeach
             </div>
+            @if($hasPagination === true)
+                <div class="row mb-5 mb-md-4">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
+                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
+                            <a href="{{ $maquinas->url(1) }}" class="btn btn-outline-dark rounded-5">
+                                <i class="fa fa-arrow-circle-left"></i> First
+                            </a>
+                        @endif
+                        @if($pageData->currentPage > 1)
+                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
+                                <i class="fa fa-arrow-circle-left"></i> Anterior
+                            </a>
+                        @endif
+                    </div>
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
+                        @if($pageData->currentPage < $pageData->lastPage)
+                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
+                                Siguiente <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        @endif
+                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
+                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
+                                Last <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            @endif
         </div>
 
 

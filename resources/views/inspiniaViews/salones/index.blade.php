@@ -52,8 +52,6 @@
 
                                                 <div
                                                     style="display:flex; justify-content: center; align-items: center; gap: 15px">
-                                                    <a href="salones"
-                                                        class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
                                                     <button class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                         type="submit"><i
                                                             class="fa fa-check"></i>&nbsp;Confirmar</button>
@@ -191,8 +189,6 @@
                                                                     </div>
 
                                                                     <div>
-                                                                        <a href="salones"
-                                                                            class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
                                                                         <button
                                                                             class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                                             type="submit"><i
@@ -215,6 +211,34 @@
                 </div>
                 @endforeach
             </div>
+            @if($hasPagination === true)
+                <div class="row mb-5 mb-md-4">
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
+                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
+                            <a href="{{ $salones->url(1) }}" class="btn btn-outline-dark rounded-5">
+                                <i class="fa fa-arrow-circle-left"></i> First
+                            </a>
+                        @endif
+                        @if($pageData->currentPage > 1)
+                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
+                                <i class="fa fa-arrow-circle-left"></i> Anterior
+                            </a>
+                        @endif
+                    </div>
+                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
+                        @if($pageData->currentPage < $pageData->lastPage)
+                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
+                                Siguiente <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        @endif
+                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
+                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
+                                Last <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            @endif
         </div>
 
 

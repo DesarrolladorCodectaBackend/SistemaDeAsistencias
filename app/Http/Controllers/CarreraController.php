@@ -14,9 +14,16 @@ class CarreraController extends Controller
 
     public function index()
     {
-        $carreras = Carrera::get();
+        $carreras = Carrera::paginate(12);
 
-        return view('inspiniaViews.carreras.index', compact('carreras'));
+        $pageData = FunctionHelperController::getPageData($carreras);
+        $hasPagination = true;
+
+        return view('inspiniaViews.carreras.index', [
+            'carreras' => $carreras,
+            'pageData' => $pageData, 
+            'hasPagination' => $hasPagination,
+        ]);
 
     }
 

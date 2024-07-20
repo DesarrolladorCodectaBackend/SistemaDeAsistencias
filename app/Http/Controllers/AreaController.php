@@ -30,103 +30,17 @@ class AreaController extends Controller
     public function index()
     {
         //Recurar todos los registros en áreas
-        $areas = Area::with('salon')->get();
+        $areas = Area::with('salon')->paginate(12);
         $salones = Salones::get();
+        $pageData = FunctionHelperController::getPageData($areas);
+        $hasPagination = true;
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
-        return view('inspiniaViews.areas.index', compact('areas', 'salones'));
-    }
-
-    public function indexpractica1()
-    {
-        //Recurar todos los registros en áreas
-        $areas = Area::get();
-        // return response()->json(["areas" => $areas]);
-        //Redirigir a la vista mandando las áreas
-        return view('practica.practica1', compact('areas'));
-    }
-
-    public function indexpractica2()
-    {
-        //Recurar todos los registros en áreas
-        $areas = Area::get();
-        // return response()->json(["areas" => $areas]);
-        //Redirigir a la vista mandando las áreas
-        return view('practica.practica2', compact('areas'));
-    }
-
-    public function indexpractica3()
-    {
-        //Recurar todos los registros en áreas
-        $areas = Area::get();
-        // return response()->json(["areas" => $areas]);
-        //Redirigir a la vista mandando las áreas
-        return view('practica.practica3', compact('areas'));
-    }
-
-    public function create()
-    {
-        return view('areas.create');
-    }
-
-    
-    public function getFormHorariosOld($area_id){
-        //Encontrar area
-        $area = Area::findOrFail($area_id);
-        //Encontrar el id de los colaboradores del área
-        $colaboradoresAreaId = Colaboradores_por_Area::where('estado', true)->where('area_id', $area_id)->get()->pluck('colaborador_id');
-        //encontrar los días de clase de esos colaboradores
-        $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
-        $diasColaboradores = $horariosColaboradores->pluck('dia');
-        //Filtrar los horarios exceptuando las que tiene días usados por los colaboradores
-        $horariosDisponibles = Horarios_Presenciales::whereNotIn('dia', $diasColaboradores)->get();
-        
-        $hasHorario = false;
-        $horarioAsignado = Horario_Presencial_Asignado::with('horario_presencial')->where('area_id', $area_id)->get();
-        
-        $horariosFormateados = [];
-        if(count($horarioAsignado)>0){
-            $hasHorario = true;
-            foreach ($horarioAsignado as $horario) {
-                $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
-                $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-    
-                $horariosFormateados[] = [
-                    'hora_inicial' => $horaInicial,
-                    'hora_final' => $horaFinal,
-                    'dia' => $horario->horario_presencial->dia,
-                ];
-            }
-
-        } else{
-            $hasHorario = false;
-        }
-
-        foreach($horariosDisponibles as $horario) {
-            //En caso sea igual al horario asignado, darle un campo "actual" true; para que en el front sepa que es el horario actual y no lo pueda cambiar
-            //Hacer los cambios en el mismo array usado "horariosDisponibles" para no tener que hacer otro foreach y no tener que crear otro array
-            if($hasHorario) {
-                foreach($horarioAsignado as $horarioAsig) {
-                    if($horarioAsig->horario_presencial_id == $horario->id) {
-                        $horario->actual = true;
-                        break;
-                    } else {
-                        $horario->actual = false;
-                    }
-                }
-            } else {
-                $horario->actual = false;
-            }
-        }
-
-        // return $horariosDisponibles;
-
-        return view('inspiniaViews.areas.gestHorarios', [
-            "area" => $area,
-            "horariosDisponibles" => $horariosDisponibles,
-            "horarioAsignado" => $horarioAsignado,
-            "horariosFormateados" => $horariosFormateados,
-            "hasHorario" => $hasHorario
+        return view('inspiniaViews.areas.index', [
+            'areas' => $areas,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
+            'salones' => $salones
         ]);
     }
     

@@ -13,7 +13,7 @@ class SalonesController extends Controller
     
     public function index()
     {
-        $salones = Salones::get();
+        $salones = Salones::paginate(12);
 
         foreach($salones as $salon){
             $maquinas = Maquinas::where('salon_id', $salon->id)->get();
@@ -21,7 +21,14 @@ class SalonesController extends Controller
             $salon->cant_maquinas = $conteoMaquinas;
         }
 
-        return view('inspiniaViews.salones.index', compact('salones'));
+        $pageDate = FunctionHelperController::getPageData($salones);
+        $hasPagination = true;
+
+        return view('inspiniaViews.salones.index', [
+            'salones' => $salones, 
+            'pageData' => $pageDate, 
+            'hasPagination' => $hasPagination
+        ]);
     }
     
     public function salonMaquinas($salon_id){

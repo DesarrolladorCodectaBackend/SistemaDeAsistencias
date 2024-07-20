@@ -14,11 +14,17 @@ class InstitucionController extends Controller
 
     public function index()
     {
-        $institucion = Institucion::get();
+        $institucion = Institucion::paginate(12);
+
+        $pageData = FunctionHelperController::getPageData($institucion);
+        $hasPagination = true;
 
         // return response()->json(['data' => $institucion]);
-
-        return view('inspiniaViews.institucion.index', compact('institucion'));
+        return view('inspiniaViews.institucion.index', [
+            'institucion' => $institucion,
+            'pageData' => $pageData,
+            'hasPagination' => $hasPagination
+        ]);
 
     }
 

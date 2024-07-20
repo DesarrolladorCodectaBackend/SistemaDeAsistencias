@@ -10,9 +10,15 @@ class ProgramasController extends Controller
 {
     public function index()
     {
-        $programas = Programas::get();
+        $programas = Programas::paginate(12);
+        $pageData = FunctionHelperController::getPageData($programas);
+        $hasPagination = true;
 
-        return view("inspiniaViews.programas.index", compact("programas"));
+        return view("inspiniaViews.programas.index", [
+            'programas' => $programas,
+            'pageData' => $pageData,
+            'hasPagination' => $hasPagination,
+        ]);
     }
 
     /*
