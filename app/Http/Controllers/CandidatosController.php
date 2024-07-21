@@ -19,8 +19,8 @@ class CandidatosController extends Controller
     public function index()
     {
         $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 1)->paginate(6);
-        $sedes = Sede::with('institucion')->where('estado', true)->orderBy('nombre', 'asc')->get();
-        $carreras = Carrera::all();
+        $sedes = Sede::with('institucion')->where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $carreras = Carrera::where('estado', 1)->orderBy('nombre', 'asc')->get();
         $pageData = FunctionHelperController::getPageData($candidatos);
         $hasPagination = true;
         // return $pageData;
@@ -36,7 +36,7 @@ class CandidatosController extends Controller
     public function getFormToColab($candidato_id)
     {
         $candidato = Candidatos::findOrFail($candidato_id);
-        $areas = Area::get();
+        $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
         $horas = [
             "07:00", 
             "08:00", 

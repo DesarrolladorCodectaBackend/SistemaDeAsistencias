@@ -31,7 +31,7 @@ class AreaController extends Controller
     {
         //Recurar todos los registros en áreas
         $areas = Area::with('salon')->paginate(12);
-        $salones = Salones::get();
+        $salones = Salones::where('estado', 1)->get();
         $pageData = FunctionHelperController::getPageData($areas);
         $hasPagination = true;
         // return response()->json(["areas" => $areas]);
@@ -168,17 +168,19 @@ class AreaController extends Controller
     public function getMaquinasByArea($area_id){
         $area = Area::findOrFail($area_id);
         //Datos esta area
-        $horariosArea = Horario_Presencial_Asignado::where('area_id', $area->id)->pluck('horario_presencial_id');
-
+        $horariosArea = Horario_Presencial_Asignado::where('area_id', $area->id)->get()->pluck('horario_presencial_id');
         //Buscar otras areas con el mismo horario
         $allAreasConcurrentes = Horario_Presencial_Asignado::with('area')->whereIn('horario_presencial_id', $horariosArea)
             ->whereNot('area_id', $area->id)->get()->pluck('area');
         
+        $areasConcurrentesActivas = $allAreasConcurrentes->where('estado', 1);
         //Areas del mismo salon            
-        $salonAreasConcurrentesId = $allAreasConcurrentes->where('salon_id', $area->salon_id)->pluck('id');
-        $colaboradoresOtherAreas = Colaboradores_por_Area::with('colaborador')->whereIn('area_id', $salonAreasConcurrentesId)->get();
+        $salonAreasConcurrentesId = $areasConcurrentesActivas->where('salon_id', $area->salon_id)->pluck('id');
 
-        $colaboradoresThisArea = Colaboradores_por_Area::with('colaborador')->where('area_id', $area->id)->get();
+        $colaboradoresActivosID = Colaboradores::where('estado', 1)->get()->pluck('id');
+        $colaboradoresOtherAreas = Colaboradores_por_Area::with('colaborador')->where('estado', 1)->whereIn('colaborador_id', $colaboradoresActivosID)->whereIn('area_id', $salonAreasConcurrentesId)->get();
+
+        $colaboradoresThisArea = Colaboradores_por_Area::with('colaborador')->where('estado', 1)->whereIn('colaborador_id', $colaboradoresActivosID)->where('area_id', $area->id)->get();
 
         foreach($colaboradoresThisArea as $colabHere){
             foreach($colaboradoresOtherAreas as $key => $colabThere){
@@ -201,7 +203,7 @@ class AreaController extends Controller
 
         // return $colaboradoresThisArea->pluck('id');
         //Todas las maquinas de este salon
-        $maquinas = Maquinas::where('salon_id', $area->salon_id)->get();
+        $maquinas = Maquinas::where('salon_id', $area->salon_id)->where('estado', 1)->get();
 
         foreach($maquinas as $maquina){
             $maquina->estaArea = false;

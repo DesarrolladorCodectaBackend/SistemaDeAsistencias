@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Horario_Presencial_Asignado;
+use App\Models\Area;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AreaController;
 use Exception;
@@ -13,7 +14,8 @@ class Horario_Presencial_AsignadoController extends Controller
     public function index()
     {
         try {
-            $horarios_presenciales_Asignados = Horario_Presencial_Asignado::with(['horario_presencial', 'area'])->get();
+            $areasActivasId = Area::where('estado', 1)->get()->pluck('id');
+            $horarios_presenciales_Asignados = Horario_Presencial_Asignado::with(['horario_presencial', 'area'])->whereIn('area_id', $areasActivasId)->get();
 
             foreach ($horarios_presenciales_Asignados as $horario) {
                 $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));

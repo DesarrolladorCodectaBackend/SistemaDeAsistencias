@@ -26,10 +26,10 @@ class ColaboradoresController extends Controller
     public function index()
     {
         $colaboradores = Colaboradores::with('candidato')->paginate(12);
-        $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
-        $instituciones = Institucion::get();
-        $carreras = Carrera::get();
-        $areas = Area::get();
+        $sedes = Sede::with('institucion')->where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $instituciones = Institucion::where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $carreras = Carrera::where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colaboradores->items());
         $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
@@ -55,13 +55,13 @@ class ColaboradoresController extends Controller
         $hasComputer = false;
         $incidencias = [];
         $ultimaIncidencia = null;
-        $programas = Programas::where('estado', true)->get();
+        $programas = Programas::where('estado', 1)->orderBy('nombre', 'asc')->get();
         $programasInstalados = [];
         if($computerColab) {
             $hasComputer = true;
             $incidencias = Registro_Mantenimiento::where('computadora_id', $computerColab->id)->where('estado', true)->get();
             $ultimaIncidencia = Registro_Mantenimiento::where('computadora_id', $computerColab->id)->orderBy('fecha', 'desc')->first();
-            $programasInstalados = Programas_instalados::with('programa')->where('computadora_id', $computerColab->id)->where('estado', true)->get();
+            $programasInstalados = Programas_instalados::with('programa')->where('computadora_id', $computerColab->id)->where('estado', 1)->get();
         }
 
         $procesadores = [
@@ -102,10 +102,10 @@ class ColaboradoresController extends Controller
             'institucion_id.*' => 'sometimes|integer'
         ]);
 
-        $instituciones = Institucion::get();
-        $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
-        $carreras = Carrera::get();
-        $areas = Area::get();
+        $sedes = Sede::with('institucion')->where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $instituciones = Institucion::where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $carreras = Carrera::where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
 
         // Pasamos los request a arrays para usarlos más fácilmente
         //Validar si hay  request areas
@@ -362,7 +362,7 @@ class ColaboradoresController extends Controller
         //Obtener colaboradores con nombre
         $colabsWithCand = Colaboradores::with('candidato')->get();
         //Filtrar por id
-        $colaboradorPorId = $colabsWithCand->where('id', $busqueda)->all(); //Se usa all para forzar a que sea una colección aunque solo tenga un elemento, para evitar errores al recorrer
+        $colaboradorPorId = $colabsWithCand->where('id', $busqueda);
 
         //Obtener todos los colabs con candidato por function query
         $colaboradoresTotales = Colaboradores::with([
@@ -375,7 +375,7 @@ class ColaboradoresController extends Controller
         })->get();
 
         //Si existe un registro encontrado por el id
-        if ($colaboradorPorId) {
+        if ($colaboradorPorId->count() > 0) {
             //Se asigna el valor del colaboradorPorId
             $colaboradores = $colaboradorPorId;
         } else { //Si no existe
@@ -383,10 +383,10 @@ class ColaboradoresController extends Controller
             $colaboradores = $colaboradoresPorNombre;
         }
 
-        $instituciones = Institucion::get();
-        $carreras = Carrera::get();
-        $areas = Area::get();
-        $sedes = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $sedes = Sede::with('institucion')->where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $instituciones = Institucion::where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $carreras = Carrera::where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
 
         $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
         $hasPagination = false;

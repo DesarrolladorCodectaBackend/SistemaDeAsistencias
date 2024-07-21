@@ -17,7 +17,7 @@ class MaquinasController extends Controller
     {
         $maquinas = Maquinas::orderBy('salon_id', 'asc')->paginate(12);
 
-        $salones = Salones::get();
+        $salones = Salones::where('estado', 1)->get();
 
         $pageData = FunctionHelperController::getPageData($maquinas);
         $hasPagination = true;

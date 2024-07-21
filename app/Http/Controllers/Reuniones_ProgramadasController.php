@@ -12,7 +12,9 @@ class Reuniones_ProgramadasController extends Controller
 {
     
     public function getAllReu(){
-        $reuniones = Reuniones_Programadas::with('area')->get();
+        $areasActivasId = Area::where('estado', 1)->get()->pluck('id');
+
+        $reuniones = Reuniones_Programadas::with('area')->whereIn('area_id', $areasActivasId)->get();
 
         foreach ($reuniones as $horario) {
             $horaInicial = (int) date('H', strtotime($horario->hora_inicial));

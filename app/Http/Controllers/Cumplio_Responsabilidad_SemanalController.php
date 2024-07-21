@@ -100,9 +100,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         //$area_id = $request->area_id;
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
-        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', true)->with('colaborador')->get();
+        //Estado 2 en colaboradores será igual a que ha sido despedido o que ya no pertenece a la empresa
+        $colaboradoresRemanentes = Colaboradores::whereNot('estado', 2)->get()->pluck('id'); //PREGUNTAR SI SOLO SE DEBE MOSTRAR A LOS QUE ESTÁN ACTIVOS
+        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)->with('colaborador')->get();
         $colaboradoresAreaId = $colaboradoresArea->pluck('id');
-        //return $registros;
 
         $Meses = FunctionHelperController::getMonths();
 
