@@ -321,14 +321,25 @@
                                     </div>
                                     
                                     @elseif($candidato->estado == 0)
-                                    <button class="btn btn-secondary" type="button" disabled
-                                        style="cursor: not-allowed">
-                                        Agregar Colaborador
-                                    </button>
-                                    @elseif($candidato->estado == 2)
                                     <div class="text-center">
-                                        <h1 class="text-danger font-bold">Rechazado</h1>
+                                        <h1 style="color: gold" class="font-bold">Colaborador</h1>
                                     </div>  
+                                    @elseif($candidato->estado == 2)
+                                    <div class="d-flex justify-content-center gap-10">
+                                        <form class="text-center" method="POST"
+                                            action="{{ route('candidatos.reconsiderarCandidato', $candidato->id) }}">
+                                            @csrf
+                                            @isset($pageData->currentURL)
+                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                            @endisset
+                                            <button class="btn btn-success" type="submit">
+                                                Reconsiderar
+                                            </button>
+                                        </form>
+                                        <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
+                                            Eliminar
+                                        </button>
+                                    </div>
                                     @endif
 
                                     </p>
@@ -365,10 +376,7 @@
                                                 href="#modal-form-view{{$candidato->id}}" data-toggle="modal"><i
                                                     style="font-size: 20px" class="fa fa-eye"></i></button>
 
-                                            {{-- <button class="btn btn-danger float-right mx-2" type="button"
-                                                onclick="confirmDelete({{ $candidato->id }})"><i
-                                                    class="fa fa-trash-o"></i>
-                                            </button> --}}
+                                    
 
                                             <button class="btn btn-info float-right mx-2" type="button"
                                                 href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
@@ -664,20 +672,30 @@
             showModal('modal-form-update' + id);
         }
 
-        // function confirmDelete(id) {
-        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-        //         if (e) {
-        //             let form = document.createElement('form')
-        //             form.method = 'POST'
-        //             form.action = `/candidatos/${id}`
-        //             form.innerHTML = '@csrf @method('DELETE')'
-        //             document.body.appendChild(form)
-        //             form.submit()
-        //         } else {
-        //             return false
-        //         }
-        //     });
-        // }
+        function confirmDelete(id, currentURL) {
+            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente", function(e) {
+                if (e) {
+                    let form = document.createElement('form')
+
+                    form.method = 'POST'
+                    form.action = `/candidatos/${id}`
+                    form.innerHTML = '@csrf @method('DELETE')'
+
+                    if(currentURL != null){
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden)
+                    }
+                    
+                    document.body.appendChild(form)
+                    form.submit()
+                } else {
+                    return false
+                }
+            });
+        }
 
         function updateSelectAll(checkboxGroup, selectAllId) {
             const selectAllCheckbox = document.getElementById(selectAllId);

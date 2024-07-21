@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidatos;
+use App\Models\Colaboradores;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Area;
@@ -209,24 +210,6 @@ class CandidatosController extends Controller
         }
     }
 
-
-    public function destroy($candidato_id)
-    {
-        /*
-        $candidato = Candidatos::find($candidato_id);
-
-        $candidato->delete();
-
-        return response()->json(["resp" => "Candidato eliminado correctamente"]);
-        */
-        $candidato = Candidatos::findOrFail($candidato_id);
-
-        $candidato->delete();
-
-        return redirect()->route('candidatos.index');
-
-    }
-
     public function ShowByName(Request $request)
     {
         $nombreCompleto = $request->nombre;
@@ -382,6 +365,66 @@ class CandidatosController extends Controller
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
         ]);
+
+    }
+
+    public function reActivate(Request $request, $candidato_id){
+        DB::beginTransaction();
+        try{
+            $candidato = Candidatos::findOrFail($candidato_id);
+            if($candidato && $candidato->estado === 2) {
+                $candidato->update(["estado" => 1]);
+            }
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
+        } catch(Exception $e){
+            DB::rollback();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
+        }
+    }
+
+    public function destroy(Request $request, $candidato_id)
+    {
+        DB::beginTransaction();
+        try{
+            $candidato = Candidatos::findOrFail($candidato_id);
+    
+            if($candidato && $candidato->estado === 2){
+                $colaborador = Colaboradores::where('candidato_id', $candidato_id)->first();
+                if($colaborador) {
+                    if($request->currentURL) {
+                        return redirect($request->currentURL);
+                    } else {
+                        return redirect()->route('candidatos.index');
+                    }
+                } else{
+                    $candidato->delete();
+                }
+            }
+
+            DB::commit();
+
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
+        } catch(Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('candidatos.index');
+            }
+        }
 
     }
 
