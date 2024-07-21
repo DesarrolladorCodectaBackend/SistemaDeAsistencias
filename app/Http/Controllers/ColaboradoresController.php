@@ -26,10 +26,17 @@ class ColaboradoresController extends Controller
     public function index()
     {
         $colaboradores = Colaboradores::with('candidato')->paginate(12);
-        $sedes = Sede::with('institucion')->where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $instituciones = Institucion::where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $carreras = Carrera::where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
+
+        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+        $areasAll = Area::orderBy('especializacion', 'asc')->get();
+
+        $sedes = $sedesAll->where('estado', 1);
+        $instituciones = $institucionesAll->where('estado', 1);
+        $carreras = $carrerasAll->where('estado', 1);
+        $areas = $areasAll->where('estado', 1);
+
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colaboradores->items());
         $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
@@ -44,6 +51,10 @@ class ColaboradoresController extends Controller
             'instituciones' => $instituciones,
             'carreras' => $carreras,
             'areas' => $areas,
+            'sedesAll' => $sedesAll,
+            'institucionesAll' => $institucionesAll,
+            'carrerasAll' => $carrerasAll,
+            'areasAll' => $areasAll,
         ]);
     }
 
@@ -92,46 +103,27 @@ class ColaboradoresController extends Controller
         ]);
     }
 
-    public function filtrarColaboradores(Request $request)
+    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '')
     {
         // Validamos los request de los filtros que queremos aplicar
-        $request->validate([
-            'area_id.*' => 'sometimes|integer',
-            'estado.*' => 'sometimes',
-            'carrera_id.*' => 'sometimes|integer',
-            'institucion_id.*' => 'sometimes|integer'
-        ]);
+        $estados = explode(',', $estados);
+        $areas = $areas ? explode(',', $areas) : [];
+        $carreras = $carreras ? explode(',', $carreras) : [];
+        $instituciones = $instituciones ? explode(',', $instituciones) : [];
 
-        $sedes = Sede::with('institucion')->where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $instituciones = Institucion::where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $carreras = Carrera::where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
+        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+        $areasAll = Area::orderBy('especializacion', 'asc')->get();
 
-        // Pasamos los request a arrays para usarlos más fácilmente
-        //Validar si hay  request areas
-        if (!$request->area_id) {
-            $requestAreas = $areas->pluck('id');
-        } else {
-            $requestAreas = $request->area_id;
-        }
-        //Validar si hay  request estados
-        if (!$request->estado) {
-            $requestEstados = ["1", "0"];
-        } else {
-            $requestEstados = $request->estado;
-        }
-        //Validar si hay  request carreras
-        if (!$request->carrera_id) {
-            $requestCarreras = $carreras->pluck('id');
-        } else {
-            $requestCarreras = $request->carrera_id;
-        }
-        //Validar si hay  request carreras
-        if (!$request->institucion_id) {
-            $requestInstituciones = $instituciones->pluck('id');
-        } else {
-            $requestInstituciones = $request->institucion_id;
-        }
+        $sedesFiltradas = $sedesAll->where('estado', 1);
+        $institucionesFiltradas = $institucionesAll->where('estado', 1);
+        $carrerasFiltradas = $carrerasAll->where('estado', 1);
+        $areasFiltradas = $areasAll->where('estado', 1);
+
+        $requestCarreras = empty($carreras) ? $carrerasAll->pluck('id')->toArray() : $carreras;
+        $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
+        $requestAreas = empty($areas) ? $areasAll->pluck('id')->toArray() : $areas;
 
         // Obtenemos a los colaboradores filtrados por áreas
         $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
@@ -140,7 +132,7 @@ class ColaboradoresController extends Controller
             ->pluck('colaborador');
 
         //filtramos por los estados
-        $colaboradoresCandidatoId = $colaboradoresArea->whereIn('estado', $requestEstados)->pluck('candidato_id');
+        $colaboradoresCandidatoId = $colaboradoresArea->whereIn('estado', $estados)->pluck('candidato_id');
 
         //filtrar los candidatos por la carrera y la sede - institucion
         $sedesInstitucionesId = Sede::whereIn('institucion_id', $requestInstituciones)->pluck('id');
@@ -149,23 +141,25 @@ class ColaboradoresController extends Controller
             ->whereIn('sede_id', $sedesInstitucionesId) //filtrar por la sede
             ->pluck('id');
 
-        $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->get();
+        $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
 
 
         $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
-        $hasPagination = false;
-        $pageData = [];
+        $pageData = FunctionHelperController::getPageData($colaboradores);
+        $hasPagination = true;
 
-
-        //return $colaboradoresConArea;
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
-            'sedes' => $sedes,
-            'instituciones' => $instituciones,
-            'carreras' => $carreras,
-            'areas' => $areas,
+            'sedes' => $sedesFiltradas,
+            'instituciones' => $institucionesFiltradas,
+            'carreras' => $carrerasFiltradas,
+            'areas' => $areasFiltradas,
+            'sedesAll' => $sedesAll,
+            'institucionesAll' => $institucionesAll,
+            'carrerasAll' => $carrerasAll,
+            'areasAll' => $areasAll,
         ]);
     }
 
@@ -353,16 +347,15 @@ class ColaboradoresController extends Controller
     }
 
 
-    public function search(Request $request)
+    public function search(string $busqueda = '')
     {
         
         //asignar a variable
-        $busqueda = $request->busqueda;
+        // $busqueda = $request->busqueda;
 
         //Obtener colaboradores con nombre
-        $colabsWithCand = Colaboradores::with('candidato')->get();
         //Filtrar por id
-        $colaboradorPorId = $colabsWithCand->where('id', $busqueda);
+        $colaboradorPorId = Colaboradores::with('candidato')->where('id', $busqueda)->paginate(12);
 
         //Obtener todos los colabs con candidato por function query
         $colaboradoresTotales = Colaboradores::with([
@@ -372,7 +365,7 @@ class ColaboradoresController extends Controller
         //Filtrar por nombre y apellido de candidato                
         $colaboradoresPorNombre = $colaboradoresTotales->whereHas('candidato', function ($query) use ($busqueda) {
             $query->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%');
-        })->get();
+        })->paginate(12);
 
         //Si existe un registro encontrado por el id
         if ($colaboradorPorId->count() > 0) {
@@ -383,14 +376,19 @@ class ColaboradoresController extends Controller
             $colaboradores = $colaboradoresPorNombre;
         }
 
-        $sedes = Sede::with('institucion')->where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $instituciones = Institucion::where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $carreras = Carrera::where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
+        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+        $areasAll = Area::orderBy('especializacion', 'asc')->get();
+
+        $sedes = $sedesAll->where('estado', 1);
+        $instituciones = $institucionesAll->where('estado', 1);
+        $carreras = $carrerasAll->where('estado', 1);
+        $areas = $areasAll->where('estado', 1);
 
         $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
-        $hasPagination = false;
-        $pageData = [];
+        $pageData = FunctionHelperController::getPageData($colaboradores);
+        $hasPagination = true;
         
         //return $colaboradoresConArea;
 
@@ -402,6 +400,10 @@ class ColaboradoresController extends Controller
             'instituciones' => $instituciones,
             'carreras' => $carreras,
             'areas' => $areas,
+            'sedesAll' => $sedesAll,
+            'institucionesAll' => $institucionesAll,
+            'carrerasAll' => $carrerasAll,
+            'areasAll' => $areasAll,
         ]);
 
     }

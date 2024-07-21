@@ -19,8 +19,15 @@ class CandidatosController extends Controller
     public function index()
     {
         $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 1)->paginate(6);
-        $sedes = Sede::with('institucion')->where('estado', 1)->orderBy('nombre', 'asc')->get();
-        $carreras = Carrera::where('estado', 1)->orderBy('nombre', 'asc')->get();
+
+        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+
+        $sedes = $sedesAll->where('estado', 1);
+        $instituciones = $institucionesAll->where('estado', 1);
+        $carreras = $carrerasAll->where('estado', 1);
+
         $pageData = FunctionHelperController::getPageData($candidatos);
         $hasPagination = true;
         // return $pageData;
@@ -29,7 +36,11 @@ class CandidatosController extends Controller
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
             'sedes' => $sedes,
-            'carreras' => $carreras
+            'instituciones' => $instituciones,
+            'carreras' => $carreras,
+            'sedesAll' => $sedesAll,
+            'institucionesAll' => $institucionesAll,
+            'carrerasAll' => $carrerasAll,
         ]);
     }
 
@@ -233,6 +244,145 @@ class CandidatosController extends Controller
             ->get();
 
         return response()->json(["data" => $candidatos, "conteo" => count($candidatos)]);
+    }
+
+    /*
+    public function old(Request $request)
+    {
+        $request->validate([
+            'estado.*' => 'sometimes',
+            'carrera_id.*' => 'sometimes|integer',
+            'institucion_id.*' => 'sometimes|integer'
+        ]);
+        // return $request;
+
+        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+
+        $sedes = $sedesAll->where('estado', 1);
+        $instituciones = $institucionesAll->where('estado', 1);
+        $carreras = $carrerasAll->where('estado', 1);
+
+        if (!$request->estado) {
+            $requestEstados = ["0", "1", "2"];
+        } else {
+            $requestEstados = $request->estado;
+        }
+        if (!$request->carrera_id) {
+            $requestCarreras = $carreras->pluck('id');
+        } else {
+            $requestCarreras = $request->carrera_id;
+        }
+        if (!$request->institucion_id) {
+            $requestInstituciones = $instituciones->pluck('id');
+        } else {
+            $requestInstituciones = $request->institucion_id;
+        }
+
+        $sedesId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
+
+        $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)->whereIn('sede_id', $sedesId)->whereIn('estado', $requestEstados)->get(); //paginate?
+
+        $hasPagination = false;
+        $pageData = [];
+
+        return view('inspiniaViews.candidatos.index', [
+            'candidatos' => $candidatos,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
+            'sedes' => $sedes,
+            'instituciones' => $instituciones,
+            'carreras' => $carreras,
+            'sedesAll' => $sedesAll, //Not using
+            'institucionesAll' => $institucionesAll,
+            'carrerasAll' => $carrerasAll,
+        ]);
+    }
+    */
+
+    public function filtrarCandidatos(string $estados = '0,1,2', string $carreras = '', string $instituciones = '')
+    {
+        $estados = explode(',', $estados);
+        $carreras = $carreras ? explode(',', $carreras) : [];
+        $instituciones = $instituciones ? explode(',', $instituciones) : [];
+
+        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+
+        $sedes = $sedesAll->where('estado', 1);
+        $institucionesFiltradas = $institucionesAll->where('estado', 1);
+        $carrerasFiltradas = $carrerasAll->where('estado', 1);
+
+        $requestCarreras = empty($carreras) ? $carrerasAll->pluck('id')->toArray() : $carreras;
+        $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
+
+        $sedesId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
+
+        $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)
+            ->whereIn('sede_id', $sedesId)
+            ->whereIn('estado', $estados)
+            ->paginate(6);
+
+        $pageData = FunctionHelperController::getPageData($candidatos);
+        $hasPagination = true;
+
+        return view('inspiniaViews.candidatos.index', [
+            'candidatos' => $candidatos,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
+            'sedes' => $sedes,
+            'instituciones' => $institucionesFiltradas,
+            'carreras' => $carrerasFiltradas,
+            'sedesAll' => $sedesAll,
+            'institucionesAll' => $institucionesAll,
+            'carrerasAll' => $carrerasAll,
+        ]);
+    }
+
+    public function search(string $busqueda = '')
+    {
+        //Filtrar por id
+        $candidatoPorId = Candidatos::with('carrera', 'sede')->where('id', $busqueda)->paginate(6);
+
+        //Filtrar por nombre y apellido de candidato          
+        $candidatosPorNombre = Candidatos::with('sede', 'carrera')
+            ->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%')
+            ->paginate(6);
+
+        //Si existe un registro encontrado por el id
+        if ($candidatoPorId->count() > 0) {
+            $candidatos = $candidatoPorId;
+        } else { //Si no existe
+            $candidatos = $candidatosPorNombre;
+        }
+
+        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+
+        $sedes = $sedesAll->where('estado', 1);
+        $instituciones = $institucionesAll->where('estado', 1);
+        $carreras = $carrerasAll->where('estado', 1);
+
+        $hasPagination = true;
+        $pageData = FunctionHelperController::getPageData($candidatos);
+        
+        //return $colaboradoresConArea;
+
+        return view('inspiniaViews.candidatos.index', [
+            'candidatos' => $candidatos,
+            'hasPagination' => $hasPagination,
+            'pageData' => $pageData,
+            'sedes' => $sedes,
+            'instituciones' => $instituciones,
+            'carreras' => $carreras,
+            'sedesAll' => $sedesAll,
+            'institucionesAll' => $institucionesAll,
+            'carrerasAll' => $carrerasAll,
+        ]);
+
     }
 
 

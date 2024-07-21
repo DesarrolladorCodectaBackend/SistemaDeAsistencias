@@ -112,12 +112,22 @@ Route::middleware('auth')->group(function () {
     Route::resource('candidatos', CandidatosController::class);
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     Route::post('candidato/rechazarCandidato/{candidato_id}', [CandidatosController::class, 'rechazarCandidato'])->name('candidatos.rechazarCandidato');
-
+    // Route::post('candidatos/filtrar', [CandidatosController::class, 'filtrarCandidatos'])->name('candidatos.filtrar');
+    // Route::get('candidatos/filtrar', [CandidatosController::class, 'filtrarCandidatos'])->name('candidatos.filtrar');
+    Route::get('candidatos/filtrar/estados={estados}/carreras={carreras?}/instituciones={instituciones?}', [CandidatosController::class, 'filtrarCandidatos'])
+        ->where(['estados' => '[0-9,]+','carreras' => '[0-9,]*','instituciones' => '[0-9,]*'])->name('candidatos.filtrar');
+    Route::get('candidatos/search/{busqueda}', [CandidatosController::class, 'search'])->name('candidatos.search');
+    
+    
+    
     //COLABORADORES
     Route::resource('colaboradores', ColaboradoresController::class);
     Route::post('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
-    Route::post('colaboradores/filtrar', [ColaboradoresController::class, 'filtrarColaboradores'])->name('colaboradores.filtrar');   
-    Route::post('colaboradores/search', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
+    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}', [ColaboradoresController::class, 'filtrarColaboradores'])
+    ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*'])->name('colaboradores.filtrar');
+    Route::get('colaboradores/search/{busqueda}', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
+    // Route::post('colaboradores/filtrar', [ColaboradoresController::class, 'filtrarColaboradores'])->name('colaboradores.filtrar');
+    // Route::post('colaboradores/search', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
     
     //HORARIO DE CLASES
     Route::resource('horarioClase', HorarioDeClasesController::class);

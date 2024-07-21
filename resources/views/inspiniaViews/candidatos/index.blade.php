@@ -13,7 +13,7 @@
         @include('components.inspinia.side_nav_bar-inspinia')
 
         <div class="row wrapper border-bottom white-bg page-heading">
-            <div class="col-lg-10">
+            <div class="col-lg-3">
                 <h2>Dashboards</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
@@ -27,9 +27,86 @@
                     </li>
                 </ol>
             </div>
+            <div class="col-lg-7 flex-centered">
+                <div class="flex-centered spc-per-90">
+                    {{-- <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()"> --}}
+                    <form id="searchCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
+                        class="flex-centered gap-20 spc-per-100">
+                        <input id="searchInput" class="form-control wdt-per-80" type="search"
+                            placeholder="Buscar Candidato..." aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
             <div class="col-lg-2">
-                <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
-                    type="button">Agregar</button>
+                <div class="py-3">
+                    <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
+                        type="button">Agregar</button>
+                    <button data-toggle="modal" class="btn btn-primary dim float-right" href="#modal-filtrar"> Filtrar </button>
+                </div>
+                <div id="modal-filtrar" class="modal fade" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
+                                    <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 b-r">
+                                            <div class="form-group">
+                                                <label>
+                                                    <h4 class="m-t-none m-b">Estados:</h4>
+                                                </label>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="select-all-estados"><span>Seleccionar todos</span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="checkbox" class="estado-checkbox" value="1"><span>Pendiente</span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="checkbox" class="estado-checkbox" value="0"><span>Colaborador</span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="checkbox" class="estado-checkbox" value="2"><span>Rechazado</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 b-r">
+                                            <div class="form-group">
+                                                <label>
+                                                    <h4 class="m-t-none m-b">Carreras:</h4>
+                                                </label>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="select-all-carreras"><span>Seleccionar todos</span>
+                                                </div>
+                                                @foreach($carrerasAll as $index => $carrera)
+                                                <div class="form-group">
+                                                    <input type="checkbox" class="carrera-checkbox" value="{{ $carrera->id }}"><span>{{ $carrera->nombre }}</span>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                            <div class="form-group">
+                                                <label>
+                                                    <h4 class="m-t-none m-b">Instituciones:</h4>
+                                                </label>
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="select-all-instituciones"><span>Seleccionar todos</span>
+                                                </div>
+                                                @foreach($institucionesAll as $index => $institucion)
+                                                <div class="form-group">
+                                                    <input type="checkbox" class="institucion-checkbox" value="{{ $institucion->id }}"><span>{{ $institucion->nombre }}</span>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                            <div class="form-group mt-3 text-center">
+                                                <button type="submit" class="btn btn-primary px-5">Filtrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="modal-form-add" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -37,7 +114,9 @@
                                 <form role="form" method="POST" action="{{ route('candidatos.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
-                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                    @isset($pageData->currentURL)
+                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                    @endisset
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -232,7 +311,9 @@
                                         <form class="text-center" method="POST"
                                             action="{{ route('candidatos.rechazarCandidato', $candidato->id) }}">
                                             @csrf
+                                            @isset($pageData->currentURL)
                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                            @endisset
                                             <button class="btn btn-danger" type="submit">
                                                 Rechazar
                                             </button>
@@ -302,7 +383,9 @@
                                                             enctype="multipart/form-data">
                                                             @csrf
                                                             @method('PUT')
+                                                            @isset($pageData->currentURL)
                                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                                            @endisset
                                                             <div class="row">
                                                                 <div class="col-sm-6 b-r">
                                                                     <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -498,6 +581,26 @@
 
     </div>
     </div>
+    <style>
+        .select2-container.select2-container--default.select2-container--open {
+            z-index: 9999 !important;
+            width: 100% !important;
+        }
+
+        /* .select2-container--default .select2-selection--multiple {
+            width: auto;
+            min-width: 100% !important; 
+        } */
+        .select2-container {
+            display: inline !important;
+        }
+
+        /* .select2.select2-container.select2-container--default.selection.select2-selection.select2-selection--multiple.
+        .select2-selection__rendered.select2-container--below.select2-selection__rendered{
+            z-index: 9999 !important;
+            width: 100% !important;
+        } */
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const personal = document.getElementById('personalCont');
@@ -576,6 +679,111 @@
         //     });
         // }
 
+        function updateSelectAll(checkboxGroup, selectAllId) {
+            const selectAllCheckbox = document.getElementById(selectAllId);
+            const checkboxes = document.querySelectorAll(checkboxGroup);
+            selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+        }
+
+        document.getElementById('select-all-estados').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-estados-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-carreras').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-carreras-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-instituciones').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-institucion-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.querySelectorAll('input[id^="checkbox-estados-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-estados-"]', 'select-all-estados');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-carreras-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-carreras-"]', 'select-all-carreras');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
+            });
+        });
+
+
+        // function prepareQuery() {
+        //     const estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(el => el.value).join(',');
+        //     const carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(el => el.value).join(',');
+        //     const instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(el => el.value).join(',');
+
+        //     document.getElementById('estados-hidden').value = estados;
+        //     document.getElementById('carreras-hidden').value = carreras;
+        //     document.getElementById('instituciones-hidden').value = instituciones;
+
+        //     // Remove names to prevent them from being sent
+        //     document.querySelectorAll('.estado-checkbox, .carrera-checkbox, .institucion-checkbox').forEach(el => el.removeAttribute('name'));
+
+        //     return true;
+        // }
+        
+        
+
+    </script>
+    <script>
+        function prepareSearchActionURL() {
+            let busqueda = document.getElementById('searchInput').value;
+
+            let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
+            console.log(actionUrl);
+            document.querySelector('#searchCandidatos').action = actionUrl;
+
+            return true;
+        }
+
+        function prepareFilterActionURL() {
+            let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
+            let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
+            let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+
+            estados = estados.length ? estados.join(',') : '0,1,2';
+            carreras = carreras.length ? carreras.join(',') : '';
+            instituciones = instituciones.length ? instituciones.join(',') : '';
+
+            let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+            console.log(actionUrl);
+            document.querySelector('#filtrarCandidatos').action = actionUrl;
+
+            return true;
+        }
+
+    document.getElementById('select-all-estados').addEventListener('change', function() {
+        let checkboxes = document.querySelectorAll('.estado-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    document.getElementById('select-all-carreras').addEventListener('change', function() {
+        let checkboxes = document.querySelectorAll('.carrera-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    document.getElementById('select-all-instituciones').addEventListener('change', function() {
+        let checkboxes = document.querySelectorAll('.institucion-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
     </script>
 
 </body>
