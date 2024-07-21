@@ -7,7 +7,7 @@
         <title>Laravel</title>
 
         <!-- Fonts -->
-        <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="{{asset('https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap')}}" rel="stylesheet">
 
         <!-- Styles -->
         <style>
@@ -19,13 +19,83 @@
                 font-family: 'Nunito', sans-serif;
             }
         </style>
+
+        <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('font-awesome/css/font-awesome.css')}}" rel="stylesheet">
+
+        <link href="{{asset('css/animate.css')}}" rel="stylesheet">
+        <link href="{{asset('css/style.css')}}" rel="stylesheet">
+        
     </head>
-    <body class="antialiased">
-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
-            @if (Route::has('login'))
-                <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Dashboard</a>
+
+    <body class="gray-bg">
+
+        <div class="middle-box text-center loginscreen animated fadeInDown">
+            <div>
+                <div>
+    
+                    <h1 class="logo-name">IN+</h1>
+    
+                </div>
+                <h3>Welcome to IN+</h3>
+                <p>Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app views.
+                    <!--Continually expanded and constantly improved Inspinia Admin Them (IN+)-->
+                </p>
+                <p>Login in. To see it in action.</p>
+                <x-auth-session-status class="mb-4" :status="session('status')" />
+                <form class="m-t" role="form" action="index.html">
+                    @csrf
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Username" required="">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Password" required="">
+                    </div>
+                    <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+    
+                    <a href="#"><small>Forgot password?</small></a>
+                    <p class="text-muted text-center"><small>Do not have an account?</small></p>
+                    <a class="btn btn-sm btn-white btn-block" href="register.html">Create an account</a>
+                </form>
+                <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>
+            </div>
+        </div>
+    
+        <!-- Mainly scripts -->
+        <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
+        <script src="{{asset('js/popper.min.js')}}"></script>
+        <script src="{{asset('js/bootstrap.js')}}"></script>
+
+
+
+
+        <script src="{{asset('js/plugins/fullcalendar/moment.min.js')}}"></script>
+        <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
+        <script src="{{asset('js/popper.min.js')}}"></script>
+            <script src="{{asset('js/bootstrap.js')}}"></script>
+        <script src="{{asset('js/plugins/metisMenu/jquery.metisMenu.js')}}"></script>
+        <script src="{{asset('js/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
+        
+        <!-- Custom and plugin javascript -->
+        <script src="{{asset('js/inspinia.js')}}"></script>
+        <script src="{{asset('js/plugins/pace/pace.min.js')}}"></script>
+        
+        <!-- jQuery UI  -->
+        <script src="{{asset('js/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+        
+        <!-- iCheck -->
+        <script src="{{asset('js/plugins/iCheck/icheck.min.js')}}"></script>
+        
+        <!-- Full Calendar -->
+        <script src="{{asset('js/plugins/fullcalendar/fullcalendar.min.js')}}"></script>
+
+    </body>
+    {{-- <body class="antialiased"> --}}
+        {{-- <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0"> --}}
+            {{-- @if (Route::has('login'))
+                <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block"> --}}
+                    {{-- @auth
+                        <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Home</a>
                     @else
                         <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
 
@@ -128,5 +198,5 @@
                 </div>
             </div>
         </div>
-    </body>
+    </body> --}}
 </html>

@@ -13,13 +13,15 @@ class Computadora_colaborador extends Model
         'colaborador_id',
         'procesador',
         'tarjeta_grafica',
+        'memoria_grafica',
         'ram',
         'almacenamiento',
         'es_laptop',
-        'codigo_serie'
+        'codigo_serie',
+        'estado'
     ];
 
-    public function colaboradores(){
+    public function colaborador(){
         return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
     }
 

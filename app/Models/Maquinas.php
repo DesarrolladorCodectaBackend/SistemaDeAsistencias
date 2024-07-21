@@ -18,12 +18,12 @@ class Maquinas extends Model
     ];
 
 
-    public function salones(){
+    public function salon(){
         return $this->belongsTo(Salones::class, 'salon_id', 'id');
     }
 
-    public function copy_of_maquinas(){
-        return $this->hasMany(Copy_of_Maquinas::class, 'maquina_id', 'id');
+    public function maquina_reservada(){
+        return $this->hasMany(Maquina_reservada::class, 'maquina_id', 'id');
     }
 
 }

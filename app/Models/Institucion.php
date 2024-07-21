@@ -13,8 +13,8 @@ class Institucion extends Model
         'nombre'
     ];
     
-    public function candidatos(){
-        return $this->hasMany(Candidatos::class, 'institucion_id', 'id');
+    public function sedes(){
+        return $this->hasMany(Sede::class, 'institucion_id', 'id');
     }
 
 }

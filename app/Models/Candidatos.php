@@ -17,19 +17,22 @@ class Candidatos extends Model
         'fecha_nacimiento',
         'ciclo_de_estudiante',
         'estado',
-        'institucion_id',
-        'carrera_id'
+        'sede_id',
+        'carrera_id',
+        'correo',
+        'celular',
+        'icono',
     ];
 
-    public function institucion(){
-        return $this->belongsTo(Institucion::class, 'institucion_id', 'id');
+    public function sede(){
+        return $this->belongsTo(Sede::class, 'sede_id', 'id');
     }
 
     public function carrera(){
         return $this->belongsTo(Carrera::class, 'carrera_id', 'id');
     }
 
-    public function colaboradores(){
+    public function colaborador(){
         return $this->hasOne(Colaboradores::class, 'candidato_id', 'id');
     }
 

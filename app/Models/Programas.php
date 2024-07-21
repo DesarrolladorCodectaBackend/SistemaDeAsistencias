@@ -12,11 +12,14 @@ class Programas extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
+        'estado',
+        'icono',
         'memoria_grafica',
-        'ram'
+        'ram',
+        'almacenamiento'
     ];
 
-    public function programas_instalados(){
+    public function programa_instalado(){
         return $this->hasMany(Programas_instalados::class, 'programa_id', 'id');
     }
 

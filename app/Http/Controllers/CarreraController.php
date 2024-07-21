@@ -6,53 +6,129 @@ use App\Models\Carrera;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCarreraRequest;
 use App\Http\Requests\UpdateCarreraRequest;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class CarreraController extends Controller
 {
 
     public function index()
     {
-        $carreras = Carrera::get();
-        return response()->json(["data" => $carreras, "conteo" => count($carreras)]);
-    }
+        $carreras = Carrera::paginate(12);
 
+        $pageData = FunctionHelperController::getPageData($carreras);
+        $hasPagination = true;
 
-    public function create(Request $request)
-    {
-        Carrera::create([
-            "nombre" => $request->nombre
+        return view('inspiniaViews.carreras.index', [
+            'carreras' => $carreras,
+            'pageData' => $pageData, 
+            'hasPagination' => $hasPagination,
         ]);
-        return response()->json(["resp" => "Carrera creada con nombre " . $request->nombre]);
+
     }
 
 
-    public function show($carrera_id)
+    public function store(Request $request)
     {
-        $carrera = Carrera::find($carrera_id);
+        DB::beginTransaction();
+        try{
 
-        return response()->json(["data" => $carrera]);
+            $request->validate([
+                'nombre' => 'required|string|min:1|max:100',
+    
+            ]);
+    
+            Carrera::create([
+                'nombre' => $request->nombre,
+            ]);
+    
+    
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('carreras.index');
+            }
+        } catch(Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('carreras.index');
+            }
+        }
+
+
     }
+
 
 
     public function update(Request $request, $carrera_id)
     {
-        $carrera = Carrera::find($carrera_id);
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'sometimes|string|min:1|max:100',
+                'estado' => 'sometimes|boolean'
+            ]);
+    
+            $carrera = Carrera::findOrFail($carrera_id);
+    
+            $carrera->update($request->all());
+    
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('carreras.index');
+            }
+        } catch(Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('carreras.index');
+            }
+        }
 
-        $carrera->fill([
-            "nombre" => $request->nombre
-        ])->save();
-
-        return response()->json(["resp" => "Carrera con id " . $carrera_id . " fue editada"]);
     }
 
 
     public function destroy($carrera_id)
     {
-        $carrera = Carrera::find($carrera_id);
+        $carrera = Carrera::findOrFail($carrera_id);
 
         $carrera->delete();
 
-        return response()->json(["resp" => "Carrera con id " . $carrera_id . " y nombre " . $carrera->nombre . " ha sido eliminada."]);
+        return redirect()->route('carreras.index');
+
+    }
+
+    public function activarInactivar(Request $request,$carrera_id)
+    {
+        DB::beginTransaction();
+        try{
+            $carrera = Carrera::findOrFail($carrera_id);
+
+            $carrera->estado = !$carrera->estado;
+
+            $carrera->save();
+
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('carreras.index');
+            }
+        } catch(Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('carreras.index');
+            }
+        }
+        
     }
 
 }

@@ -17,12 +17,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('colaborador_id');
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
-            $table->string('procesador');
-            $table->string('tarjeta_grafica');
-            $table->integer('ram');
-            $table->string('almacenamiento');
+            $table->string('procesador')->nullable();
+            $table->string('tarjeta_grafica')->nullable();
+            $table->string('memoria_grafica')->nullable();
+            $table->string('ram')->nullable();
+            $table->string('almacenamiento')->nullable();
             $table->boolean('es_laptop');
-            $table->string('codigo_serie');
+            $table->string('codigo_serie')->nullable();
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }

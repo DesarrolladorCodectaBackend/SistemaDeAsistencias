@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('hora_inicial');
             $table->string('hora_final');
+            $table->string('dia');
             $table->timestamps();
         });
     }
