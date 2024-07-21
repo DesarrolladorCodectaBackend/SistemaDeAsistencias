@@ -284,7 +284,7 @@ class CandidatosController extends Controller
     }
     */
 
-    public function filtrarCandidatos(string $estados = '0,1,2', string $carreras = '', string $instituciones = '')
+    public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '')
     {
         $estados = explode(',', $estados);
         $carreras = $carreras ? explode(',', $carreras) : [];

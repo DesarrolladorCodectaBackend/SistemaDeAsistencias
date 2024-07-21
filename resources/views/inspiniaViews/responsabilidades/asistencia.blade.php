@@ -168,14 +168,20 @@
                             <td class="check" onclick="toggleCheck(this)">
                                 <div>
                                     <span>
-                                        @if($registro->cumplio == true)
-                                        ✔️
-                                        @else
-                                        ❌
-                                        @endif
+                                        @isset($registro->cumplio)
+                                            @if($registro->cumplio == true)
+                                            ✔️
+                                            @else
+                                            ❌
+                                            @endif
+                                        @endisset
                                     </span>
+                                    @isset($registro->cumplio)
                                     <input type="number" name="cumplio[]"
                                         value="{{ old('cumplio', $registro->cumplio) }}" style="display: none">
+                                    @else
+                                    <input type="number" name="cumplio[]" style="display: none">
+                                    @endisset
 
                                 </div>
                             </td>

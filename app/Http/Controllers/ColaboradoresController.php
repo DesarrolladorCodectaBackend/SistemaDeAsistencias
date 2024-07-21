@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\FunctionHelperController;
 use App\Models\Area;
+use App\Models\Asistentes_Clase;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
 use App\Models\Computadora_colaborador;
+use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
 use App\Models\Institucion;
 use App\Models\Carrera;
+use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
@@ -25,8 +28,8 @@ class ColaboradoresController extends Controller
 {
     public function index()
     {
-        $colaboradores = Colaboradores::with('candidato')->paginate(12);
-
+        $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->paginate(12);
+        // return $colaboradores;
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
@@ -142,6 +145,14 @@ class ColaboradoresController extends Controller
             ->pluck('id');
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
+        // return $estados;
+        foreach($estados as $estado) {
+            if(count($estados) === 1){
+                if($estado === "2"){
+                    $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->orderBy('updated_at', 'desc')->paginate(12);
+                }
+            }
+        }
 
 
         $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
@@ -307,17 +318,6 @@ class ColaboradoresController extends Controller
     }
 
 
-    // public function destroy($colaborador_id)
-    // {
-    //     $colaborador = Colaboradores::findOrFail($colaborador_id);
-
-    //     $colaborador->delete();
-
-    //     return redirect()->route('colaboradores.index');
-
-    // }
-
-
     public function activarInactivar(Request $request, $colaborador_id)
     {
         DB::beginTransaction();
@@ -405,6 +405,160 @@ class ColaboradoresController extends Controller
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
         ]);
+
+    }
+
+    public function despedirColaborador(Request $request, $colaborador_id){
+        DB::beginTransaction();
+        try{
+            $colaborador = Colaboradores::findOrFail($colaborador_id);
+
+            if($colaborador){
+                //encontrar Candidato
+                $candidato = Candidatos::findOrFail($colaborador->candidato_id);
+                if($candidato){
+                    //Estado 3 igual a ex trabajador en candidatos
+                    $candidato->update(["estado" => 3]);
+                }
+                //encontrar ColaboradoresPorArea
+                $colaboradorAreas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->get();
+                foreach($colaboradorAreas as $colabArea){
+                    $colabArea->update(["estado" => 0]); //inactivo del área
+                }
+                //Estado 2 es igual a ex trabajador
+                $colaborador->update(["estado" => 2]);
+            }
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
+
+        } catch(Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
+        }
+    }
+
+    public function recontratarColaborador(Request $request, $colaborador_id){
+        DB::beginTransaction();
+        try{
+            //encontrar Colaborador
+            $colaborador = Colaboradores::findOrFail($colaborador_id);
+            if($colaborador) {
+                //encontrar Candidato
+                $candidato = Candidatos::findOrFail($colaborador->candidato_id);
+                if($candidato) {
+                    $candidato->update(["estado" => 0]); //estado 0 igual a activo en candidatos
+                }
+                $colaborador->update(["estado" => 1]); //estado 1 igual a activo en colaboradores
+            }
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
+        } catch(Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
+        }
+    }
+    //TO DO: Destroy colaboradores con todos sus dependientes
+    public function destroy(Request $request, $colaborador_id)
+    {
+        DB::beginTransaction();
+        try{
+            $colaborador = Colaboradores::findOrFail($colaborador_id);
+            if($colaborador){
+                //primero encontramos al candidato
+                $candidato = Candidatos::findOrFail($colaborador->candidato_id);
+                if($candidato) {
+                    //despues a los colaboradores (suponiendo que por error tenga mas de uno)
+                    $colaboradores = Colaboradores::where('candidato_id', $candidato->id)->get();
+                    //despues a los colaboradores por area de todos los colaboradores encontrados
+                    $colaboradores_por_area = Colaboradores_por_Area::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //despues todos los horarios de clase de estos colaboradores
+                    $horarios_de_clases = Horario_de_Clases::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //ahora todas las responsabilidades semanales cumplidas por todos los colaboradores con area}
+                    $responsabilidades_semanales_cumplidas = Cumplio_Responsabilidad_Semanal::whereIn('colaborador_area_id', $colaboradores_por_area->pluck('id'))->get();
+                    //despues todas las computadoras de todos los colaborades encontrados
+                    $computadoras = Computadora_colaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //luego a todos los programas instalados de estas computadoras
+                    $programas_instalados = Programas_instalados::whereIn('computadora_id', $computadoras->pluck('id'))->get();
+                    //luego todos los registros de mantenimientos de las computadoras
+                    $registros_mantenimientos = Registro_Mantenimiento::whereIn('computadora_id', $computadoras->pluck('id'))->get();
+                    //ahora todos los prestamos de objetos del colaborador
+                    $prestamos_objetos = Prestamos_objetos_por_colaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //finalmente todas las asistencias de clases (Aun no implementada pero puesta de igual manera para evitar errores)
+                    $asistencias_clases = Asistentes_Clase::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+    
+                    //ELIMINACIÓN EN CASCADA
+                    //ahora procedemos a eliminarlos de los ultimos a los primeros
+                    //asistencias_clase
+                    foreach($asistencias_clases as $asistencia_clase) {
+                        $asistencia_clase->delete();
+                    }
+                    //prestamos_objetos
+                    foreach($prestamos_objetos as $prestamo_objeto) {
+                        $prestamo_objeto->delete();
+                    }
+                    //registros_mantenimientos
+                    foreach($registros_mantenimientos as $registro_mantenimiento) {
+                        $registro_mantenimiento->delete();
+                    }
+                    //programas_instalados
+                    foreach($programas_instalados as $programa_instalado) {
+                        $programa_instalado->delete();
+                    }
+                    //computadoras
+                    foreach($computadoras as $computadora) {
+                        $computadora->delete();
+                    }
+                    //responsabilidades_Semanales_cumplidas
+                    foreach($responsabilidades_semanales_cumplidas as $responsabilidad_semanal_cumplida) {
+                        $responsabilidad_semanal_cumplida->delete();
+                    }
+                    //horarios_de_clases
+                    foreach($horarios_de_clases as $horario_de_clase) {
+                        $horario_de_clase->delete();
+                    }
+                    //colaboradores_por_area
+                    foreach($colaboradores_por_area as $colaborador_por_area) {
+                        $colaborador_por_area->delete();
+                    }
+                    //colaboradores
+                    foreach($colaboradores as $colab) {
+                        $colab->delete();
+                    }
+                    //candidato
+                    $candidato->delete();
+                }
+            }
+
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
+        } catch(Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('colaboradores.index');
+            }
+        }
 
     }
 }

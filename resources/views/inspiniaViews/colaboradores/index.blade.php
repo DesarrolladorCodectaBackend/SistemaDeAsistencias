@@ -55,6 +55,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-body">
+                                    <!--
                                     <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                         <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
                                         <div class="row">
@@ -89,6 +90,10 @@
                                                     <div class="form-group">
                                                         <input type="checkbox" class="estado-checkbox" id="checkbox-estados-0"
                                                             value="0"><span>inactivo</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-0"
+                                                            value="2"><span>Ex colaborador</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -127,7 +132,119 @@
                                             </div>
                                         </div>
                                     </form>
+                                    -->
+                                    <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
+                                        <h2 class="m-t-none m-b font-bold text-center">Filtrar Colaboradores</h2>
+                                        <div class="accordion" id="accordionExample">
+                                            <!-- Estados -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingEstados">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseEstados" aria-expanded="true" aria-controls="collapseEstados">
+                                                            Estados
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseEstados" class="collapse show" aria-labelledby="headingEstados" data-parent="#accordionExample">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-estados"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input estado-checkbox" id="checkbox-estados-1" value="1">
+                                                            <span for="checkbox-estados-1">Activo</span>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input estado-checkbox" id="checkbox-estados-0" value="0">
+                                                            <span for="checkbox-estados-0">Inactivo</span>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input estado-checkbox" id="checkbox-estados-2" value="2">
+                                                            <span for="checkbox-estados-2">Ex colaborador</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
+                                            <!-- Areas -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingAreas">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseAreas" aria-expanded="false" aria-controls="collapseAreas">
+                                                            Áreas
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                    
+                                                <div id="collapseAreas" class="collapse" aria-labelledby="headingAreas" data-parent="#accordionExample">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-areas"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @foreach($areasAll as $index => $area)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" id="checkbox-areas-{{$index}}" class="form-check-input area-checkbox" value="{{ $area->id }}">
+                                                            <span for="checkbox-areas-{{$index}}">{{$area->especializacion}}</span>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Carreras -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingCarreras">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseCarreras" aria-expanded="false" aria-controls="collapseCarreras">
+                                                            Carreras
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseCarreras" class="collapse" aria-labelledby="headingCarreras" data-parent="#accordionExample">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-carreras"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @foreach($carrerasAll as $index => $carrera)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input carrera-checkbox" value="{{ $carrera->id }}">
+                                                            <span for="checkbox-carreras-{{$index}}">{{ $carrera->nombre }}</span>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    
+                                            <!-- Instituciones -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingInstituciones">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseInstituciones" aria-expanded="false" aria-controls="collapseInstituciones">
+                                                            Instituciones
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseInstituciones" class="collapse" aria-labelledby="headingInstituciones" data-parent="#accordionExample">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-instituciones"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @foreach($institucionesAll as $index => $institucion)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input institucion-checkbox" value="{{ $institucion->id }}">
+                                                            <span for="checkbox-instituciones-{{$index}}">{{ $institucion->nombre }}</span>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    
+                                            <!-- Submit Button -->
+                                            <div class="text-center mt-4">
+                                                <button type="submit" class="btn btn-primary px-5">Filtrar</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -240,6 +357,16 @@
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
                                                 style="width: 100px; font-size: 18px;" href=""></a>
                                         </div>
+                                        <div class="mt-2">
+                                            <form role="form" method="POST" action="{{route('colaboradores.despedirColaborador', $colaborador->id)}}">
+                                                @csrf
+                                                @method('PUT')
+                                                @isset($pageData->currentURL)
+                                                <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                                @endisset
+                                                <button class="btn btn-danger">Despedir</button>
+                                            </form>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -256,6 +383,7 @@
                                     class="rounded-circle max-min-h-w-200 p-a-10 img-cover">
                             </div>
                             <div class="product-desc">
+                                @if($colaborador->estado != 2)
                                 <span class="product-price btn-Default" style="background-color: transparent;">
                                     <form method="POST" action="{{ route('colaboradores.activarInactivar', ["colaborador_id"=> $colaborador->id]) }}">
                                         @csrf
@@ -269,6 +397,9 @@
                                         </button>
                                     </form>
                                 </span>
+                                @else
+                                <h3 class="text-danger font-weight-bold">Ex Colaborador</h3>
+                                @endif
 
 
                                 <a href="#" class="product-name">
@@ -310,10 +441,8 @@
                                         action="{{route('colaboradores.horarioClase', $colaborador->id)}}">
                                     </form>
                                     <div class="ibox-content">
+                                        @if($colaborador->estado != 2)
                                         <div class="text-center">
-                                            {{-- <button class="btn btn-primary btn-danger fa fa-trash"
-                                                style="font-size: 20px;" type="button"
-                                                onclick="confirmDelete({{ $colaborador->id }})"></button> --}}
                                             <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
                                                 style="font-size: 20px;"
                                                 onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
@@ -520,6 +649,23 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @else
+                                        <div class="text-center d-flex justify-content-center gap-10">
+                                            <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
+                                                @csrf
+                                                @method('PUT')
+                                                @isset($pageData->currentURL)
+                                                <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                                @endisset
+                                                <button class="btn btn-success" type="submit">
+                                                    Re Contratar
+                                                </button>
+                                            </form>
+                                            <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                        @endif
 
                                     </div>
                                 </div>
@@ -672,20 +818,30 @@
             showModal('modal-form-update' + id);
         }
 
-        // function confirmDelete(id) {
-        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-        //         if (e) {
-        //             let form = document.createElement('form')
-        //             form.method = 'POST'
-        //             form.action = `/colaboradores/${id}`
-        //             form.innerHTML = '@csrf @method('DELETE')'
-        //             document.body.appendChild(form)
-        //             form.submit()
-        //         } else {
-        //             return false
-        //         }
-        //     });
-        // }
+        function confirmDelete(id, currentURL) {
+            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function(e) {
+                if (e) {
+                    let form = document.createElement('form')
+
+                    form.method = 'POST'
+                    form.action = `/colaboradores/${id}`
+                    form.innerHTML = '@csrf @method('DELETE')'
+
+                    if(currentURL != null){
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden)
+                    }
+
+                    document.body.appendChild(form)
+                    form.submit()
+                } else {
+                    return false
+                }
+            });
+        }
 
         function prepareSearchActionURL() {
             let busqueda = document.getElementById('searchInput').value;
@@ -806,6 +962,7 @@
 
 
     </script>
+
 
     <script>
         //JQuery para select multiple de areas
