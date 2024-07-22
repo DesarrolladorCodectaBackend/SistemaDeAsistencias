@@ -156,6 +156,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/responsabilidades/promedio/{year}/{mes}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMonthProm'])->name('responsabilidades.getMonthProm');
     Route::post('/responsabilidades/promedios/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMonthsProm'])->name('responsabilidades.getMonthsProm');
 
+    //OBJETOS
+    Route::resource('objeto', ObjetoController::class);
+    Route::post('objeto/{objeto}/activar-inactivar',[ObjetoController::class, 'activarInactivar'])->name('objeto.activarInactivar');
+
 });
 
 require __DIR__ . '/auth.php';

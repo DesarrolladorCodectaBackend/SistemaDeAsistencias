@@ -39,6 +39,7 @@ class InstitucionController extends Controller
             institucion::create([
                 'nombre' => $request->nombre,
             ]);
+            
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
@@ -63,11 +64,11 @@ class InstitucionController extends Controller
                 'nombre' => 'sometimes|string|min:1|max:100',
                 'estado' => 'sometimes|boolean'
             ]);
-    
+
             $institucion = Institucion::findOrFail($institucion_id);
-    
+
             $institucion->update($request->all());
-            
+
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
@@ -101,11 +102,11 @@ class InstitucionController extends Controller
         DB::beginTransaction();
         try{
             $institucion = Institucion::findOrFail($institucion_id);
-    
+
             $institucion->estado = !$institucion->estado;
-    
+
             $institucion->save();
-    
+
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);

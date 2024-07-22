@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>INSPINIA| Instituciones</title>
+    <title>INSPINIA| Objetos</title>
 </head>
 
 <body>
@@ -23,7 +23,7 @@
                         <a href="/ajustes">Ajustes</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>Institucion</strong>
+                        <strong>Objeto</strong>
                     </li>
                 </ol>
             </div>
@@ -43,12 +43,15 @@
                                                                 <p>Sign in today for more expirience.</p>
                                                             -->
 
-                                        <form role="form" method="POST" action="{{ route('institucion.store') }}">
+                                        <form role="form" method="POST" action="{{ route('objeto.store') }}">
                                             @csrf
                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-                                            <div class="form-group"><label>Institucion</label> <input type="text"
+                                            <div class="form-group"><label>Objeto</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
+                                            <div class="form-group"><input type="text"
+                                                placeholder="Ingrese una descripción" name="descripcion" class="form-control">
+                                        </div>
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                     type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
@@ -92,28 +95,30 @@
                         <thead>
                             <tr>
                                 <th class="col-lg-1">ID</th>
-                                <th class="col-lg-5">Institucion</th>
+                                <th class="col-lg-2">Objeto</th>
+                                <th class="col-lg-3">Descripción</th>
                                 <th class="col-lg-1">Estado</th>
                                 <th class="col-lg-1">Editar</th>
                                 {{-- <th class="col-lg-1">Borrar</th> --}}
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- ARRAY INSTITUCIONES --}}
-                            @foreach ($institucion as $insti)
+                           {{-- ARRAY INSTITUCIONES --}}
+                            @foreach ($objetos as $obj)
                             <tr>
-                                <td>{{ $insti->id }}</td>
-                                <td>{{ $insti->nombre }}</td>
-                                <td><form method="POST" action="{{ route('institucion.activarInactivar', $insti->id) }}">
+                                <td>{{ $obj->id }}</td>
+                                <td>{{ $obj->nombre }}</td>
+                                <td>{{ $obj->descripcion }}</td>
+                                <td><form method="POST" action="{{ route('objeto.activarInactivar', $obj->id) }}">
                                     <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     @csrf
-                                    <button type="submit" class="btn btn-{{ $insti->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                        <span>{{ $insti->estado ? 'Activo' : 'Inactivo' }}</span>
+                                    <button type="submit" class="btn btn-{{ $obj->estado ? 'outline-success' : 'danger' }} btn-primary dim">
+                                        <span>{{ $obj->estado ? 'Activo' : 'Inactivo' }}</span>
                                     </button>
                                 </form></td>
-                                <td><button class="btn btn-info" type="button" href="#modal-form{{ $insti->id }}" data-toggle="modal"><i
+                                <td><button class="btn btn-info" type="button" href="#modal-form{{ $obj->id }}" data-toggle="modal"><i
                                             class="fa fa-paste"></i></button></td>
-                                <div id="modal-form{{ $insti->id }}" class="modal fade" aria-hidden="true">
+                                <div id="modal-form{{ $obj->id }}" class="modal fade" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-body">
@@ -126,16 +131,21 @@
                                                         -->
 
                                                         <form role="form" method="POST"
-                                                            action="{{ route('institucion.update', $insti->id) }}">
+                                                            action="{{ route('objeto.update', $obj->id) }}">
                                                             @csrf
                                                             @method('PUT')
                                                             {{-- nombre del request "name" --}}
                                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-                                                            <label class="col-form-label">Institucion</label>
+                                                            <label class="col-form-label">Objeto</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $insti->nombre) }}">
+                                                                    value="{{ old('nombre', $obj->nombre) }}">
+                                                            </div>
+                                                            <div class="form-group"><label>Descripción</label>
+                                                                <input type="text" placeholder="....."
+                                                                    class="form-control" name="descripcion" id="descripcion"
+                                                                    value="{{ old('descripcion', $obj->descripcion) }}">
                                                             </div>
                                                             <div>
                                                                 <button
@@ -164,7 +174,7 @@
                 <div class="row mb-5 mb-md-4">
                     <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
-                            <a href="{{ $institucion->url(1) }}" class="btn btn-outline-dark rounded-5">
+                            <a href="{{ $objeto->url(1) }}" class="btn btn-outline-dark rounded-5">
                                 <i class="fa fa-arrow-circle-left"></i> First
                             </a>
                         @endif
