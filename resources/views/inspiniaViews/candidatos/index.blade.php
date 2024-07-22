@@ -29,7 +29,6 @@
             </div>
             <div class="col-lg-7 flex-centered">
                 <div class="flex-centered spc-per-90">
-                    {{-- <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()"> --}}
                     <form id="searchCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
@@ -48,7 +47,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
+                                {{-- <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                     <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
                                     <div class="row">
                                         <div class="col-sm-12 col-md-6 b-r">
@@ -67,6 +66,9 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <input type="checkbox" class="estado-checkbox" value="2"><span>Rechazado</span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="checkbox" class="estado-checkbox" value="3"><span>Ex colaborador</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -102,7 +104,99 @@
                                             </div>
                                         </div>
                                     </div>
+                                </form> --}}
+                                <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
+                                    <h2 class="m-t-none m-b font-bold text-center">Filtrar Candidatos</h2>
+                                    <div class="accordion" id="accordionExampleCandidatos">
+                                        <!-- Estados -->
+                                        <div class="card">
+                                            <div class="card-header" id="headingEstadosCandidatos">
+                                                <h5 class="mb-0">
+                                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseEstadosCandidatos" aria-expanded="true" aria-controls="collapseEstadosCandidatos">
+                                                        Estados
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseEstadosCandidatos" class="collapse show" aria-labelledby="headingEstadosCandidatos" data-parent="#accordionExampleCandidatos">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-estados"><span> Seleccionar todos</span>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input estado-checkbox" id="checkbox-estados-candidatos-1" value="1">
+                                                        <span for="checkbox-estados-candidatos-1">Pendiente</span>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input estado-checkbox" id="checkbox-estados-candidatos-0" value="0">
+                                                        <span for="checkbox-estados-candidatos-0">Colaborador</span>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input estado-checkbox" id="checkbox-estados-candidatos-2" value="2">
+                                                        <span for="checkbox-estados-candidatos-2">Rechazado</span>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input estado-checkbox" id="checkbox-estados-candidatos-3" value="3">
+                                                        <span for="checkbox-estados-candidatos-3">Ex colaborador</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                        <!-- Carreras -->
+                                        <div class="card">
+                                            <div class="card-header" id="headingCarrerasCandidatos">
+                                                <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseCarrerasCandidatos" aria-expanded="false" aria-controls="collapseCarrerasCandidatos">
+                                                        Carreras
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseCarrerasCandidatos" class="collapse" aria-labelledby="headingCarrerasCandidatos" data-parent="#accordionExampleCandidatos">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-carreras"><span> Seleccionar todos</span>
+                                                    </div>
+                                                    @foreach($carrerasAll as $index => $carrera)
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input carrera-checkbox" id="checkbox-carreras-candidatos-{{ $index }}" value="{{ $carrera->id }}">
+                                                        <span for="checkbox-carreras-candidatos-{{ $index }}">{{ $carrera->nombre }}</span>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                        <!-- Instituciones -->
+                                        <div class="card">
+                                            <div class="card-header" id="headingInstitucionesCandidatos">
+                                                <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseInstitucionesCandidatos" aria-expanded="false" aria-controls="collapseInstitucionesCandidatos">
+                                                        Instituciones
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseInstitucionesCandidatos" class="collapse" aria-labelledby="headingInstitucionesCandidatos" data-parent="#accordionExampleCandidatos">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-instituciones"><span> Seleccionar todos</span>
+                                                    </div>
+                                                    @foreach($institucionesAll as $index => $institucion)
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input institucion-checkbox" id="checkbox-instituciones-candidatos-{{ $index }}" value="{{ $institucion->id }}">
+                                                        <span for="checkbox-instituciones-candidatos-{{ $index }}">{{ $institucion->nombre }}</span>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                        <!-- Submit Button -->
+                                        <div class="text-center mt-4">
+                                            <button type="submit" class="btn btn-primary px-5">Filtrar</button>
+                                        </div>
+                                    </div>
                                 </form>
+                                
                             </div>
                         </div>
                     </div>
@@ -340,6 +434,10 @@
                                             Eliminar
                                         </button>
                                     </div>
+                                    @elseif($candidato->estado == 3)
+                                    <div class="text-center">
+                                        <h1 class="text-danger font-bold">Ex Colaborador</h1>
+                                    </div> 
                                     @endif
 
                                     </p>
@@ -777,7 +875,7 @@
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
 
-            estados = estados.length ? estados.join(',') : '0,1,2';
+            estados = estados.length ? estados.join(',') : '0,1,2,3';
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
 

@@ -125,6 +125,8 @@ Route::middleware('auth')->group(function () {
     Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}', [ColaboradoresController::class, 'filtrarColaboradores'])
     ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*'])->name('colaboradores.filtrar');
     Route::get('colaboradores/search/{busqueda}', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
+    Route::put('colaboradores/despedirColaborador/{colaborador_id}', [ColaboradoresController::class, 'despedirColaborador'])->name('colaboradores.despedirColaborador');
+    Route::put('colaboradores/recontratarColaborador/{colaborador_id}', [ColaboradoresController::class, 'recontratarColaborador'])->name('colaboradores.recontratarColaborador');
 
     //HORARIO DE CLASES
     Route::resource('horarioClase', HorarioDeClasesController::class);
