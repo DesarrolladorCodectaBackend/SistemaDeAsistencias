@@ -6,58 +6,76 @@ use App\Models\Horarios_Presenciales;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreHorarios_PresencialesRequest;
 use App\Http\Requests\UpdateHorarios_PresencialesRequest;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class HorariosPresencialesController extends Controller
 {
-    
+
     public function index()
     {
-        $horarios_presenciales = Horarios_Presenciales::get();
+        $Horarios_Presenciales = Horarios_Presenciales::all();
 
-        return response()->json(["data"=>$horarios_presenciales, "conteo"=>count($horarios_presenciales)]);
+        return view('Horarios_Presenciales.index', compact('Horarios_Presenciales'));
     }
 
-    
-    public function create(Request $request)
+
+    public function store(Request $request)
     {
-        Horarios_Presenciales::create([
-            "horario_inicial" => $request->horario_inicial,
-            "horario_final" => $request->horario_final,
-            "dia" => $request->dia
+
+        $request->validate([
+            'hora_inicial' => 'required|string|min:1|max:100',
+            'hora_final' => 'required|string|min:1|max:255',
+            'dia' =>  'required|string|min:1|max:7',
         ]);
 
-        return response()->json(["resp" => "Horario presencial creado"]);
+        Horarios_Presenciales::create([
+                "hora_inicial" => $request->hora_inicial,
+                "hora_final" => $request->hora_final,
+                "dia" => $request->dia
+        ]);
+ 
     }
 
-    
+
     public function show($horario_presencial_id)
     {
-        $horario = Horarios_Presenciales::find($horario_presencial_id);
+        try {
+            $horario = Horarios_Presenciales::find($horario_presencial_id);
 
-        return response()->json(["data" => $horario]);
+            if ($horario == null) {
+                return response()->json(["resp" => "No existe un registro con ese id"]);
+            }
+
+            return response()->json(["data" => $horario]);
+        } catch (Exception $e) {
+            return response()->json(["data" => $e]);
+        }
     }
 
-    
+
     public function update(Request $request, $horario_presencial_id)
     {
-        $horario = Horarios_Presenciales::find($horario_presencial_id);
+        $request->validate([
+            'hora_inicial' => 'required|string|min:1|max:100',
+            'hora_final' => 'required|string|min:1|max:255',
+            'dia' =>  'required|string|min:1|max:7',
+        ]);
+        
+        $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
 
-        $horario->fill([
-            "horario_inicial" => $request->horario_inicial,
-            "horario_final" => $request->horario_final,
-            "dia" => $request->dia
-        ])->save();
+        $horarios_presenciales->update($request->all());
 
-        return response()->json(["resp" => "Horario presencial con id ".$horario_presencial_id." editado"]);
+        return redirect()->route('horarios_presenciales.index');
     }
 
-    
+
     public function destroy($horario_presencial_id)
     {
-        $horario = Horarios_Presenciales::find($horario_presencial_id);
+        $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
 
-        $horario->delete();
+        $horarios_presenciales->delete();
 
-        return response()->json(["resp"=>"Horario presencial con id ".$horario_presencial_id." eliminado"]);
+        return redirect()->route('horarios_presenciales.index');
     }
 }

@@ -11,11 +11,13 @@ class Area extends Model
 
     protected $fillable = [
         'especializacion',
-        'color_hex'
+        'descripcion',
+        'color_hex',
+        'icono'
     ];
 
 
-    public function colaboradores_por_area(){
+    public function colaborador_por_area(){
         return $this->hasMany(Colaboradores_por_Area::class, 'area_id', 'id');
     }
 

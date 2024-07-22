@@ -19,7 +19,7 @@ class Programas_instalados extends Model
         return $this->belongsTo(Computadora_colaborador::class, 'computadora_id', 'id');
     }
 
-    public function programas(){
+    public function programa(){
         return $this->belongsTo(Programas::class, 'programa_id', 'id');
     }
 

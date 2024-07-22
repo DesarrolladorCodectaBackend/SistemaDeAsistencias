@@ -15,11 +15,11 @@ class Colaboradores extends Model
     ];
 
 
-    public function candidatos(){
+    public function candidato(){
         return $this->belongsTo(Candidatos::class, 'candidato_id', 'id');
     }
 
-    public function colaboradores_por_area(){
+    public function colaborador_por_area(){
         return $this->hasMany(Colaboradores_por_Area::class, 'colaborador_id', 'id');
     }    
 

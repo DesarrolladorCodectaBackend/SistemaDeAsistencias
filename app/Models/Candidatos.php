@@ -18,7 +18,10 @@ class Candidatos extends Model
         'ciclo_de_estudiante',
         'estado',
         'institucion_id',
-        'carrera_id'
+        'carrera_id',
+        'correo',
+        'celular',
+        'icono',
     ];
 
     public function institucion(){
@@ -29,7 +32,7 @@ class Candidatos extends Model
         return $this->belongsTo(Carrera::class, 'carrera_id', 'id');
     }
 
-    public function colaboradores(){
+    public function colaborador(){
         return $this->hasOne(Colaboradores::class, 'candidato_id', 'id');
     }
 

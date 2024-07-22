@@ -10,10 +10,11 @@ class Carrera extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nombre'
+        'nombre',
+        'estado'
     ];
 
-    public function candidatos(){
+    public function candidato(){
         return $this->hasMany(Candidatos::class, 'carrera_id', 'id');
     }
 

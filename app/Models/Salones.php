@@ -15,8 +15,9 @@ class Salones extends Model
     ];
 
 
-    public function maquinas(){
+    public function maquina(){
         return $this->hasMany(Maquinas::class, 'salon_id', 'id');
     }
+    
 
 }

@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('institucions', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 100);
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('institucion');
+        Schema::dropIfExists('institucions');
     }
 };

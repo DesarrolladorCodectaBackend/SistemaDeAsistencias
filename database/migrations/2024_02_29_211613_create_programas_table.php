@@ -17,8 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('descripcion', 500);
-            $table->integer('memoria_grafica');
-            $table->integer('ram');
+            $table->boolean('estado')->default(true);
+            $table->string('icono');
+            $table->integer('memoria_grafica')->default(0);
+            $table->integer('ram')->default(0);
+            $table->integer('almacenamiento')->default(0);
             $table->timestamps();
         });
     }

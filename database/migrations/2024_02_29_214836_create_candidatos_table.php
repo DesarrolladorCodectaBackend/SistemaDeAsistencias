@@ -17,15 +17,18 @@ return new class extends Migration
             $table->id();
             $table->string('nombre', 100);
             $table->string('apellido', 100);
-            $table->string('dni', 8);
+            $table->string('dni', 8)->unique();
             $table->string('direccion', 100);
-            $table->dateTime('fecha_nacimiento');
+            $table->date('fecha_nacimiento');
             $table->integer('ciclo_de_estudiante');
             $table->boolean('estado')->default(True);
             $table->unSignedBigInteger('institucion_id');
             $table->foreign('institucion_id')->references('id')->on('institucions');
             $table->unSignedBigInteger('carrera_id');
             $table->foreign('carrera_id')->references('id')->on('carreras');
+            $table->string('correo')->unique()->nullable();
+            $table->string('celular')->unique()->nullable();
+            $table->string('icono');
             $table->timestamps();
         });
     }
