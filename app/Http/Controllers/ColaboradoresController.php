@@ -13,6 +13,7 @@ use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
 use App\Models\Institucion;
 use App\Models\Carrera;
+use App\Models\Maquina_reservada;
 use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
 use App\Models\Programas_instalados;
@@ -473,7 +474,6 @@ class ColaboradoresController extends Controller
             }
         }
     }
-    //TO DO: Destroy colaboradores con todos sus dependientes
     public function destroy(Request $request, $colaborador_id)
     {
         DB::beginTransaction();
@@ -489,6 +489,8 @@ class ColaboradoresController extends Controller
                     $colaboradores_por_area = Colaboradores_por_Area::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
                     //despues todos los horarios de clase de estos colaboradores
                     $horarios_de_clases = Horario_de_Clases::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //despues todos las maquinas reservadas de los colaboradores con area
+                    $maquinas_reservadas = Maquina_reservada::whereIn('colaborador_area_id', $colaboradores_por_area->pluck('id'))->get();
                     //ahora todas las responsabilidades semanales cumplidas por todos los colaboradores con area}
                     $responsabilidades_semanales_cumplidas = Cumplio_Responsabilidad_Semanal::whereIn('colaborador_area_id', $colaboradores_por_area->pluck('id'))->get();
                     //despues todas las computadoras de todos los colaborades encontrados
@@ -528,6 +530,10 @@ class ColaboradoresController extends Controller
                     foreach($responsabilidades_semanales_cumplidas as $responsabilidad_semanal_cumplida) {
                         $responsabilidad_semanal_cumplida->delete();
                     }
+                    //maquinas_reservadas
+                    foreach($maquinas_reservadas as $maquina_reservada) {
+                        $maquina_reservada->delete();
+                    }
                     //horarios_de_clases
                     foreach($horarios_de_clases as $horario_de_clase) {
                         $horario_de_clase->delete();
@@ -553,6 +559,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
+            // return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL);
             } else {

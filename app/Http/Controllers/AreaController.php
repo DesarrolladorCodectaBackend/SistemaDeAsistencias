@@ -177,7 +177,7 @@ class AreaController extends Controller
         //Areas del mismo salon            
         $salonAreasConcurrentesId = $areasConcurrentesActivas->where('salon_id', $area->salon_id)->pluck('id');
 
-        $colaboradoresActivosID = Colaboradores::where('estado', 1)->get()->pluck('id');
+        $colaboradoresActivosID = Colaboradores::whereNot('estado', 2)->get()->pluck('id');
         $colaboradoresOtherAreas = Colaboradores_por_Area::with('colaborador')->where('estado', 1)->whereIn('colaborador_id', $colaboradoresActivosID)->whereIn('area_id', $salonAreasConcurrentesId)->get();
 
         $colaboradoresThisArea = Colaboradores_por_Area::with('colaborador')->where('estado', 1)->whereIn('colaborador_id', $colaboradoresActivosID)->where('area_id', $area->id)->get();
@@ -186,13 +186,14 @@ class AreaController extends Controller
             foreach($colaboradoresOtherAreas as $key => $colabThere){
                 if($colabHere->colaborador_id == $colabThere->colaborador_id) {
                     //Añadir el colab there a la lista de colaboradores de esta area
-                    $colaboradoresThisArea->push($colabThere);
+                    // $colaboradoresThisArea->push($colabThere); //Ya no agregar para evitar duplicados, se modificará el asignador de maquinas para que al asignar o editar lo haga con todas los colaboradores de ese colaborador que tengan horarios concurrentes
                     //Quitar colabThere de su colección original
                     $colaboradoresOtherAreas->forget($key);
                 }
 
             }
         }
+        // $colaboradoresThisArea = $colaboradoresThisArea->unique('colaborador_id');
         $colaboradoresOtherAreasId = $colaboradoresOtherAreas->pluck('id');
         $maquinasOtherAreas = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresOtherAreasId)->get();
 
