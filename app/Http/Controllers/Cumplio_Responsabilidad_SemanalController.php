@@ -68,13 +68,31 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
         foreach ($Meses as $mes) {
             $agrupadosPorMes[$mes['nombre']] = [
+                'tipo' => 'Accesible',
                 'total_semanas' => 0,
                 'semanas_evaluadas' => 0,
                 'semanas_sin_evaluar' => 0,
             ];
         }
-
+        // foreach ($semanasMes as $index => &$semana) {
+        //     $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)
+        //         ->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
+        //     $semana->colaboradores = $colaboradoresArea;
+        //     $colaboradoresAreaId = $colaboradoresArea->pluck('id');
+        //     $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->whereIn("colaborador_area_id", $colaboradoresAreaId)->first();
+        //     if ($semanaCumplida) {
+        //         $semana->cumplido = true;
+        //     } else {
+        //         $semana->cumplido = false;
+        //     }
+        //     if ($colaboradoresArea->count() < 1) {
+        //         // Eliminar la semana del array $semanasMes
+        //         unset($semanasMes[$index]);
+        //     }
+        // }
+        $colaboradoresRemanentes = Colaboradores::where('estado', 1)->get()->pluck('id');
         $semanasTotales = Semanas::get();
+        $lastWeek = $semanasTotales->last();
 
         foreach ($Meses as $mes) {
             $semanasMes = $semanasTotales->filter(function ($semana) use ($mes, $year) {
@@ -82,6 +100,22 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                     date('m', strtotime($semana->fecha_lunes)) == $mes['id'];
             });
 
+            foreach($semanasMes as $index => $semana){
+                $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)
+                ->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
+                if ($colaboradoresArea->count() < 1) {
+                    // Eliminar la semana del array $semanasMes
+                    unset($semanasMes[$index]);
+                }
+            }
+            if($semanasMes->count() <= 0){
+                //VERIFICAR SI ES UN MES ANTERIOR AL AREA O SI AUN ES PROXIMO, DE CASO CONTRARIO, SERA ACCESIBLE
+                if((date('Y', strtotime($lastWeek->fecha_lunes)) <= $year) && (date('m', strtotime($lastWeek->fecha_lunes)) < $mes['id'])){
+                    $agrupadosPorMes[$mes['nombre']]['tipo'] = 'Próximo';
+                } else{
+                    $agrupadosPorMes[$mes['nombre']]['tipo'] = 'Anterior';
+                }
+            }
             $agrupadosPorMes[$mes['nombre']]['total_semanas'] = $semanasMes->count();
 
             $semanasEvaluadas = $Cumplio_res_Area->filter(function ($registro) use ($semanasMes) {
@@ -91,7 +125,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $agrupadosPorMes[$mes['nombre']]['semanas_evaluadas'] = $semanasEvaluadas;
             $agrupadosPorMes[$mes['nombre']]['semanas_sin_evaluar'] = $agrupadosPorMes[$mes['nombre']]['total_semanas'] - $semanasEvaluadas;
         }
-
+        // return $agrupadosPorMes;
         return view('inspiniaViews.responsabilidades.meses', ['area_id' => $area_id, 'year' => $year], compact('agrupadosPorMes'));
     }
 
@@ -101,9 +135,9 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
         //Estado 2 en colaboradores será igual a que ha sido despedido o que ya no pertenece a la empresa
-        $colaboradoresRemanentes = Colaboradores::whereNot('estado', 2)->get()->pluck('id'); //PREGUNTAR SI SOLO SE DEBE MOSTRAR A LOS QUE ESTÁN ACTIVOS
-        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)->with('colaborador')->get();
-        $colaboradoresAreaId = $colaboradoresArea->pluck('id');
+        $colaboradoresRemanentes = Colaboradores::where('estado', 1)->get()->pluck('id'); //SOLO MOSTRAR A LOS ACTIVOS, NO INACTIVOS NI EX COLABORADORES
+        // $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)->with('colaborador')->get();
+        // $colaboradoresAreaId = $colaboradoresArea->pluck('id');
 
         $Meses = FunctionHelperController::getMonths();
 
@@ -126,22 +160,34 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         }
 
         //Obtener Registros creados del mes
-        $semanasCumplidas = Cumplio_Responsabilidad_Semanal::whereIn("semana_id", $semanasMesId)->whereIn("colaborador_area_id", $colaboradoresAreaId)->get(); //validar por area (colaboradores)
-        $semanasCumplidasIds = $semanasCumplidas->pluck('semana_id')->toArray();
+        // $semanasCumplidas = Cumplio_Responsabilidad_Semanal::whereIn("semana_id", $semanasMesId)->whereIn("colaborador_area_id", $colaboradoresAreaId)->get(); //validar por area (colaboradores)
+        // $semanasCumplidasIds = $semanasCumplidas->pluck('semana_id')->toArray();
 
         // Definir semanas cumplidas
-        foreach ($semanasMes as &$semana) {
-            if (in_array($semana->id, $semanasCumplidasIds)) {
+        foreach ($semanasMes as $index => &$semana) {
+            $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)
+                ->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
+            $semana->colaboradores = $colaboradoresArea;
+            $colaboradoresAreaId = $colaboradoresArea->pluck('id');
+            $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->whereIn("colaborador_area_id", $colaboradoresAreaId)->first();
+            if ($semanaCumplida) {
                 $semana->cumplido = true;
             } else {
                 $semana->cumplido = false;
             }
+            if ($colaboradoresArea->count() < 1) {
+                // Eliminar la semana del array $semanasMes
+                unset($semanasMes[$index]);
+            }
         }
-
+        $semanasMes = array_values($semanasMes);
+        // return $semanasMes;
         $registros = Cumplio_Responsabilidad_Semanal::get();
         //return $semanasCumplidas;
         //return $semanasMes;
         //return $registros;
+        // return response()->json(['year' => $year, 'mes' => $mes, 'registros' => $registros, 'area' => $area, 'responsabilidades' => $responsabilidades,
+        //     'colaboradoresArea' => $colaboradoresArea, 'semanasMes' => $semanasMes]);
         return view('inspiniaViews.responsabilidades.asistencia', [
             'year' => $year,
             'mes' => $mes,

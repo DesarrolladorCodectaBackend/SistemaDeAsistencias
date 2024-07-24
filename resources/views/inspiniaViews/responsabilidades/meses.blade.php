@@ -63,11 +63,17 @@
                                 <div class="text-lg m-t-xs">
                                     Semanas sin Evaluar: {{ $infoMes['semanas_sin_evaluar'] }}
                                 </div>
-                                @if ($infoMes['total_semanas'] == 0)
+                                @if ($infoMes['tipo'] == 'Próximo')
+                                <div class="m-t text-righ">
+                                    <button class="btn btn-warning btn-circle" type="button">
+                                    </button>
+                                    <a class="" href="">Próximo</a>
+                                </div>
+                                @elseif($infoMes['tipo'] == 'Anterior')
                                 <div class="m-t text-righ">
                                     <button class="btn btn-gray btn-circle" type="button">
                                     </button>
-                                    <a class="" href="">Próximo</a>
+                                    <span class="text-success font-bold">Anterior</span>
                                 </div>
                                 @elseif($infoMes['total_semanas'] == $infoMes['semanas_evaluadas'])
                                 <div class="m-t text-righ">

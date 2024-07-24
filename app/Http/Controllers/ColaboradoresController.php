@@ -19,6 +19,8 @@ use App\Models\Programas;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
 use App\Models\Sede;
+use App\Models\Semanas;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -196,13 +198,17 @@ class ColaboradoresController extends Controller
             if ($candidato->estado == 1) {
                 //Sí el candidato está activo, se crea un nuevo colaborador con el id del candidato
                 $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
+
+                //Encontrar siguiente semana(Lunes)
+                $semana = FunctionHelperController::findOrCreateNextWeek();
+                
                 //Se recorre el request de areas
                 foreach($request->areas_id as $area_id){
                     //Se crea un nuevo registro en la tabla Colaboradores_por_Area con el id del colaborador y el id del área
                     Colaboradores_por_Area::create([
                         'colaborador_id' => $colaborador->id,
                         'area_id' => $area_id,
-                        'semana_inicio_id' => null
+                        'semana_inicio_id' => $semana->id,
                     ]);
                 }
                 //Se recorre el request de horarios
@@ -255,6 +261,8 @@ class ColaboradoresController extends Controller
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
             //Asignar el candidato a una variable
             $candidato = $colaborador->candidato;
+            //Encontrar siguiente semana(Lunes)
+            $semana = FunctionHelperController::findOrCreateNextWeek();
             //Recorrer cada area enviado en el request
             foreach($request->areas_id as $area_id){
                 //Buscar Si hay colaborador por area y colaborador
@@ -265,7 +273,7 @@ class ColaboradoresController extends Controller
                     Colaboradores_por_Area::create([
                         'colaborador_id' => $colaborador->id,
                         'area_id' => $area_id,
-                        'semana_inicio_id' => null,
+                        'semana_inicio_id' => $semana->id,
                         'estado' => true,
                     ]);
                     //Si se encuentra un colaborador con esta area y esta inactivo
@@ -280,6 +288,13 @@ class ColaboradoresController extends Controller
             foreach ($areasInactivas as $areaInactiva) {
                 //Se inactiva su estado
                 $areaInactiva->update(['estado' => false]);
+                //Se busca si tiene computadoras
+                $ColabMachines = Maquina_reservada::where('colaborador_area_id', $areaInactiva->id)->get();
+                //Recorrer maquinas encontradas
+                foreach($ColabMachines as $machine){
+                    //Eliminar maquinas
+                    $machine->delete();
+                }
             }
             //Se crea un array de datos a actualizar para el candidato, exceptuando el icono y area_id
             $datosActualizar = $request->except(['icono', 'areas_id']);

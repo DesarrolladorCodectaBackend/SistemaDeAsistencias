@@ -7,6 +7,7 @@ use App\Models\Colaboradores_por_Area;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Maquina_reservada;
 use App\Models\Semanas;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -49,6 +50,24 @@ class FunctionHelperController extends Controller
     }
 
     //TIME
+
+    public static function findOrCreateNextWeek(){
+        //Encontrar el dia actual
+        $today = Carbon::now();
+        //Buscar el siguiente lunes
+        while (!$today->isMonday()) {
+            $today->addDay();
+            $monday = $today;                    
+        }
+        //Buscar semana del siguiente lunes
+        $semana = Semanas::where('fecha_lunes', $monday->toDateString())->first();
+        if(!$semana){
+            $semana = Semanas::create(['fecha_lunes' => $monday->toDateString()]);
+        }
+        //Retornar semana
+        return $semana;
+    }
+
     public static function getYears()
     {
         $TotalSemanas = Semanas::get();
