@@ -176,19 +176,21 @@ class AreaController extends Controller
         $areasConcurrentesActivas = $allAreasConcurrentes->where('estado', 1);
         //Areas del mismo salon            
         $salonAreasConcurrentesId = $areasConcurrentesActivas->where('salon_id', $area->salon_id)->pluck('id');
+        $totalAreaConcurrentesId = Horario_Presencial_Asignado::with('area')->whereIn('horario_presencial_id', $horariosArea)->get()->pluck('area')->where('estado', 1)->where('salon_id', $area->salon_id)->pluck('id');
 
         $colaboradoresActivosID = Colaboradores::whereNot('estado', 2)->get()->pluck('id');
         $colaboradoresOtherAreas = Colaboradores_por_Area::with('colaborador')->where('estado', 1)->whereIn('colaborador_id', $colaboradoresActivosID)->whereIn('area_id', $salonAreasConcurrentesId)->get();
 
         $colaboradoresThisArea = Colaboradores_por_Area::with('colaborador')->where('estado', 1)->whereIn('colaborador_id', $colaboradoresActivosID)->where('area_id', $area->id)->get();
-
+        $colaboradoresBaseThisArea = $colaboradoresThisArea->pluck('colaborador');
+        // return $colaboradoresBaseThisAreaID->candidato;
         foreach($colaboradoresThisArea as $colabHere){
             foreach($colaboradoresOtherAreas as $key => $colabThere){
                 if($colabHere->colaborador_id == $colabThere->colaborador_id) {
                     //Añadir el colab there a la lista de colaboradores de esta area
                     // $colaboradoresThisArea->push($colabThere); //Ya no agregar para evitar duplicados, se modificará el asignador de maquinas para que al asignar o editar lo haga con todas los colaboradores de ese colaborador que tengan horarios concurrentes
                     //Quitar colabThere de su colección original
-                    $colaboradoresOtherAreas->forget($key);
+                    // $colaboradoresOtherAreas->forget($key);
                 }
 
             }
@@ -196,7 +198,8 @@ class AreaController extends Controller
         // $colaboradoresThisArea = $colaboradoresThisArea->unique('colaborador_id');
         $colaboradoresOtherAreasId = $colaboradoresOtherAreas->pluck('id');
         $maquinasOtherAreas = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresOtherAreasId)->get();
-
+        // return $maquinasOtherAreas;
+        
         // return ["this" => $colaboradoresThisArea, "other" => $colaboradoresOtherAreas];
         $colaboradoresThisAreaId = $colaboradoresThisArea->pluck('id');
         $maquinasThisArea = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresThisAreaId)->get();
@@ -205,6 +208,7 @@ class AreaController extends Controller
         // return $colaboradoresThisArea->pluck('id');
         //Todas las maquinas de este salon
         $maquinas = Maquinas::where('salon_id', $area->salon_id)->where('estado', 1)->get();
+        // return $maquinas;
 
         foreach($maquinas as $maquina){
             $maquina->estaArea = false;
@@ -212,43 +216,65 @@ class AreaController extends Controller
             $maquina->maquina_reservada_id = null;
             $maquina->colaborador = 'Sin asignar';
             $maquina->colaborador_id = null;
+            $maquina->colaborador_base_id = null;
             foreach($maquinasOtherAreas as $otherMaquina){
                 if($maquina->id === $otherMaquina->maquina_id){
                     $areaNombre = $otherMaquina->colaborador_area->area->especializacion;
                     $maquina->otraArea = true;
                     $maquina->colaborador = 'Asignada a otra area ('.$areaNombre.')';
+                    $maquina->colaborador_base_id = $otherMaquina->colaborador_area->colaborador_id;
+                    $maquina->colaborador_id = $otherMaquina->colaborador_area_id;
                     $maquina->maquina_reservada_id = $otherMaquina->id;
                 }
             }
             foreach($maquinasThisArea as $thisMaquina){
                 if($maquina->id === $thisMaquina->maquina_id){
                     $maquina->estaArea = true;
-                    $colaborador = Colaboradores::with('candidato')->where('id', $thisMaquina->colaborador_area->colaborador_id)->first();
+                    $colaborador = Colaboradores::where('id', $thisMaquina->colaborador_area->colaborador_id)->first();
                     $candidato = $colaborador->candidato;
                     $maquina->colaborador = $candidato->nombre." ".$candidato->apellido;
                     $maquina->colaborador_id = $thisMaquina->colaborador_area_id;
+                    $maquina->colaborador_base_id = $colaborador->id;
                     $maquina->maquina_reservada_id = $thisMaquina->id;
                 }
             }
+
+            foreach($colaboradoresBaseThisArea as $colabBase){
+                if($maquina->colaborador_base_id === $colabBase->id){
+                    // return [$maquina->colaborador_base_id , $colabBase->id];
+                    $maquina->estaArea = true;
+                    $maquina->otraArea = false;
+                    $candidato = $colabBase->candidato;
+                    $maquina->colaborador = $candidato->nombre." ".$candidato->apellido;
+                }
+            }
+
+
         }
 
-        foreach($colaboradoresThisArea as $colaboradorArea){
+        foreach($colaboradoresBaseThisArea as $colaboradorArea){
             $colaboradorArea->hasMaquina = false;
-            $candidato =  Candidatos::findOrFail($colaboradorArea->colaborador->candidato_id);
+            $candidato =  Candidatos::findOrFail($colaboradorArea->candidato_id);
             $colaboradorArea->nombre = $candidato->nombre." ".$candidato->apellido;
-
-            $maquina = Maquina_reservada::where('colaborador_area_id', $colaboradorArea->id)->first();
+            $allColabsAreasID = Colaboradores_por_Area::where('colaborador_id', $colaboradorArea->id)->whereIn('area_id', $totalAreaConcurrentesId)->where('estado', 1)->get()->pluck('id');
+            
+            // if($colaboradorArea->nombre == "Karla Lopez"){
+            //     return $allColabsAreasID;
+                
+            // }
+            $maquina = Maquina_reservada::whereIn('colaborador_area_id', $allColabsAreasID)->first();
             if($maquina){
                 $colaboradorArea->hasMaquina = true;
             }
 
         }
 
-        // return response()->json(['maquina' => $maquinas, 'colaboradoresArea' => $colaboradoresThisArea, 'area' => $area]);
+        // return response()->json(['maquina' => $maquinas, 'colaboradoresArea' => $colaboradoresBaseThisArea, 'area' => $area]);
         return view('inspiniaViews.areas.maquinas', [
             'maquinas' => $maquinas,
             'area' => $area,
-            'colaboradoresArea' => $colaboradoresThisArea,
+            'colaboradoresArea' => $colaboradoresBaseThisArea,
+            'colaboradoresAreaBase' => $colaboradoresBaseThisArea,
         ]);
     }
 

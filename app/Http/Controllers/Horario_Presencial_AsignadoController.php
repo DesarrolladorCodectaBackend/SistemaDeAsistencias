@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Colaboradores_por_Area;
+use App\Models\Horarios_Presenciales;
+use App\Models\Maquina_reservada;
 use Illuminate\Http\Request;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Area;
@@ -49,22 +52,61 @@ class Horario_Presencial_AsignadoController extends Controller
                 "area_id" => "required|integer",
             ]);
 
-            foreach($request->horario_presencial_id as $horario_presencial_id) {
-                $horarioExistente = Horario_Presencial_Asignado::where('horario_presencial_id', $horario_presencial_id)
-                    ->where('area_id', $request->area_id)->first();
-                if(!$horarioExistente){
-                    Horario_Presencial_Asignado::create([
-                        "horario_presencial_id" => $horario_presencial_id,
-                        "area_id" => $request->area_id
-                    ]);
+            //TO DO: Tras crear el horario se verificará si hay maquinas que choquen con otras de las áreas concurrentes
+            //Si chocan ya sea con otro colaborador o el mismo pero en alguna de sus areas, se eliminará sin más
+
+            // $area = Area::findOrFail($request->area_id);
+            // if($area){
+            //     // return $area;
+            //     $areasConcurrentesWithoutThis = FunctionHelperController::getAreasConcurrentes(["area" => $area, "WithThis" => false, "active" => true]);
+            //     // return $areasConcurrentes;
+            //     // $areasConcurrentesWithoutThis = $areasConcurrentes->whereNot('id', $area->id);
+            //     //Encontrar las maquinas reservadas del área
+            //     $colaboradoresArea = Colaboradores_por_Area::with('colaborador')->where('area_id', $area->id)->where('estado', 1)->get();
+            //     $maquinasReservadas = Maquina_reservada::whereIn('colaborador_area_id', $colaboradoresArea->pluck('id'))->get();
+            //     $colaboradoresBaseArea = $colaboradoresArea->pluck('colaborador');
+            //     // return $colaboradoresBaseArea;
+            //     //Encontrar las maquinas reservadas de las áreas concurrentes
+            //     $colaboradoresAreasConcurrentes = Colaboradores_por_Area::with('colaborador')->whereIn('area_id', $areasConcurrentesWithoutThis->pluck('id'))
+            //         ->where('estado', 1)->whereNotIn('colaborador_id', $colaboradoresBaseArea->pluck('id'))->get();
+                
+            //     $maquinasReservadasAreasConcurrentes = Maquina_reservada::whereIn('colaborador_area_id', $colaboradoresAreasConcurrentes->pluck('id'))->get();
+
+            //     //Buscar coincidencias
+            //     $coincidencias = 0;
+            //     foreach($maquinasReservadas as $maquinaReservada) {
+            //         foreach($maquinasReservadasAreasConcurrentes as $maquinaReservadaAreaConcurrente) {
+            //             if($maquinaReservada->maquina_id === $maquinaReservadaAreaConcurrente->maquina_id){
+                            
+            //             }
+            //         }
+            //     }
+            //     return $maquinasReservadasAreasConcurrentes;
+            // }
+                // return $areasConcurrentesWithoutThis;
+
+                $horariosPresencialesRegistros = Horarios_Presenciales::whereIn('id', $request->horario_presencial_id)->get();
+                
+                foreach($horariosPresencialesRegistros as $horarioPresencialRegistro) {
+                    $horarioExistente = Horario_Presencial_Asignado::where('horario_presencial_id', $horarioPresencialRegistro->id)
+                        ->where('area_id', $request->area_id)->first();
+                    if(!$horarioExistente){
+                        Horario_Presencial_Asignado::create([
+                            "horario_presencial_id" => $horarioPresencialRegistro->id,
+                            "area_id" => $request->area_id
+                        ]);
+                    }
                 }
-            }
+
+
+
 
             DB::commit();
             // return response()->json(["resp" => "Registro creado exitosamente"]);
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         }catch(Exception $e){
             DB::rollBack();
+            return $e;
             // return response()->json(["error" => $e]);
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         }
