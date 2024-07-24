@@ -13,6 +13,7 @@ use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\ObjetoController;
+use App\Http\Controllers\PrestamoObjetoColaboradorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
@@ -106,7 +107,7 @@ Route::middleware('auth')->group(function () {
 
 
     //OBJETOS
-    Route::resource('objetos', ObjetoController::class);
+    //Route::resource('objetos', ObjetoController::class);
 
     //CANDIDATOS
     Route::resource('candidatos', CandidatosController::class);
@@ -161,6 +162,12 @@ Route::middleware('auth')->group(function () {
     //OBJETOS
     Route::resource('objeto', ObjetoController::class);
     Route::post('objeto/{objeto}/activar-inactivar',[ObjetoController::class, 'activarInactivar'])->name('objeto.activarInactivar');
+
+    //PRESTAMOS
+    Route::get('colaborador/prestamo/{colaborador_id}', [PrestamoObjetoColaboradorController::class, 'getColaboradorObjetos'])->name('colaboradores.getPrestamo');
+    Route::post('/colaborador/prestamo/store', [PrestamoObjetoColaboradorController::class, 'store'])->name('prestamo.store');
+    Route::put('/prestamo/inactive/{id}', [PrestamoObjetoColaboradorController::class, 'inactivate'])->name('prestamo.inactive');
+
 
 });
 

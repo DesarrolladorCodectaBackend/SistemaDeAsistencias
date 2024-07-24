@@ -47,7 +47,7 @@
                 <div class="ibox-content">
                     <div class="text-center flex-centered gap-20">
                         <a class="btn btn-primary" href="/candidatos">
-                            <i class="fa fa-long-arrow-left"></i> Agregar 
+                            <i class="fa fa-long-arrow-left"></i> Agregar
                         </a>
                         <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar </a>
                     </div>
@@ -73,7 +73,7 @@
                                                         <input type="checkbox" id="checkbox-areas-{{$index}}" class="area-checkbox" value="{{ $area->id }}"><span>{{$area->especializacion}}</span>
                                                     </div>
                                                     @endforeach
-                                                    
+
                                                 </div>
                                                 <div class="form-group">
                                                     <label>
@@ -175,7 +175,7 @@
                                                         </button>
                                                     </h5>
                                                 </div>
-                                    
+
                                                 <div id="collapseAreas" class="collapse" aria-labelledby="headingAreas" data-parent="#accordionExample">
                                                     <div class="card-body">
                                                         <div class="form-group">
@@ -214,7 +214,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                    
+
                                             <!-- Instituciones -->
                                             <div class="card">
                                                 <div class="card-header" id="headingInstituciones">
@@ -238,7 +238,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                    
+
                                             <!-- Submit Button -->
                                             <div class="text-center mt-4">
                                                 <button type="submit" class="btn btn-primary px-5">Filtrar</button>
@@ -347,6 +347,7 @@
 
                                         </div>
                                         <div style="display: flex; gap:2px">
+                                            {{-- Redirección a computadora --}}
                                             <form id="getComputadoraColab{{$colaborador->id}}"
                                                 action="{{route('colaboradores.getComputadora', $colaborador->id)}}">
                                             </form>
@@ -354,9 +355,14 @@
                                                 style="width: 100px; font-size: 18px;"
                                                 onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
                                             </a>
+
+                                            {{-- Redirección a préstamo --}}
+                                            <form id="getPrestamoColab{{$colaborador->id}}" action="{{route('colaboradores.getPrestamo', $colaborador->id)}}">
+                                            </form>
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
-                                                style="width: 100px; font-size: 18px;" href=""></a>
+                                                style="width: 100px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
                                         </div>
+
                                         <div class="mt-2">
                                             <form role="form" method="POST" action="{{route('colaboradores.despedirColaborador', $colaborador->id)}}">
                                                 @csrf
@@ -390,7 +396,7 @@
                                         @isset($pageData->currentURL)
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         @endisset
-                                        
+
                                         <button type="submit"
                                             class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
                                             <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -635,7 +641,7 @@
                                                                         <a data-toggle="modal"
                                                                             class="btn btn-primary btn-success fa fa-dropbox"
                                                                             style="width: 100px; font-size: 18px;"
-                                                                            href=""></a>
+                                                                            href="" onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();"></a>
                                                                     </div>
 
                                                                 </div>
@@ -751,7 +757,7 @@
 
         /* .select2-container--default .select2-selection--multiple {
             width: auto;
-            min-width: 100% !important; 
+            min-width: 100% !important;
         } */
         .select2-container {
             display: inline !important;
@@ -893,7 +899,7 @@
 
 
 
-        
+
 
         function updateSelectAll(checkboxGroup, selectAllId) {
             const selectAllCheckbox = document.getElementById(selectAllId);
@@ -954,7 +960,7 @@
         });
 
 
-        
+
 
 
 

@@ -106,6 +106,8 @@ class ColaboradoresController extends Controller
         ]);
     }
 
+    //FUNCTION getObjetoColabodaor
+
     public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '')
     {
         // Validamos los request de los filtros que queremos aplicar
