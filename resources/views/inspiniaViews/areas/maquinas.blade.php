@@ -78,9 +78,9 @@
                                                                 <h3>Maquina ID: {{$maquina->id}}</h3>
                                                             </div>
                                                             <div>
-                                                                <select class="form-control" name="colaborador_area_id">
+                                                                <select class="form-control" name="colaborador_id">
                                                                     @foreach($colaboradoresArea as $key => $colaborador)
-                                                                    @if($colaborador->id === $maquina->colaborador_id)
+                                                                    @if($colaborador->id === $maquina->colaborador_base_id)
                                                                     <option value="{{$colaborador->id}}" selected>
                                                                         {{$colaborador->nombre}}</option>
                                                                     @endif

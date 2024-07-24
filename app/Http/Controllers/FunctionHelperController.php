@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\Colaboradores_por_Area;
+use App\Models\Horario_Presencial_Asignado;
+use App\Models\Maquina_reservada;
 use App\Models\Semanas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class FunctionHelperController extends Controller
 {
@@ -91,6 +96,89 @@ class FunctionHelperController extends Controller
         ];
 
         return $days;
+    }
+
+    /**
+     * RETORNA LAS ÁREAS CONCURRENTES
+     * REQUIERE DE UN ARRAY DENTRO DE ESTE EL OBJETO AREA QUE ES OBLIGATORIO
+     * SE LE PUEDEN ESPECIFICAR SI SE QUIERE REGRESAR LAS ÁREAS INCLUYENDO ESTA Y SI SOLO RETORNAR ÁREAS ACTIVAS O NO
+     * POR DEFECTO REGRESA LAS ÁREAS INCLUYENDO ESTA Y TODAS LAS AREAS INDEFERENTEMENTE DE SU ESTADO
+     */
+    public static function getAreasConcurrentes($array = ["area" => null, "WithThis" => true, "active" => false]){
+        //Obtener el área
+        // return $array;
+        if($array['area'] && $array['area'] != null){
+            $area = $array['area'];
+            //Obtener los horarios id del área
+            $horariosArea = Horario_Presencial_Asignado::where('area_id', $area->id)->get()->pluck('horario_presencial_id');
+            //Buscar otras areas con el mismo horario
+            $allAreasConcurrentesId = Horario_Presencial_Asignado::with('area')->whereIn('horario_presencial_id', $horariosArea)->get()->pluck('area_id');
+            //Buscar todas las áreas con esos Id
+            if(isset($array['WithThis'])){
+                if($array['WithThis'] == true) {
+                    //absolutamente todas las área concurrentes
+                    $allAreasConcurrentes = Area::whereIn('id', $allAreasConcurrentesId)->get();
+                } else{
+                    //Todas las áreas concurrentes menos la que se está buscando
+                    $allAreasConcurrentes = Area::whereIn('id', $allAreasConcurrentesId)->whereNot('id', $area->id)->get();
+                }
+            } else{
+                $allAreasConcurrentes = Area::whereIn('id', $allAreasConcurrentesId)->get();
+            }
+            //Las areas tienen que ser del mismo salón para ser concurrentes
+            $allAreasConcurrentesSalon = $allAreasConcurrentes->where('salon_id', $area->salon_id);
+            //ver si se quiere que sean activas o no
+            if(isset($array['active'])){
+                if($array['active'] == true){
+                    $allActiveAreasConcurrentes = $allAreasConcurrentesSalon->where('estado', 1);
+                    return $allActiveAreasConcurrentes;
+                } else{
+                    return $allAreasConcurrentesSalon;
+                }
+            } else{
+                return $allAreasConcurrentesSalon;
+            }
+        }
+    }
+
+    public static function destroySameMachines($area_id){
+        DB::beginTransaction();
+        try{
+            $countDestroyed = 0;
+            $area = Area::findOrFail($area_id);
+            if($area){
+                $areasConcurrentesWithoutThis = FunctionHelperController::getAreasConcurrentes(["area" => $area, "WithThis" => false, "active" => true]);
+                //Encontrar los colaboradores de este area
+                $colaboradoresArea = Colaboradores_por_Area::with('colaborador')->where('area_id', $area->id)->where('estado', 1)->get();
+                //Encontrar las maquinas de esta area
+                $maquinasReservadas = Maquina_reservada::whereIn('colaborador_area_id', $colaboradoresArea->pluck('id'))->get();
+                
+                //Encontrar los colaboradores de las áreas concurrentes
+                $colaboradoresAreasConcurrentes = Colaboradores_por_Area::with('colaborador')->whereIn('area_id', $areasConcurrentesWithoutThis->pluck('id'))
+                    ->where('estado', 1)->get();
+                //Encontrar las máquinas de las áreas concurrentes
+                $maquinasReservadasAreasConcurrentes = Maquina_reservada::whereIn('colaborador_area_id', $colaboradoresAreasConcurrentes->pluck('id'))->get();
+        
+                //Recorrer las maquinas de esta area
+                foreach($maquinasReservadas as $maquinaReservada) {
+                    //Recorrer las maquinas de las otras areas
+                    foreach($maquinasReservadasAreasConcurrentes as $maquinaReservadaAreaConcurrente) {
+                        //Verificar conflictos con las maquinas de otras areas
+                        if($maquinaReservada->maquina_id === $maquinaReservadaAreaConcurrente->maquina_id){
+                            //Si hay un choque, se elimina la maquina de esta area
+                            $maquinaReservada->delete();
+                            $countDestroyed++;
+                        }
+                        //Si no hay conflictos, no hacer nada
+                    }
+                }
+            }
+            DB::commit();
+            return response()->json(["destroyed" => $countDestroyed]);
+        } catch(Exception $e){
+            DB::rollBack();
+            return response()->json(["error" => $e->getMessage()]);
+        }
     }
 
 }

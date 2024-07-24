@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Colaboradores_por_Area;
+use App\Models\Horarios_Presenciales;
+use App\Models\Maquina_reservada;
 use Illuminate\Http\Request;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Area;
@@ -43,28 +46,35 @@ class Horario_Presencial_AsignadoController extends Controller
     {
         DB::beginTransaction();
         try{
-            // return $request;
             $request->validate([
                 "horario_presencial_id.*" => "required|integer",
                 "area_id" => "required|integer",
             ]);
 
-            foreach($request->horario_presencial_id as $horario_presencial_id) {
-                $horarioExistente = Horario_Presencial_Asignado::where('horario_presencial_id', $horario_presencial_id)
-                    ->where('area_id', $request->area_id)->first();
-                if(!$horarioExistente){
-                    Horario_Presencial_Asignado::create([
-                        "horario_presencial_id" => $horario_presencial_id,
-                        "area_id" => $request->area_id
-                    ]);
+            $area = Area::findOrFail($request->area_id);
+            if($area){
+                $horariosPresencialesRegistros = Horarios_Presenciales::whereIn('id', $request->horario_presencial_id)->get();
+                
+                foreach($horariosPresencialesRegistros as $horarioPresencialRegistro) {
+                    $horarioExistente = Horario_Presencial_Asignado::where('horario_presencial_id', $horarioPresencialRegistro->id)
+                        ->where('area_id', $request->area_id)->first();
+                    if(!$horarioExistente){
+                        Horario_Presencial_Asignado::create([
+                            "horario_presencial_id" => $horarioPresencialRegistro->id,
+                            "area_id" => $request->area_id
+                        ]);
+                    }
                 }
+                //Verificar y destruir si hay conflictos con las maquinas de otras áreas con el mismo horario y salón
+                FunctionHelperController::destroySameMachines($area->id);
             }
 
             DB::commit();
-            // return response()->json(["resp" => "Registro creado exitosamente"]);
+
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         }catch(Exception $e){
             DB::rollBack();
+            // return $e;
             // return response()->json(["error" => $e]);
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         }
@@ -79,28 +89,24 @@ class Horario_Presencial_AsignadoController extends Controller
                 "horario_presencial_id" => "required|integer",
                 "area_id" => "required|integer",
             ]);
-            $horario_presencial_asignado = Horario_Presencial_Asignado::find($horario_presencial_asignado_id);
+            $horario_presencial_asignado = Horario_Presencial_Asignado::findOrFail($horario_presencial_asignado_id);
 
-            if (!$horario_presencial_asignado){
-                return response()->json(["resp" => "No existe un registro con ese id"]);
+            if($horario_presencial_asignado){
+                $area = Area::findOrFail($request->area_id);
+                $horarioPresencial = Horarios_Presenciales::findOrFail($request->horario_presencial_id);
+                if($area && $horarioPresencial){
+                    $horario_presencial_asignado->update($request->all());
+                    //Verificar y destruir si hay conflictos con las maquinas de otras áreas con el mismo horario y salón
+                    FunctionHelperController::destroySameMachines($area->id);
+                }
             }
-
-            if(!$request->horario_presencial_id){
-                return response()->json(["resp" => "Ingrese el horario presencial"]);
-            }
-
-            if(!$request->area_id){
-                return response()->json(["resp" => "Ingrese el area"]);
-            }
-
-            $horario_presencial_asignado->update($request->all());
             
             DB::commit();
             // return response()->json(["resp" => "Registro actualizado correctamente"]);
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         } catch(Exception $e){
             DB::rollBack();
-            return response()->json(["error" => $e]);
+            return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
         }
 
 
@@ -111,15 +117,12 @@ class Horario_Presencial_AsignadoController extends Controller
     {
         DB::beginTransaction();
         try{
-            // return [$area_id, $horario_presencial_asignado_id];
             
             $horario_presencial_asignado = Horario_Presencial_Asignado::findOrFail($horario_presencial_asignado_id);
 
-            if (!$horario_presencial_asignado){
-                return redirect()->route('areas.getHorario', ['area_id' => $area_id]);
+            if ($horario_presencial_asignado){
+                $horario_presencial_asignado->delete();
             }
-
-            $horario_presencial_asignado->delete();
             
             DB::commit();
             return redirect()->route('areas.getHorario', ['area_id' => $area_id]);
