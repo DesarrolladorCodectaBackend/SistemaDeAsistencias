@@ -89,18 +89,13 @@
                                                             <div class="col-10">
                                                                 <h1>HORARIOS</h1>
                                                             </div>
-                                                            <div class="col-2"><button onclick="addNewForm()"
-                                                                    type="button" id="addFormButton"
-                                                                    class="btn btn-primary p-2">Agregar Horario</button>
-                                                            </div>
-
                                                         </div>
                                                         <hr class="mt-0" />
                                                         @if($hasHorario)
-                                                        <div style="display: flex; flex-direction: column; gap: 50px"
+                                                        <div style="display: flex; flex-direction: column; gap: 50px;"
                                                             class="container">
                                                             @foreach($horarioAsignado as $key => $asignado)
-                                                            <div class="container">
+                                                            <div class="container pb-3 border-bottom">
                                                                 <div class="row">
                                                                     <div class="col-10">
                                                                         <h2>Actualizar Horario {{$key+1}} </h2>
@@ -179,7 +174,7 @@
                                                                     </button>
                                                                 </form>
                                                             </div>
-
+                                                            
                                                             @endforeach
                                                         </div>
 

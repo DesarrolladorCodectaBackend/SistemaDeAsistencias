@@ -273,7 +273,7 @@ class MaquinaReservadaController extends Controller
                     }
                 }
             } else{
-                return "not found";
+                // return "not found";
                 //Si no se encuentra la maquina en el área, se recorre todos los colaboradores concurrentes del request
                 foreach($sameColaboradorAreas as $sameColaboradorArea) {
                     //Se busca si este tiene una maquina
