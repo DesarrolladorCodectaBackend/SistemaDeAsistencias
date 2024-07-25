@@ -18,6 +18,7 @@ use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
+use App\Models\RegistroActividad;
 use App\Models\Sede;
 use App\Models\Semanas;
 use Carbon\Carbon;
@@ -280,14 +281,18 @@ class ColaboradoresController extends Controller
                 } else if ($colaborador_por_area->estado == false) {
                     //Se actualiza el estado a activo
                     $colaborador_por_area->update(['estado' => true]);
+                    //Crear registro de re activación
+                    RegistroActividadController::crearRegistro($colaborador_por_area->id, true);
                 }
             }
             // Buscar las areas que no estan en el request y que estan asociadas al colaborador
-            $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->whereNotIn('area_id', $request->areas_id)->get();
+            $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $request->areas_id)->get();
             // Por cada registro encontrado
             foreach ($areasInactivas as $areaInactiva) {
                 //Se inactiva su estado
                 $areaInactiva->update(['estado' => false]);
+                //Crear registro de inactivación
+                RegistroActividadController::crearRegistro($colaborador_por_area->id, false);
                 //Se busca si tiene computadoras
                 $ColabMachines = Maquina_reservada::where('colaborador_area_id', $areaInactiva->id)->get();
                 //Recorrer maquinas encontradas
@@ -326,7 +331,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
-            // return $e;
+            return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
@@ -345,6 +350,15 @@ class ColaboradoresController extends Controller
             $colaborador->estado = !$colaborador->estado;
 
             $colaborador->save();
+
+            if($colaborador->estado == 0){
+                $colaboradoresAreaActivos = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('estado', 1)->get();
+                foreach($colaboradoresAreaActivos as $colabArea){
+                    $colabArea->update(['estado' => false]);
+                    //Crear registro de inactivación
+                    RegistroActividadController::crearRegistro($colabArea->id, false);
+                }
+            }
             DB::commit();
 
             // return redirect()->route('colaboradores.index');
@@ -355,6 +369,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e) {
             DB::rollBack();
+            return $e->getMessage();
             // return redirect()->route('colaboradores.index');
             if($request->currentURL) {
                 return redirect($request->currentURL);
@@ -363,7 +378,6 @@ class ColaboradoresController extends Controller
             }
         }
     }
-
 
     public function search(string $busqueda = '')
     {
@@ -439,9 +453,11 @@ class ColaboradoresController extends Controller
                     $candidato->update(["estado" => 3]);
                 }
                 //encontrar ColaboradoresPorArea
-                $colaboradorAreas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->get();
+                $colaboradorAreas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->get();
                 foreach($colaboradorAreas as $colabArea){
                     $colabArea->update(["estado" => 0]); //inactivo del área
+                    //Crear registro de inactivación
+                    RegistroActividadController::crearRegistro($colabArea->id, false);
                 }
                 //Estado 2 es igual a ex trabajador
                 $colaborador->update(["estado" => 2]);
@@ -506,6 +522,8 @@ class ColaboradoresController extends Controller
                     $colaboradores_por_area = Colaboradores_por_Area::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
                     //despues todos los horarios de clase de estos colaboradores
                     $horarios_de_clases = Horario_de_Clases::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //ahora los registros de actividad de los colaboradores con area
+                    $registros_actividad = RegistroActividad::whereIn('colaborador_area_id', $colaboradores_por_area->pluck('id'))->get();
                     //despues todos las maquinas reservadas de los colaboradores con area
                     $maquinas_reservadas = Maquina_reservada::whereIn('colaborador_area_id', $colaboradores_por_area->pluck('id'))->get();
                     //ahora todas las responsabilidades semanales cumplidas por todos los colaboradores con area}
@@ -550,6 +568,10 @@ class ColaboradoresController extends Controller
                     //maquinas_reservadas
                     foreach($maquinas_reservadas as $maquina_reservada) {
                         $maquina_reservada->delete();
+                    }
+                    //registros_actividad
+                    foreach($registros_actividad as $registro_actividad) {
+                        $registro_actividad->delete();
                     }
                     //horarios_de_clases
                     foreach($horarios_de_clases as $horario_de_clase) {
