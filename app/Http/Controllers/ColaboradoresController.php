@@ -292,7 +292,7 @@ class ColaboradoresController extends Controller
                 //Se inactiva su estado
                 $areaInactiva->update(['estado' => false]);
                 //Crear registro de inactivación
-                RegistroActividadController::crearRegistro($colaborador_por_area->id, false);
+                RegistroActividadController::crearRegistro($areaInactiva->id, false);
                 //Se busca si tiene computadoras
                 $ColabMachines = Maquina_reservada::where('colaborador_area_id', $areaInactiva->id)->get();
                 //Recorrer maquinas encontradas
