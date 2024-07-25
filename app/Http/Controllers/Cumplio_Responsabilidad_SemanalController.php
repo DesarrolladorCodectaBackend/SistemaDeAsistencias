@@ -74,22 +74,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 'semanas_sin_evaluar' => 0,
             ];
         }
-        // foreach ($semanasMes as $index => &$semana) {
-        //     $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)
-        //         ->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
-        //     $semana->colaboradores = $colaboradoresArea;
-        //     $colaboradoresAreaId = $colaboradoresArea->pluck('id');
-        //     $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->whereIn("colaborador_area_id", $colaboradoresAreaId)->first();
-        //     if ($semanaCumplida) {
-        //         $semana->cumplido = true;
-        //     } else {
-        //         $semana->cumplido = false;
-        //     }
-        //     if ($colaboradoresArea->count() < 1) {
-        //         // Eliminar la semana del array $semanasMes
-        //         unset($semanasMes[$index]);
-        //     }
-        // }
+
         $colaboradoresRemanentes = Colaboradores::where('estado', 1)->get()->pluck('id');
         $semanasTotales = Semanas::get();
         $lastWeek = $semanasTotales->last();
@@ -108,11 +93,18 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                     unset($semanasMes[$index]);
                 }
             }
+
             if($semanasMes->count() <= 0){
                 //VERIFICAR SI ES UN MES ANTERIOR AL AREA O SI AUN ES PROXIMO, DE CASO CONTRARIO, SERA ACCESIBLE
-                if((date('Y', strtotime($lastWeek->fecha_lunes)) <= $year) && (date('m', strtotime($lastWeek->fecha_lunes)) < $mes['id'])){
+                if(date('Y', strtotime($lastWeek->fecha_lunes)) < $year){
                     $agrupadosPorMes[$mes['nombre']]['tipo'] = 'Próximo';
-                } else{
+                } elseif(date('Y', strtotime($lastWeek->fecha_lunes)) == $year){
+                    if(date('m', strtotime($lastWeek->fecha_lunes)) < $mes['id']){
+                        $agrupadosPorMes[$mes['nombre']]['tipo'] = 'Próximo';
+                    } else{
+                        $agrupadosPorMes[$mes['nombre']]['tipo'] = 'Anterior';
+                    }
+                } else {
                     $agrupadosPorMes[$mes['nombre']]['tipo'] = 'Anterior';
                 }
             }
