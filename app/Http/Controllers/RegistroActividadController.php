@@ -37,27 +37,12 @@ class RegistroActividadController extends Controller
         }
     }
 
-    public function obtenerInactividad($colaboradorAreaId){
+    public static function obtenerInactividad($colaboradorAreaId){
+        //Se obtienen los registros de actividad del colaborador por area segun el id
         $registros = RegistroActividad::where('colaborador_area_id', $colaboradorAreaId)->get();
-        // return $registros;
+        //Se inicializa un array de las inactividades del usuario
         $inactividades = [];
-        /*
-        cada objeto debe tener algo como esto:
-        {
-            desde: 2024-04-20, //fecha del registro si estado = 0
-            hasta: 2024-06-20, //fecha del registro si estado = 1
-            semanas: [ //Datos de la tabla semana que entren en el rango de fechas
-                {
-                    id: 1,
-                    fecha_lunes: 2024-04-15
-                },
-                {
-                    id: 2,
-                    fecha_lunes: 2024-04-22
-                },
-            ]
-        }
-        */
+        //Se inicializa una variable para llevar el control de la inactividad actual
         $inactividadActual = null;
 
         foreach ($registros as $registro) {
@@ -65,26 +50,36 @@ class RegistroActividadController extends Controller
                 // Si no hay una inactividad actual en curso, inicia una nueva
                 if ($inactividadActual === null) {
                     $inactividadActual = [
+                        //Se toma la fecha inicial segun la fecha del registro con estado 0
                         'desde' => $registro->fecha,
                         'hasta' => null,
                         'semanas' => [],
                     ];
                 }
             } else if ($registro->estado == 1) {
-                // Si hay una inactividad actual en curso, finalízala
+                // Si hay una inactividad actual en curso, se retoma y se finaliza
                 if ($inactividadActual !== null) {
+                    //Se toma la fecha final segun la fecha de este registro con estado 1
                     $inactividadActual['hasta'] = $registro->fecha;
+                    //Se guarda la fecha inicial y final
                     $desde = $inactividadActual['desde'];
                     $hasta = $inactividadActual['hasta'];
-                    //transformar desde a un tipo date
-                    
-                    // $desde = Carbon::parse($desde);
-                    $semanaDesde = $this->getSemanaByDay($desde);
-                    // $hasta = Carbon::parse($hasta);
-                    $semanaHasta = $this->getSemanaByDay($hasta);
+                    //Se obtienen los registros de semana que mas se acerquen segun el día
+                    $semanaDesde = RegistroActividadController::getSemanaByDay($desde);
+                    $semanaHasta = RegistroActividadController::getSemanaByDay($hasta);
+                    //Se inicia array para los Id de las semanas
                     $semanasId = [];
-                    return [$semanaDesde, $semanaHasta];
+                    //mientras el id de la semana inicial sea menor al id de la semana final, se agrega al array de semanasId
+                    for($i = $semanaDesde->id; $i<$semanaHasta->id; $i++){
+                        $semanasId[] = $i;
+                    }
+                    //Se busca las semanas por los id de las semanasId
+                    $semanasInactivas = Semanas::whereIn('id', $semanasId)->get();
+                    //Se guardan las semanas en el array de inactividadActual
+                    $inactividadActual['semanas'] = $semanasInactivas;
+                    //Se agrega la inactividad al array de inactividades
                     $inactividades[] = $inactividadActual;
+                    //Se reinicia la inactividad actual para que no se repita en el siguiente registro con estado 1
                     $inactividadActual = null;
                 }
             }
@@ -92,25 +87,43 @@ class RegistroActividadController extends Controller
 
         // Si al final del procesamiento aún hay una inactividad en curso
         if ($inactividadActual !== null) {
-            $inactividadActual['hasta'] = null; // Indefinida
+            $inactividadActual['hasta'] = null; // La fecha final es indefinida
+            //Se guarda la fecha inicial
+            $desde = $inactividadActual['desde'];
+            //Se obtiene la semana segun el día de la fecha inicial
+            $semanaDesde = RegistroActividadController::getSemanaByDay($desde);
+            //Se obtienen las semanas que tengan un id mayor al id de la semana inicial
+            $semanasInactivas = Semanas::where('id', '>=',$semanaDesde->id)->get();
+            //Se guardan las semanas en el array de inactividadActual
+            $inactividadActual['semanas'] = $semanasInactivas;
+            //Se agrega la inactividad al array de inactividades
             $inactividades[] = $inactividadActual;
         }
-
+        //Se retorna el array de inactividades
         return $inactividades;
 
     }
 
-    public function getSemanaByDay($date){
+    public static function getSemanaByDay($date){
+        //Se convierte la fecha a Carbon para poder manipularla mejor
         $date = Carbon::parse($date);
+        //Se guarda la fecha en la semanaDate
         $semanaDate = $date;
+        //Si la fecha es lunes, martes o miercoles
         if(($date->isMonday()) || ($date->isTuesday()) || ($date->isWednesday())){
+            //la fecha de la semana será igual al inicio de la semana de la fecha
             $semanaDate = $date->copy()->startOfWeek();
         } else{
+            //Si es otro día
+            //Mientras la semanaDate no sea lunes
             while(!$semanaDate->isMonday()){
+                //Se le agregará un dia mas hasta que llegue a ser lunes
                 $semanaDate->addDay();
             }
         }
+        //Se busca la semana donde la fecha_lunes sea igual a la fecha de la semanaDate
         $semana = Semanas::where('fecha_lunes', $semanaDate->toDateString())->first();
+        //Se retorna la semana
         return $semana;
     }
 }

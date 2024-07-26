@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     //Probando
-    Route::get('testing/{colaboradorAreaId}', [RegistroActividadController::class, 'obtenerInactividad']);
+    // Route::get('testing/{colaboradorAreaId}', [RegistroActividadController::class, 'obtenerInactividad']);
 
     //AREAS
     Route::resource('areas', AreaController::class);

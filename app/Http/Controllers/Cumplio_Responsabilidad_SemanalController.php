@@ -75,7 +75,6 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             ];
         }
 
-        $colaboradoresRemanentes = Colaboradores::where('estado', 1)->get()->pluck('id');
         $semanasTotales = Semanas::get();
         $lastWeek = $semanasTotales->last();
 
@@ -86,12 +85,31 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             });
 
             foreach($semanasMes as $index => $semana){
-                $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)
-                ->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
-                if ($colaboradoresArea->count() < 1) {
-                    // Eliminar la semana del array $semanasMes
+                $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
+                $colaboradoresAreaId = $colaboradoresArea->pluck('id');
+                $colaboradoresActivosId = [];
+                $countColabsActivos = 0;
+                foreach($colaboradoresAreaId as $colabKey => $colabAreaId){
+                    $inactividades = RegistroActividadController::obtenerInactividad($colabAreaId);
+                    $activo = true;
+                    foreach($inactividades as $inactividad){
+                        $semanasInactivas = $inactividad['semanas'];
+                        foreach($semanasInactivas as $semanaInactiva){
+                            if($semana->id === $semanaInactiva['id']){
+                                $activo = false;
+                                break 2;
+                            }
+                        }
+                    }
+                    if ($activo === true) {
+                        $colaboradoresActivosId[] = $colabAreaId;
+                        $countColabsActivos++;
+                    }
+                }
+                if ($countColabsActivos < 1) {
                     unset($semanasMes[$index]);
                 }
+
             }
 
             if($semanasMes->count() <= 0){
@@ -127,7 +145,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
         //Estado 2 en colaboradores será igual a que ha sido despedido o que ya no pertenece a la empresa
-        $colaboradoresRemanentes = Colaboradores::where('estado', 1)->get()->pluck('id'); //SOLO MOSTRAR A LOS ACTIVOS, NO INACTIVOS NI EX COLABORADORES
+        // $colaboradoresRemanentes = Colaboradores::where('estado', 1)->get()->pluck('id'); //SOLO MOSTRAR A LOS ACTIVOS, NO INACTIVOS NI EX COLABORADORES
         // $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)->with('colaborador')->get();
         // $colaboradoresAreaId = $colaboradoresArea->pluck('id');
 
@@ -157,22 +175,52 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
         // Definir semanas cumplidas
         foreach ($semanasMes as $index => &$semana) {
-            $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)
-                ->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
-            $semana->colaboradores = $colaboradoresArea;
-            $colaboradoresAreaId = $colaboradoresArea->pluck('id');
-            $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->whereIn("colaborador_area_id", $colaboradoresAreaId)->first();
+            // return $semana;
+            $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
+                $colaboradoresAreaId = $colaboradoresArea->pluck('id');
+                $colaboradoresActivosId = [];
+            $countColabsActivos = 0;
+            foreach($colaboradoresAreaId as $colabKey => $colabAreaId){
+                $inactividades = RegistroActividadController::obtenerInactividad($colabAreaId);
+                $activo = true;
+                foreach($inactividades as $inactividad){
+                    $semanasInactivas = $inactividad['semanas'];
+                    foreach($semanasInactivas as $semanaInactiva){
+                        if($semana->id === $semanaInactiva['id']){
+                            // $colaboradoresAreaId->forget($colabKey);
+                            //$colaboradoresOtherAreas->forget($key);
+                            // echo "here" + $colabAreaId;
+                            $activo = false;
+                            break 2; // Salir de ambos bucles si el colaborador está inactivo
+                        }
+                    }
+                }
+                // Si el colaborador está activo, añadirlo al array temporal
+                if ($activo === true) {
+                    // echo $colabAreaId;
+                    $colaboradoresActivosId[] = $colabAreaId;
+                    $countColabsActivos++;
+                }
+            }
+            $colaboradoresActivosToAdd = Colaboradores_por_Area::whereIn('id', $colaboradoresActivosId)->get();
+            $semana->colaboradores = $colaboradoresActivosToAdd;
+            // return $countColabsActivos;
+            $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->whereIn("colaborador_area_id", $colaboradoresActivosId)->first();
             if ($semanaCumplida) {
                 $semana->cumplido = true;
             } else {
                 $semana->cumplido = false;
             }
-            if ($colaboradoresArea->count() < 1) {
-                // Eliminar la semana del array $semanasMes
+            // if ($colaboradoresArea->count() < 1) {
+            //     // Eliminar la semana del array $semanasMes
+            //     unset($semanasMes[$index]);
+            // }
+            if ($countColabsActivos < 1) {
                 unset($semanasMes[$index]);
             }
         }
         $semanasMes = array_values($semanasMes);
+        // return $semanasMes;
         // return $semanasMes;
         $registros = Cumplio_Responsabilidad_Semanal::get();
         //return $semanasCumplidas;
