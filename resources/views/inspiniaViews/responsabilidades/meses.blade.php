@@ -67,7 +67,7 @@
                                 <div class="m-t text-righ">
                                     <button class="btn btn-warning btn-circle" type="button">
                                     </button>
-                                    <a class="" href="">Próximo</a>
+                                    <span class="text-success font-bold">Próximo</span>
                                 </div>
                                 @elseif($infoMes['tipo'] == 'Anterior')
                                 <div class="m-t text-righ">
@@ -79,7 +79,7 @@
                                 <div class="m-t text-righ">
                                     <button class="btn btn-danger btn-circle" type="button">
                                     </button>
-                                    <a class="" href="">Terminado</a>
+                                    <span class="text-success font-bold">Terminado</span>
                                 </div>
                                 <div class="m-t text-center" style="display: flex; justify-content:center; gap: 5px">
                                     <form method="GET"
@@ -97,7 +97,7 @@
                                 <div class="m-t text-righ">
                                     <button class="btn btn-primary btn-circle" type="button">
                                     </button>
-                                    <a class="" href="">Activo</a>
+                                    <span class="text-success font-bold">Activo</span>
                                 </div>
                                 <div class="m-t text-righ">
                                     <form method="GET"

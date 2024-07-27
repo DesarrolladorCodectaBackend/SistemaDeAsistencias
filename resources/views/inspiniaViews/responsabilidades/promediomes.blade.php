@@ -42,8 +42,10 @@
                                     <thead>
                                         <tr class="m1">
                                             <th class="hm">Mes:</th>
-                                            <th class="fecha" colspan="8">{{strtoupper($mes)}}</th>
-
+                                            <th class="fecha" colspan="5">{{strtoupper($mes)}}</th>
+                                            <th class="hm">Total Semanas: {{$totalSemanas}} </th>
+                                            <th class="fecha" colspan="2">Del: {{$firstWeek->fecha_lunes}} Al:
+                                                {{$lastWeek->fecha_lunes}}</th>
                                         </tr>
                                     </thead>
                                     <thead>
@@ -62,17 +64,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($dataProm as $key => $data)
+                                        @foreach($colaboradoresMes as $key => $colab)
                                         <tr class="celdas">
-                                            <th id="name" rowspan="1">{{$data['colaborador']}}</th>
-                                            <td>{{$data['asistencia']}}</td>
-                                            <td>{{$data['reuniones']}}</td>
-                                            <td>{{$data['aportes']}}</td>
-                                            <td>{{$data['participacion']}}</td>
-                                            <td>{{$data['presentacion']}}</td>
-                                            <td>{{$data['lecturas']}}</td>
-                                            <td>{{$data['faltas_justificadas']}}</td>
-                                            <td>{{$data['total']}}</td>
+                                            <th id="name" rowspan="1">{{$colab['nombre']}}</th>
+                                            @foreach($colab['promedio'] as $resp)
+                                            <td>{{$resp}}</td>
+                                            @endforeach
+
+                                            <td>{{$colab['total']}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
