@@ -762,16 +762,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         // Obtener la suma de sus notas
         foreach ($colaboradoresMes as $index => &$colaboradorMes) {
             // Inicializar sumNotes con todas las responsabilidades en 0
-            $sumNotes = [
-                "asistencia" => 0,
-                "reuniones" => 0,
-                "aportes" => 0,
-                "participacion" => 0,
-                "presentacion" => 0,
-                "lecturas" => 0,
-                "faltas_justificadas" => 0,
-            ];
-            
+            $sumNotes = [];
+            foreach ($responsabilidades as $responsabilidad) {
+                $nombreResponsabilidad = $responsabilidad->nombre;
+                $sumNotes[$nombreResponsabilidad] = 0;
+            }
             foreach ($colaboradorMes['semanas'] as $semanaId) {
                 $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $semanaId)
                     ->where('colaborador_area_id', $colaboradorMes['id'])
@@ -780,28 +775,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 foreach ($registrosCumplidosSemana as $registro) {
                     $valorCumplio = $registro->cumplio == 1 ? 20 : 0;
                     
-                    switch ($registro->responsabilidad_id) {
-                        case 1:
-                            $sumNotes['asistencia'] += $valorCumplio;
-                            break;
-                        case 2:
-                            $sumNotes['reuniones'] += $valorCumplio;
-                            break;
-                        case 3:
-                            $sumNotes['aportes'] += $valorCumplio;
-                            break;
-                        case 4:
-                            $sumNotes['participacion'] += $valorCumplio;
-                            break;
-                        case 5:
-                            $sumNotes['presentacion'] += $valorCumplio;
-                            break;
-                        case 6:
-                            $sumNotes['lecturas'] += $valorCumplio;
-                            break;
-                        case 7:
-                            $sumNotes['faltas_justificadas'] += $valorCumplio;
-                            break;
+                    foreach($responsabilidades as $responsabilidad){
+                        if($responsabilidad->id == $registro->responsabilidad_id) {
+                            $nombreResponsabilidad = $responsabilidad->nombre;
+                            $sumNotes[$nombreResponsabilidad] += $valorCumplio;
+                        }
                     }
                 }
             }
@@ -816,18 +794,13 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         foreach ($colaboradoresMes as $index => $colaboradorMes) {
             // Inicializar promNotes con todas las responsabilidades en 0
             $semanasCount = $colaboradoresMes[$index]['semanasCount'];
-            $PromNotas = [
-                "asistencia" => number_format(($colaboradoresMes[$index]['sumNotas']["asistencia"]) / $semanasCount,1),
-                "reuniones" => number_format(($colaboradoresMes[$index]['sumNotas']["reuniones"]) / $semanasCount,1),
-                "aportes" => number_format(($colaboradoresMes[$index]['sumNotas']["aportes"]) / $semanasCount,1),
-                "participacion" => number_format(($colaboradoresMes[$index]['sumNotas']["participacion"]) / $semanasCount,1),
-                "presentacion" => number_format(($colaboradoresMes[$index]['sumNotas']["presentacion"]) / $semanasCount,1),
-                "lecturas" => number_format(($colaboradoresMes[$index]['sumNotas']["lecturas"]) / $semanasCount,1),
-                "faltas_justificadas" => number_format(($colaboradoresMes[$index]['sumNotas']["faltas_justificadas"]) / $semanasCount,1),
-            ];
+            $PromNotas = [];
+            foreach (array_keys($colaboradoresMes[$index]['sumNotas']) as $responsabilidad) {
+                $PromNotas[$responsabilidad] = number_format(($colaboradoresMes[$index]['sumNotas'][$responsabilidad]) / $semanasCount, 1);
+            }
             $colaboradoresMes[$index]['promedio'] = $PromNotas;
             //Total suma de todas las responsabilidades entre el conteo de estas para obtener el promedio general del colaborador en el mes
-            $colaboradoresMes[$index]['total'] = number_format((array_sum($PromNotas))/7,1);
+            $colaboradoresMes[$index]['total'] = number_format((array_sum($PromNotas))/$responsabilidades->count(),1);
 
         }
 
@@ -925,15 +898,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         }
         foreach ($colaboradoresMeses as $index => &$colaboradorMes) {
             // Inicializar sumNotes con todas las responsabilidades en 0
-            $sumNotes = [
-                "asistencia" => 0,
-                "reuniones" => 0,
-                "aportes" => 0,
-                "participacion" => 0,
-                "presentacion" => 0,
-                "lecturas" => 0,
-                "faltas_justificadas" => 0,
-            ];
+            $sumNotes = [];
+            foreach ($responsabilidades as $responsabilidad) {
+                $nombreResponsabilidad = $responsabilidad->nombre;
+                $sumNotes[$nombreResponsabilidad] = 0;
+            }
             
             foreach ($colaboradorMes['semanas'] as $semanaId) {
                 $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $semanaId)
@@ -942,29 +911,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 
                 foreach ($registrosCumplidosSemana as $registro) {
                     $valorCumplio = $registro->cumplio == 1 ? 20 : 0;
-                    
-                    switch ($registro->responsabilidad_id) {
-                        case 1:
-                            $sumNotes['asistencia'] += $valorCumplio;
-                            break;
-                        case 2:
-                            $sumNotes['reuniones'] += $valorCumplio;
-                            break;
-                        case 3:
-                            $sumNotes['aportes'] += $valorCumplio;
-                            break;
-                        case 4:
-                            $sumNotes['participacion'] += $valorCumplio;
-                            break;
-                        case 5:
-                            $sumNotes['presentacion'] += $valorCumplio;
-                            break;
-                        case 6:
-                            $sumNotes['lecturas'] += $valorCumplio;
-                            break;
-                        case 7:
-                            $sumNotes['faltas_justificadas'] += $valorCumplio;
-                            break;
+                    foreach($responsabilidades as $responsabilidad){
+                        if($responsabilidad->id == $registro->responsabilidad_id) {
+                            $nombreResponsabilidad = $responsabilidad->nombre;
+                            $sumNotes[$nombreResponsabilidad] += $valorCumplio;
+                        }
                     }
                 }
             }
@@ -975,21 +926,15 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         foreach ($colaboradoresMeses as $index => $colaboradorMes) {
             // Inicializar promNotes con todas las responsabilidades en 0
             $semanasCount = $colaboradoresMeses[$index]['semanasCount'];
-            $PromNotas = [
-                "asistencia" => number_format(($colaboradoresMeses[$index]['sumNotas']["asistencia"]) / $semanasCount,1),
-                "reuniones" => number_format(($colaboradoresMeses[$index]['sumNotas']["reuniones"]) / $semanasCount,1),
-                "aportes" => number_format(($colaboradoresMeses[$index]['sumNotas']["aportes"]) / $semanasCount,1),
-                "participacion" => number_format(($colaboradoresMeses[$index]['sumNotas']["participacion"]) / $semanasCount,1),
-                "presentacion" => number_format(($colaboradoresMeses[$index]['sumNotas']["presentacion"]) / $semanasCount,1),
-                "lecturas" => number_format(($colaboradoresMeses[$index]['sumNotas']["lecturas"]) / $semanasCount,1),
-                "faltas_justificadas" => number_format(($colaboradoresMeses[$index]['sumNotas']["faltas_justificadas"]) / $semanasCount,1),
-            ];
+            $PromNotas = [];
+            foreach (array_keys($colaboradoresMeses[$index]['sumNotas']) as $responsabilidad) {
+                $PromNotas[$responsabilidad] = number_format(($colaboradoresMeses[$index]['sumNotas'][$responsabilidad]) / $semanasCount, 1);
+            }
             $colaboradoresMeses[$index]['promedio'] = $PromNotas;
             //Total suma de todas las responsabilidades entre el conteo de estas para obtener el promedio general del colaborador en el mes
-            $colaboradoresMeses[$index]['total'] = number_format((array_sum($PromNotas))/7,1);
+            $colaboradoresMeses[$index]['total'] = number_format((array_sum($PromNotas))/$responsabilidades->count(),1);
 
         }
-        // return $semanasMeses;
         // return $colaboradoresMeses;
         $totalSemanas = count($semanasMeses);
 
