@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
 
     //AREAS
     Route::resource('areas', AreaController::class);
+    Route::put('areas/activarInactivar/{area_id}',[AreaController::class,'activarInactivar'])->name('areas.activarInactivar');
 
     //Horarios (Area)
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');

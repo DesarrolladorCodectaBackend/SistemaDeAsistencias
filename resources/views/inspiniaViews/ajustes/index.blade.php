@@ -35,7 +35,7 @@
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
 
                                         <!--
-                                                                <p>Sign in today for more expirience.</p> 
+                                                                <p>Sign in today for more expirience.</p>
                                                             -->
 
                                         <form role="form">
@@ -196,6 +196,25 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/sedes"><i class="fa fa-cog"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="ibox ">
+                        <div class="show-grid container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
+                                </div>
+                                <div class="col-sm">
+                                    <h4><strong>Tipo de Configuracion</strong></h4>
+                                    <p>Objetos</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a class="btn btn-success" href="/objeto"><i class="fa fa-cog"></i></a>
                                 </div>
                             </div>
                         </div>

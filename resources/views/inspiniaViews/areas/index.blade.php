@@ -90,8 +90,17 @@
                                 <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
                             </div>
                             <div class="product-desc">
-                                <button class="btn btn-outline btn-primary dim float-right"
-                                    type="button"><span>ON</span></button>
+                                {{-- CAMBIO DE ESTADO ÁREAS --}}
+                                <form action="{{ route('areas.activarInactivar', $area->id) }}" method="POST">
+                                    @csrf
+                                    @method('put')
+                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+
+                                    <button type="submit" class="btn btn-{{ $area->estado ? 'outline-success' : 'danger' }} btn-primary dim">
+                                        <span>{{ $area->estado ? 'ON' : 'OFF' }}</span>
+                                    </button>
+                                </form>
+
                                 <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}}</small>
                                 <a href="#" class="product-name">{{ $area->especializacion }}</a>
                                 <div class="small m-t-xs">

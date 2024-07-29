@@ -16,16 +16,17 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class AreaController extends Controller
 {
     /**
      * INDEX
-     * 
+     *
      * Se encarga de mostrar todos los registros de áreas en la vista index.blade.php de la carpeta areas.
-     * 
+     *
      * @response 200 vista index.blade.php con todas las áreas
-     * 
+     *
      */
     public function index()
     {
@@ -43,7 +44,7 @@ class AreaController extends Controller
             'salones' => $salones
         ]);
     }
-    
+
     public function getFormHorarios($area_id) {
         // Encontrar area
         $area = Area::findOrFail($area_id);
@@ -60,7 +61,7 @@ class AreaController extends Controller
             $dia = $horarioColab->dia;
             $horaInicial = strtotime($horarioColab->hora_inicial);
             $horaFinal = strtotime($horarioColab->hora_final);
-    
+
             // Por cada hora en el rango, agregar la hora al array de horas ocupadas para ese día
             for ($hora = $horaInicial; $hora <= $horaFinal; $hora += 3600) {
                 //Agregar key dia y dentro de cada uno las horas que están ocupados durante ese día
@@ -75,7 +76,7 @@ class AreaController extends Controller
             $horaInicialPres = strtotime($horarioPres->hora_inicial);
             $horaFinalPres = strtotime($horarioPres->hora_final);
             $rangoHorasPres = [];
-    
+
             // Rellenar el rango de horas del horario presencial
             for ($hora = $horaInicialPres; $hora <= $horaFinalPres; $hora += 3600) {
                 $rangoHorasPres[] = date('H', $hora);
@@ -83,7 +84,7 @@ class AreaController extends Controller
             }
             // return $rangoHorasPres;
             $disponible = true;
-    
+
             // Comprobar si alguna de las horas del horario presencial coincide con las horas ocupadas
             if (isset($horasOcupadas[$diaPres])) {
                 // error_log($diaPres);
@@ -160,8 +161,8 @@ class AreaController extends Controller
             "horariosFormateados" => $horariosFormateados,
             "hasHorario" => $hasHorario
         ]);
-        
-    
+
+
     }
 
 
@@ -172,9 +173,9 @@ class AreaController extends Controller
         //Buscar otras areas con el mismo horario
         $allAreasConcurrentes = Horario_Presencial_Asignado::with('area')->whereIn('horario_presencial_id', $horariosArea)
             ->whereNot('area_id', $area->id)->get()->pluck('area');
-        
+
         $areasConcurrentesActivas = $allAreasConcurrentes->where('estado', 1);
-        //Areas del mismo salon            
+        //Areas del mismo salon
         $salonAreasConcurrentesId = $areasConcurrentesActivas->where('salon_id', $area->salon_id)->pluck('id');
         $totalAreaConcurrentesId = Horario_Presencial_Asignado::with('area')->whereIn('horario_presencial_id', $horariosArea)->get()->pluck('area')->where('estado', 1)->where('salon_id', $area->salon_id)->pluck('id');
 
@@ -199,7 +200,7 @@ class AreaController extends Controller
         $colaboradoresOtherAreasId = $colaboradoresOtherAreas->pluck('id');
         $maquinasOtherAreas = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresOtherAreasId)->get();
         // return $maquinasOtherAreas;
-        
+
         // return ["this" => $colaboradoresThisArea, "other" => $colaboradoresOtherAreas];
         $colaboradoresThisAreaId = $colaboradoresThisArea->pluck('id');
         $maquinasThisArea = Maquina_reservada::with('colaborador_area')->whereIn('colaborador_area_id', $colaboradoresThisAreaId)->get();
@@ -257,10 +258,10 @@ class AreaController extends Controller
             $candidato =  Candidatos::findOrFail($colaboradorArea->candidato_id);
             $colaboradorArea->nombre = $candidato->nombre." ".$candidato->apellido;
             $allColabsAreasID = Colaboradores_por_Area::where('colaborador_id', $colaboradorArea->id)->whereIn('area_id', $totalAreaConcurrentesId)->where('estado', 1)->get()->pluck('id');
-            
+
             // if($colaboradorArea->nombre == "Karla Lopez"){
             //     return $allColabsAreasID;
-                
+
             // }
             $maquina = Maquina_reservada::whereIn('colaborador_area_id', $allColabsAreasID)->first();
             if($maquina){
@@ -281,25 +282,25 @@ class AreaController extends Controller
 
     /**
      *  STORE
-     *  
+     *
      *  Se encarga de guardar los datos de un área en la base de datos. Con imagen definida o default.
-     * 
+     *
      *  @bodyParam especializacion string required Especialización del área.
      *  @bodyParam descripcion string required Descripción del área.
      *  @bodyParam color_hex string required Color hexadecimal del área.
      *  @bodyParam icono file Imagen del área. Ejemplo: "icono.png" (opcional)
-     *  
+     *
      *  @response 200 Ruta de redirección a la vista index.blade.php.
-     * 
+     *
      *  @response 400 {"message": "Debe ingresar la especialización"}
      *  @response 400 {"message": "Debe ingresar la descripción"}
      *  @response 400 {"message": "Debe ingresar el color"}
-     * 
-     * 
+     *
+     *
      */
     public function store(Request $request)
     {
-        //Se inicia la transacción 
+        //Se inicia la transacción
         DB::beginTransaction();
         try{
             //Solicitar los datos requeridos
@@ -314,7 +315,7 @@ class AreaController extends Controller
             // if(!$request->especializacion) return response()->json(["message" => "Debe ingresar la especialización"]);
             // if(!$request->descripcion) return response()->json(["message" => "Debe ingresar la descripcion"]);
             // if(!$request->color_hex) return response()->json(["message" => "Debe ingresar el color"]);
-            
+
             //Validar que la imagen haya sido ingresada
             if ($request->hasFile('icono')) {
                 //Si se ingresó se guarda en la variable icono
@@ -327,7 +328,7 @@ class AreaController extends Controller
                 //Si no se ingresó se asigna el nombre de la imagen por defecto
                 $nombreIcono = 'Default.png';
             }
-    
+
             //Area::create($request->all());
             //Se crea un nuevo registro con  los datos requeridos y la imagen definida o default
             Area::create([
@@ -346,7 +347,7 @@ class AreaController extends Controller
             } else {
                 return redirect()->route('areas.index');
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollback();
@@ -362,18 +363,18 @@ class AreaController extends Controller
 
     /**
      *  UPDATE
-     *  
-     *  Se encarga de actualizar los datos de un área en la base de datos. 
-     * 
-     *  @urlParam  area_id integer required ID del área a actualizar. 
-     *  
+     *
+     *  Se encarga de actualizar los datos de un área en la base de datos.
+     *
+     *  @urlParam  area_id integer required ID del área a actualizar.
+     *
      *  @bodyParam especializacion string Especialización del área.
      *  @bodyParam descripcion string Descripción del área.
      *  @bodyParam color_hex string Color hexadecimal del área.
      *  @bodyParam icono file Imagen del área.
-     * 
-     *  @response 200 Ruta de redirección a la vista de áreas. 
-     * 
+     *
+     *  @response 200 Ruta de redirección a la vista de áreas.
+     *
      */
 
     public function update(Request $request, $area_id)
@@ -392,7 +393,7 @@ class AreaController extends Controller
 
             // return $request;
 
-            //Se busca el área por el id ingresado como parámetro 
+            //Se busca el área por el id ingresado como parámetro
             $area = Area::findOrFail($area_id);
             //Se asignan los valores ingresados por el usuario a las variables correspondientes, si no se ingresó nada se asigna el valor actual de la base de datos
             $especializacion = !$request->especializacion ? $area->especializacion : $request->especializacion;
@@ -401,8 +402,8 @@ class AreaController extends Controller
             $salon_id = !$request->salon_id ? $area->salon_id : $request->salon_id;
             //Se crea un array con los datos a actualizar
             $datosActualizar = [
-                "especializacion" => $especializacion, 
-                "descripcion" => $descripcion, 
+                "especializacion" => $especializacion,
+                "descripcion" => $descripcion,
                 "color_hex" => $color_hex,
                 "salon_id" => $salon_id
             ];
@@ -433,7 +434,7 @@ class AreaController extends Controller
             } else {
                 return redirect()->route('areas.index');
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollBack();
@@ -460,7 +461,28 @@ class AreaController extends Controller
 
 
     public function activarInactivar(Request $request, $area_id){
-        
+        DB::beginTransaction();
+        try{
+            $area = Area::findOrFail($area_id);
+
+            $area->estado = !$area->estado;
+
+            $area->save();
+
+            DB::commit();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('areas.index');
+            }
+        } catch(Exception $e) {
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('areas.index');
+            }
+        }
     }
 
 }
