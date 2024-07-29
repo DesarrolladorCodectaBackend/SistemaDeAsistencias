@@ -62,7 +62,6 @@ class InstitucionController extends Controller
         try{
             $request->validate([
                 'nombre' => 'sometimes|string|min:1|max:100',
-                'estado' => 'sometimes|boolean'
             ]);
 
             $institucion = Institucion::findOrFail($institucion_id);
@@ -122,4 +121,5 @@ class InstitucionController extends Controller
             }
         }
     }
+    
 }
