@@ -641,7 +641,7 @@
                                                                         <a data-toggle="modal"
                                                                             class="btn btn-primary btn-success fa fa-dropbox"
                                                                             style="width: 100px; font-size: 18px;"
-                                                                            href="" onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();"></a>
+                                                                            href="" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
                                                                     </div>
 
                                                                 </div>

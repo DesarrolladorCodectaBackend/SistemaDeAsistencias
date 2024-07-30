@@ -732,7 +732,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $colaboradoresActivosToAdd = Colaboradores_por_Area::whereIn('id', $colaboradoresActivosId)->get();
             
             foreach ($colaboradoresActivosToAdd as $colaboradorActivoToAdd) {
-                $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->where("colaborador_area_id", $colaboradorActivoToAdd->id)->firstOrNew();
+                $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->where("colaborador_area_id", $colaboradorActivoToAdd->id)->first();
                 // Verificar si el colaborador ya está en $colaboradoresMes
                 if($semanaCumplida){
                     $existe = false;
