@@ -50,6 +50,7 @@ Route::get('institucion/show/{institucion_id}', [InstitucionController::class, '
 Route::put('institucion/update/{institucion_id}', [InstitucionController::class, 'update']);
 Route::delete('institucion/delete/{institucion_id}', [InstitucionController::class, 'destroy']);
 
+
 //CARRERAS
 Route::get('carrera/get', [CarreraController::class, 'index']);
 Route::post('carrera/store', [CarreraController::class, 'store']);
@@ -261,5 +262,9 @@ Route::get('cumplio_res_sem/getFormAsistencias/{mes, registros}', [Cumplio_Respo
 Route::get('responsabilidades/years', [Cumplio_Responsabilidad_SemanalController::class, 'years'])->name('responsabilidades.showYears');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+        Route::get('instituciones/getall', [InstitucionController::class, 'getAll']);
+        Route::post('instituciones/storeJson', [InstitucionController::class, 'storeJSON']);
+        Route::put('instituciones/updateJSON/{institucion_id}', [InstitucionController::class, 'updateJSON']);
+        Route::put('instituciones/ActivarInactivarJSON/{institucion_id}', [InstitucionController::class, 'activarInactivarJSON']);
         return $request->user();
 });

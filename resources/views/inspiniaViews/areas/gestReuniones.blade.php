@@ -74,7 +74,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
 
@@ -233,15 +232,19 @@
                                                                                                 class="fa fa-trash-o"></i></button>
                                                                                     </td>
                                                                                 </tr>
-                                                                                <input type="hidden" name="area_id"
-                                                                                    value="{{ $area->id }}">
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <input type="hidden" name="area_id"
+                                                                value="{{ $area->id }}">
 
                                                         </form>
                                                         <!---Div-->
 
                                                         </tbody>
 
-                                                        </table>
                                                         <div class="text-center">
                                                             <button class="ladda-button btn btn-primary mr-5"
                                                                 onclick="document.getElementById('storeReuniones').submit();"
@@ -316,26 +319,13 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
         @include('components.inspinia.footer-inspinia')
+        
     </div>
     </div>
     <style>
