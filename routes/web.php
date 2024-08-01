@@ -8,6 +8,7 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
+use App\Http\Controllers\FiltrosController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
@@ -173,6 +174,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/colaborador/prestamo/store', [PrestamoObjetoColaboradorController::class, 'store'])->name('prestamo.store');
     Route::put('/prestamo/inactive/{id}', [PrestamoObjetoColaboradorController::class, 'inactivate'])->name('prestamo.inactive');
 
+    //FILTROS
+    Route::get('filtros/',[FiltrosController::class,'getdata'])->name('filtro.getdata');
 
 });
 
