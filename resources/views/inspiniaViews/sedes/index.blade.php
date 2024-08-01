@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA| Sedes</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -27,6 +32,7 @@
                     </li>
                 </ol>
             </div>
+            {{--Inicio Modal--}}
             <div class="col-lg-2">
                 <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
                     type="button">Agregar</button>
@@ -39,7 +45,6 @@
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                         <form role="form" method="POST" action="{{ route('sedes.store') }}">
                                             @csrf
-                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             <div class="form-group">
                                                 <label>Nombre: </label>
                                                 <input type="text" placeholder="Ingrese un nombre" name="nombre"
@@ -66,6 +71,7 @@
                     </div>
                 </div>
             </div>
+            {{--Término Modal--}}
 
         </div>
 
@@ -93,35 +99,33 @@
                 </div>
 
                 <div class="ibox-content">
-                    <table class="table table-bordered">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                             <tr>
-                                <th class="col-lg-1 text-center">Index</th>
+
                                 <th class="col-lg-1 text-center">ID</th>
                                 <th class="col-lg-5 text-center">Sede</th>
                                 <th class="col-lg-4 text-center">Institucion</th>
                                 <th class="col-lg-1 text-center">Estado</th>
-                                <th class="col-lg-1 text-center">Editar</th>
+                                <th class="col-lg-1 text-center oculto">Editar</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($sedes as $index => $sede)
+                            @foreach ($sedes as $sede)
                             <tr>
-                                <td class="text-center">{{ $index + 1 }}</td>
                                 <td class="text-center">{{ $sede->id }}</td>
                                 <td>{{ $sede->nombre }}</td>
                                 <td>{{ $sede->institucion->nombre }}</td>
                                 <td class="text-center">
                                     <form method="POST" action="{{ route('sedes.activarInactivar', $sede->id) }}">
                                         @csrf
-                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         <button type="submit"
                                             class="btn btn-{{ $sede->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                            <span>{{ $sede->estado ? 'Activo' : 'Inactivo' }}</span>
+                                            <span>{{ $sede->estado ? 'Activado' : 'Inactivo' }}</span>
                                         </button>
                                     </form>
                                 </td>
-                                <td class="text-center"><button class="btn btn-info" type="button"
+                                <td class="text-center oculto"><button class="btn btn-info" type="button"
                                         href="#modal-form{{ $sede->id }}" data-toggle="modal"><i
                                             class="fa fa-paste"></i></button></td>
                                 <div id="modal-form{{ $sede->id }}" class="modal fade" aria-hidden="true">
@@ -136,7 +140,6 @@
                                                             action="{{ route('sedes.update', $sede->id) }}">
                                                             @csrf
                                                             @method('PUT')
-                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             <label class="col-form-label">Institucion</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
@@ -148,7 +151,7 @@
                                                                 <select class="form-control" name="institucion_id">
                                                                     @foreach($instituciones as $institucion)
 
-                                                                    <option value="{{$institucion->id}}" 
+                                                                    <option value="{{$institucion->id}}"
                                                                         @if($sede->institucion_id === $institucion->id)
                                                                         selected
                                                                         @endif>
@@ -176,34 +179,7 @@
                     </table>
                 </div>
             </div>
-            @if($hasPagination === true)
-                <div class="row mb-5 mb-md-4">
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
-                            <a href="{{ $sedes->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
-                            </a>
-                        @endif
-                        @if($pageData->currentPage > 1)
-                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> Anterior
-                            </a>
-                        @endif
-                    </div>
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
-                        @if($pageData->currentPage < $pageData->lastPage)
-                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Siguiente <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        @endif
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
-                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        @endif
-                    </div>
-                </div>
-            @endif
+
         </div>
 
         @include('components.inspinia.footer-inspinia')
@@ -211,6 +187,50 @@
     </div>
     </div>
 
+
+    <script>
+        <!-- Mainly scripts -->
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+        <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+        <script src="js/plugins/dataTables/datatables.min.js"></script>
+        <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
+
+        <!-- Custom and plugin javascript -->
+        <script src="js/inspinia.js"></script>
+        <script src="js/plugins/pace/pace.min.js"></script>
+
+        <!-- Page-Level Scripts -->
+        <script>
+            $(document).ready(function(){
+                $('.dataTables-example').DataTable({
+                    pageLength: 25,
+                    responsive: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    buttons: [
+                        { extend: 'copy', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'csv', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'excel', title: 'SEDES', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'pdf', title: 'SEDES', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'print',
+                          customize: function (win){
+                                $(win.document.body).addClass('white-bg');
+                                $(win.document.body).css('font-size', '1px');
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                          },
+                          exportOptions: { columns: ':not(.no-export)' }
+                        }
+                    ]
+                });
+            });
+        </script>
+
+    </script>
 </body>
 
 </html>

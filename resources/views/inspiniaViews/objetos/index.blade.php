@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA| Objetos</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -27,7 +32,7 @@
                     </li>
                 </ol>
             </div>
-            <!-- MODAL REGISTRO NOMBRE -->
+            {{-- INICIO MODAL--}}
             <div class="col-lg-2">
                 <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
                     type="button">Agregar</button>
@@ -64,6 +69,7 @@
                     </div>
                 </div>
             </div>
+            {{-- TÉRMINO MODAL--}}
 
         </div>
 
@@ -91,32 +97,31 @@
                 </div>
 
                 <div class="ibox-content">
-                    <table class="table table-bordered">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                             <tr>
                                 <th class="col-lg-1">ID</th>
                                 <th class="col-lg-2">Objeto</th>
                                 <th class="col-lg-3">Descripción</th>
                                 <th class="col-lg-1">Estado</th>
-                                <th class="col-lg-1">Editar</th>
-                                {{-- <th class="col-lg-1">Borrar</th> --}}
+                                <th class="col-lg-1 oculto">Editar</th>
                             </tr>
                         </thead>
                         <tbody>
-                           {{-- ARRAY INSTITUCIONES --}}
+                           {{-- ARRAY OBJETOS --}}
                             @foreach ($objetos as $obj)
                             <tr>
                                 <td>{{ $obj->id }}</td>
                                 <td>{{ $obj->nombre }}</td>
                                 <td>{{ $obj->descripcion }}</td>
                                 <td><form method="POST" action="{{ route('objeto.activarInactivar', $obj->id) }}">
-                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+
                                     @csrf
                                     <button type="submit" class="btn btn-{{ $obj->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                        <span>{{ $obj->estado ? 'Activo' : 'Inactivo' }}</span>
+                                        <span>{{ $obj->estado ? 'Activado' : 'Inactivo' }}</span>
                                     </button>
                                 </form></td>
-                                <td><button class="btn btn-info" type="button" href="#modal-form{{ $obj->id }}" data-toggle="modal"><i
+                                <td class="oculto"><button class="btn btn-info" type="button" href="#modal-form{{ $obj->id }}" data-toggle="modal"><i
                                             class="fa fa-paste"></i></button></td>
                                 <div id="modal-form{{ $obj->id }}" class="modal fade" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -135,7 +140,7 @@
                                                             @csrf
                                                             @method('PUT')
                                                             {{-- nombre del request "name" --}}
-                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+
                                                             <label class="col-form-label">Objeto</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
@@ -170,34 +175,7 @@
                     </table>
                 </div>
             </div>
-            @if($hasPagination === true)
-                <div class="row mb-5 mb-md-4">
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
-                            <a href="{{ $objeto->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
-                            </a>
-                        @endif
-                        @if($pageData->currentPage > 1)
-                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> Anterior
-                            </a>
-                        @endif
-                    </div>
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
-                        @if($pageData->currentPage < $pageData->lastPage)
-                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Siguiente <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        @endif
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
-                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        @endif
-                    </div>
-                </div>
-            @endif
+
         </div>
 
 
@@ -207,20 +185,47 @@
     </div>
 
     <script>
-        // function confirmDelete(id) {
-        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-        //         if (e) {
-        //             let form = document.createElement('form')
-        //             form.method = 'POST'
-        //             form.action = `/institucion/${id}`
-        //             form.innerHTML = '@csrf @method('DELETE')'
-        //             document.body.appendChild(form)
-        //             form.submit()
-        //         } else {
-        //             return false
-        //         }
-        //     });
-        // }
+        <!-- Mainly scripts -->
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+        <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+        <script src="js/plugins/dataTables/datatables.min.js"></script>
+        <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
+
+        <!-- Custom and plugin javascript -->
+        <script src="js/inspinia.js"></script>
+        <script src="js/plugins/pace/pace.min.js"></script>
+
+        <!-- Page-Level Scripts -->
+        <script>
+            $(document).ready(function(){
+                $('.dataTables-example').DataTable({
+                    pageLength: 25,
+                    responsive: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    buttons: [
+                        { extend: 'copy', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'csv', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'excel', title: 'OBJETOS', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'pdf', title: 'OBJETOS', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'print',
+                          customize: function (win){
+                                $(win.document.body).addClass('white-bg');
+                                $(win.document.body).css('font-size', '1px');
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                          },
+                          exportOptions: { columns: ':not(.no-export)' }
+                        }
+                    ]
+                });
+            });
+        </script>
+
     </script>
 
 

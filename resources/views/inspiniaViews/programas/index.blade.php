@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA| Programas</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -27,6 +32,7 @@
                     </li>
                 </ol>
             </div>
+            {{-- INICIO MODAL --}}
             <div class="col-lg-2">
                 <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
                     type="button">Agregar</button>
@@ -37,7 +43,6 @@
                                 <form role="form" method="POST" action="{{ route('programas.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
-                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -71,6 +76,7 @@
                     </div>
                 </div>
             </div>
+            {{-- TÉRMINO MODAL --}}
         </div>
 
         <div class="wrapper wrapper-content animated fadeInRight">
@@ -97,16 +103,15 @@
                 </div>
 
                 <div class="ibox-content">
-                    <table class="table table-bordered">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
                         <thead>
                             <tr>
                                 <th class="col-lg-1">ID</th>
                                 <th class="col-lg-4">Programa</th>
                                 <th class="col-lg-5">Descripcion</th>
                                 <th class="col-lg-1 child-center">Estado</th>
-                                <th class="col-lg-1 child-center">Imagen</th>
-                                <th class="col-lg-1 child-center">Editar</th>
-                                {{-- <th class="col-lg-1 child-center">Borrar</th> --}}
+                                <th class="col-lg-1 child-center oculto">Imagen</th>
+                                <th class="col-lg-1 child-center oculto">Editar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -119,17 +124,16 @@
                                     <form method="POST"
                                         action="{{ route('programas.activarInactivar', $programa->id) }}">
                                         @csrf
-                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         <button type="submit"
                                             class="btn btn-{{ $programa->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                            <span>{{ $programa->estado ? 'Activo' : 'Inactivo' }}</span>
+                                            <span>{{ $programa->estado ? 'Activado' : 'Inactivo' }}</span>
                                         </button>
                                     </form>
                                 </td>
-                                <td class="child-center"><img src="{{ asset('storage/programas/' . $programa->icono) }}"
+                                <td class="child-center oculto"><img src="{{ asset('storage/programas/' . $programa->icono) }}"
                                         style="height: 50px; width: 50px; border-radius: 10px" class="img-cover" alt="">
                                 </td>
-                                <td class="child-center"><button class="btn btn-info" type="button"
+                                <td class="child-center oculto"><button class="btn btn-info" type="button"
                                         href="#modal-form{{ $programa->id }}" data-toggle="modal"><i
                                             class="fa fa-paste"></i></button></td>
                                 <div id="modal-form{{ $programa->id }}" class="modal fade" aria-hidden="true">
@@ -141,7 +145,6 @@
                                                     enctype="multipart/form-data">
                                                     @csrf
                                                     @method('PUT')
-                                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                     <div class="row">
                                                         <div class="col-sm-6 b-r">
                                                             <h3 class="m-t-none m-b">Editar</h3>
@@ -195,34 +198,7 @@
                     </table>
                 </div>
             </div>
-            @if($hasPagination === true)
-                <div class="row mb-5 mb-md-4">
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
-                            <a href="{{ $programas->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
-                            </a>
-                        @endif
-                        @if($pageData->currentPage > 1)
-                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> Anterior
-                            </a>
-                        @endif
-                    </div>
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
-                        @if($pageData->currentPage < $pageData->lastPage)
-                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Siguiente <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        @endif
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
-                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        @endif
-                    </div>
-                </div>
-            @endif
+
         </div>
 
         @include('components.inspinia.footer-inspinia')
@@ -237,23 +213,49 @@
         iconUploadButton.addEventListener('click', function() {
             hiddenFileInput.click();
         });
+
+        <!-- Mainly scripts -->
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+        <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+        <script src="js/plugins/dataTables/datatables.min.js"></script>
+        <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
+
+        <!-- Custom and plugin javascript -->
+        <script src="js/inspinia.js"></script>
+        <script src="js/plugins/pace/pace.min.js"></script>
+
+        <!-- Page-Level Scripts -->
+        <script>
+            $(document).ready(function(){
+                $('.dataTables-example').DataTable({
+                    pageLength: 25,
+                    responsive: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    buttons: [
+                        { extend: 'copy', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'csv', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'excel', title: 'PROGRAMAS', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'pdf', title: 'PROGRAMAS', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'print',
+                          customize: function (win){
+                                $(win.document.body).addClass('white-bg');
+                                $(win.document.body).css('font-size', '1px');
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                          },
+                          exportOptions: { columns: ':not(.no-export)' }
+                        }
+                    ]
+                });
+            });
+        </script>
     </script>
-    <script>
-        // function confirmDelete(id) {
-        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-        //         if (e) {
-        //             let form = document.createElement('form')
-        //             form.method = 'POST'
-        //             form.action = `/programas/${id}`
-        //             form.innerHTML = '@csrf @method('DELETE')'
-        //             document.body.appendChild(form)
-        //             form.submit()
-        //         } else {
-        //             return false
-        //         }
-        //     });
-        // }
-    </script>
+
 
 
 </body>

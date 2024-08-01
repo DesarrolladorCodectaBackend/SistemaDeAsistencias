@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA| Cursos</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -27,6 +32,7 @@
                     </li>
                 </ol>
             </div>
+            {{-- Inicio modal --}}
             <div class="col-lg-2">
                 <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
                     type="button">Agregar</button>
@@ -39,12 +45,11 @@
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
 
                                         <!--
-                                                                <p>Sign in today for more expirience.</p> 
+                                                                <p>Sign in today for more expirience.</p>
                                                             -->
 
                                         <form role="form" method="POST" action="{{ route('cursos.store') }}">
                                             @csrf
-                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             <div class="form-group"><label>Curso</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
@@ -66,6 +71,7 @@
                     </div>
                 </div>
             </div>
+            {{-- Término modal --}}
 
         </div>
 
@@ -93,114 +99,84 @@
                 </div>
 
                 <div class="ibox-content">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th class="col-lg-1">ID</th>
-                                <th class="col-lg-3">Curso</th>
-                                <th class="col-lg-3">Categoria</th>
-                                <th class="col-lg-1">Duracion</th>
-                                <th class="col-lg-1">Estado</th>
-                                <th class="col-lg-1">Editar</th>
-                                {{-- <th class="col-lg-1">Borrar</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($cursos as $curso)
-                            <tr>
-                                <td>{{ $curso->id }}</td>
-                                <td>{{ $curso->nombre }}</td>
-                                <td>{{ $curso->categoria }}</td>
-                                <td>{{ $curso->duracion }}</td>
-                                <td><form method="POST" action="{{ route('cursos.activarInactivar', $curso->id) }}">
-                                    @csrf
-                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-                                    <button type="submit" class="btn btn-{{ $curso->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                        <span>{{ $curso->estado ? 'Activo' : 'Inactivo' }}</span>
-                                    </button>
-                                </form></td>
-                                <td><button class="btn btn-info" type="button" href="#modal-form{{ $curso->id }}" data-toggle="modal"><i
-                                            class="fa fa-paste"></i></button></td>
-                                <div id="modal-form{{ $curso->id }}" class="modal fade" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-body">
-                                                <div class="row" style="display: flex; justify-content:center; align-items:center">
-                                                    <div class="col-sm-11 b-r">
-                                                        <h3 class="m-t-none m-b">Editar</h3>
+                    <div class="table-responsive">
+                        <table class="table  table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th class="col-lg-1">ID</th>
+                                    <th class="col-lg-3">Curso</th>
+                                    <th class="col-lg-3">Categoria</th>
+                                    <th class="col-lg-1">Duracion</th>
+                                    <th class="col-lg-1">Estado</th>
+                                    <th class="col-lg-1 oculto">Editar</th>
 
-                                                        <!--
-                                                            <p>Sign in today for more expirience.</p> 
-                                                        -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($cursos as $curso)
+                                <tr>
+                                    <td>{{ $curso->id }}</td>
+                                    <td>{{ $curso->nombre }}</td>
+                                    <td>{{ $curso->categoria }}</td>
+                                    <td>{{ $curso->duracion }}</td>
+                                    <td><form method="POST" action="{{ route('cursos.activarInactivar', $curso->id) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-{{ $curso->estado ? 'outline-success' : 'danger' }} btn-primary dim">
+                                            <span>{{ $curso->estado ? 'Activado' : 'Inactivo' }}</span>
+                                        </button>
+                                    </form></td>
+                                    <td><button class="btn btn-info oculto" type="button" href="#modal-form{{ $curso->id }}" data-toggle="modal"><i
+                                                class="fa fa-paste"></i></button></td>
+                                    <div id="modal-form{{ $curso->id }}" class="modal fade" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <div class="row" style="display: flex; justify-content:center; align-items:center">
+                                                        <div class="col-sm-11 b-r">
+                                                            <h3 class="m-t-none m-b">Editar</h3>
 
-                                                        <form role="form" method="POST"
-                                                            action="{{ route('cursos.update', $curso->id) }}">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-                                                            <label class="col-form-label">Cursos</label>
-                                                            <div class="form-group"><label>Nombre</label>
-                                                                <input type="text" placeholder="....."
-                                                                    class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $curso->nombre) }}">
-                                                            </div>
-                                                            <div class="form-group"><label>Categoria</label> <input type="text"
-                                                                placeholder="....." name="categoria" value="{{ old('categoria', $curso->categoria) }}" class="form-control">
-                                                            </div>
-                                                            <div class="form-group"><label>Duracion</label> <input type="text"
-                                                                placeholder="....." name="duracion" value="{{ old('duracion', $curso->duracion) }}" class="form-control">
-                                                            </div>
-                                                            <div>
-                                                                <button
-                                                                    class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                                    type="submit"><i
-                                                                        class="fa fa-check"></i>&nbsp;Confirmar</button>
-                                                            </div>
-                                                        </form>
+                                                            <!--
+                                                                <p>Sign in today for more expirience.</p>
+                                                            -->
+
+                                                            <form role="form" method="POST"
+                                                                action="{{ route('cursos.update', $curso->id) }}">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <label class="col-form-label">Cursos</label>
+                                                                <div class="form-group"><label>Nombre</label>
+                                                                    <input type="text" placeholder="....."
+                                                                        class="form-control" name="nombre" id="nombre"
+                                                                        value="{{ old('nombre', $curso->nombre) }}">
+                                                                </div>
+                                                                <div class="form-group"><label>Categoria</label> <input type="text"
+                                                                    placeholder="....." name="categoria" value="{{ old('categoria', $curso->categoria) }}" class="form-control">
+                                                                </div>
+                                                                <div class="form-group"><label>Duracion</label> <input type="text"
+                                                                    placeholder="....." name="duracion" value="{{ old('duracion', $curso->duracion) }}" class="form-control">
+                                                                </div>
+                                                                <div>
+                                                                    <button
+                                                                        class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                                        type="submit"><i
+                                                                            class="fa fa-check"></i>&nbsp;Confirmar</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                {{-- <td><button class="btn btn-danger" type="button"
-                                    onclick="confirmDelete({{ $curso->id }})"><i
-                                        class="fa fa-trash-o"></i></button>
-                                </td> --}}
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            @if($hasPagination === true)
-                <div class="row mb-5 mb-md-4">
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
-                            <a href="{{ $cursos->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
-                            </a>
-                        @endif
-                        @if($pageData->currentPage > 1)
-                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> Anterior
-                            </a>
-                        @endif
-                    </div>
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
-                        @if($pageData->currentPage < $pageData->lastPage)
-                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Siguiente <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        @endif
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
-                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        @endif
-                    </div>
-                </div>
-            @endif
+            
         </div>
         @include('components.inspinia.footer-inspinia')
 
@@ -208,20 +184,47 @@
     </div>
 
     <script>
-        // function confirmDelete(id) {
-        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-        //         if (e) {
-        //             let form = document.createElement('form')
-        //             form.method = 'POST'
-        //             form.action = `/cursos/${id}`
-        //             form.innerHTML = '@csrf @method('DELETE')'
-        //             document.body.appendChild(form)
-        //             form.submit()
-        //         } else {
-        //             return false
-        //         }
-        //     });
-        // }
+        <!-- Mainly scripts -->
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+        <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+        <script src="js/plugins/dataTables/datatables.min.js"></script>
+        <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
+
+        <!-- Custom and plugin javascript -->
+        <script src="js/inspinia.js"></script>
+        <script src="js/plugins/pace/pace.min.js"></script>
+
+        <!-- Page-Level Scripts -->
+        <script>
+            $(document).ready(function(){
+                $('.dataTables-example').DataTable({
+                    pageLength: 25,
+                    responsive: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    buttons: [
+                        { extend: 'copy', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'csv', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'excel', title: 'CURSOS', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'pdf', title: 'CURSOS', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'print',
+                          customize: function (win){
+                                $(win.document.body).addClass('white-bg');
+                                $(win.document.body).css('font-size', '1px');
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                          },
+                          exportOptions: { columns: ':not(.no-export)' }
+                        }
+                    ]
+                });
+            });
+        </script>
+
     </script>
 
 </body>
