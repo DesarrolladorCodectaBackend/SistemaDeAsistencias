@@ -93,9 +93,9 @@
                                                         <hr class="mt-0" />
                                                         @if($hasHorario)
                                                         <div style="display: flex; flex-direction: column; gap: 50px;"
-                                                            class="container">
+                                                            class="">
                                                             @foreach($horarioAsignado as $key => $asignado)
-                                                            <div class="container pb-3 border-bottom">
+                                                            <div class="pb-3 border-bottom">
                                                                 <div class="row">
                                                                     <div class="col-10">
                                                                         <h2>Actualizar Horario {{$key+1}} </h2>
@@ -245,8 +245,6 @@
                                                                 <i class="fa fa-check"></i>&nbsp;Enviar
                                                             </button>
                                                         </form>
-
-                                                        {{-- @endif --}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -254,25 +252,11 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>

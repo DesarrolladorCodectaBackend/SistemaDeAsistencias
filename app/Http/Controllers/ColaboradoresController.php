@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\FunctionHelperController;
+use App\Models\Actividades;
 use App\Models\Area;
+use App\Models\AreaRecreativa;
 use App\Models\Asistentes_Clase;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
@@ -43,13 +45,18 @@ class ColaboradoresController extends Controller
         $instituciones = $institucionesAll->where('estado', 1);
         $carreras = $carrerasAll->where('estado', 1);
         $areas = $areasAll->where('estado', 1);
-
-        $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colaboradores->items());
+        
+        $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
+        // return $colabsActividades;
+        $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
         $colaboradores->data = $colaboradoresConArea;
+        // return $colaboradores;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
         // return $pageData;
-
+        // return $actividades;
+        
+        $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
             'hasPagination' => $hasPagination,
@@ -62,6 +69,7 @@ class ColaboradoresController extends Controller
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
+            'Allactividades' => $Allactividades,
         ]);
     }
 
@@ -164,6 +172,7 @@ class ColaboradoresController extends Controller
         $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
+        $Allactividades = Actividades::where('estado', 1)->get();
 
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
@@ -177,6 +186,8 @@ class ColaboradoresController extends Controller
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
+            'Allactividades' => $Allactividades,
+
         ]);
     }
 
@@ -255,6 +266,7 @@ class ColaboradoresController extends Controller
                 'celular' => 'sometimes|string|min:1|max:20',
                 'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
                 'areas_id.*' => 'sometimes|integer',
+                'actividades_id.*' => 'sometimes|integer',
                 'currentURL' => 'sometimes|string',
 
             ]);
@@ -285,6 +297,7 @@ class ColaboradoresController extends Controller
                     RegistroActividadController::crearRegistro($colaborador_por_area->id, true);
                 }
             }
+            
             // Buscar las areas que no estan en el request y que estan asociadas al colaborador
             $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $request->areas_id)->get();
             // Por cada registro encontrado
@@ -299,6 +312,32 @@ class ColaboradoresController extends Controller
                 foreach($ColabMachines as $machine){
                     //Eliminar maquinas
                     $machine->delete();
+                }
+            }
+            if($request->actividades_id == null){
+                $actividadesInactivas = AreaRecreativa::where('colaborador_id', $colaborador_id)->where('estado', 1)->get();
+                foreach($actividadesInactivas as $actividadInactiva){
+                    $actividadInactiva->update(['estado' => false]);
+                }
+            } else {
+                //Lo mismo con las actividades
+                foreach($request->actividades_id as $actividad_id){
+                    $actividad_recreativa = AreaRecreativa::where('colaborador_id', $colaborador->id)->where('actividad_id', $actividad_id)->first();
+    
+                    if(!$actividad_recreativa){
+                        AreaRecreativa::create([
+                            'colaborador_id' => $colaborador->id,
+                            'actividad_id' => $actividad_id,
+                            'estado' => true
+                        ]);
+                    } else if($actividad_recreativa->estado == false) {
+                        $actividad_recreativa->update(['estado' => true]);
+                    }
+                }
+                //Lo mismo con las actividades, inactivarlas
+                $actividadesInactivas = AreaRecreativa::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('actividad_id', $request->actividades_id)->get();
+                foreach($actividadesInactivas as $actividadInactiva){
+                    $actividadInactiva->update(['estado' => false]);
                 }
             }
             //Se crea un array de datos a actualizar para el candidato, exceptuando el icono y area_id
@@ -423,7 +462,7 @@ class ColaboradoresController extends Controller
         $hasPagination = true;
 
         //return $colaboradoresConArea;
-
+        $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
             'hasPagination' => $hasPagination,
@@ -436,6 +475,7 @@ class ColaboradoresController extends Controller
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
+            'Allactividades' => $Allactividades,
         ]);
 
     }

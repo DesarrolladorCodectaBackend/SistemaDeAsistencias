@@ -27,6 +27,78 @@ class InstitucionController extends Controller
         ]);
 
     }
+    public function getAll()
+    {
+        $instituciones = Institucion::get();
+
+        return response()->json(['data' => $instituciones]);
+
+    }
+
+public function storeJSON(Request $request)
+    {
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                        'nombre' => 'required|string|min:1|max:100',
+                    ]);
+
+            institucion::create([
+                'nombre' => $request->nombre,
+            ]);
+            
+            DB::commit();
+            return response()->json(["resp" => "Registro creado exitosamente"]);
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json(["msg" => "Ocurrió un error", "error" => $e->getMessage()]);
+        }
+    }
+
+public function updateJSON(Request $request, $institucion_id)
+    {
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'sometimes|string|min:1|max:100',
+                'estado' => 'sometimes|boolean'
+            ]);
+
+            $institucion = Institucion::findOrFail($institucion_id);
+
+            $institucion->update($request->all());
+
+            DB::commit();
+            return response()->json(["resp" => "Registro actualizado exitosamente"]);
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json(["msg" => "Ocurrió un error", "error" => $e->getMessage()]);
+        }
+
+    }
+
+public function activarInactivarJSON(Request $request,$institucion_id)
+    {
+        DB::beginTransaction();
+        try{
+            $institucion = Institucion::findOrFail($institucion_id);
+
+            $institucion->estado = !$institucion->estado;
+
+            $institucion->save();
+
+            DB::commit();
+            if($institucion->estado == true){
+                return response()->json(["resp" => $institucion->nombre." Activado exitosamente"]);
+            } else{
+                return response()->json(["resp" => $institucion->nombre." Inactivado exitosamente"]);
+            }
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json(["msg" => "Ocurrió un error", "error" => $e->getMessage()]);
+        }
+    }
+
 
     public function store(Request $request)
     {
