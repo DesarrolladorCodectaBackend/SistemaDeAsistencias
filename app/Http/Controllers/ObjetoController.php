@@ -45,11 +45,11 @@ class ObjetoController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
-            if($request->currentURL) {
-                return redirect($request->currentURL);
-            } else {
-                return redirect()->route('objeto.index');
-            }
+                if($request->currentURL) {
+                    return redirect($request->currentURL);
+                } else {
+                    return redirect()->route('objeto.index');
+                }
         }
 
     }

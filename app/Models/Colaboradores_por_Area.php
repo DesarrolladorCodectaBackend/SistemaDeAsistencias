@@ -21,6 +21,10 @@ class Colaboradores_por_Area extends Model
         return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
     }
 
+    public function semana(){
+        return $this->belongsTo(Semanas::class, 'semana_inicio_id', 'id');
+    }
+
     public function area(){
         return $this->belongsTo(Area::class, 'area_id', 'id');
     }

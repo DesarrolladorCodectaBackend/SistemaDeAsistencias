@@ -146,7 +146,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($colaboradoresArea as $colaboradorArea)
+                        @foreach($semana->colaboradores as $colaboradorArea)
                         <tr>
                             <th class="colabo">
                                 {{$colaboradorArea->colaborador->candidato->nombre}}
@@ -169,11 +169,11 @@
                                 <div>
                                     <span>
                                         @isset($registro->cumplio)
-                                            @if($registro->cumplio == true)
-                                            ✔️
-                                            @else
-                                            ❌
-                                            @endif
+                                        @if($registro->cumplio == true)
+                                        ✔️
+                                        @else
+                                        ❌
+                                        @endif
                                         @endisset
                                     </span>
                                     @isset($registro->cumplio)
@@ -225,7 +225,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($colaboradoresArea as $colaboradorArea)
+                        @foreach($semana->colaboradores as $colaboradorArea)
                         <tr>
                             <th class="colabo">
                                 {{$colaboradorArea->colaborador->candidato->nombre}}
@@ -261,14 +261,10 @@
 
         @endforeach
 
-
-
-
-
         <script>
             var currentWeek = 1;
             var totalWeeks = {{ count($semanasMes) }};
-            $("#semana1").css("display", "unset");
+            $("#semana"+currentWeek).css("display", "unset");
             updateNavigationButtons();
         
                 function toggleCheck(cell) {

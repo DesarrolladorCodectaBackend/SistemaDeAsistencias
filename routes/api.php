@@ -45,7 +45,6 @@ use App\Http\Controllers\InstitucionController;
 ------------------------------
 */
 //INSTITUCIONES 
-Route::get('institucion/getall', [InstitucionController::class, 'index']);
 Route::post('institucion/store', [InstitucionController::class, 'store']);
 Route::get('institucion/show/{institucion_id}', [InstitucionController::class, 'show']);
 Route::put('institucion/update/{institucion_id}', [InstitucionController::class, 'update']);

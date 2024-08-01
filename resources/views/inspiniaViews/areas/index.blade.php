@@ -89,8 +89,8 @@
                             <div class="product-imitation">
                                 <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
                             </div>
-                            <div class="product-desc">´
-                                {{-- CAMBIO DE ESTADO --}}
+                            <div class="product-desc">
+                                {{-- CAMBIO DE ESTADO ÁREAS --}}
                                 <form action="{{ route('areas.activarInactivar', $area->id) }}" method="POST">
                                     @csrf
                                     @method('put')
@@ -101,7 +101,6 @@
                                     </button>
                                 </form>
 
-                                    {{-- // --}}
                                 <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}}</small>
                                 <a href="#" class="product-name">{{ $area->especializacion }}</a>
                                 <div class="small m-t-xs">

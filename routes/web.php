@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
 use App\Http\Controllers\Registro_MantenimientoController;
+use App\Http\Controllers\RegistroActividadController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
@@ -55,9 +56,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //Probando
+    // Route::get('testing/{colaboradorAreaId}', [RegistroActividadController::class, 'obtenerInactividad']);
+
     //AREAS
     Route::resource('areas', AreaController::class);
-    Route::put('areas/{area_id}/activar-inactivar', [AreaController::class, 'activarInactivar'])->name('areas.activarInactivar');
+    Route::put('areas/activarInactivar/{area_id}',[AreaController::class,'activarInactivar'])->name('areas.activarInactivar');
 
     //Horarios (Area)
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');
