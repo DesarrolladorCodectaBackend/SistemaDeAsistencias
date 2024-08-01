@@ -262,73 +262,79 @@
                             <div class="modal-body">
                                 <div class="row">
 
-                                    <div class="col-sm-6 b-r">
-                                        <h3 class="m-t-none m-b">Informacion Personal </h3>
+                                    <div style='padding: 3px' class="col-sm-6 b-r">
+                                        <h3 style="font-size: 1.1rem; font-weight: bold; border-bottom: 1px solid currentColor;" class="m-t-none m-b pb-1">Información Personal </h3>
                                         <style>
                                             .form-group {
-                                                margin-bottom: 0rem;
+                                                margin: 0rem;
+                                                
+                                            }
+                                            p{
+                                                margin: 0px;
                                             }
                                         </style>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Nombres:</h5>
-                                            </label><label for="">{{$colaborador->candidato->nombre}}</label>
-                                        </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Apellidos:</h5>
-                                            </label><label for="">{{$colaborador->candidato->apellido}}</label>
-                                        </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Direccion:</h5>
-                                            </label><label for="">{{$colaborador->candidato->direccion}}</label>
-                                        </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Institucion - Sede:</h5>
-                                            </label><label for="">{{$colaborador->candidato->sede->nombre}}</label>
-                                        </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Ciclo:</h5>
-                                            </label><label
-                                                for="">{{$colaborador->candidato->ciclo_de_estudiante}}°</label>
-                                        </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Correo:</h5>
-                                            </label><label for="">{{$colaborador->candidato->correo}}</label>
-                                        </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">fecha de
-                                                    Nacimiento:</h5>
-                                            </label><label for="">{{$colaborador->candidato->fecha_nacimiento}}</label>
-                                        </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">DNI:</h5>
-                                            </label><label for="">{{$colaborador->candidato->dni}}</label>
-                                        </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Celular:</h5>
-                                            </label><label for="">{{$colaborador->candidato->celular}}</label>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; '>Nombres:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->nombre}}</p>
                                         </div>
                                         <div class="form-group">
-                                            <label>
-                                                <h5 class="m-t-none m-b">Area:</h5>
-                                            </label>
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Apellidos:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->apellido}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Direccion:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->direccion}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Institución - Sede:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->sede->nombre}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Ciclo:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->ciclo_de_estudiante}}°</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Correo:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->correo}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Fecha de nacimiento:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->fecha_nacimiento}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">DNI:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->dni}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Celular:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->celular}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Área(s):</p>
                                             @foreach($colaborador->areas as $area)
-                                            <label>{{$area}}</label>
+                                            <p style='font-size: 0.9rem;' class=''>{{$area}}</p>
                                             @endforeach
                                         </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Carrera:</h5>
-                                            </label><label for="">{{$colaborador->candidato->carrera->nombre}}</label>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Actividades favoritas:</p>
+                                            @foreach($colaborador->actividadesFavoritas as $actividades)
+                                            <p style='font-size: 0.9rem;' class=''>{{$actividades}}</p>
+                                            @endforeach
                                         </div>
-                                        <div class="form-group"><label>
-                                                <h5 class="m-t-none m-b">Estado:</h5>
-                                            </label><label for="">
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Carrera:</p>
+                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->carrera->nombre}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Estado:</p>
+                                            <p style='font-size: 0.9rem;'>
                                                 @if ($colaborador->estado == 1)
                                                 <span style="color: green"><strong>Activo</strong></span>
 
                                                 @else
                                                 <span style="color: #F00"><strong>Inactivo</strong></span>
                                                 @endif
-                                            </label></div>
+                                            </p></div>
                                         <div>
                                             <a data-toggle="modal"
                                                 class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
@@ -581,9 +587,25 @@
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
-
-
-
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Actividades favoritas:</h5>
+                                                                        </label>
+                                                                        <select name="actividades_id[]" multiple
+                                                                            class="form-control multiple_actividades_select">
+                                                                            @foreach ($Allactividades as $actividad)
+                                                                            <option value="{{ $actividad->id }}"
+                                                                                @foreach($colaborador->actividadesFavoritas as $actividadNombre)
+                                                                                @if($actividad->nombre ==
+                                                                                $actividadNombre)
+                                                                                selected
+                                                                                @endif
+                                                                                @endforeach
+                                                                                >
+                                                                                {{ $actividad->nombre }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Carrera:</h5>
                                                                         </label>
@@ -974,6 +996,9 @@
         //JQuery para select multiple de areas
         $(document).ready(function() {
             $('.multiple_areas_select').select2();
+        });
+        $(document).ready(function() {
+            $('.multiple_actividades_select').select2();
         });
     </script>
 </body>
