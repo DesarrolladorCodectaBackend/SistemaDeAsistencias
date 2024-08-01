@@ -221,6 +221,25 @@
                     </div>
                 </div>
 
+                <div class="col-lg-5">
+                    <div class="ibox ">
+                        <div class="show-grid container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <img src={{asset('img/svg/carrera.svg')}} class="">
+                                </div>
+                                <div class="col-sm">
+                                    <h4><strong>Tipo de Configuracion</strong></h4>
+                                    <p>Áreas recreativas</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a class="btn btn-success" href="/areas_recreativas"><i class="fa fa-cog"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         @include('components.inspinia.footer-inspinia')

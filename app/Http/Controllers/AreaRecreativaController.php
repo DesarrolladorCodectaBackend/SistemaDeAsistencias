@@ -12,7 +12,7 @@ class AreaRecreativaController extends Controller
 
         foreach($colaboradores as $colaborador){
             $colabActividades = AreaRecreativa::with('actividad')->where('colaborador_id', $colaborador->id)->where('estado', 1)->get();
-           
+
             if($colabActividades->count() > 0){
                 $actividades = [];
                 foreach($colabActividades as $acti){

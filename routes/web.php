@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
@@ -174,8 +175,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/colaborador/prestamo/store', [PrestamoObjetoColaboradorController::class, 'store'])->name('prestamo.store');
     Route::put('/prestamo/inactive/{id}', [PrestamoObjetoColaboradorController::class, 'inactivate'])->name('prestamo.inactive');
 
-    //FILTROS
-    Route::get('filtros/',[FiltrosController::class,'getdata'])->name('filtro.getdata');
+    //ACTIVIDADES
+    Route::resource('actividades', ObjetoController::class);
+    Route::post('actividades/{actividad}/activar-inactivar',[ObjetoController::class, 'activarInactivar'])->name('objeto.activarInactivar');
+
 
 });
 
