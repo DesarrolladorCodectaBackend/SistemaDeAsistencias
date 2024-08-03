@@ -91,6 +91,7 @@ class ObjetoController extends Controller
 
         return redirect()->route('objeto.index');
     }
+    
     public function activarInactivar(Request $request, $objeto_id){
 
         DB::beginTransaction();

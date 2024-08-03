@@ -205,16 +205,44 @@
                         { extend: 'copy', exportOptions: { columns: ':not(.oculto)' }},
                         { extend: 'csv', exportOptions: { columns: ':not(.oculto)' }},
                         { extend: 'excel', title: 'INSTITUCIONES', exportOptions: { columns: ':not(.oculto)' }},
-                        { extend: 'pdf', title: 'INSTITUCIONES', exportOptions: { columns: ':not(.oculto)' }},
+                        { extend: 'pdf',
+                        title: 'INSTITUCIONES',
+                        exportOptions: { columns: ':not(.oculto)' },
+                        customize: function(doc) {
+                            // tamaño fuente
+                            doc.defaultStyle.fontSize = 10;
+
+                            // Ajustar el ancho de las columnas para ocupar todo el espacio disponible
+                            var columnCount = doc.content[1].table.body[0].length;
+                            var columnWidths = [];
+                            if (columnCount <= 4) {
+                                columnWidths = Array(columnCount).fill('*');
+                            } else {
+                                columnWidths = Array(columnCount).fill('auto');
+                            }
+                            doc.content[1].table.widths = columnWidths;
+
+                            // Estilo de la cabecera
+                            doc.styles.tableHeader = {
+                                fillColor: '#4682B4',
+                                color: 'white',
+                                alignment: 'center',
+                                bold: true,
+                                fontSize: 12
+                            };
+
+                            // Ajustar los márgenes de la página
+                            doc.pageMargins = [20, 20, 20, 20]; }},
                         { extend: 'print',
                           customize: function (win){
                                 $(win.document.body).addClass('white-bg');
-                                $(win.document.body).css('font-size', '1px');
+                                $(win.document.body).css('font-size', '10px');
                                 $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
+                                    .addClass('compact');
+                                $(win.document.body).find('thead th.oculto').css('display', 'none');
+                                $(win.document.body).find('tbody td.oculto').css('display', 'none');
                           },
-                          exportOptions: { columns: ':not(.no-export)' }
+                          exportOptions: { columns: ':not(.oculto)' }
                         }
                     ]
                 });

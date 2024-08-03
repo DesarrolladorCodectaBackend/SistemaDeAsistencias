@@ -230,10 +230,10 @@
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Áreas recreativas</p>
+                                    <p>Actividades</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/areas_recreativas"><i class="fa fa-cog"></i></a>
+                                    <a class="btn btn-success" href="/actividades"><i class="fa fa-cog"></i></a>
                                 </div>
                             </div>
                         </div>

@@ -176,8 +176,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/prestamo/inactive/{id}', [PrestamoObjetoColaboradorController::class, 'inactivate'])->name('prestamo.inactive');
 
     //ACTIVIDADES
-    Route::resource('actividades', ObjetoController::class);
-    Route::post('actividades/{actividad}/activar-inactivar',[ObjetoController::class, 'activarInactivar'])->name('objeto.activarInactivar');
+    Route::resource('actividades', ActividadesController::class);
+    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('objeto.activarInactivar');
 
 
 });

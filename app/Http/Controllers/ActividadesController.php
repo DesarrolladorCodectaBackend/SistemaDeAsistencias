@@ -36,13 +36,48 @@ class ActividadesController extends Controller
         }
     }
 
-    public function update()
+    public function update(Request $request, $actividad_id)
     {
+        DB::beginTransaction();
+        try{
+            $request->validate([
+                'nombre' => 'sometimes|string|min:1|max:100',
+            ]);
+
+            $actividad = Actividades::findOrFail($actividad_id);
+
+            $actividad->update($request->all());
+
+            DB::commit();
+                return redirect()->route('actividades.index');
+
+        } catch(Exception $e) {
+            DB::rollBack();
+                return redirect()->route('actividades.index');
+            }
+        }
+
+
+    public function activarInactivar($actividad_id)
+    {
+        DB::beginTransaction();
+        try{
+            $actividad = Actividades::findOrFail($actividad_id);
+
+            $actividad->estado = !$actividad->estado;
+
+            $actividad->save();
+
+            DB::commit();
+                return redirect()->route('actividades.index');
+
+        } catch(Exception $e) {
+            DB::rollBack();
+                return redirect()->route('actividades.index');
+
+        }
 
     }
 
-    public function activarInactivar()
-    {
-
-    }
 }
+
