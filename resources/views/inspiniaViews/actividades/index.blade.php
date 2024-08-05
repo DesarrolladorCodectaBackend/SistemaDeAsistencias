@@ -109,7 +109,7 @@
                             <tr>
                                 <td>{{ $actividad->id }}</td>
                                 <td>{{ $actividad->nombre }}</td>
-                                <td><form method="POST" action="{{ route('objeto.activarInactivar', $actividad->id) }}">
+                                <td><form method="POST" action="{{ route('actividades.activarInactivar', $actividad->id) }}">
 
                                     @csrf
                                     <button type="submit" class="btn btn-{{ $actividad->estado ? 'outline-success' : 'danger' }} btn-primary dim">
@@ -189,7 +189,7 @@
         <script>
             $(document).ready(function(){
                 $('.dataTables-example').DataTable({
-                    pageLength: 25,
+                    pageLength: 10,
                     responsive: true,
                     dom: '<"html5buttons"B>lTfgitp',
                     buttons: [

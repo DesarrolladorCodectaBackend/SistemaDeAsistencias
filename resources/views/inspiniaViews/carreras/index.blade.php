@@ -187,7 +187,7 @@
         <script>
             $(document).ready(function(){
                 $('.dataTables-example').DataTable({
-                    pageLength: 25,
+                    pageLength: 10,
                     responsive: true,
                     dom: '<"html5buttons"B>lTfgitp',
                     buttons: [

@@ -177,7 +177,7 @@ Route::middleware('auth')->group(function () {
 
     //ACTIVIDADES
     Route::resource('actividades', ActividadesController::class);
-    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('objeto.activarInactivar');
+    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividades.activarInactivar');
 
 
 });
