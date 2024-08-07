@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('nombre', 100);
             $table->string('apellido', 100);
             $table->string('dni', 8)->nullable(); //used to be unique
-            $table->string('direccion', 100);
-            $table->date('fecha_nacimiento');
-            $table->integer('ciclo_de_estudiante');
+            $table->string('direccion', 100)->nullable();
+            $table->date('fecha_nacimiento')->nullable();
+            $table->integer('ciclo_de_estudiante')->nullable();
             $table->boolean('estado')->default(True);
             $table->unSignedBigInteger('sede_id');
             $table->foreign('sede_id')->references('id')->on('sedes');
