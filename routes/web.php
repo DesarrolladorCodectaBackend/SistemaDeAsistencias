@@ -18,13 +18,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
 use App\Http\Controllers\Registro_MantenimientoController;
-use App\Http\Controllers\RegistroActividadController;
+use App\Http\Controllers\Reuniones_AreasController;
 use App\Http\Controllers\SedeController;
-use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
-use App\Http\Controllers\Reuniones_ProgramadasController;
 use App\Http\Controllers\MaquinaReservadaController;
-use App\Models\Cumplio_Responsabilidad_Semanal;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -71,11 +68,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/areas/horarioDelete/{area_id}/{horario_presencial_asignado_id}', [Horario_Presencial_AsignadoController::class, 'destroy'])->name('areas.horarioDelete');
 
     //Reuniones (Area)
-    Route::get('/ReunionesAreas', [Reuniones_ProgramadasController::class, 'getAllReu'])->name('reuniones.getAll');
-    Route::get('/areas/reuniones/{area_id}', [Reuniones_ProgramadasController::class, 'reunionesGest'])->name('areas.getReuniones');
-    Route::post('/areas/reunionCreate', [Reuniones_ProgramadasController::class, 'store'])->name('areas.reunionCreate');
-    Route::put('/areas/reunionUpdate/{id}', [Reuniones_ProgramadasController::class, 'update'])->name('areas.reunionUpdate');
-    Route::delete('/areas/reunionDelete/{id}', [Reuniones_ProgramadasController::class, 'destroy']);
+    Route::get('/ReunionesAreas', [Reuniones_AreasController::class, 'getAllReu'])->name('reuniones.getAll');
+    Route::get('/areas/reuniones/{area_id}', [Reuniones_AreasController::class, 'reunionesGest'])->name('areas.getReuniones');
+    Route::post('/areas/reunionCreate', [Reuniones_AreasController::class, 'store'])->name('areas.reunionCreate');
+    Route::put('/areas/reunionUpdate/{id}', [Reuniones_AreasController::class, 'update'])->name('areas.reunionUpdate');
+    Route::delete('/areas/reunionDelete/{id}', [Reuniones_AreasController::class, 'destroy']);
 
     //Maquina Reservada
     Route::get('/area/maquinas/{area_id}', [AreaController::class, 'getMaquinasByArea'])->name('areas.getMaquinas');

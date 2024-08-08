@@ -49,12 +49,14 @@
                         Generales</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/horarioGeneral">Presencial</a></li>
-                    <li><a href="/ReunionesAreas">Reuniones</a></li>
+                    <li><a href="/ReunionesAreas">Reuniones Áreas</a></li>
                 </ul>
             </li>
             <li>
-                <a href="/horarioGeneral"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
-                        G.Virtual</span></a>
+                <a href="/horarioGeneral"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu. Programadas</span></a>
+            </li>
+            <li>
+                <a href="/horarioGeneral"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
             </li>
             <li id="personalCont">
                 <a href=""><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span

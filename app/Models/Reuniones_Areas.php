@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Reuniones_Programadas extends Model
+class Reuniones_Areas extends Model
 {
     use HasFactory;
 
@@ -13,7 +13,8 @@ class Reuniones_Programadas extends Model
         'area_id',
         'dia',
         'hora_inicial',
-        'hora_final'
+        'hora_final',
+        'disponibilidad'
     ];
 
 

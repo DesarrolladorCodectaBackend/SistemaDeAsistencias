@@ -465,9 +465,28 @@ class AreaController extends Controller
         try{
             $area = Area::findOrFail($area_id);
 
-            $area->estado = !$area->estado;
+            // $area->estado = !$area->estado;
 
-            $area->save();
+            // $area->save();
+            $area->update(["estado" => !$area->estado]);
+
+            if($area->estado == 0){
+                $colaboradoresArea = Colaboradores_por_Area::where('estado', 1)->where('area_id', $area_id)->get();
+                // Por cada registro encontrado
+                foreach ($colaboradoresArea as $colaboradorArea) {
+                    //Se inactiva su estado
+                    $colaboradorArea->update(['estado' => false]);
+                    //Crear registro de inactivación
+                    RegistroActividadController::crearRegistro($colaboradorArea->id, false);
+                    //Se busca si tiene computadoras
+                    $ColabMachines = Maquina_reservada::where('colaborador_area_id', $colaboradorArea->id)->get();
+                    //Recorrer maquinas encontradas
+                    foreach($ColabMachines as $machine){
+                        //Eliminar maquinas
+                        $machine->delete();
+                    }
+                }
+            }
 
             DB::commit();
             if($request->currentURL) {

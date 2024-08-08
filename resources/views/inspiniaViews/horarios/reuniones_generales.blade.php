@@ -152,7 +152,7 @@
                     numeroDia = 4;
                 }
                 return {
-                    title: reunion.area.especializacion,
+                    title: reunion.area.especializacion+" ("+reunion.disponibilidad+")",
                     start: new Date(2024, 1, numeroDia, reunion.horario_modificado.hora_inicial, 0),
                     end: new Date(2024, 1, numeroDia, reunion.horario_modificado.hora_final, 0),
                     allDay: false,
