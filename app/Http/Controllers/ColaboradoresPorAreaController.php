@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Colaboradores_por_Area;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\RegistroActividad;
 use Exception;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ColaboradoresPorAreaController extends Controller
 {
@@ -17,7 +20,7 @@ class ColaboradoresPorAreaController extends Controller
         return view('colaboradores_por_area.index', compact('colaboradores_por_area'));
     }
 
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -32,13 +35,11 @@ class ColaboradoresPorAreaController extends Controller
             'semana_inicio_id' => $request->semana_inicio_id
         ]);
 
-        
+
         return redirect()->route('colaboradores_por_area.index');
-
-
     }
 
-    
+
     public function show($colaborador_por_area_id)
     {
         try{
@@ -57,7 +58,7 @@ class ColaboradoresPorAreaController extends Controller
         }
     }
 
-    
+
     public function update(Request $request, $colaborador_por_area_id)
     {
         $request->validate([
@@ -73,7 +74,7 @@ class ColaboradoresPorAreaController extends Controller
         return redirect()->route('colaboradores_por_area.index');
     }
 
-    
+
     public function destroy($colaborador_por_area_id)
     {
         $colaborador_por_area = Colaboradores_por_Area::findOrFail($colaborador_por_area_id);
@@ -82,4 +83,34 @@ class ColaboradoresPorAreaController extends Controller
 
         return redirect()->route('colaboradores_por_area.index');
     }
+
+    public static function crearRegistro($colaboradorArea_id, $estado)
+    {
+        DB::beginTransaction();
+        try {
+            $today = Carbon::today()->toDateString();
+
+            // Buscar el registro en la tabla colaboradores_por_area
+            $colaboradorArea = Colaboradores_por_Area::where('id', $colaboradorArea_id)
+                                                     ->where('estado', 1) // Asegura que la relación esté activa
+                                                     ->firstOrFail();
+
+            // Crear el registro de actividad si el colaboradorArea está activo
+            RegistroActividad::create([
+                'colaborador_area_id' => $colaboradorArea->id,
+                'estado' => $estado,
+                'fecha' => $today,
+            ]);
+
+            DB::commit();
+            return response()->json(['status' => true, 'message' => 'Registro creado exitosamente']);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return response()->json(['status' => false, 'message' => 'No se encontró un colaborador Área activo con ese ID']);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
 }
