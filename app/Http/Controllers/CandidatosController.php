@@ -70,6 +70,7 @@ class CandidatosController extends Controller
         return view('inspiniaViews.candidatos.form-candidatos', ['candidato' => $candidato, 'horas' => $horas], compact('areas'));
     }
 
+    
     public function store(Request $request)
     {
         DB::beginTransaction();
