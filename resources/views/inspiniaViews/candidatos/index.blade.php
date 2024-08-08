@@ -141,7 +141,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                
+
                                         <!-- Carreras -->
                                         <div class="card">
                                             <div class="card-header" id="headingCarrerasCandidatos">
@@ -165,7 +165,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                
+
                                         <!-- Instituciones -->
                                         <div class="card">
                                             <div class="card-header" id="headingInstitucionesCandidatos">
@@ -189,14 +189,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                
+
                                         <!-- Submit Button -->
                                         <div class="text-center mt-4">
                                             <button type="submit" class="btn btn-primary px-5">Filtrar</button>
                                         </div>
                                     </div>
                                 </form>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -223,7 +223,12 @@
                                                     required>
                                             </div>
                                             <div class="form-group"><label>DNI</label> <input type="number"
-                                                    placeholder="Ingrese dni" class="form-control" name="dni" required>
+                                                    placeholder="Ingrese dni" class="form-control" name="dni" maxlength="8"
+                                                    min="10000000"
+                                                    max="99999999"
+                                                    oninvalid="this.setCustomValidity('El DNI debe tener exactamente 8 dígitos.')"
+                                                    oninput="this.value = this.value.slice(0, 8)"
+                                                    required>
                                             </div>
                                             <div class="form-group"><label>Dirección</label> <input type="text"
                                                     placeholder="Ingrese dirección" class="form-control"
@@ -413,11 +418,11 @@
                                             </button>
                                         </form>
                                     </div>
-                                    
+
                                     @elseif($candidato->estado == 0)
                                     <div class="text-center">
                                         <h1 style="color: gold" class="font-bold">Colaborador</h1>
-                                    </div>  
+                                    </div>
                                     @elseif($candidato->estado == 2)
                                     <div class="d-flex justify-content-center gap-10">
                                         <form class="text-center" method="POST"
@@ -437,7 +442,7 @@
                                     @elseif($candidato->estado == 3)
                                     <div class="text-center">
                                         <h1 class="text-danger font-bold">Ex Colaborador</h1>
-                                    </div> 
+                                    </div>
                                     @endif
 
                                     </p>
@@ -474,7 +479,7 @@
                                                 href="#modal-form-view{{$candidato->id}}" data-toggle="modal"><i
                                                     style="font-size: 20px" class="fa fa-eye"></i></button>
 
-                                    
+
 
                                             <button class="btn btn-info float-right mx-2" type="button"
                                                 href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
@@ -695,7 +700,7 @@
 
         /* .select2-container--default .select2-selection--multiple {
             width: auto;
-            min-width: 100% !important; 
+            min-width: 100% !important;
         } */
         .select2-container {
             display: inline !important;
@@ -786,7 +791,7 @@
                         inputHidden.value = currentURL;
                         form.appendChild(inputHidden)
                     }
-                    
+
                     document.body.appendChild(form)
                     form.submit()
                 } else {
@@ -855,8 +860,8 @@
 
         //     return true;
         // }
-        
-        
+
+
 
     </script>
     <script>

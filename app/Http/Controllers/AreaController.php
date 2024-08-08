@@ -469,14 +469,14 @@ class AreaController extends Controller
 
             $area->save();
 
-            $area-update
+
             if($area->estado==1){
                 // Buscar las areas que no estan en el request y que estan asociadas al colaborador
-                $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $request->areas_id)->get();
+                $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $area_id)->where('estado', 1)->where('area_id', $area_id)->get();
                 // Por cada registro encontrado
                 foreach ($areasInactivas as $areaInactiva) {
                     //Se inactiva su estado
-                    $areaInactiva->update(['estado' => false]);
+                    $areaInactiva->update(['estado' => 0]);
                     //Crear registro de inactivación
                     RegistroActividadController::crearRegistro($areaInactiva->id, false);
                     //Se busca si tiene computadoras

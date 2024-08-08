@@ -50,21 +50,21 @@ class CandidatosController extends Controller
         $candidato = Candidatos::findOrFail($candidato_id);
         $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
         $horas = [
-            "07:00", 
-            "08:00", 
-            "09:00", 
-            "10:00", 
-            "11:00", 
-            "12:00", 
-            "13:00", 
-            "14:00", 
-            "15:00", 
-            "16:00", 
-            "17:00", 
-            "18:00", 
-            "19:00", 
-            "20:00", 
-            "21:00", 
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
             "22:00",
         ];
         return view('inspiniaViews.candidatos.form-candidatos', ['candidato' => $candidato, 'horas' => $horas], compact('areas'));
@@ -87,7 +87,7 @@ class CandidatosController extends Controller
                 'celular' => 'required|string|min:1|max:20',
                 'icono' => 'image'
             ]);
-    
+
             if ($request->hasFile('icono')) {
                 $icono = $request->file('icono');
                 $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
@@ -95,7 +95,7 @@ class CandidatosController extends Controller
             } else {
                 $nombreIcono = 'Default.png';
             }
-    
+
             Candidatos::create([
                 'nombre' => $request->nombre,
                 'apellido' => $request->apellido,
@@ -124,7 +124,7 @@ class CandidatosController extends Controller
                 return redirect()->route('candidatos.index');
             }
         }
-        
+
 
     }
 
@@ -329,7 +329,7 @@ class CandidatosController extends Controller
         //Filtrar por id
         $candidatoPorId = Candidatos::with('carrera', 'sede')->where('id', $busqueda)->paginate(6);
 
-        //Filtrar por nombre y apellido de candidato          
+        //Filtrar por nombre y apellido de candidato
         $candidatosPorNombre = Candidatos::with('sede', 'carrera')
             ->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%')
             ->paginate(6);
@@ -351,7 +351,7 @@ class CandidatosController extends Controller
 
         $hasPagination = true;
         $pageData = FunctionHelperController::getPageData($candidatos);
-        
+
         //return $colaboradoresConArea;
 
         return view('inspiniaViews.candidatos.index', [
@@ -396,7 +396,7 @@ class CandidatosController extends Controller
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);
-    
+
             if($candidato && $candidato->estado === 2){
                 $colaborador = Colaboradores::where('candidato_id', $candidato_id)->first();
                 if($colaborador) {
