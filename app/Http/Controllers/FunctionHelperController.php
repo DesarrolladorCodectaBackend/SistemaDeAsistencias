@@ -54,6 +54,7 @@ class FunctionHelperController extends Controller
     public static function findOrCreateNextWeek(){
         //Encontrar el dia actual
         $today = Carbon::now();
+        $monday = $today;
         //Buscar el siguiente lunes
         while (!$today->isMonday()) {
             $today->addDay();

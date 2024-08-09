@@ -58,9 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //Probando
-    // Route::get('testing/{colaboradorAreaId}', [RegistroActividadController::class, 'obtenerInactividad']);
-
     //AREAS
     Route::resource('areas', AreaController::class);
     Route::put('areas/activarInactivar/{area_id}',[AreaController::class,'activarInactivar'])->name('areas.activarInactivar');
@@ -177,7 +174,7 @@ Route::middleware('auth')->group(function () {
 
     //ACTIVIDADES
     Route::resource('actividades', ActividadesController::class);
-    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('objeto.activarInactivar');
+    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividad.activarInactivar');
 
 
 });

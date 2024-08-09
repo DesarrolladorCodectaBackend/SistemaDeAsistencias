@@ -109,7 +109,7 @@
                             <tr>
                                 <td>{{ $actividad->id }}</td>
                                 <td>{{ $actividad->nombre }}</td>
-                                <td><form method="POST" action="{{ route('objeto.activarInactivar', $actividad->id) }}">
+                                <td><form method="POST" action="{{ route('actividad.activarInactivar', $actividad->id) }}">
 
                                     @csrf
                                     <button type="submit" class="btn btn-{{ $actividad->estado ? 'outline-success' : 'danger' }} btn-primary dim">
