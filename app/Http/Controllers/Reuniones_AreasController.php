@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Reuniones_Programadas;
+use App\Models\Reuniones_Areas;
 use App\Models\Area;
 use Exception;
 
-class Reuniones_ProgramadasController extends Controller
+class Reuniones_AreasController extends Controller
 {
     
     public function getAllReu(){
         $areasActivasId = Area::where('estado', 1)->get()->pluck('id');
 
-        $reuniones = Reuniones_Programadas::with('area')->whereIn('area_id', $areasActivasId)->get();
+        $reuniones = Reuniones_Areas::with('area')->whereIn('area_id', $areasActivasId)->get();
 
         foreach ($reuniones as $horario) {
             $horaInicial = (int) date('H', strtotime($horario->hora_inicial));
@@ -24,6 +24,7 @@ class Reuniones_ProgramadasController extends Controller
                 'hora_inicial' => $horaInicial,
                 'hora_final' => $horaFinal,
                 'dia' => $horario->dia,
+                'disponibilidad' => $horario->disponibilidad,
             ];
             $horario->horario_modificado = $horariosFormateados;
         }
@@ -35,7 +36,7 @@ class Reuniones_ProgramadasController extends Controller
 
     public function reunionesGest($area_id){
         $area = Area::findOrFail($area_id);
-        $reuniones = Reuniones_Programadas::with('area')->where('area_id', $area_id)->get();
+        $reuniones = Reuniones_Areas::with('area')->where('area_id', $area_id)->get();
         $dias = FunctionHelperController::getDays();
         $horas = [
             "01:00",
@@ -63,7 +64,7 @@ class Reuniones_ProgramadasController extends Controller
             "23:00",
             "24:00",
         ];
-
+        $disponibilidades = ["Virtual", "Presencial"];
         $horariosFormateados = [];
         foreach ($reuniones as $reunion) {
             $horaInicial = (int) date('H', strtotime($reunion->hora_inicial));
@@ -73,6 +74,7 @@ class Reuniones_ProgramadasController extends Controller
                 'hora_inicial' => $horaInicial,
                 'hora_final' => $horaFinal,
                 'dia' => $reunion->dia,
+                'disponibilidad' => $reunion->disponibilidad,
             ];
         }
         
@@ -82,6 +84,7 @@ class Reuniones_ProgramadasController extends Controller
             "reuniones" => $reuniones,
             "horariosFormateados" => $horariosFormateados,
             "dias" => $dias,
+            "disponibilidades" => $disponibilidades,
             "horas" => $horas,
         ]);
 
@@ -97,14 +100,16 @@ class Reuniones_ProgramadasController extends Controller
                 'reuniones.*.dia' => 'required',
                 'reuniones.*.hora_inicial' => 'required',
                 'reuniones.*.hora_final' => 'required',
+                'reuniones.*.disponibilidad' => 'required',
             ]);
             
             foreach ($request->reuniones as $reunion) {
-                Reuniones_Programadas::create([
+                Reuniones_Areas::create([
                     'area_id' => $request->area_id,
                     'hora_inicial' => $reunion['hora_inicial'],
                     'hora_final' => $reunion['hora_final'],
-                    'dia' => $reunion['dia']
+                    'dia' => $reunion['dia'],
+                    'disponibilidad' => $reunion['disponibilidad'],
                 ]);
             }
 
@@ -125,13 +130,14 @@ class Reuniones_ProgramadasController extends Controller
         DB::beginTransaction();
         try{
             // return $request;
-            $reunion = Reuniones_Programadas::findOrFail($id);
+            $reunion = Reuniones_Areas::findOrFail($id);
             $area_id = $reunion->area_id;
 
             $request->validate([
                 'dia' => 'sometimes',
                 'hora_inicial' => 'sometimes',
                 'hora_final' => 'sometimes',
+                'disponibilidad' => 'sometimes',
             ]);
             $reunion->update($request->all());
             DB::commit();
@@ -148,7 +154,7 @@ class Reuniones_ProgramadasController extends Controller
     public function destroy($id){
         DB::beginTransaction();
         try{
-            $reunion = Reuniones_Programadas::findOrFail($id);
+            $reunion = Reuniones_Areas::findOrFail($id);
             $area_id = $reunion->area_id;
             $reunion->delete();
             DB::commit();
