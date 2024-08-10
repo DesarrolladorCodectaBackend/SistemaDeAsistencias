@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('hora_inicial');
             $table->string('hora_final');
             $table->string('disponibilidad');
+            $table->string('url')->nullable();
+            $table->string('direccion')->nullable();
             $table->string('descripcion')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();

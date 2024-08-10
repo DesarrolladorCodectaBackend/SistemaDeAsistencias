@@ -107,7 +107,7 @@
                                                                     </div>
                                                                     <div class="input-group d-flex flex-column gap-y-2 align-content-start">
                                                                         <h3>Seleccione Disponibilidad</h3>
-                                                                        <select class="form-control w-75" name="disponibilidad" required>
+                                                                        <select id="selectDisponibilidad" onchange="onDisponibilityChange()" class="form-control w-75" name="disponibilidad" required>
                                                                             <option>Virtual</option>
                                                                             <option>Presencial</option>
                                                                         </select>
@@ -121,7 +121,15 @@
                                                                         </select>
                                                                     </div>
                                                                     <div class="input-group d-flex flex-column gap-y-2 align-content-start">
-                                                                        <h3>descripción</h3>
+                                                                        <h3>Url</h3>
+                                                                        <input id="inputUrl" name="url" placeholder="..." type="text" class="form-control w-75" required>
+                                                                    </div>
+                                                                    <div class="input-group d-flex flex-column gap-y-2 align-content-start">
+                                                                        <h3>Dirección</h3>
+                                                                        <input id="inputDireccion" name="direccion" placeholder="..." type="text" class="form-control w-75" disabled>
+                                                                    </div>
+                                                                    <div class="input-group d-flex flex-column gap-y-2 align-content-start">
+                                                                        <h3>Descripción</h3>
                                                                         <input name="descripcion" placeholder="(Opcional)" type="text" class="form-control w-75">
                                                                     </div>
                                                                     <div class="input-group mt-4">
@@ -176,6 +184,26 @@
     </style>
 
     <script>
+
+        const onDisponibilityChange = () => {
+            let selectDisponibilidad = document.getElementById('selectDisponibilidad');
+            let inputUrl = document.getElementById('inputUrl');
+            let inputDireccion = document.getElementById('inputDireccion');
+            if(selectDisponibilidad.value === 'Virtual') {
+                inputUrl.required = true;
+                inputUrl.disabled = false;
+                inputDireccion.required = false;
+                inputDireccion.disabled = true;
+                inputDireccion.value = '';
+            } else if(selectDisponibilidad.value === 'Presencial'){
+                inputDireccion.required = true;
+                inputDireccion.disabled = false;
+                inputUrl.required = false;
+                inputUrl.disabled = true;
+                inputUrl.value = '';
+            }
+        }
+
         //JQuery para select multiple de integrantes
         $(document).ready(function() {
             $('.multiple_integrantes_select').select2();

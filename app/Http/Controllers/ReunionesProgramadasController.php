@@ -7,8 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ReunionesProgramadas;
 use App\Models\IntegrantesReuniones;
+use App\Mail\ReunionProgramadaMailable;
+use App\Mail\ReunionModificadaMailable;
+use App\Mail\ReunionIntegranteRemovidoMailable;
 use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+//Import Mail:
+//doit
+
 
 class ReunionesProgramadasController extends Controller
 {
@@ -78,6 +85,8 @@ class ReunionesProgramadasController extends Controller
                 'hora_inicial' => 'required',
                 'hora_final' => 'required',
                 'disponibilidad' => 'required|string',
+                'url' => 'sometimes',
+                'direccion' => 'sometimes',
                 'descripcion' => 'sometimes',
                 'colaboradores_id*' => 'required',
             ]);
@@ -86,26 +95,43 @@ class ReunionesProgramadasController extends Controller
                 $descripcion = $request->descripcion;
             }
 
+            $url = null;
+            $direccion = null;
+            if($request->disponibilidad == 'Virtual'){
+                $url = $request->url;
+            } else if($request->disponibilidad == 'Presencial'){
+                $direccion = $request->direccion;
+            }
+
             $newReunion = ReunionesProgramadas::create([
                 "fecha" => $request->fecha,
                 "hora_inicial" => $request->hora_inicial,
                 "hora_final" => $request->hora_final,
                 "disponibilidad" => $request->disponibilidad,
+                "url" => $url,
+                "direccion" => $direccion,
                 "descripcion" => $descripcion,
             ]);
 
             if($newReunion){
                 foreach($request->colaboradores_id as $colaborador_id){
-                    IntegrantesReuniones::create([
-                        "reunion_programada_id" => $newReunion->id,
-                        "colaborador_id" => $colaborador_id,
-                    ]);
+                    $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
+                    if($colaborador){
+                        if($colaborador->candidato->correo != null){
+                            Mail::to($colaborador->candidato->correo)->send(new ReunionProgramadaMailable($colaborador, $newReunion));
+                        }
+                        IntegrantesReuniones::create([
+                            "reunion_programada_id" => $newReunion->id,
+                            "colaborador_id" => $colaborador_id,
+                        ]);
+                    }
                 }
             }
 
             DB::commit();
             return redirect()->route('reunionesProgramadas.allReu');
         } catch(Exception $e){
+            // return $e;
             DB::rollBack();
             return redirect()->route('reunionesProgramadas.allReu');
         }
@@ -159,42 +185,86 @@ class ReunionesProgramadasController extends Controller
                 'hora_inicial' => 'sometimes',
                 'hora_final' => 'sometimes',
                 'disponibilidad' => 'sometimes|string',
+                'url' => 'sometimes',
+                'direccion' => 'sometimes',
                 'descripcion' => 'sometimes',
                 'colaboradores_id*' => 'sometimes',
             ]);
             $reunion = ReunionesProgramadas::findOrFail($reunion_id);
-
+            $Prevreunion = ReunionesProgramadas::findOrFail($reunion_id);
+            $url = null;
+            $direccion = null;
+            if($request->disponibilidad == 'Virtual'){
+                $url = $request->url;
+            } else if($request->disponibilidad == 'Presencial'){
+                $direccion = $request->direccion;
+            }
             if($reunion){
-                $reunion->update([
-                    "fecha" => $request->fecha,
-                    "hora_inicial" => $request->hora_inicial,
-                    "hora_final" => $request->hora_final,
-                    "disponibilidad" => $request->disponibilidad,
-                    "descripcion" => $request->descripcion,
-                ]);
-
-                foreach($request->colaboradores_id as $colaborador_id){
-                    $integranteReunion = IntegrantesReuniones::where('reunion_programada_id', $reunion_id)->where('colaborador_id', $colaborador_id)->first();
-                    if($integranteReunion){
-                        if($integranteReunion->estado == 0){ 
-                            //Si está inactivo se activa
-                            $integranteReunion->update(["estado" => 1]);
-                        }
-                    }else{
-                        IntegrantesReuniones::create([
-                            "reunion_programada_id" => $reunion->id,
-                            "colaborador_id" => $colaborador_id,
-                        ]);
-                    }
-                }
-
                 $integrantesExcluidos = IntegrantesReuniones::where('reunion_programada_id', $reunion_id)->whereNotIn('colaborador_id', $request->colaboradores_id)->where('estado', 1)->get();
 
                 foreach($integrantesExcluidos as $integrante){
                     //Se inactiva
                     $integrante->update(["estado" => 0]);
+                    $colaborador = Colaboradores::with('candidato')->findOrFail($integrante->colaborador_id);
+                    if($colaborador){
+                        if($colaborador->candidato->correo != null){
+                            Mail::to($colaborador->candidato->correo)->send(new ReunionIntegranteRemovidoMailable($colaborador, $reunion));
+                        }
+                    }
                 }
 
+                $reunion->update([
+                    "fecha" => $request->fecha,
+                    "hora_inicial" => $request->hora_inicial,
+                    "hora_final" => $request->hora_final,
+                    "disponibilidad" => $request->disponibilidad,
+                    "url" => $url,
+                    "direccion" => $direccion,
+                    "descripcion" => $request->descripcion,
+                ]);
+
+                foreach($request->colaboradores_id as $colaborador_id){
+                    $integranteReunion = IntegrantesReuniones::where('reunion_programada_id', $reunion_id)->where('colaborador_id', $colaborador_id)->first();
+                    $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
+                    if($colaborador){
+                        if($integranteReunion){
+                            if($integranteReunion->estado == 0){ 
+                                //Si está inactivo se activa
+                                $integranteReunion->update(["estado" => 1]);
+                                if($colaborador->candidato->correo != null){
+                                    Mail::to($colaborador->candidato->correo)->send(new ReunionProgramadaMailable($colaborador, $reunion));
+                                }
+                            } else{
+                                if($Prevreunion->fecha != $request->fecha || $Prevreunion->hora_inicial != $request->hora_inicial || $Prevreunion->hora_final != $request->hora_final || $Prevreunion->disponibilidad != $request->disponibilidad || $Prevreunion->url != $request->url || $Prevreunion->direccion != $request->direccion){
+                                    if($colaborador->candidato->correo != null){
+                                        Mail::to($colaborador->candidato->correo)->send(new ReunionModificadaMailable($colaborador, $reunion));
+                                    }
+                                }
+                            }
+                        }else{
+                            IntegrantesReuniones::create([
+                                "reunion_programada_id" => $reunion->id,
+                                "colaborador_id" => $colaborador_id,
+                            ]);
+                            if($colaborador->candidato->correo != null){
+                                Mail::to($colaborador->candidato->correo)->send(new ReunionProgramadaMailable($colaborador, $reunion));
+                            }
+                        }
+                    }
+                }
+
+                // $integrantesExcluidos = IntegrantesReuniones::where('reunion_programada_id', $reunion_id)->whereNotIn('colaborador_id', $request->colaboradores_id)->where('estado', 1)->get();
+
+                // foreach($integrantesExcluidos as $integrante){
+                //     //Se inactiva
+                //     $integrante->update(["estado" => 0]);
+                //     $colaborador = Colaboradores::with('candidato')->findOrFail($integrante->colaborador_id);
+                //     if($colaborador){
+                //         if($colaborador->candidato->correo != null){
+                //             Mail::to($colaborador->candidato->correo)->send(new ReunionIntegranteRemovidoMailable($colaborador));
+                //         }
+                //     }
+                // }
             }
     
             DB::commit();

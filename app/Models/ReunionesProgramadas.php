@@ -13,6 +13,8 @@ class ReunionesProgramadas extends Model
         'hora_inicial',
         'hora_final',
         'disponibilidad',
+        'url',
+        'direccion',
         'descripcion',
         'estado'
     ];

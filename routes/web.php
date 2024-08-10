@@ -9,7 +9,6 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
-use App\Http\Controllers\FiltrosController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
@@ -25,6 +24,7 @@ use App\Http\Controllers\SedeController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\MaquinaReservadaController;
 use App\Http\Controllers\ReunionesProgramadasController;
+use App\Mail\ReunionProgramadaMailable;
 use Illuminate\Support\Facades\Route;
 
 /*

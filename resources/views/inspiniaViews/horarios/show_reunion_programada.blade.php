@@ -55,22 +55,35 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                        <div class="form-group">
+                                            <label>Descripción</label> 
+                                            <input type="text" name="descripcion"
+                                                placeholder="(Opcional)"
+                                                value="{{ $reunion->descripcion }}"
+                                                class="form-control">
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Disponibilidad</label> 
-                                            <select class="form-control" name="disponibilidad" required>
-    
+                                            <select class="form-control" id="selectDisponibilidad" name="disponibilidad" onchange="onDisponibilityChange()" required>
                                                 <option @if($reunion->disponibilidad == 'Virtual') selected @endif >Virtual</option>
                                                 <option @if($reunion->disponibilidad == 'Presencial') selected @endif >Presencial</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>descripción</label> 
-                                            <input type="text" name="descripcion"
-                                                placeholder="(Opcional)"
-                                                value="{{ $reunion->descripcion }}"
-                                                class="form-control">
+                                            <label>Url</label> 
+                                            <input type="text" name="url" id="inputUrl"
+                                                placeholder="..."
+                                                value="{{ $reunion->url }}"
+                                                class="form-control" @if($reunion->disponibilidad == 'Virtual') required @else disabled @endif >
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Direccion</label> 
+                                            <input type="text" name="direccion" id="inputDireccion"
+                                                placeholder="..."
+                                                value="{{ $reunion->direccion }}"
+                                                class="form-control" @if($reunion->disponibilidad == 'Presencial') required @else disabled @endif >
                                         </div>
                                         <div class="form-group d-flex flex-column">
                                             <label>Integrantes</label> 
@@ -98,6 +111,7 @@
                                             <th>#</th>
                                             <th>Nombres</th>
                                             <th>Apellidos</th>
+                                            <th>Correo</th>
                                             {{-- <th>Asistencia</th> --}}
                                         </tr>
                                     </thead>
@@ -107,6 +121,7 @@
                                             <td>{{ $index+1 }}</td>
                                             <td>{{ $integrante->colaborador->candidato->nombre }}</td>
                                             <td>{{ $integrante->colaborador->candidato->apellido }}</td>
+                                            <td>{{ $integrante->colaborador->candidato->correo }}</td>
     
                                             {{-- <td class="oculto">
                                                 <button class="btn btn-info" type="button" href="#modal-form{{ $insti->id }}" data-toggle="modal">
@@ -159,6 +174,29 @@
     $(document).ready(function() {
             $('.multiple_integrantes_select').select2();
         });
+    
+    let reunion = <?php echo json_encode($reunion); ?>;
+
+    const onDisponibilityChange = () => {
+            let selectDisponibilidad = document.getElementById('selectDisponibilidad');
+            let inputUrl = document.getElementById('inputUrl');
+            let inputDireccion = document.getElementById('inputDireccion');
+            if(selectDisponibilidad.value === 'Virtual') {
+                inputUrl.required = true;
+                inputUrl.disabled = false;
+                inputUrl.value = reunion.url;
+                inputDireccion.required = false;
+                inputDireccion.disabled = true;
+                inputDireccion.value = '';
+            } else if(selectDisponibilidad.value === 'Presencial'){
+                inputDireccion.required = true;
+                inputDireccion.disabled = false;
+                inputDireccion.value = reunion.direccion;
+                inputUrl.required = false;
+                inputUrl.disabled = true;
+                inputUrl.value = '';
+            }
+        }
 </script>
 <script>
     $(document).ready(function(){
@@ -180,7 +218,7 @@
                     // Ajustar el ancho de las columnas para ocupar todo el espacio disponible
                     var columnCount = doc.content[1].table.body[0].length;
                     var columnWidths = [];
-                    if (columnCount <= 3) {
+                    if (columnCount <= 4) {
                         columnWidths = Array(columnCount).fill('*');
                     } else {
                         columnWidths = Array(columnCount).fill('auto');
