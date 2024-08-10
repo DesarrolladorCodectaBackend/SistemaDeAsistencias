@@ -24,6 +24,7 @@ use App\Http\Controllers\Reuniones_AreasController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\MaquinaReservadaController;
+use App\Http\Controllers\ReunionesProgramadasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -173,6 +174,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('actividades', ActividadesController::class);
     Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividad.activarInactivar');
 
+    //REUNIONES PROGRAMADAS
+    Route::get('ReunionesProgramadas', [ReunionesProgramadasController::class, 'getAllProgramReuToCalendar'])->name('reunionesProgramadas.allReu');
+    Route::post('ReunionesProgramadas/store', [ReunionesProgramadasController::class, 'createReunionProgramada'])->name('reunionesProgramadas.store');
+    Route::get('ReunionProgramada/{reunion_id}', [ReunionesProgramadasController::class, 'showReunionProgramada'])->name('reunionesProgramadas.show');
+    Route::put('ReunionProgramada/update/{reunion_id}', [ReunionesProgramadasController::class, 'update'])->name('reunionesProgramadas.update');
 
 });
 

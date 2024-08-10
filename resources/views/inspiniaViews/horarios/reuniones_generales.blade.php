@@ -9,7 +9,7 @@
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
-    <title>INSPINIA | REUNIONES GENERALES</title>
+    <title>INSPINIA | REUNIONES AREAS</title>
 </head>
 
 <body>
