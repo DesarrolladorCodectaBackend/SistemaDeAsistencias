@@ -202,7 +202,7 @@
                     </div>
                 </div>
                 {{-- MODAL CREATE --}}
-                <div id="modal-form-add" class="modal fade" aria-hidden="true" name="modal-create">
+                <div id="modal-form-add" class="modal fade" aria-hidden="true" name="crea">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
@@ -492,7 +492,7 @@
                                                     style="font-size: 20px" class="fa fa-paste"></i></button>
                                         </div>
                                         {{-- MODAL UPDATE --}}
-                                        <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true" name="modal-edit">
+                                        <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true" name="actu" >
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
@@ -607,6 +607,9 @@
                                                                             id="correo"
                                                                             value="{{ old('correo', $candidato->correo) }}"
                                                                             required>
+                                                                        @error('correo')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Celular</label>
                                                                         <input type="text" placeholder="....."
@@ -614,6 +617,9 @@
                                                                             id="celular"
                                                                             value="{{ old('celular', $candidato->celular) }}"
                                                                             required>
+                                                                        @error('celular')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="mt-4">
                                                                         <button
@@ -673,22 +679,34 @@
     </div>
     </div>
 
-
     <script>
         $(document).ready(function() {
+            var showModal = '{{ $showModal ?? '' }}';
+
+            if (showModal === 'crea') {
+                $('#modal-form-add').modal('show');
+            } else if (showModal === 'actu') {
+                var candidatoId = '{{ $candidato->id ?? '' }}';
+                if (candidatoId) {
+                    $('#modal-form-' + candidatoId).modal('show');
+                }
+            }
+        });
+    </script>
+
+
+    /*<script>
+        $(document).ready(function() {
             @if ($errors->any())
+                // Mostrar el modal de creación si hay errores
                 $('#modal-form-add').modal('show');
             @endif
         });
-    </script>
+    </script>*/
 
-    <script>
-        $(document).ready(function() {
-            @if ($errors->any())
-                $('#modal-form{{ $candidato->id }}').modal('show');
-            @endif
-        });
-    </script>
+
+
+
 
     <style>
         .select2-container.select2-container--default.select2-container--open {
