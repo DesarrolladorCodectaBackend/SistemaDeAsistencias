@@ -70,24 +70,11 @@ class CandidatosController extends Controller
         return view('inspiniaViews.candidatos.form-candidatos', ['candidato' => $candidato, 'horas' => $horas], compact('areas'));
     }
 
-    
-    public function store(Request $request)
+
+    public function store(StoreCandidatosRequest $request)
     {
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'apellido' => 'required|string|min:1|max:100',
-                'dni' => 'required|string|min:1|max:8',
-                'direccion' => 'required|string|min:1|max:100',
-                'fecha_nacimiento' => 'required|string|min:1|max:255',
-                'ciclo_de_estudiante' => 'required|string|min:1|max:50',
-                'sede_id' => 'required|integer|min:1|max:20',
-                'carrera_id' => 'required|integer|min:1|max:20',
-                'correo' => 'required|string|min:1|max:255',
-                'celular' => 'required|string|min:1|max:20',
-                'icono' => 'image'
-            ]);
 
             if ($request->hasFile('icono')) {
                 $icono = $request->file('icono');
@@ -110,13 +97,14 @@ class CandidatosController extends Controller
                 'celular' => $request->celular,
                 'icono' => $nombreIcono
             ]);
+
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('candidatos.index');
             }
-        } catch(Exception $e) {
+        }catch(Exception $e) {
             DB::rollBack();
             // return $e;
             if($request->currentURL) {
@@ -125,15 +113,13 @@ class CandidatosController extends Controller
                 return redirect()->route('candidatos.index');
             }
         }
-
-
     }
 
-    public function update(Request $request, $candidato_id)
+    public function update(UpdateCandidatosRequest $request, $candidato_id)
     {
         DB::beginTransaction();
         try{
-            $request->validate([
+            /*$request->validate([
                 'nombre' => 'sometimes|string|min:1|max:100',
                 'apellido' => 'sometimes|string|min:1|max:100',
                 'dni' => 'sometimes|string|min:1|max:8',
@@ -145,7 +131,7 @@ class CandidatosController extends Controller
                 'correo' => 'sometimes|string|min:1|max:255',
                 'celular' => 'sometimes|string|min:1|max:20',
                 'icono' => 'sometimes|image'
-            ]);
+            ]);*/
 
             $candidato = Candidatos::findOrFail($candidato_id);
             $datosActualizar = $request->except(['icono']);

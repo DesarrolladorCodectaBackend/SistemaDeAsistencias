@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCandidatosRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class UpdateCandidatosRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +24,43 @@ class UpdateCandidatosRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->route('candidatos');
         return [
-            //
+            'nombre' => ['required', 'min:1','max:100'],
+            'apellido' => ['required','min:1','max:100'],
+            'direccion' => ['required', 'min:1','max:100'],
+            'fecha_nacimiento' => ['required'],
+            'ciclo_de_estudiante' => ['required'],
+            'sede_id' => ['required'],
+            'carrera_id' => ['required'],
+            'dni' => ['required',
+            'min:8',
+            'max:8',
+            Rule::unique('candidatos')->ignore($id)
+        ],
+            'correo' => ['required',
+            'min:1',
+            'max:250',
+            Rule::unique('candidatos')->ignore($id)
+            ] ,
+
+            'celular' => ['required',
+            'min:9',
+            'max:9',
+            Rule::unique('candidatos')->ignore($id)
+            ]
+        ];
+    }
+
+    public function messages()
+    {
+        return[
+            'required' => 'Campo obligatorio',
+            'dni.unique' => 'Error. DNI en uso.',
+            'correo.unique' => 'Error. Correo en uso',
+            'celular.unique' => 'Error. Nro.celular en uso',
+            'dni.min' => 'El DNI debe contener 8 caracteres',
+            'dni.max' => 'El DNI debe contener 8 caracteres'
         ];
     }
 }

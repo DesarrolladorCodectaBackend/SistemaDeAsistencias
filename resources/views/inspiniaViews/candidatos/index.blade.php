@@ -201,7 +201,8 @@
                         </div>
                     </div>
                 </div>
-                <div id="modal-form-add" class="modal fade" aria-hidden="true">
+                {{-- MODAL CREATE --}}
+                <div id="modal-form-add" class="modal fade" aria-hidden="true" name="modal-create">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
@@ -215,30 +216,29 @@
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Nombre</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" class="form-control" name="nombre"
-                                                    required>
+                                                    placeholder="Ingrese un nombre" class="form-control" name="nombre" value="{{ old('nombre') }}"
+                                                    >
                                             </div>
                                             <div class="form-group"><label>Apellido</label> <input type="text"
-                                                    placeholder="Ingrese apellido" class="form-control" name="apellido"
-                                                    required>
+                                                    placeholder="Ingrese apellido" class="form-control" name="apellido" value="{{ old('apellido')}}"
+                                                    >
                                             </div>
                                             <div class="form-group"><label>DNI</label> <input type="number"
-                                                    placeholder="Ingrese dni" class="form-control" name="dni" maxlength="8"
-                                                    min="10000000"
-                                                    max="99999999"
-                                                    oninvalid="this.setCustomValidity('El DNI debe tener exactamente 8 dígitos.')"
-                                                    oninput="this.value = this.value.slice(0, 8)"
-                                                    required>
+                                                    placeholder="Ingrese dni" class="form-control" name="dni"
+                                                    value="{{ old('dni') }}">
+                                                   @error('dni')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Dirección</label> <input type="text"
                                                     placeholder="Ingrese dirección" class="form-control"
-                                                    name="direccion" required>
+                                                    name="direccion" value="{{ old('direccion')}}">
                                             </div>
                                             <div class="form-group"><label>Fecha de Nacimiento</label> <input
-                                                    type="date" class="form-control" name="fecha_nacimiento" required>
+                                                    type="date" class="form-control" name="fecha_nacimiento" value="{{ old('fecha_nacimiento')}}">
                                             </div>
                                             <div class="form-group"><label>Ciclo de Estudiante</label>
-                                                <select name="ciclo_de_estudiante" class="form-control" required>
+                                                <select name="ciclo_de_estudiante" class="form-control" value="{{ old('ciclo_de_estudiante')}}"> required>
                                                     @for($i = 4; $i <= 10; $i++)
                                                     <option value="{{$i}}">{{$i}}</option>
                                                     @endfor
@@ -249,7 +249,7 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <h4>Subir Icono</h4>
-                                            <input type="file" class="form-control-file" id="icono" name="icono"
+                                            <input type="file" class="form-control-file" id="icono" name="icono" value="{{ old('icono')}}"
                                                 style="display: none;">
                                             <button type="button" class="btn btn-link" id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
@@ -258,7 +258,8 @@
                                             <div class="form-group"><label>Institucion - Sede</label>
                                                 <select class="form-control" name="sede_id" required>
                                                     @foreach($sedes as $sede)
-                                                    <option value="{{ $sede->id }}">{{ $sede->nombre }}
+                                                    <option value="{{ $sede->id }}">
+                                                        {{ $sede->nombre }}
                                                     </option>
                                                     @endforeach
                                                 </select>
@@ -266,23 +267,28 @@
                                             <div class="form-group"><label>Carrera</label>
                                                 <select class="form-control" name="carrera_id" required>
                                                     @foreach($carreras as $carrera)
-                                                    <option value="{{ $carrera->id }}">{{ $carrera->nombre }}</option>
+                                                    <option value="{{ $carrera->id }}">
+                                                        {{ $carrera->nombre }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="form-group"><label>Correo</label> <input type="email"
-                                                    placeholder="correo@gmail.com" class="form-control" name="correo"
-                                                    required>
+                                                    placeholder="correo@gmail.com" class="form-control" name="correo" value="{{old('correo')}}">
+                                                    @error('correo')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Celular</label> <input type="text"
-                                                    placeholder="Ingrese celular" class="form-control" name="celular"
-                                                    required>
+                                                    placeholder="Ingrese celular" class="form-control" name="celular" value="{{ old('celular')}}">
+                                                    @error('celular')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
 
 
                                         </div>
                                         <div>
-                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit"><i
+                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit" ><i
                                                     class="fa fa-check"></i>&nbsp;Confirmar</button>
                                         </div>
                                     </div>
@@ -485,7 +491,8 @@
                                                 href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
                                                     style="font-size: 20px" class="fa fa-paste"></i></button>
                                         </div>
-                                        <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true">
+                                        {{-- MODAL UPDATE --}}
+                                        <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true" name="modal-edit">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
@@ -507,6 +514,7 @@
                                                                             id="nombre"
                                                                             value="{{ old('nombre', $candidato->nombre) }}"
                                                                             required>
+
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label>Apellido</label>
@@ -521,6 +529,10 @@
                                                                             class="form-control" name="dni" id="dni"
                                                                             value="{{ old('dni', $candidato->dni) }}"
                                                                             required>
+
+                                                                        @error('dni')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Dirección</label>
                                                                         <input type="text" placeholder="....."
@@ -658,40 +670,26 @@
 
         @include('components.inspinia.footer-inspinia')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
     </div>
+
+
+    <script>
+        $(document).ready(function() {
+            @if ($errors->any())
+                $('#modal-form-add').modal('show');
+            @endif
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            @if ($errors->any())
+                $('#modal-form{{ $candidato->id }}').modal('show');
+            @endif
+        });
+    </script>
+
     <style>
         .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
