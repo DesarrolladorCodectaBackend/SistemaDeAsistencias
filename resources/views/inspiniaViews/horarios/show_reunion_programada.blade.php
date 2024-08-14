@@ -112,7 +112,6 @@
                                             <th>Nombres</th>
                                             <th>Apellidos</th>
                                             <th>Correo</th>
-                                            {{-- <th>Asistencia</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -122,12 +121,6 @@
                                             <td>{{ $integrante->colaborador->candidato->nombre }}</td>
                                             <td>{{ $integrante->colaborador->candidato->apellido }}</td>
                                             <td>{{ $integrante->colaborador->candidato->correo }}</td>
-    
-                                            {{-- <td class="oculto">
-                                                <button class="btn btn-info" type="button" href="#modal-form{{ $insti->id }}" data-toggle="modal">
-                                                    <i class="fa fa-paste"></i>
-                                                </button>
-                                            </td> --}}
                                         </tr>
                                         @endforeach
                                     </tbody>

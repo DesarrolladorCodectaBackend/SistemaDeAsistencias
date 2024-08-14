@@ -264,7 +264,6 @@
                 defaultView: 'agendaWeek', // inicializar en formato semanal
                 timeFormat: 'h:mm A', // formato de tiempo en eventos
                 columnHeaderFormat: 'ddd M/D', // formato para el encabezado de los días
-                
                 drop: function() {
                     if ($('#drop-remove').is(':checked')) {
                         $(this).remove();

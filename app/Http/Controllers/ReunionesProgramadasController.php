@@ -117,13 +117,13 @@ class ReunionesProgramadasController extends Controller
                 foreach($request->colaboradores_id as $colaborador_id){
                     $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
                     if($colaborador){
-                        if($colaborador->candidato->correo != null){
-                            Mail::to($colaborador->candidato->correo)->send(new ReunionProgramadaMailable($colaborador, $newReunion));
-                        }
                         IntegrantesReuniones::create([
                             "reunion_programada_id" => $newReunion->id,
                             "colaborador_id" => $colaborador_id,
                         ]);
+                        if($colaborador->candidato->correo != null){
+                            Mail::to($colaborador->candidato->correo)->send(new ReunionProgramadaMailable($colaborador, $newReunion));
+                        }
                     }
                 }
             }
@@ -138,42 +138,46 @@ class ReunionesProgramadasController extends Controller
     }
     
     public function showReunionProgramada($reunion_id){
-        $reunion = ReunionesProgramadas::find($reunion_id);
-        $integrantes = IntegrantesReuniones::where('reunion_programada_id', $reunion_id)->where('estado', 1)->get();
-        $colaboradores = Colaboradores::where('estado', 1)->get();
-        $horas = [
-            "01:00",
-            "02:00",
-            "03:00",
-            "04:00",
-            "05:00",
-            "06:00",
-            "07:00", 
-            "08:00", 
-            "09:00", 
-            "10:00", 
-            "11:00", 
-            "12:00", 
-            "13:00", 
-            "14:00", 
-            "15:00", 
-            "16:00", 
-            "17:00", 
-            "18:00", 
-            "19:00", 
-            "20:00", 
-            "21:00", 
-            "22:00",
-            "23:00",
-            "24:00",
-        ];
-
-        return view('inspiniaViews.horarios.show_reunion_programada', [
-            'reunion' => $reunion,
-            'integrantes' => $integrantes,
-            'colaboradores' => $colaboradores,
-            'horas' => $horas,
-        ]);
+        $reunion = ReunionesProgramadas::findOrFail($reunion_id);
+        if($reunion){
+            $integrantes = IntegrantesReuniones::where('reunion_programada_id', $reunion_id)->where('estado', 1)->get();
+            $colaboradores = Colaboradores::where('estado', 1)->get();
+            $horas = [
+                "01:00",
+                "02:00",
+                "03:00",
+                "04:00",
+                "05:00",
+                "06:00",
+                "07:00", 
+                "08:00", 
+                "09:00", 
+                "10:00", 
+                "11:00", 
+                "12:00", 
+                "13:00", 
+                "14:00", 
+                "15:00", 
+                "16:00", 
+                "17:00", 
+                "18:00", 
+                "19:00", 
+                "20:00", 
+                "21:00", 
+                "22:00",
+                "23:00",
+                "24:00",
+            ];
+    
+            return view('inspiniaViews.horarios.show_reunion_programada', [
+                'reunion' => $reunion,
+                'integrantes' => $integrantes,
+                'colaboradores' => $colaboradores,
+                'horas' => $horas,
+            ]);
+        } else{
+            return redirect()->route('reunionesProgramadas.allReu');
+        }
     }
 
     public function update(Request $request, $reunion_id){
@@ -181,14 +185,14 @@ class ReunionesProgramadasController extends Controller
         DB::beginTransaction();
         try{
             $request->validate([
-                'fecha' => 'sometimes',
-                'hora_inicial' => 'sometimes',
-                'hora_final' => 'sometimes',
-                'disponibilidad' => 'sometimes|string',
+                'fecha' => 'required',
+                'hora_inicial' => 'required',
+                'hora_final' => 'required',
+                'disponibilidad' => 'required|string',
                 'url' => 'sometimes',
                 'direccion' => 'sometimes',
                 'descripcion' => 'sometimes',
-                'colaboradores_id*' => 'sometimes',
+                'colaboradores_id*' => 'required',
             ]);
             $reunion = ReunionesProgramadas::findOrFail($reunion_id);
             $Prevreunion = ReunionesProgramadas::findOrFail($reunion_id);
@@ -252,19 +256,6 @@ class ReunionesProgramadasController extends Controller
                         }
                     }
                 }
-
-                // $integrantesExcluidos = IntegrantesReuniones::where('reunion_programada_id', $reunion_id)->whereNotIn('colaborador_id', $request->colaboradores_id)->where('estado', 1)->get();
-
-                // foreach($integrantesExcluidos as $integrante){
-                //     //Se inactiva
-                //     $integrante->update(["estado" => 0]);
-                //     $colaborador = Colaboradores::with('candidato')->findOrFail($integrante->colaborador_id);
-                //     if($colaborador){
-                //         if($colaborador->candidato->correo != null){
-                //             Mail::to($colaborador->candidato->correo)->send(new ReunionIntegranteRemovidoMailable($colaborador));
-                //         }
-                //     }
-                // }
             }
     
             DB::commit();
