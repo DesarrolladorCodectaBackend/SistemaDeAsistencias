@@ -16,6 +16,7 @@ use App\Http\Controllers\HorariosPresencialesController;
 use App\Http\Controllers\HorariosVirtualesController;
 use App\Http\Controllers\HorarioVirtualColaboradorController;
 use App\Http\Controllers\MaquinasController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
 use App\Http\Controllers\Registro_MantenimientoController;
@@ -185,11 +186,11 @@ Route::delete('maquina_reservada/delete/{maquina_reservada_id}', [MaquinaReserva
 */
 
 //DISPONIBILIDAD PRESENCIAL
-Route::get('disponibilidad_presencial/get', [DisponibilidadPresencialController::class, 'index']);
-Route::post('disponibilidad_presencial/store', [DisponibilidadPresencialController::class, 'store']);
-Route::get('disponibilidad_presencial/show/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class, 'show']);
-Route::put('disponibilidad_presencial/update/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class, 'update']);
-Route::delete('disponibilidad_presencial/delete/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class, 'destroy']);
+// Route::get('disponibilidad_presencial/get', [DisponibilidadPresencialController::class, 'index']);
+// Route::post('disponibilidad_presencial/store', [DisponibilidadPresencialController::class, 'store']);
+// Route::get('disponibilidad_presencial/show/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class, 'show']);
+// Route::put('disponibilidad_presencial/update/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class, 'update']);
+// Route::delete('disponibilidad_presencial/delete/{disponibilidad_presencial_id}', [DisponibilidadPresencialController::class, 'destroy']);
 
 //COLABORADORES POR AREA
 Route::get('colaborador_por_area/get', [ColaboradoresPorAreaController::class, 'index']);
@@ -262,9 +263,16 @@ Route::get('cumplio_res_sem/getFormAsistencias/{mes, registros}', [Cumplio_Respo
 Route::get('responsabilidades/years', [Cumplio_Responsabilidad_SemanalController::class, 'years'])->name('responsabilidades.showYears');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-        Route::get('instituciones/getall', [InstitucionController::class, 'getAll']);
-        Route::post('instituciones/storeJson', [InstitucionController::class, 'storeJSON']);
-        Route::put('instituciones/updateJSON/{institucion_id}', [InstitucionController::class, 'updateJSON']);
-        Route::put('instituciones/ActivarInactivarJSON/{institucion_id}', [InstitucionController::class, 'activarInactivarJSON']);
-        return $request->user();
+        // Route::get('instituciones/getall', [InstitucionController::class, 'getAll']);
+        // Route::post('instituciones/storeJson', [InstitucionController::class, 'storeJSON']);
+        // Route::put('instituciones/updateJSON/{institucion_id}', [InstitucionController::class, 'updateJSON']);
+        // Route::put('instituciones/ActivarInactivarJSON/{institucion_id}', [InstitucionController::class, 'activarInactivarJSON']);
+        // // return $request->user();
+        // Route::get('notificaciones', [NotificationController::class, 'index']);
+        
+});
+
+Route::post('login', [NotificationController::class, 'login']);
+Route::middleware(['auth:sanctum'])->group(function (){
+        Route::get('notificaciones', [NotificationController::class, 'index']);
 });
