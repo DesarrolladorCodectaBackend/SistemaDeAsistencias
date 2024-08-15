@@ -175,6 +175,7 @@ class CandidatosController extends Controller
                 return redirect()->route('candidatos.index');
             }
         } catch(Exception $e) {
+            return $e->getMessage();
             DB::rollBack();
             if($request->currentURL) {
                 return redirect($request->currentURL);
