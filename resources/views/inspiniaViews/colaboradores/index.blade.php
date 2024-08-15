@@ -267,7 +267,7 @@
                                         <style>
                                             .form-group {
                                                 margin: 0rem;
-                                                
+
                                             }
                                             p{
                                                 margin: 0px;
@@ -559,6 +559,9 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
                                                                             value="{{ old('dni', $colaborador->candidato->dni) }}"></input>
+                                                                        @error('dni')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Celular:</h5>
@@ -767,7 +770,14 @@
 
 
 
-
+    <script>
+        $(document).ready(function() {
+            @if ($errors->any())
+                // Mostrar el modal de creación si hay errores
+                $('#modal-form-').modal('show');
+            @endif
+        });
+    </script>
 
 
     </div>

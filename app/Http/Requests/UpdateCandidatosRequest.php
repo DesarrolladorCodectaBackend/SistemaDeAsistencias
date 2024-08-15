@@ -24,9 +24,9 @@ class UpdateCandidatosRequest extends FormRequest
      */
     public function rules()
     {
-        //$id = $this->route('candidato_id');
+
         return [
-            /*'nombre' => ['required', 'min:1','max:100'],
+            'nombre' => ['required', 'min:1','max:100'],
             'apellido' => ['required','min:1','max:100'],
             'direccion' => ['required', 'min:1','max:100'],
             'fecha_nacimiento' => ['required'],
@@ -36,19 +36,19 @@ class UpdateCandidatosRequest extends FormRequest
             'dni' => ['required',
             'min:8',
             'max:8',
-            Rule::unique('candidatos')->ignore($id)
+            Rule::unique('candidatos')->ignore($this->route('candidato')),
         ],
             'correo' => ['required',
             'min:1',
             'max:250',
-            Rule::unique('candidatos')->ignore($id)
+            Rule::unique('candidatos')->ignore($this->route('candidato')),
             ] ,
 
             'celular' => ['required',
             'min:9',
             'max:9',
-            Rule::unique('candidatos')->ignore($id)
-            ]*/
+            Rule::unique('candidatos')->ignore($this->route('candidato'))
+            ]
         ];
     }
 

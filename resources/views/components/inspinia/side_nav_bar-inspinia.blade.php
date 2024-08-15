@@ -53,7 +53,7 @@
                 </ul>
             </li>
             <li>
-                <a href="/horarioGeneral"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu. Programadas</span></a>
+                <a href="/ReunionesProgramadas"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu. Programadas</span></a>
             </li>
             <li>
                 <a href="/horarioGeneral"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>

@@ -202,7 +202,7 @@
                     </div>
                 </div>
                 {{-- MODAL CREATE --}}
-                <div id="modal-form-add" class="modal fade" aria-hidden="true" name="crea">
+                <div id="modal-form-add" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
@@ -492,7 +492,7 @@
                                                     style="font-size: 20px" class="fa fa-paste"></i></button>
                                         </div>
                                         {{-- MODAL UPDATE --}}
-                                        <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true" name="actu" >
+                                        <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
@@ -681,32 +681,12 @@
 
     <script>
         $(document).ready(function() {
-            var showModal = '{{ $showModal ?? '' }}';
-
-            if (showModal === 'crea') {
-                $('#modal-form-add').modal('show');
-            } else if (showModal === 'actu') {
-                var candidatoId = '{{ $candidato->id ?? '' }}';
-                if (candidatoId) {
-                    $('#modal-form-' + candidatoId).modal('show');
-                }
-            }
-        });
-    </script>
-
-
-    /*<script>
-        $(document).ready(function() {
             @if ($errors->any())
                 // Mostrar el modal de creación si hay errores
                 $('#modal-form-add').modal('show');
             @endif
         });
-    </script>*/
-
-
-
-
+    </script>
 
     <style>
         .select2-container.select2-container--default.select2-container--open {
@@ -782,7 +762,7 @@
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
-                modal.classList.add(' show');
+                modal.classList.add('show');
             }
         }
 

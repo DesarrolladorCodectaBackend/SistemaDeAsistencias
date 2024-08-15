@@ -9,7 +9,6 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
-use App\Http\Controllers\FiltrosController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
@@ -24,6 +23,8 @@ use App\Http\Controllers\Reuniones_AreasController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\MaquinaReservadaController;
+use App\Http\Controllers\ReunionesProgramadasController;
+use App\Mail\ReunionProgramadaMailable;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,9 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    //Probando
-    // Route::get('testing/{colaboradorAreaId}', [RegistroActividadController::class, 'obtenerInactividad']);
 
     //AREAS
     Route::resource('areas', AreaController::class);
@@ -176,6 +174,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('actividades', ActividadesController::class);
     Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividades.activarInactivar');
 
+    //REUNIONES PROGRAMADAS
+    Route::get('ReunionesProgramadas', [ReunionesProgramadasController::class, 'getAllProgramReuToCalendar'])->name('reunionesProgramadas.allReu');
+    Route::post('ReunionesProgramadas/store', [ReunionesProgramadasController::class, 'createReunionProgramada'])->name('reunionesProgramadas.store');
+    Route::get('ReunionProgramada/{reunion_id}', [ReunionesProgramadasController::class, 'showReunionProgramada'])->name('reunionesProgramadas.show');
+    Route::put('ReunionProgramada/update/{reunion_id}', [ReunionesProgramadasController::class, 'update'])->name('reunionesProgramadas.update');
 
 });
 

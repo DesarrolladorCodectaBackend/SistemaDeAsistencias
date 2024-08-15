@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
 class StoreColaboradoresRequest extends FormRequest
 {
     /**
@@ -13,7 +12,7 @@ class StoreColaboradoresRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +23,12 @@ class StoreColaboradoresRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'candidato_id' => 'required|integer',
+            'areas_id.*' => 'required|integer',
+            'horarios' => 'required|array',
+            'horarios.*.hora_inicial' => 'required|date_format:H:i',
+            'horarios.*.hora_final' => 'required|date_format:H:i',
+            'horarios.*.dia' => 'required|string'
         ];
     }
 }
