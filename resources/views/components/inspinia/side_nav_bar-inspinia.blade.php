@@ -57,7 +57,7 @@
                         Programadas</span></a>
             </li>
             <li>
-                <a href="/horarioGeneral"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
+                <a href="/Reportes"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
             </li>
             <li id="personalCont">
                 <a href=""><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span

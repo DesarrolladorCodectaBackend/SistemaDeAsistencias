@@ -272,7 +272,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         
 });
 
-Route::post('login', [NotificationController::class, 'login']);
+// Route::post('login', [NotificationController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function (){
         Route::get('notificaciones', [NotificationController::class, 'index']);
 });
