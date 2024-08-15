@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Colaboradores;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Horarios_Presenciales;
 use App\Models\ReunionesProgramadas;
@@ -31,6 +32,22 @@ class NotificationController extends Controller
         ];
         
         $dia_español = $dias[$dia_today];
+        $BirthDayColaboradores = [];
+
+        $numberDayToday = date('d', strtotime($today));
+        $numberMonthToday = date('m', strtotime($today));
+        $colaboradoresEmpresa = Colaboradores::whereNot("estado", 2)->get();
+        foreach($colaboradoresEmpresa as $colab){
+            $colabDay = date('d', strtotime($colab->candidato->fecha_nacimiento));
+            $colabMonth = date('m', strtotime($colab->candidato->fecha_nacimiento));
+            if($colabMonth === $numberMonthToday){
+                if($colabDay === $numberDayToday){
+                    $BirthDayColaboradores[] = $colab;
+                }
+            }
+        }
+        
+        // return $BirthDayColaboradores;
         
         $reunionesProgramadasToday = ReunionesProgramadas::where('fecha', $today)->get();
         $horariosToday = Horarios_Presenciales::where('dia', $dia_español)->get();
@@ -74,6 +91,15 @@ class NotificationController extends Controller
                 "icon" => "fa fa-clock-o",
                 "message" => "Área ".$area['area']." asiste presencialmente el día de hoy de ".$area['hora_inicial']." a ".$area['hora_final'],
                 "url" => route('areas.getHorario', $area['area_id']),
+            ];
+            $notifications[] = $notificacion;
+        }
+
+        foreach($BirthDayColaboradores as $colab){
+            $notificacion = [
+                "icon" => "fa fa-birthday-cake",
+                "message" => $colab->candidato->nombre." ".$colab->candidato->apellido." cumple años el día de hoy.",
+                "url" => "#"
             ];
             $notifications[] = $notificacion;
         }
