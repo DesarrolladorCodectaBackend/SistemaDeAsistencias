@@ -108,6 +108,7 @@
                                                                                     <th>Dia</th>
                                                                                     <th>Hora Inicial</th>
                                                                                     <th>Hora Final</th>
+                                                                                    <th>Disponibilidad</th>
                                                                                     <th></th>
                                                                                 </tr>
                                                                             </thead>
@@ -150,6 +151,19 @@
                                                                                                 class="form-control"
                                                                                                 value="{{$reunion->hora_final}}"
                                                                                                 disabled>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="form-group row">
+                                                                                            <label
+                                                                                                class="col-form-label"></label>
+
+                                                                                            <div class="col-sm-10">
+                                                                                                <input
+                                                                                                    class="form-control m-b"
+                                                                                                    value="{{$reunion->disponibilidad}}"
+                                                                                                    disabled>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </td>
                                                                                     <td>
@@ -214,8 +228,7 @@
                                                                                             <select class="form-control"
                                                                                                 name="reuniones[0][hora_final]"
                                                                                                 id="">
-                                                                                                @foreach($horas as $key
-                                                                                                => $hora)
+                                                                                                @foreach($horas as $key => $hora)
                                                                                                 <option
                                                                                                     value="{{ $hora }}">
                                                                                                     {{ $hora }}</option>
@@ -225,11 +238,25 @@
                                                                                         </div>
                                                                                     </td>
                                                                                     <td>
+                                                                                        <div class="form-group row">
+                                                                                            <div class="col-sm-10">
+                                                                                                <select
+                                                                                                    class="form-control m-b"
+                                                                                                    name="reuniones[0][disponibilidad]">
+                                                                                                    @foreach($disponibilidades as $disponibilidad)
+                                                                                                    <option>{{$disponibilidad}}</option>
+                                                                                                    @endforeach
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
                                                                                         <button
                                                                                             class="btn btn-danger float-right"
                                                                                             type="button"
-                                                                                            onclick="eliminarFila(this)"><i
-                                                                                                class="fa fa-trash-o"></i></button>
+                                                                                            onclick="eliminarFila(this)">
+                                                                                            <i class="fa fa-trash-o"></i>
+                                                                                        </button>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>
@@ -303,6 +330,13 @@
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
+                                                                    <select class="form-control m-b" name="disponibilidad"
+                                                                            value="{{ old('disponibilidad', $reunion->disponibilidad) }}"
+                                                                            id="disponibilidad">
+                                                                            @foreach($disponibilidades as $key => $disponibilidad)
+                                                                            <option @if($disponibilidad === $reunion->disponibilidad) selected @endif>{{$disponibilidad}}</option>
+                                                                            @endforeach
+                                                                        </select>
                                                                     <div>
                                                                         <button
                                                                             class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -355,6 +389,7 @@
     var contadorFilas = 0;
     var horas = @json($horas);
     var dias = @json($dias);
+    var disponibilidades = @json($disponibilidades);
 
     function agregarFila() {
         var tabla = document.getElementById("tablaHorarios").getElementsByTagName('tbody')[0];
@@ -364,16 +399,19 @@
         var celdaDia = nuevaFila.insertCell(0);
         var celdaHoraInicial = nuevaFila.insertCell(1);
         var celdaHoraFinal = nuevaFila.insertCell(2);
-        var celdaBotonEliminar = nuevaFila.insertCell(3);
+        var celdaDisponibilidad = nuevaFila.insertCell(3);
+        var celdaBotonEliminar = nuevaFila.insertCell(4);
 
         contadorFilas++;
 
         // Construir el select de horas iniciales y finales
         var selectDia = construirSelectDia('reuniones[' + contadorFilas + '][dia]');
+        var selectDisponibilidad = construirSelectDisponibilidad('reuniones[' + contadorFilas + '][disponibilidad]');
         var selectHoraInicial = construirSelectHora('reuniones[' + contadorFilas + '][hora_inicial]');
         var selectHoraFinal = construirSelectHora('reuniones[' + contadorFilas + '][hora_final]');
 
         celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10">'+selectDia+'</div></div>';
+        celdaDisponibilidad.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10">'+selectDisponibilidad+'</div></div>';
         celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraInicial + '</div>';
         celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
         celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
@@ -384,6 +422,16 @@
         var select = '<select class="form-control" name="' + name + '">';
         for (var i = 0; i < dias.length; i++) {
             select += '<option value="' + dias[i] + '">' + dias[i] + '</option>';
+        }
+
+        select += '</select>';            
+        return select
+    }
+
+    function construirSelectDisponibilidad(name) {
+        var select = '<select class="form-control" name="' + name + '">';
+        for (var i = 0; i < disponibilidades.length; i++) {
+            select += '<option value="' + disponibilidades[i] + '">' + disponibilidades[i] + '</option>';
         }
 
         select += '</select>';            
@@ -457,7 +505,7 @@
                     numeroDia = 4;
                 }
                 return {
-                    title: 'Reunión',
+                    title: horario.disponibilidad,
                     start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
                     end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
                     allDay: false,

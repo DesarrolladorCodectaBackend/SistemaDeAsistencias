@@ -9,7 +9,6 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
-use App\Http\Controllers\FiltrosController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
@@ -20,13 +19,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
 use App\Http\Controllers\Registro_MantenimientoController;
-use App\Http\Controllers\RegistroActividadController;
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\Reuniones_AreasController;
 use App\Http\Controllers\SedeController;
-use App\Http\Controllers\Responsabilidades_SemanalesController;
 use App\Http\Controllers\SalonesController;
-use App\Http\Controllers\Reuniones_ProgramadasController;
 use App\Http\Controllers\MaquinaReservadaController;
-use App\Models\Cumplio_Responsabilidad_Semanal;
+use App\Http\Controllers\ReunionesProgramadasController;
+use App\Mail\ReunionProgramadaMailable;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,9 +57,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //Probando
-    // Route::get('testing/{colaboradorAreaId}', [RegistroActividadController::class, 'obtenerInactividad']);
-
     //AREAS
     Route::resource('areas', AreaController::class);
     Route::put('areas/activarInactivar/{area_id}',[AreaController::class,'activarInactivar'])->name('areas.activarInactivar');
@@ -73,11 +69,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/areas/horarioDelete/{area_id}/{horario_presencial_asignado_id}', [Horario_Presencial_AsignadoController::class, 'destroy'])->name('areas.horarioDelete');
 
     //Reuniones (Area)
-    Route::get('/ReunionesAreas', [Reuniones_ProgramadasController::class, 'getAllReu'])->name('reuniones.getAll');
-    Route::get('/areas/reuniones/{area_id}', [Reuniones_ProgramadasController::class, 'reunionesGest'])->name('areas.getReuniones');
-    Route::post('/areas/reunionCreate', [Reuniones_ProgramadasController::class, 'store'])->name('areas.reunionCreate');
-    Route::put('/areas/reunionUpdate/{id}', [Reuniones_ProgramadasController::class, 'update'])->name('areas.reunionUpdate');
-    Route::delete('/areas/reunionDelete/{id}', [Reuniones_ProgramadasController::class, 'destroy']);
+    Route::get('/ReunionesAreas', [Reuniones_AreasController::class, 'getAllReu'])->name('reuniones.getAll');
+    Route::get('/areas/reuniones/{area_id}', [Reuniones_AreasController::class, 'reunionesGest'])->name('areas.getReuniones');
+    Route::post('/areas/reunionCreate', [Reuniones_AreasController::class, 'store'])->name('areas.reunionCreate');
+    Route::put('/areas/reunionUpdate/{id}', [Reuniones_AreasController::class, 'update'])->name('areas.reunionUpdate');
+    Route::delete('/areas/reunionDelete/{id}', [Reuniones_AreasController::class, 'destroy']);
 
     //Maquina Reservada
     Route::get('/area/maquinas/{area_id}', [AreaController::class, 'getMaquinasByArea'])->name('areas.getMaquinas');
@@ -177,8 +173,16 @@ Route::middleware('auth')->group(function () {
 
     //ACTIVIDADES
     Route::resource('actividades', ActividadesController::class);
-    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividades.activarInactivar');
+    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividad.activarInactivar');
 
+    //REUNIONES PROGRAMADAS
+    Route::get('ReunionesProgramadas', [ReunionesProgramadasController::class, 'getAllProgramReuToCalendar'])->name('reunionesProgramadas.allReu');
+    Route::post('ReunionesProgramadas/store', [ReunionesProgramadasController::class, 'createReunionProgramada'])->name('reunionesProgramadas.store');
+    Route::get('ReunionProgramada/{reunion_id}', [ReunionesProgramadasController::class, 'showReunionProgramada'])->name('reunionesProgramadas.show');
+    Route::put('ReunionProgramada/update/{reunion_id}', [ReunionesProgramadasController::class, 'update'])->name('reunionesProgramadas.update');
+
+    //REPORTES
+    Route::get('Reportes', [ReporteController::class, 'index']);
 
 });
 
