@@ -34,10 +34,10 @@
                             placeholder="Buscar Colaborador..." aria-label="Search">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form> --}}
-                    <form id="searchColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
+                    <form id="searchColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL(event)"
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
-                            placeholder="Buscar Colaborador..." aria-label="Search">
+                            placeholder="Buscar Colaborador..." aria-label="Search" required autocomplete="off">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
@@ -871,14 +871,24 @@
             });
         }
 
-        function prepareSearchActionURL() {
+        function prepareSearchActionURL(event) {
+            // preventDefault();
+            
             let busqueda = document.getElementById('searchInput').value;
 
-            let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#searchColaboradores').action = actionUrl;
+            if(busqueda.trim().length > 0){
+                console.log(busqueda);
+    
+                let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#searchColaboradores').action = actionUrl;
+    
+                return true;
+            } else{
+                event.preventDefault();
+                return false;
+            }
 
-            return true;
         }
 
         function prepareFilterActionURL() {
@@ -892,11 +902,14 @@
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
 
-            let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#filtrarColaboradores').action = actionUrl;
+            if(estados != null && areas != null && carreras != null && instituciones != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#filtrarColaboradores').action = actionUrl;
+    
+                return true;
+            }
 
-            return true;
         }
 
         document.getElementById('select-all-estados').addEventListener('change', function() {

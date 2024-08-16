@@ -29,10 +29,10 @@
             </div>
             <div class="col-lg-7 flex-centered">
                 <div class="flex-centered spc-per-90">
-                    <form id="searchCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
+                    <form id="searchCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL(event)"
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
-                            placeholder="Buscar Candidato..." aria-label="Search">
+                            placeholder="Buscar Candidato..." aria-label="Search" required autocomplete="off">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
@@ -860,16 +860,21 @@
 
     </script>
     <script>
-        function prepareSearchActionURL() {
+        function prepareSearchActionURL(event) {
             let busqueda = document.getElementById('searchInput').value;
 
-            let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#searchCandidatos').action = actionUrl;
-
-            return true;
+            if(busqueda.trim().length > 0) {
+                let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#searchCandidatos').action = actionUrl;
+        
+                return true;
+            } else{
+                event.preventDefault();
+                return false;
+            }
         }
-
+        
         function prepareFilterActionURL() {
             let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
@@ -878,12 +883,13 @@
             estados = estados.length ? estados.join(',') : '0,1,2,3';
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
-
-            let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#filtrarCandidatos').action = actionUrl;
-
-            return true;
+            if(estados != null && carreras != null && instituciones != null) {
+                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#filtrarCandidatos').action = actionUrl;
+    
+                return true;
+            }
         }
 
     document.getElementById('select-all-estados').addEventListener('change', function() {
