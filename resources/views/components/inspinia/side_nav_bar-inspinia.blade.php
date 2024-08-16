@@ -14,7 +14,12 @@
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/alertify.min.css') }}">
+    <link href="{{ asset('css/plugins/chartist/chartist.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/inspinia.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
+    
 </head>
 
 
@@ -173,6 +178,9 @@
 
     <!-- Select2 -->
     <script src="{{asset('js/plugins/select2/select2.full.min.js')}} "></script>
+
+    <!-- Chartist -->
+    <script src="{{asset('js/plugins/chartist/chartist.min.js')}}"></script>
 
     <!--
     <script class="Flot" src="{{ asset('js/plugins/flot/jquery.flot.js') }}"></script>

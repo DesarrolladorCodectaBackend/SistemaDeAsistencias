@@ -52,6 +52,12 @@ class FunctionHelperController extends Controller
     //TIME
 
     
+    public static function findThisWeek(){
+        $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
+        $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
+
+        return $thisSemana;
+    }
     public static function findOrCreateNextWeek(){
         //Encontrar el dia actual
         $today = Carbon::now();

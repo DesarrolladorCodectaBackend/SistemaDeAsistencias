@@ -9,6 +9,7 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
+use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
@@ -43,9 +44,9 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/dashboard-prueba', function () {
     return view('dashboard-prueba');
@@ -56,6 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //HOME 
+    Route::get('/dashboard', [HomePageController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');
 
     //AREAS
     Route::resource('areas', AreaController::class);
