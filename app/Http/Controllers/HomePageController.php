@@ -26,7 +26,7 @@ class HomePageController extends Controller
         ]);
     }
 
-    public function getMonthPromAreas(){
+    function getMonthPromAreas(){
         $areas = Area::where('estado', 1)->get();
         $responsabilidades = Responsabilidades_semanales::get();
         $today = Carbon::now()->format('Y-m-d');
@@ -199,7 +199,7 @@ class HomePageController extends Controller
         return $areasProm;
     }
 
-    public function getTodayProgramReu(){
+    function getTodayProgramReu(){
         $today = Carbon::now()->format('Y-m-d');
         // return $today;
         $reunionesProgramadas = ReunionesProgramadas::where('fecha', $today)->get();

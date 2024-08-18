@@ -119,8 +119,8 @@ Route::middleware('auth')->group(function () {
     //CANDIDATOS
     // Route::resource('candidatos', CandidatosController::class);
     Route::get('candidatos', [CandidatosController::class, 'index'])->name('candidatos.index');
-    Route::get('candidatos/store', [CandidatosController::class, 'store'])->name('candidatos.store');
-    Route::get('candidatos/update', [CandidatosController::class, 'update'])->name('candidatos.update');
+    Route::post('candidatos/store', [CandidatosController::class, 'store'])->name('candidatos.store');
+    Route::put('candidatos/update/{candidato_id}', [CandidatosController::class, 'update'])->name('candidatos.update');
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     Route::post('candidato/rechazarCandidato/{candidato_id}', [CandidatosController::class, 'rechazarCandidato'])->name('candidatos.rechazarCandidato');
     Route::post('candidato/reconsiderarCandidato/{candidato_id}', [CandidatosController::class, 'reActivate'])->name('candidatos.reconsiderarCandidato');
@@ -133,8 +133,8 @@ Route::middleware('auth')->group(function () {
     //COLABORADORES
     // Route::resource('colaboradores', ColaboradoresController::class);
     Route::get('colaboradores', [ColaboradoresController::class, 'index'])->name('colaboradores.index');
-    Route::get('colaboradores/store', [ColaboradoresController::class, 'store'])->name('colaboradores.store');
-    Route::get('colaboradores/update', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
+    Route::post('colaboradores/store', [ColaboradoresController::class, 'store'])->name('colaboradores.store');
+    Route::put('colaboradores/update/{colaborador_id}', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
     Route::post('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
     Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}', [ColaboradoresController::class, 'filtrarColaboradores'])
     ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*'])->name('colaboradores.filtrar');
