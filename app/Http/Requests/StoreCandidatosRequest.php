@@ -37,13 +37,13 @@ class StoreCandidatosRequest extends FormRequest
                     'required',
                     'min:8',
                     'max:8',
-                    Rule::unique('candidatos')->ignore($this->route('candidatos'))
+                    Rule::unique('sometimes')->ignore($this->route('candidatos'))
                 ],
 
                 'correo' => ['required',
                 'min:1',
                 'max:250',
-                Rule::unique('candidatos')->ignore($this->route('candidatos'))
+                Rule::unique('sometimes')->ignore($this->route('candidatos'))
                 ],
 
                 'celular' => ['required',
@@ -61,8 +61,10 @@ class StoreCandidatosRequest extends FormRequest
             'dni.unique' => 'Error. DNI en uso.',
             'correo.unique' => 'Error. Correo en uso',
             'celular.unique' => 'Error. Nro.celular en uso',
-            'dni.min' => 'El DNI debe contener 8 caracteres',
-            'dni.max' => 'El DNI debe contener 8 caracteres'
+            'dni.min' => 'El DNI debe contener 8 números',
+            'dni.max' => 'El DNI debe contener 8 números',
+            'min' => 'Debe contener más de 1 letra.',
+            'max' => 'Debe contener menos de 100 letras.'
         ];
     }
 }

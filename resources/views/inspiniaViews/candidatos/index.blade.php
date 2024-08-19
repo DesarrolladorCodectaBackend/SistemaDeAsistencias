@@ -47,64 +47,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
-                                {{-- <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
-                                    <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-6 b-r">
-                                            <div class="form-group">
-                                                <label>
-                                                    <h4 class="m-t-none m-b">Estados:</h4>
-                                                </label>
-                                                <div class="form-group">
-                                                    <input type="checkbox" id="select-all-estados"><span>Seleccionar todos</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="estado-checkbox" value="1"><span>Pendiente</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="estado-checkbox" value="0"><span>Colaborador</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="estado-checkbox" value="2"><span>Rechazado</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="estado-checkbox" value="3"><span>Ex colaborador</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-6 b-r">
-                                            <div class="form-group">
-                                                <label>
-                                                    <h4 class="m-t-none m-b">Carreras:</h4>
-                                                </label>
-                                                <div class="form-group">
-                                                    <input type="checkbox" id="select-all-carreras"><span>Seleccionar todos</span>
-                                                </div>
-                                                @foreach($carrerasAll as $index => $carrera)
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="carrera-checkbox" value="{{ $carrera->id }}"><span>{{ $carrera->nombre }}</span>
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                            <div class="form-group">
-                                                <label>
-                                                    <h4 class="m-t-none m-b">Instituciones:</h4>
-                                                </label>
-                                                <div class="form-group">
-                                                    <input type="checkbox" id="select-all-instituciones"><span>Seleccionar todos</span>
-                                                </div>
-                                                @foreach($institucionesAll as $index => $institucion)
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="institucion-checkbox" value="{{ $institucion->id }}"><span>{{ $institucion->nombre }}</span>
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                            <div class="form-group mt-3 text-center">
-                                                <button type="submit" class="btn btn-primary px-5">Filtrar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form> --}}
+
                                 <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                     <h2 class="m-t-none m-b font-bold text-center">Filtrar Candidatos</h2>
                                     <div class="accordion" id="accordionExampleCandidatos">
@@ -209,6 +152,8 @@
                                 <form role="form" method="POST" action="{{ route('candidatos.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="form_type" value="create">
+
                                     @isset($pageData->currentURL)
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     @endisset
@@ -238,9 +183,12 @@
                                                     type="date" class="form-control" name="fecha_nacimiento" value="{{ old('fecha_nacimiento')}}">
                                             </div>
                                             <div class="form-group"><label>Ciclo de Estudiante</label>
-                                                <select name="ciclo_de_estudiante" class="form-control" value="{{ old('ciclo_de_estudiante')}}"> required>
+                                                <select name="ciclo_de_estudiante" class="form-control" required>
                                                     @for($i = 4; $i <= 10; $i++)
-                                                    <option value="{{$i}}">{{$i}}</option>
+                                                        <option value="{{ $i }}"
+                                                            @if($i == old('ciclo_de_estudiante')) selected @endif>
+                                                            {{ $i }}
+                                                        </option>
                                                     @endfor
                                                 </select>
                                             </div>
@@ -258,18 +206,23 @@
                                             <div class="form-group"><label>Institucion - Sede</label>
                                                 <select class="form-control" name="sede_id" required>
                                                     @foreach($sedes as $sede)
-                                                    <option value="{{ $sede->id }}">
-                                                        {{ $sede->nombre }}
-                                                    </option>
+                                                        <option value="{{ $sede->id }}"
+                                                            @if($sede->id == old('sede_id')) selected @endif>
+                                                            {{ $sede->nombre }}
+                                                        </option>
                                                     @endforeach
+
                                                 </select>
                                             </div>
                                             <div class="form-group"><label>Carrera</label>
                                                 <select class="form-control" name="carrera_id" required>
                                                     @foreach($carreras as $carrera)
-                                                    <option value="{{ $carrera->id }}">
-                                                        {{ $carrera->nombre }}</option>
+                                                        <option value="{{ $carrera->id }}"
+                                                            @if($carrera->id == old('carrera_id')) selected @endif>
+                                                            {{ $carrera->nombre }}
+                                                        </option>
                                                     @endforeach
+
                                                 </select>
                                             </div>
                                             <div class="form-group"><label>Correo</label> <input type="email"
@@ -481,13 +434,14 @@
                                     </dl>
                                     <div>
                                         <div class="mb-4">
+                                            {{-- botón ver colaborador --}}
                                             <button class="btn btn-success float-right mx-2" type="button"
                                                 href="#modal-form-view{{$candidato->id}}" data-toggle="modal"><i
                                                     style="font-size: 20px" class="fa fa-eye"></i></button>
 
 
-
-                                            <button class="btn btn-info float-right mx-2" type="button"
+                                            {{-- botón editar colaborador --}}
+                                            <button id="editButton{{ $candidato->id }}" class="btn btn-info float-right mx-2" type="button"
                                                 href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
                                                     style="font-size: 20px" class="fa fa-paste"></i></button>
                                         </div>
@@ -504,6 +458,10 @@
                                                             @isset($pageData->currentURL)
                                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             @endisset
+
+                                                            <input type="hidden" name="form_type" value="edit">
+                                                            <input type="hidden" name="candidato_id" value="{{ $candidato->id }}">
+
                                                             <div class="row">
                                                                 <div class="col-sm-6 b-r">
                                                                     <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -514,6 +472,9 @@
                                                                             id="nombre"
                                                                             value="{{ old('nombre', $candidato->nombre) }}"
                                                                             required>
+                                                                            @error('nombre')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
 
                                                                     </div>
                                                                     <div class="form-group">
@@ -523,6 +484,9 @@
                                                                             id="apellido"
                                                                             value="{{ old('apellido', $candidato->apellido) }}"
                                                                             required>
+                                                                            @error('apellido')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>DNI</label>
                                                                         <input type="number" placeholder="....."
@@ -540,6 +504,9 @@
                                                                             id="direccion"
                                                                             value="{{ old('direccion', $candidato->direccion) }}"
                                                                             required>
+                                                                            @error('direccion')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Fecha de
                                                                             Nacimiento</label>
@@ -548,16 +515,19 @@
                                                                             id="fecha_nacimiento"
                                                                             value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}"
                                                                             required>
+
                                                                     </div>
                                                                     <div class="form-group"><label>Ciclo de
                                                                             Estudiante</label>
-                                                                        <select name="ciclo_de_estudiante"
-                                                                            id="ciclo_de_estudiante"
-                                                                            class="form-control" required>
-                                                                            @for($i = 4; $i <= 10; $i++)
-                                                                            <option @if($i === $candidato->ciclo_de_estudiante) selected @endif value="{{$i}}">{{$i}}</option>
-                                                                            @endfor
-                                                                        </select>
+                                                                            <select name="ciclo_de_estudiante" id="ciclo_de_estudiante" class="form-control" required>
+                                                                                @for($i = 4; $i <= 10; $i++)
+                                                                                    <option value="{{ $i }}"
+                                                                                        @if($i == old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante)) selected @endif>
+                                                                                        {{ $i }}
+                                                                                    </option>
+                                                                                @endfor
+                                                                            </select>
+
                                                                     </div>
 
                                                                 </div>
@@ -679,14 +649,21 @@
     </div>
     </div>
 
+    @if ($errors->any())
     <script>
-        $(document).ready(function() {
-            @if ($errors->any())
-                // Mostrar el modal de creación si hay errores
-                $('#modal-form-add').modal('show');
-            @endif
-        });
+        // Reabrir el modal de creación si el error proviene del formulario de creación
+        @if (old('form_type') == 'create')
+            $('#modal-form-add').modal('show');
+        @endif
+
+        // Reabrir el modal de edición si el error proviene del formulario de edición
+        @if (old('form_type') == 'edit' && old('candidato_id'))
+            $('#modal-form' + {{ old('candidato_id') }}).modal('show');
+        @endif
     </script>
+@endif
+
+
 
     <style>
         .select2-container.select2-container--default.select2-container--open {
@@ -694,19 +671,11 @@
             width: 100% !important;
         }
 
-        /* .select2-container--default .select2-selection--multiple {
-            width: auto;
-            min-width: 100% !important;
-        } */
         .select2-container {
             display: inline !important;
         }
 
-        /* .select2.select2-container.select2-container--default.selection.select2-selection.select2-selection--multiple.
-        .select2-selection__rendered.select2-container--below.select2-selection__rendered{
-            z-index: 9999 !important;
-            width: 100% !important;
-        } */
+
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -717,16 +686,7 @@
                 console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
             }
         });
-        /*
-        document.addEventListener('DOMContentLoaded', function() {
-            const candidatoCont = document.getElementById('candidatosCont');
-            if (candidatoCont) {
-                candidatoCont.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'candidatosCont' no se encontró en el DOM.");
-            }
-        });
-        */
+
         document.addEventListener('DOMContentLoaded', function() {
             const candidato = document.getElementById('candidatos');
             if (candidato) {
@@ -840,22 +800,6 @@
                 updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
             });
         });
-
-
-        // function prepareQuery() {
-        //     const estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(el => el.value).join(',');
-        //     const carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(el => el.value).join(',');
-        //     const instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(el => el.value).join(',');
-
-        //     document.getElementById('estados-hidden').value = estados;
-        //     document.getElementById('carreras-hidden').value = carreras;
-        //     document.getElementById('instituciones-hidden').value = instituciones;
-
-        //     // Remove names to prevent them from being sent
-        //     document.querySelectorAll('.estado-checkbox, .carrera-checkbox, .institucion-checkbox').forEach(el => el.removeAttribute('name'));
-
-        //     return true;
-        // }
 
 
 

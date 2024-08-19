@@ -21,37 +21,59 @@ class UpdateColaboradoresRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    //Rule::unique('candidatos')->ignore($this->route('candidato')),
     public function rules()
     {
         return [
-            'nombre' => ['sometimes', 'min:1','max:100'],
-            'apellido' => ['sometimes','min:1','max:100'],
-            'direccion' => ['sometimes', 'min:1','max:100'],
-            'fecha_nacimiento' => ['sometimes'],
-            'ciclo_de_estudiante' => ['sometimes'],
-            'sede_id' => ['sometimes'],
-            'carrera_id' => ['sometimes'],
-            'dni' => ['sometimes',
-            'min:8',
-            'max:8',
-            Rule::unique('candidatos')->ignore($this->route('candidato')),
-        ],
-            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
+            'nombre' => ['required', 'min:1', 'max:100'],
+            'apellido' => ['required', 'min:1', 'max:100'],
+            'direccion' => ['sometimes', 'min:1', 'max:100'],
+            'fecha_nacimiento' => ['sometimes', 'date'],
+            'ciclo_de_estudiante' => ['required', 'integer'],
+            'sede_id' => ['required', 'exists:sedes,id'],
+            'carrera_id' => ['required', 'exists:carreras,id'],
+            'dni' => [
+                'sometimes',
+                'min:8',
+                'max:8',
+                Rule::unique('candidatos')->ignore($this->route('colaboradore'))
+            ],
+            'icono' => 'sometimes|image|mimes:jpeg,png,jpg,svg',
             'areas_id.*' => 'sometimes|integer',
             'actividades_id.*' => 'sometimes|integer',
             'currentURL' => 'sometimes|string',
-            'correo' => ['sometimes',
-            'min:1',
-            'max:250',
-            Rule::unique('candidatos')->ignore($this->route('candidato')),
-            ] ,
+            'correo' => [
+                'sometimes',
+                'email',
+                'max:250',
+                Rule::unique('candidatos')->ignore($this->route('colaboradore'))
+            ],
+            'celular' => [
+                'sometimes',
+                'min:9',
+                'max:9',
+                Rule::unique('candidatos')->ignore($this->route('colaboradore'))
+            ],
 
-            'celular' => ['sometimes',
-            'min:9',
-            'max:9',
-            Rule::unique('candidatos')->ignore($this->route('candidato'))
-            ]
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Campo obligatorio',
+            'dni.unique' => 'Error. DNI en uso.',
+            'correo.unique' => 'Error. Correo en uso.',
+            'celular.unique' => 'Error. Nro. celular en uso.',
+            'dni.min' => 'El DNI debe contener 8 caracteres.',
+            'dni.max' => 'El DNI debe contener 8 caracteres.',
+            'celular.min' => 'El celular debe contener 9 números.',
+            'celular.max' => 'El celular debe contener 9 números.',
+            'icono.image' => 'El archivo debe ser una imagen.',
+            'icono.mimes' => 'La imagen debe ser de tipo jpeg, png, jpg, svg',
+            'sede_id.exists' => 'La sede seleccionada no existe.',
+            'carrera_id.exists' => 'La carrera seleccionada no existe.',
+            'carrera_id.required' => 'La carrera debe ser seleccionada',
+            'areas_id.*.integer' => 'El área debe ser un número entero.'
         ];
     }
 }

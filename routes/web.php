@@ -108,9 +108,6 @@ Route::middleware('auth')->group(function () {
     Route::post('sedes/activar-inactivar/{sede_id}', [SedeController::class, 'activarInactivar'])->name('sedes.activarInactivar');
 
 
-    //OBJETOS
-    //Route::resource('objetos', ObjetoController::class);
-
     //CANDIDATOS
     Route::resource('candidatos', CandidatosController::class);
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');

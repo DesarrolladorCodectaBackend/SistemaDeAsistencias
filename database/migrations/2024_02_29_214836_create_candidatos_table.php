@@ -32,15 +32,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-    /* public function rules(){
-        $array =[
-            'dni' => [ 'required', 'unique'
-
-            ]
-        ];
-    }
-
-    public function messages() */
+   
     /**
      * Reverse the migrations.
      *

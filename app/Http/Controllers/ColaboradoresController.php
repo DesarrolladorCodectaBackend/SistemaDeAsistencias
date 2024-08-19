@@ -197,14 +197,7 @@ class ColaboradoresController extends Controller
     {
         DB::beginTransaction();
         try{
-            /*$request->validate([
-                'candidato_id' => 'required|integer',
-                'areas_id.*' => 'required|integer',
-                'horarios' => 'required|array',
-                'horarios.*.hora_inicial' => 'required|date_format:H:i',
-                'horarios.*.hora_final' => 'required|date_format:H:i',
-                'horarios.*.dia' => 'required|string'
-            ]);*/
+
             //Se busca al candidato por su id
             $candidato = Candidatos::findOrFail($request->candidato_id);
             //Se verifica si el candidato está activo
@@ -254,23 +247,7 @@ class ColaboradoresController extends Controller
     {
         DB::beginTransaction();
         try{
-            /*$request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-                'apellido' => 'sometimes|string|min:1|max:100',
-                'dni' => 'sometimes|string|min:1|max:8',
-                'direccion' => 'sometimes|string|min:1|max:100',
-                'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
-                'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
-                'sede_id' => 'sometimes|integer|min:1|max:20',
-                'carrera_id' => 'sometimes|integer|min:1|max:20',
-                'correo' => 'sometimes|string|min:1|max:255',
-                'celular' => 'sometimes|string|min:1|max:20',
-                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
-                'areas_id.*' => 'sometimes|integer',
-                'actividades_id.*' => 'sometimes|integer',
-                'currentURL' => 'sometimes|string',
 
-            ])*/
             //Encontrar al colaborador con su candidato por su id
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
             //Asignar el candidato a una variable
@@ -360,7 +337,7 @@ class ColaboradoresController extends Controller
             }
 
             //Se actualizan los datos del candidato
-            $candidato->update($datosActualizar);
+            $candidato->update($datosActualizar, $request->validated());
             DB::commit();
 
             //Se redirige a la vista
