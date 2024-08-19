@@ -83,122 +83,196 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 @foreach ($areas as $index => $area)
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                    <div class="ibox">
-                        <div class="ibox-content product-box">
-                            <div class="product-imitation">
-                                <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
-                            </div>
-                            <div class="product-desc">
-                                {{-- CAMBIO DE ESTADO ÁREAS --}}
-                                <form action="{{ route('areas.activarInactivar', $area->id) }}" method="POST">
-                                    @csrf
-                                    @method('put')
-                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-
-                                    <button type="submit" class="btn btn-{{ $area->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                        <span>{{ $area->estado ? 'ON' : 'OFF' }}</span>
-                                    </button>
-                                </form>
-
-                                <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}}</small>
-                                <a href="#" class="product-name">{{ $area->especializacion }}</a>
-                                <div class="small m-t-xs">
-                                    {{ $area->descripcion }}
+                <div onclick="onClickArea('{{ $area->id }}')" class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    {{-- <button class="ibox" type="button" data-toggle="modal" href="#modal-form{{ $area->id }}"> --}}
+                        <div class="ibox">
+                            <div class="ibox-content product-box">
+                                <div class="product-imitation">
+                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
                                 </div>
-                                <div style="display: flex; gap: 4px" class="m-t text-left">
-                                    {{-- <button class="btn btn-danger" type="button"
-                                        onclick="confirmDelete({{ $area->id }})"><i class="fa fa-trash-o"></i></button>
-                                    --}}
-                                    <button class="btn btn-info" type="button" href="#modal-form{{ $area->id }}"
-                                        data-toggle="modal"><i class="fa fa-paste"></i> Edit</button>
-                                    <form role="form" method="GET" action="{{ route('areas.getHorario', $area->id) }}">
-                                        <button class="btn btn-primary fa fa-clock-o" style="font-size: 20px;"></button>
-                                    </form>
-                                    <form role="form" method="GET"
-                                        action="{{ route('areas.getReuniones', $area->id) }}">
-                                        <button class="btn btn-success fa fa-video-camera"
-                                            style="font-size: 20px;"></button>
-                                    </form>
-                                    <form role="form" method="GET" action="{{route('areas.getMaquinas', $area->id)}}">
-                                        <button class="btn btn-secondary fa fa-desktop" style="font-size: 20px;">
-
+                                <div class="product-desc">
+                                    {{-- CAMBIO DE ESTADO ÁREAS --}}
+                                    <form action="{{ route('areas.activarInactivar', $area->id) }}" method="POST">
+                                        @csrf
+                                        @method('put')
+                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+    
+                                        <button type="submit" class="btn btn-{{ $area->estado ? 'outline-success' : 'danger' }} btn-primary dim">
+                                            <span>{{ $area->estado ? 'ON' : 'OFF' }}</span>
                                         </button>
                                     </form>
-                                    {{-- EDIT --}}
-                                    <div id="modal-form{{ $area->id }}" class="modal fade" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <form role="form" method="POST"
-                                                        action="{{ route('areas.update', $area->id) }}"
-                                                        enctype="multipart/form-data">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-                                                        <div class="row">
-                                                            <div class="col-sm-6 b-r">
-                                                                <h3 class="m-t-none m-b">Ingrese los Datos</h3>
-                                                                <div class="form-group">
-                                                                    <label>Especializacion</label>
-                                                                    <input type="text" placeholder="....."
-                                                                        class="form-control" name="especializacion"
-                                                                        id="especializacion"
-                                                                        value="{{ old('especializacion', $area->especializacion) }}">
+    
+                                    <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}}</small>
+                                    <a href="#" class="product-name">{{ $area->especializacion }}</a>
+                                    <div class="small m-t-xs">
+                                        {{ $area->descripcion }}
+                                    </div>
+                                    <div style="display: flex; gap: 4px" class="m-t text-left">
+                                        {{-- <button class="btn btn-danger" type="button"
+                                            onclick="confirmDelete({{ $area->id }})"><i class="fa fa-trash-o"></i></button>
+                                        --}}
+                                        {{-- <button class="btn btn-info" type="button" href="#modal-form{{ $area->id }}"
+                                            data-toggle="modal"><i class="fa fa-paste"></i> Edit</button> --}}
+                                        <form role="form" method="GET" action="{{ route('areas.getHorario', $area->id) }}">
+                                            <button class="btn btn-primary fa fa-clock-o" style="font-size: 20px;"></button>
+                                        </form>
+                                        <form role="form" method="GET"
+                                            action="{{ route('areas.getReuniones', $area->id) }}">
+                                            <button class="btn btn-success fa fa-video-camera"
+                                                style="font-size: 20px;"></button>
+                                        </form>
+                                        <form role="form" method="GET" action="{{route('areas.getMaquinas', $area->id)}}">
+                                            <button class="btn btn-secondary fa fa-desktop" style="font-size: 20px;">
+    
+                                            </button>
+                                        </form>
+                                        {{-- EDIT --}}
+                                        {{-- <div id="modal-form{{ $area->id }}" class="modal fade" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <form role="form" method="POST"
+                                                            action="{{ route('areas.update', $area->id) }}"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                                            <div class="row">
+                                                                <div class="col-sm-6 b-r">
+                                                                    <h3 class="m-t-none m-b">Ingrese los Datos</h3>
+                                                                    <div class="form-group">
+                                                                        <label>Especializacion</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="especializacion"
+                                                                            id="especializacion"
+                                                                            value="{{ old('especializacion', $area->especializacion) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>Descripción</label>
+                                                                        <input type="text" placeholder="....."
+                                                                            class="form-control" name="descripcion"
+                                                                            id="descripcion"
+                                                                            value="{{ old('descripcion', $area->descripcion) }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>Color Hex</label>
+                                                                        <input type="color" placeholder="....."
+                                                                            class="form-control" name="color_hex"
+                                                                            id="color_hex"
+                                                                            value="{{ old('color_hex', $area->color_hex) }}">
+                                                                    </div>
+    
                                                                 </div>
-                                                                <div class="form-group"><label>Descripción</label>
-                                                                    <input type="text" placeholder="....."
-                                                                        class="form-control" name="descripcion"
-                                                                        id="descripcion"
-                                                                        value="{{ old('descripcion', $area->descripcion) }}">
+                                                                <div class="col-sm-6">
+                                                                    <h4>Subir Icono</h4>
+                                                                    <input type="file" class="form-control-file"
+                                                                        id="icono-{{ $area->id }}" name="icono"
+                                                                        value="{{ old('icono', $area->icono) }}"
+                                                                        style="display: none;">
+                                                                    <button type="button" class="btn btn-link"
+                                                                        id="icon-upload-{{ $area->id }}">
+                                                                        <i class="fa fa-cloud-download big-icon"></i>
+                                                                    </button>
+                                                                    <script>
+                                                                        document.getElementById('icon-upload-{{ $area->id }}').addEventListener('click', function() {
+                                                                                document.getElementById('icono-{{ $area->id }}').click();
+                                                                            });
+                                                                    </script>
+                                                                    <div class="form-group"><label>Salón</label>
+                                                                        <select class="form-control" name="salon_id"
+                                                                            required>
+                                                                            @foreach($salones as $key => $salon)
+                                                                            <option value="{{ $salon->id }}" @if($salon->id
+                                                                                == $area->salon_id) selected @endif
+                                                                                >{{ $salon->nombre }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div>
+                                                                        <button
+                                                                            class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                                            type="submit"><i
+                                                                                class="fa fa-check"></i>&nbsp;Confirmar</button>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="form-group"><label>Color Hex</label>
-                                                                    <input type="color" placeholder="....."
-                                                                        class="form-control" name="color_hex"
-                                                                        id="color_hex"
-                                                                        value="{{ old('color_hex', $area->color_hex) }}">
-                                                                </div>
-
                                                             </div>
-                                                            <div class="col-sm-6">
-                                                                <h4>Subir Icono</h4>
-                                                                <input type="file" class="form-control-file"
-                                                                    id="icono-{{ $area->id }}" name="icono"
-                                                                    value="{{ old('icono', $area->icono) }}"
-                                                                    style="display: none;">
-                                                                <button type="button" class="btn btn-link"
-                                                                    id="icon-upload-{{ $area->id }}">
-                                                                    <i class="fa fa-cloud-download big-icon"></i>
-                                                                </button>
-                                                                <script>
-                                                                    document.getElementById('icon-upload-{{ $area->id }}').addEventListener('click', function() {
-                                                                            document.getElementById('icono-{{ $area->id }}').click();
-                                                                        });
-                                                                </script>
-                                                                <div class="form-group"><label>Salón</label>
-                                                                    <select class="form-control" name="salon_id"
-                                                                        required>
-                                                                        @foreach($salones as $key => $salon)
-                                                                        <option value="{{ $salon->id }}" @if($salon->id
-                                                                            == $area->salon_id) selected @endif
-                                                                            >{{ $salon->nombre }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                                <div>
-                                                                    <button
-                                                                        class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                                        type="submit"><i
-                                                                            class="fa fa-check"></i>&nbsp;Confirmar</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
+                                                        </form>
+                                                    </div>
                                                 </div>
+                                            </div>
+                                        </div> --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {{-- </button> --}}
+                </div>
+                <div id="modal-form{{ $area->id }}" class="modal fade" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form role="form" method="POST"
+                                    action="{{ route('areas.update', $area->id) }}"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                    <div class="row">
+                                        <div class="col-sm-6 b-r">
+                                            <h3 class="m-t-none m-b">Ingrese los Datos</h3>
+                                            <div class="form-group">
+                                                <label>Especializacion</label>
+                                                <input type="text" placeholder="....."
+                                                    class="form-control" name="especializacion"
+                                                    id="especializacion"
+                                                    value="{{ old('especializacion', $area->especializacion) }}">
+                                            </div>
+                                            <div class="form-group"><label>Descripción</label>
+                                                <input type="text" placeholder="....."
+                                                    class="form-control" name="descripcion"
+                                                    id="descripcion"
+                                                    value="{{ old('descripcion', $area->descripcion) }}">
+                                            </div>
+                                            <div class="form-group"><label>Color Hex</label>
+                                                <input type="color" placeholder="....."
+                                                    class="form-control" name="color_hex"
+                                                    id="color_hex"
+                                                    value="{{ old('color_hex', $area->color_hex) }}">
+                                            </div>
+
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <h4>Subir Icono</h4>
+                                            <input type="file" class="form-control-file"
+                                                id="icono-{{ $area->id }}" name="icono"
+                                                value="{{ old('icono', $area->icono) }}"
+                                                style="display: none;">
+                                            <button type="button" class="btn btn-link"
+                                                id="icon-upload-{{ $area->id }}">
+                                                <i class="fa fa-cloud-download big-icon"></i>
+                                            </button>
+                                            <script>
+                                                document.getElementById('icon-upload-{{ $area->id }}').addEventListener('click', function() {
+                                                        document.getElementById('icono-{{ $area->id }}').click();
+                                                    });
+                                            </script>
+                                            <div class="form-group"><label>Salón</label>
+                                                <select class="form-control" name="salon_id"
+                                                    required>
+                                                    @foreach($salones as $key => $salon)
+                                                    <option value="{{ $salon->id }}" @if($salon->id
+                                                        == $area->salon_id) selected @endif
+                                                        >{{ $salon->nombre }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <button
+                                                    class="btn btn-primary btn-sm m-t-n-xs float-right"
+                                                    type="submit"><i
+                                                        class="fa fa-check"></i>&nbsp;Confirmar</button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -254,6 +328,15 @@
 
 
     <script>
+        const onClickArea = (area_id) => {
+            const modalId = `#modal-form${area_id}`;
+    
+            const modalElement = document.querySelector(modalId);
+            if (modalElement) {
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+        }
         const hiddenFileInput = document.getElementById('icono');
         const iconUploadButton = document.getElementById('icon-upload');
 

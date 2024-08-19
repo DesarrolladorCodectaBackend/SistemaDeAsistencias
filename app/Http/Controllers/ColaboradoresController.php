@@ -169,8 +169,10 @@ class ColaboradoresController extends Controller
             }
         }
 
-
-        $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
+        $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
+        // $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
+        $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
+        $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
         $Allactividades = Actividades::where('estado', 1)->get();
@@ -435,7 +437,9 @@ class ColaboradoresController extends Controller
         $carreras = $carrerasAll->where('estado', 1);
         $areas = $areasAll->where('estado', 1);
 
-        $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
+        $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
+        $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
+        $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
 

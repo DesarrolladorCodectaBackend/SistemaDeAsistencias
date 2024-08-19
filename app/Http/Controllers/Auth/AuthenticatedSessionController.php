@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,6 +30,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        session(['api_token' => $token]);
+        // return response()->json(['token' => $token, 'user' => $user], 200);
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
@@ -37,11 +43,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = auth()->user();
+        // return $user->tokens()->first()->token; //Obtener token
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        if ($user) {
+            $user->tokens()->delete();
+        }
 
         return redirect('/');
     }

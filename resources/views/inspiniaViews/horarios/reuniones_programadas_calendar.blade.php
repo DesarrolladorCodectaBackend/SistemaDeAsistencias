@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
     <title>INSPINIA | REUNIONES AREAS</title>
 </head>
 
@@ -66,7 +63,7 @@
                                 </div>
                             </div>
 
-                            <div role="tabpanel" id="tab-2" class="tab-pane">
+                            <div role="tabpanel" id="tab-2" class="tab-pane active">
                                 <div class="panel-body">
                                     <div class="wrapper wrapper-content animated fadeInRight">
                                         <div class="row">
@@ -209,6 +206,10 @@
             $('.multiple_integrantes_select').select2();
         });
         
+        
+    </script>
+
+    <script>
         $(document).ready(function() {
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
@@ -264,7 +265,6 @@
                 defaultView: 'agendaWeek', // inicializar en formato semanal
                 timeFormat: 'h:mm A', // formato de tiempo en eventos
                 columnHeaderFormat: 'ddd M/D', // formato para el encabezado de los días
-                
                 drop: function() {
                     if ($('#drop-remove').is(':checked')) {
                         $(this).remove();

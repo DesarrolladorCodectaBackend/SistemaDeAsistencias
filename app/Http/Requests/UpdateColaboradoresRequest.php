@@ -26,16 +26,16 @@ class UpdateColaboradoresRequest extends FormRequest
         return [
             'nombre' => ['required', 'min:1', 'max:100'],
             'apellido' => ['required', 'min:1', 'max:100'],
-            'direccion' => ['sometimes', 'min:1', 'max:100'],
-            'fecha_nacimiento' => ['sometimes', 'date'],
-            'ciclo_de_estudiante' => ['required', 'integer'],
+            'direccion' => ['sometimes','max:100'],
+            'fecha_nacimiento' => ['sometimes'],
+            'ciclo_de_estudiante' => ['sometimes'],
             'sede_id' => ['required', 'exists:sedes,id'],
             'carrera_id' => ['required', 'exists:carreras,id'],
             'dni' => [
                 'sometimes',
-                'min:8',
                 'max:8',
-                Rule::unique('candidatos')->ignore($this->route('colaboradore'))
+                'nullable',
+                Rule::unique('candidatos')->ignore($this->route('colaborador_id'))
             ],
             'icono' => 'sometimes|image|mimes:jpeg,png,jpg,svg',
             'areas_id.*' => 'sometimes|integer',
@@ -43,15 +43,16 @@ class UpdateColaboradoresRequest extends FormRequest
             'currentURL' => 'sometimes|string',
             'correo' => [
                 'sometimes',
-                'email',
                 'max:250',
-                Rule::unique('candidatos')->ignore($this->route('colaboradore'))
+                'nullable',
+                Rule::unique('candidatos')->ignore($this->route('colaborador_id'))
             ],
             'celular' => [
                 'sometimes',
-                'min:9',
+                // 'min:9',
                 'max:9',
-                Rule::unique('candidatos')->ignore($this->route('colaboradore'))
+                'nullable',
+                Rule::unique('candidatos')->ignore($this->route('colaborador_id'))
             ],
 
         ];

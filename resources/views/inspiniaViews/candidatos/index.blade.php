@@ -29,10 +29,10 @@
             </div>
             <div class="col-lg-7 flex-centered">
                 <div class="flex-centered spc-per-90">
-                    <form id="searchCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
+                    <form id="searchCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL(event)"
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
-                            placeholder="Buscar Candidato..." aria-label="Search">
+                            placeholder="Buscar Candidato..." aria-label="Search" required autocomplete="off">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
@@ -183,7 +183,7 @@
                                                     type="date" class="form-control" name="fecha_nacimiento" value="{{ old('fecha_nacimiento')}}">
                                             </div>
                                             <div class="form-group"><label>Ciclo de Estudiante</label>
-                                                <select name="ciclo_de_estudiante" class="form-control" required>
+                                                <select name="ciclo_de_estudiante" class="form-control">
                                                     @for($i = 4; $i <= 10; $i++)
                                                         <option value="{{ $i }}"
                                                             @if($i == old('ciclo_de_estudiante')) selected @endif>
@@ -204,7 +204,7 @@
                                             </button>
 
                                             <div class="form-group"><label>Institucion - Sede</label>
-                                                <select class="form-control" name="sede_id" required>
+                                                <select class="form-control" name="sede_id">
                                                     @foreach($sedes as $sede)
                                                         <option value="{{ $sede->id }}"
                                                             @if($sede->id == old('sede_id')) selected @endif>
@@ -215,7 +215,7 @@
                                                 </select>
                                             </div>
                                             <div class="form-group"><label>Carrera</label>
-                                                <select class="form-control" name="carrera_id" required>
+                                                <select class="form-control" name="carrera_id">
                                                     @foreach($carreras as $carrera)
                                                         <option value="{{ $carrera->id }}"
                                                             @if($carrera->id == old('carrera_id')) selected @endif>
@@ -470,8 +470,7 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
-                                                                            value="{{ old('nombre', $candidato->nombre) }}"
-                                                                            required>
+                                                                            value="{{ old('nombre', $candidato->nombre) }}">
                                                                             @error('nombre')
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
@@ -482,8 +481,7 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
-                                                                            value="{{ old('apellido', $candidato->apellido) }}"
-                                                                            required>
+                                                                            value="{{ old('apellido', $candidato->apellido) }}">
                                                                             @error('apellido')
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
@@ -491,8 +489,7 @@
                                                                     <div class="form-group"><label>DNI</label>
                                                                         <input type="number" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
-                                                                            value="{{ old('dni', $candidato->dni) }}"
-                                                                            required>
+                                                                            value="{{ old('dni', $candidato->dni) }}">
 
                                                                         @error('dni')
                                                                             <span class="text-danger">{{ $message }}</span>
@@ -502,8 +499,7 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
-                                                                            value="{{ old('direccion', $candidato->direccion) }}"
-                                                                            required>
+                                                                            value="{{ old('direccion', $candidato->direccion) }}">
                                                                             @error('direccion')
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
@@ -513,8 +509,7 @@
                                                                         <input type="date" placeholder="....."
                                                                             class="form-control" name="fecha_nacimiento"
                                                                             id="fecha_nacimiento"
-                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}"
-                                                                            required>
+                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}">
 
                                                                     </div>
                                                                     <div class="form-group"><label>Ciclo de
@@ -548,8 +543,7 @@
                                                                     </script>
                                                                     <div class="form-group">
                                                                         <label>Institucion - Sede</label>
-                                                                        <select class="form-control" name="sede_id"
-                                                                            required>
+                                                                        <select class="form-control" name="sede_id">
                                                                             @foreach($sedes as $sede)
                                                                             <option value="{{ $sede->id }}" @if($sede->
                                                                                 id ==
@@ -561,8 +555,7 @@
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group"><label>Carrera</label>
-                                                                        <select class="form-control" name="carrera_id"
-                                                                            required>
+                                                                        <select class="form-control" name="carrera_id">
                                                                             @foreach($carreras as $carrera)
                                                                             <option value="{{ $carrera->id }}"
                                                                                 @if($carrera->id == old('carrera_id',
@@ -575,8 +568,7 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
-                                                                            value="{{ old('correo', $candidato->correo) }}"
-                                                                            required>
+                                                                            value="{{ old('correo', $candidato->correo) }}">
                                                                         @error('correo')
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
@@ -585,8 +577,7 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="celular"
                                                                             id="celular"
-                                                                            value="{{ old('celular', $candidato->celular) }}"
-                                                                            required>
+                                                                            value="{{ old('celular', $candidato->celular) }}">
                                                                         @error('celular')
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
@@ -652,6 +643,7 @@
     @if ($errors->any())
     <script>
         // Reabrir el modal de creación si el error proviene del formulario de creación
+        console.log(@json($errors->all()));
         @if (old('form_type') == 'create')
             $('#modal-form-add').modal('show');
         @endif
@@ -805,14 +797,19 @@
 
     </script>
     <script>
-        function prepareSearchActionURL() {
+        function prepareSearchActionURL(event) {
             let busqueda = document.getElementById('searchInput').value;
 
-            let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#searchCandidatos').action = actionUrl;
+            if(busqueda.trim().length > 0) {
+                let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#searchCandidatos').action = actionUrl;
 
-            return true;
+                return true;
+            } else{
+                event.preventDefault();
+                return false;
+            }
         }
 
         function prepareFilterActionURL() {
@@ -823,12 +820,13 @@
             estados = estados.length ? estados.join(',') : '0,1,2,3';
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
+            if(estados != null && carreras != null && instituciones != null) {
+                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#filtrarCandidatos').action = actionUrl;
 
-            let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#filtrarCandidatos').action = actionUrl;
-
-            return true;
+                return true;
+            }
         }
 
     document.getElementById('select-all-estados').addEventListener('change', function() {

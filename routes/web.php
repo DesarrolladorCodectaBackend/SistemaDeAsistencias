@@ -9,6 +9,7 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
+use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
 use App\Http\Controllers\ProgramasController;
 use App\Http\Controllers\Registro_MantenimientoController;
+use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\Reuniones_AreasController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\SalonesController;
@@ -42,9 +44,9 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/dashboard-prueba', function () {
     return view('dashboard-prueba');
@@ -55,6 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //HOME 
+    Route::get('/dashboard', [HomePageController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');
 
     //AREAS
     Route::resource('areas', AreaController::class);
@@ -109,7 +114,10 @@ Route::middleware('auth')->group(function () {
 
 
     //CANDIDATOS
-    Route::resource('candidatos', CandidatosController::class);
+    // Route::resource('candidatos', CandidatosController::class);
+    Route::get('candidatos', [CandidatosController::class, 'index'])->name('candidatos.index');
+    Route::post('candidatos/store', [CandidatosController::class, 'store'])->name('candidatos.store');
+    Route::put('candidatos/update/{candidato_id}', [CandidatosController::class, 'update'])->name('candidatos.update');
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     Route::post('candidato/rechazarCandidato/{candidato_id}', [CandidatosController::class, 'rechazarCandidato'])->name('candidatos.rechazarCandidato');
     Route::post('candidato/reconsiderarCandidato/{candidato_id}', [CandidatosController::class, 'reActivate'])->name('candidatos.reconsiderarCandidato');
@@ -120,7 +128,10 @@ Route::middleware('auth')->group(function () {
 
 
     //COLABORADORES
-    Route::resource('colaboradores', ColaboradoresController::class);
+    // Route::resource('colaboradores', ColaboradoresController::class);
+    Route::get('colaboradores', [ColaboradoresController::class, 'index'])->name('colaboradores.index');
+    Route::post('colaboradores/store', [ColaboradoresController::class, 'store'])->name('colaboradores.store');
+    Route::put('colaboradores/update/{colaborador_id}', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
     Route::post('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
     Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}', [ColaboradoresController::class, 'filtrarColaboradores'])
     ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*'])->name('colaboradores.filtrar');
@@ -176,6 +187,9 @@ Route::middleware('auth')->group(function () {
     Route::post('ReunionesProgramadas/store', [ReunionesProgramadasController::class, 'createReunionProgramada'])->name('reunionesProgramadas.store');
     Route::get('ReunionProgramada/{reunion_id}', [ReunionesProgramadasController::class, 'showReunionProgramada'])->name('reunionesProgramadas.show');
     Route::put('ReunionProgramada/update/{reunion_id}', [ReunionesProgramadasController::class, 'update'])->name('reunionesProgramadas.update');
+
+    //REPORTES
+    Route::get('Reportes', [ReporteController::class, 'index']);
 
 });
 

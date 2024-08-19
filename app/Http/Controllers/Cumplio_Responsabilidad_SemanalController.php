@@ -616,6 +616,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             DB::commit();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
         } catch (Exception $e) {
+            // return $e;
             DB::rollback();
             return redirect()->route('responsabilidades.asis', ['year' => $request->$year, 'mes' => $request->$mes,'area_id' => $request->$area_id]);
 

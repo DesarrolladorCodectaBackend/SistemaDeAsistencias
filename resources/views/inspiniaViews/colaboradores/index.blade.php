@@ -32,7 +32,7 @@
                     <form id="searchColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
-                            placeholder="Buscar Colaborador..." aria-label="Search">
+                            placeholder="Buscar Colaborador..." aria-label="Search" required autocomplete="off">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
@@ -537,7 +537,7 @@
                                                                             <h5 class="m-t-none">Ciclo:</h5>
                                                                         </label>
                                                                         <select name="ciclo_de_estudiante"
-                                                                            class="form-control" required>
+                                                                            class="form-control">
                                                                             @for($i = 4; $i <= 10; $i++) <option
                                                                                 @if($i==$colaborador->
                                                                                 candidato->ciclo_de_estudiante) selected
@@ -593,7 +593,7 @@
                                                                         <label>
                                                                             <h5 class="m-t-none">Area:</h5>
                                                                         </label>
-                                                                        <select name="areas_id[]" multiple required
+                                                                        <select name="areas_id[]" multiple 
                                                                             class="form-control multiple_areas_select">
                                                                             @foreach ($areas as $key => $area)
                                                                             <option value="{{ $area->id }}"
@@ -879,14 +879,24 @@
             });
         }
 
-        function prepareSearchActionURL() {
+        function prepareSearchActionURL(event) {
+            // preventDefault();
+
             let busqueda = document.getElementById('searchInput').value;
 
-            let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#searchColaboradores').action = actionUrl;
+            if(busqueda.trim().length > 0){
+                console.log(busqueda);
 
-            return true;
+                let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#searchColaboradores').action = actionUrl;
+
+                return true;
+            } else{
+                event.preventDefault();
+                return false;
+            }
+
         }
 
         function prepareFilterActionURL() {
@@ -900,11 +910,14 @@
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
 
-            let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#filtrarColaboradores').action = actionUrl;
+            if(estados != null && areas != null && carreras != null && instituciones != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#filtrarColaboradores').action = actionUrl;
 
-            return true;
+                return true;
+            }
+
         }
 
         document.getElementById('select-all-estados').addEventListener('change', function() {

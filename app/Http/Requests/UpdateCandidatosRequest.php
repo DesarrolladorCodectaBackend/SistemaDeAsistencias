@@ -24,31 +24,36 @@ class UpdateCandidatosRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
-            'nombre' => ['required', 'min:1','max:100'],
-            'apellido' => ['required','min:1','max:100'],
-            'direccion' => ['required', 'min:1','max:100'],
-            'fecha_nacimiento' => ['required'],
-            'ciclo_de_estudiante' => ['required'],
-            'sede_id' => ['required'],
-            'carrera_id' => ['required'],
-            'dni' => ['sometimes',
-            'min:8',
-            'max:8',
-            Rule::unique('candidatos')->ignore($this->route('candidato')),
-        ],
-            'correo' => ['sometimes',
-            'min:1',
-            'max:250',
-            Rule::unique('candidatos')->ignore($this->route('candidato')),
-            ] ,
+                'nombre' => ['required', 'min:1','max:100'],
+                'apellido' => ['required','min:1','max:100'],
+                'direccion' => ['sometimes','max:100'],
+                'fecha_nacimiento' => ['sometimes'],
+                'ciclo_de_estudiante' => ['sometimes'],
+                'sede_id' => ['required'],
+                'carrera_id' => ['required'],
 
-            'celular' => ['required',
-            'min:9',
-            'max:9',
-            Rule::unique('candidatos')->ignore($this->route('candidato'))
-            ]
+                'dni' => [
+                    'sometimes',
+                    // 'min:8',
+                    'max:8',
+                    'nullable',
+                    Rule::unique('candidatos')->ignore($this->route('candidato_id'))
+                ],
+
+                'correo' => ['sometimes',
+                // 'min:1',
+                'max:250',
+                'nullable',
+                Rule::unique('candidatos')->ignore($this->route('candidato_id'))
+                ],
+
+                'celular' => ['sometimes',
+                // 'min:9',
+                'max:9',
+                'nullable',
+                Rule::unique('candidatos')->ignore($this->route('candidato_id'))
+                ]
         ];
     }
 
@@ -59,8 +64,10 @@ class UpdateCandidatosRequest extends FormRequest
             'dni.unique' => 'Error. DNI en uso.',
             'correo.unique' => 'Error. Correo en uso',
             'celular.unique' => 'Error. Nro.celular en uso',
-            'dni.min' => 'El DNI debe contener 8 caracteres',
-            'dni.max' => 'El DNI debe contener 8 caracteres'
+            'dni.min' => 'El DNI debe contener 8 números',
+            'dni.max' => 'El DNI debe contener 8 números',
+            'min' => 'Debe contener más de 1 letra.',
+            'max' => 'Debe contener menos de 100 letras.'
         ];
     }
 }

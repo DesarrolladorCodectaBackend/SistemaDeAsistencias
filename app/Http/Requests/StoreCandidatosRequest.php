@@ -27,28 +27,32 @@ class StoreCandidatosRequest extends FormRequest
         return [
                 'nombre' => ['required', 'min:1','max:100'],
                 'apellido' => ['required','min:1','max:100'],
-                'direccion' => ['required', 'min:1','max:100'],
-                'fecha_nacimiento' => ['required'],
-                'ciclo_de_estudiante' => ['required'],
+                'direccion' => ['sometimes', 'max:100'],
+                'fecha_nacimiento' => ['sometimes'],
+                'ciclo_de_estudiante' => ['sometimes'],
                 'sede_id' => ['required'],
                 'carrera_id' => ['required'],
+                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,svg',
 
                 'dni' => [
-                    'required',
-                    'min:8',
+                    'sometimes',
+                    // 'min:8',
                     'max:8',
-                    Rule::unique('sometimes')->ignore($this->route('candidatos'))
+                    'nullable',
+                    Rule::unique('candidatos')->ignore($this->route('candidatos'))
                 ],
 
-                'correo' => ['required',
-                'min:1',
+                'correo' => ['sometimes',
+                // 'min:1',
                 'max:250',
-                Rule::unique('sometimes')->ignore($this->route('candidatos'))
+                'nullable',
+                Rule::unique('candidatos')->ignore($this->route('candidatos'))
                 ],
 
-                'celular' => ['required',
-                'min:9',
+                'celular' => ['sometimes',
+                // 'min:9',
                 'max:9',
+                'nullable',
                 Rule::unique('candidatos')->ignore($this->route('candidatos'))
                 ]
         ];
@@ -61,10 +65,11 @@ class StoreCandidatosRequest extends FormRequest
             'dni.unique' => 'Error. DNI en uso.',
             'correo.unique' => 'Error. Correo en uso',
             'celular.unique' => 'Error. Nro.celular en uso',
-            'dni.min' => 'El DNI debe contener 8 números',
             'dni.max' => 'El DNI debe contener 8 números',
             'min' => 'Debe contener más de 1 letra.',
-            'max' => 'Debe contener menos de 100 letras.'
+            'max' => 'Debe contener menos de 100 letras.',
+            'icono.image' => 'El archivo debe ser una imagen.',
+            'icono.mimes' => 'La imagen debe ser de tipo jpeg, png, jpg, svg',
         ];
     }
 }
