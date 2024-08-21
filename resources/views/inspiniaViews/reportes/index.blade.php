@@ -50,7 +50,7 @@
                                                 <th colspan="1" class="text-center">{{$colaborador->id}}</th>
                                                 <th colspan="1">{{$colaborador->candidato->apellido}}</th>
                                                 <th colspan="1">{{$colaborador->candidato->nombre}}</th>
-                                                <th colspan="1">@foreach($colaborador->areas as $index => $area)@if($index > 0) - @endif {{$area}}@endforeach</th>
+                                                <th colspan="1">@foreach($colaborador->areas as $index => $area)@if($area['tipo'] == 0) @if($index > 0) - @endif {{$area['nombre']}}@endif @endforeach</th>
                                                 <th colspan="1">{{$colaborador->candidato->carrera->nombre}}</th>
                                                 <th colspan="1">{{$colaborador->candidato->sede->nombre}}</th>
                                                 <th colspan="1">{{$colaborador->candidato->celular}}</th>

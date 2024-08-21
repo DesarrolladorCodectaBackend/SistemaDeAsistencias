@@ -12,7 +12,7 @@
     <div id="wrapper">
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
-            <div class="col-lg-10">
+            <div class="col-lg-4">
                 <h2>Dashboards</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
@@ -23,7 +23,11 @@
                     </li>
                 </ol>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-6 d-flex align-items-center gap-10">
+                <h2>Cant. Áreas: <span class="font-bold text-danger">{{$countAreas}}</span></h2>
+                <h2>Cant. Colaboradores: <span class="font-bold text-danger">{{$countColabs}}</span></h2>
+            </div>
+            <div class="col-lg-2 d-flex align-items-center justify-content-end">
                 <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
                     type="button">Agregar</button>
                 <div id="modal-form-add" class="modal fade" aria-hidden="true">
@@ -102,7 +106,7 @@
                                         </button>
                                     </form>
     
-                                    <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}}</small>
+                                    <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant. Integrantes: {{$area->count_colabs}}</small>
                                     <a href="#" class="product-name">{{ $area->especializacion }}</a>
                                     <div class="small m-t-xs">
                                         {{ $area->descripcion }}

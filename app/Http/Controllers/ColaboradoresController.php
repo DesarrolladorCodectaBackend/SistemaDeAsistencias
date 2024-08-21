@@ -10,6 +10,7 @@ use App\Models\Asistentes_Clase;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
+use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Computadora_colaborador;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
@@ -268,6 +269,7 @@ class ColaboradoresController extends Controller
                 'celular' => 'sometimes|string|min:1|max:20',
                 'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
                 'areas_id.*' => 'sometimes|integer',
+                'areas_apoyo_id.*' => 'sometimes|integer',
                 'actividades_id.*' => 'sometimes|integer',
                 'currentURL' => 'sometimes|string',
 
@@ -276,10 +278,20 @@ class ColaboradoresController extends Controller
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
             //Asignar el candidato a una variable
             $candidato = $colaborador->candidato;
+            //Areas recibidas
+            $areas_id = [];
+            $areas_apoyo_id = [];
+            if(isset($request->areas_id)){
+                $areas_id = $request->areas_id;
+            }
+            if(isset($request->areas_apoyo_id)){
+                $areas_apoyo_id = $request->areas_apoyo_id;
+            }
+            // return ["areas" => $areas_apoyo_id];
             //Encontrar siguiente semana(Lunes)
             $semana = FunctionHelperController::findOrCreateNextWeek();
             //Recorrer cada area enviado en el request
-            foreach($request->areas_id as $area_id){
+            foreach($areas_id as $area_id){
                 //Buscar Si hay colaborador por area y colaborador
                 $colaborador_por_area = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('area_id', $area_id)->first();
                 //Si no se encuentra un colaborador con esta area
@@ -299,9 +311,29 @@ class ColaboradoresController extends Controller
                     RegistroActividadController::crearRegistro($colaborador_por_area->id, true);
                 }
             }
+            foreach($areas_apoyo_id as $area_id){
+                //Buscar Si hay colaborador por area y colaborador
+                $colaborador_apoyo_area = ColaboradoresApoyoAreas::where('colaborador_id', $colaborador->id)->where('area_id', $area_id)->first();
+                //Si no se encuentra un colaborador con esta area
+                // return $colaborador_apoyo_area;
+                if (!$colaborador_apoyo_area) {
+                    //Se crea un nuevo registro con esta area y colaborador
+                    ColaboradoresApoyoAreas::create([
+                        'colaborador_id' => $colaborador->id,
+                        'area_id' => $area_id,
+                        'estado' => 1,
+                    ]);
+                    //Si se encuentra un colaborador con esta area y esta inactivo
+                } else if ($colaborador_apoyo_area->estado == 0) {
+                    //Se actualiza el estado a activo
+                    // return 'here';
+                    $colaborador_apoyo_area->update(['estado' => 1]);
+                }
+            }
             
             // Buscar las areas que no estan en el request y que estan asociadas al colaborador
-            $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $request->areas_id)->get();
+            $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $areas_id)->get();
+            $areasInactivasApoyo = ColaboradoresApoyoAreas::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $areas_apoyo_id)->get();
             // Por cada registro encontrado
             foreach ($areasInactivas as $areaInactiva) {
                 //Se inactiva su estado
@@ -315,6 +347,10 @@ class ColaboradoresController extends Controller
                     //Eliminar maquinas
                     $machine->delete();
                 }
+            }
+            foreach ($areasInactivasApoyo as $areaInactivaApoyo) {
+                //Se inactiva su estado
+                $areaInactivaApoyo->update(['estado' => 0]);
             }
             if($request->actividades_id == null){
                 $actividadesInactivas = AreaRecreativa::where('colaborador_id', $colaborador_id)->where('estado', 1)->get();

@@ -312,7 +312,7 @@
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Área(s):</p>
                                             @foreach($colaborador->areas as $area)
-                                            <p style='font-size: 0.9rem;' class=''>{{$area}}</p>
+                                            <p style='font-size: 0.9rem;' class=''>{{$area['nombre']}} @if($area['tipo'] === 1)(Apoyo) @endif</p>
                                             @endforeach
                                         </div>
                                         <div class="form-group">
@@ -425,7 +425,7 @@
                                 </small>
                                 <div class="small m-t-xs text-left">
                                     @foreach($colaborador->areas as $area)
-                                    <h5>{{$area}}</h5>
+                                    <h5>{{$area['nombre']}} @if($area['tipo'] === 1)(Apoyo) @endif</h5>
                                     @endforeach
                                 </div>
                                 <small class="text-muted text-left">
@@ -543,6 +543,25 @@
                                                                             id="correo"
                                                                             value="{{ old('correo', $colaborador->candidato->correo) }}">
                                                                     </div>
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Actividades favoritas:</h5>
+                                                                        </label>
+                                                                        <select name="actividades_id[]" multiple
+                                                                            class="form-control multiple_actividades_select">
+                                                                            @foreach ($Allactividades as $actividad)
+                                                                            <option value="{{ $actividad->id }}"
+                                                                                @foreach($colaborador->actividadesFavoritas as $actividadNombre)
+                                                                                @if($actividad->nombre ==
+                                                                                $actividadNombre)
+                                                                                selected
+                                                                                @endif
+                                                                                @endforeach
+                                                                                >
+                                                                                {{ $actividad->nombre }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
                                                                 </div>
                                                                 <div class="col-sm-4 b-r">
                                                                     <h3 class="m-t-none m-b">.</h3>
@@ -570,17 +589,19 @@
 
                                                                     <div class="form-group">
                                                                         <label>
-                                                                            <h5 class="m-t-none">Area:</h5>
+                                                                            <h5 class="m-t-none">Área(s):</h5>
                                                                         </label>
-                                                                        <select name="areas_id[]" multiple required
+                                                                        <select name="areas_id[]" multiple
                                                                             class="form-control multiple_areas_select">
                                                                             @foreach ($areas as $key => $area)
                                                                             <option value="{{ $area->id }}"
                                                                                 @foreach($colaborador->areas as $areaNombre)
-                                                                                @if($area->especializacion ==
-                                                                                $areaNombre)
-                                                                                selected
-                                                                                @endif
+                                                                                    @if($areaNombre['tipo'] === 0)
+                                                                                        @if($area->especializacion ==
+                                                                                        $areaNombre['nombre'])
+                                                                                        selected
+                                                                                        @endif
+                                                                                    @endif
                                                                                 @endforeach
                                                                                 >
                                                                                 {{ $area->especializacion }}</option>
@@ -589,20 +610,22 @@
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label>
-                                                                            <h5 class="m-t-none">Actividades favoritas:</h5>
+                                                                            <h5 class="m-t-none">Área(s) Apoyo:</h5>
                                                                         </label>
-                                                                        <select name="actividades_id[]" multiple
-                                                                            class="form-control multiple_actividades_select">
-                                                                            @foreach ($Allactividades as $actividad)
-                                                                            <option value="{{ $actividad->id }}"
-                                                                                @foreach($colaborador->actividadesFavoritas as $actividadNombre)
-                                                                                @if($actividad->nombre ==
-                                                                                $actividadNombre)
-                                                                                selected
-                                                                                @endif
+                                                                        <select name="areas_apoyo_id[]" multiple
+                                                                            class="form-control multiple_apoyo_select">
+                                                                            @foreach ($areas as $key => $area)
+                                                                            <option value="{{ $area->id }}"
+                                                                                @foreach($colaborador->areas as $areaNombre)
+                                                                                    @if($areaNombre['tipo'] === 1)
+                                                                                        @if($area->especializacion ==
+                                                                                        $areaNombre['nombre'])
+                                                                                        selected
+                                                                                        @endif
+                                                                                    @endif
                                                                                 @endforeach
                                                                                 >
-                                                                                {{ $actividad->nombre }}</option>
+                                                                                {{ $area->especializacion }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
@@ -1009,6 +1032,9 @@
         //JQuery para select multiple de areas
         $(document).ready(function() {
             $('.multiple_areas_select').select2();
+        });
+        $(document).ready(function() {
+            $('.multiple_apoyo_select').select2();
         });
         $(document).ready(function() {
             $('.multiple_actividades_select').select2();

@@ -35,13 +35,21 @@ class AreaController extends Controller
         $salones = Salones::where('estado', 1)->get();
         $pageData = FunctionHelperController::getPageData($areas);
         $hasPagination = true;
+        foreach($areas as $area){
+            $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
+            $area->count_colabs = $colaboradoresAreaCount;
+        }
+        $countAreas = Area::where('estado', 1)->count();
+        $countColabs = Colaboradores::where('estado', 1)->count();
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
         return view('inspiniaViews.areas.index', [
             'areas' => $areas,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
-            'salones' => $salones
+            'salones' => $salones,
+            'countAreas' => $countAreas,
+            'countColabs' => $countColabs,
         ]);
     }
 

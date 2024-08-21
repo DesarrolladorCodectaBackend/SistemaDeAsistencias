@@ -10,7 +10,6 @@ class ReporteController extends Controller
     public function index(){
         $colaboradoresEmpresa = Colaboradores::whereNot('estado', 2)->get();
         $colaboradores = FunctionHelperController::colaboradoresConArea($colaboradoresEmpresa);
-
         return view('inspiniaViews.reportes.index', [
             "colaboradores" => $colaboradores
         ]);

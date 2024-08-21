@@ -124,11 +124,11 @@
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell"></i>
-                        {{-- <span class="label label-primary">8</span> --}}
+                        <i style="font-size: 20px" class="fa fa-bell "></i>
+                        <span id="notificationsCountContainer" class="label label-primary" hidden>8</span>
                     </a>
                     <ul id="notificationsContainer" class="dropdown-menu dropdown-alerts max-height-scrollable">
-                        {{-- Aquí irían los mensajes --}}
+
                     </ul>
                 </li>
 
@@ -214,6 +214,8 @@
 
     <script>
         let notificationsContainer = document.getElementById('notificationsContainer');
+        let notificationsCountContainer = document.getElementById('notificationsCountContainer');
+
         const UserToken = <?php echo json_encode(session('api_token')); ?>;
         const notificationCard = (icon, message, url) => {
             let card = `<li>
@@ -253,6 +255,8 @@
                 if (data.notifications.length === 0) {
                 nothingCard()
                 }
+                notificationsCountContainer.removeAttribute('hidden');
+                notificationsCountContainer.innerText = data.notifications.length;
             })
             .catch(error => console.error('Error:', error));
 

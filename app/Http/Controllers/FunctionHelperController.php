@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Colaboradores_por_Area;
+use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Maquina_reservada;
 use App\Models\Semanas;
@@ -21,15 +22,19 @@ class FunctionHelperController extends Controller
 
         foreach ($colaboradoresBase as $colaborador) {
             $colaboradorArea = Colaboradores_por_Area::with('area')->where('colaborador_id', $colaborador->id)->where('estado', true)->get();
-            if (count($colaboradorArea)>0) {
+            $colaboradorApoyo = ColaboradoresApoyoAreas::with('area')->where('colaborador_id', $colaborador->id)->where('estado', true)->get();
+            if (count($colaboradorArea)>0 || count($colaboradorApoyo)>0) {
                 $areas = [];
 
                 foreach($colaboradorArea as $colArea){
-                    $areas[] = $colArea->area->especializacion;
+                    $areas[] = ["nombre" => $colArea->area->especializacion, "tipo" => 0];
+                }
+                foreach($colaboradorApoyo as $colApoyo){
+                    $areas[] = ["nombre"=>$colApoyo->area->especializacion, "tipo" => 1];
                 }
                 $colaborador->areas = $areas;
             } else {
-                $colaborador->areas = ['Sin área asignada'];
+                $colaborador->areas = [["nombre" => 'Sin área asignada', "tipo" => 2]];
             }
             $colaboradoresConArea[] = $colaborador;
         }
