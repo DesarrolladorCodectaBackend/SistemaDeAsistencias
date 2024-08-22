@@ -50,44 +50,33 @@ class CandidatosController extends Controller
         $candidato = Candidatos::findOrFail($candidato_id);
         $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
         $horas = [
-            "07:00", 
-            "08:00", 
-            "09:00", 
-            "10:00", 
-            "11:00", 
-            "12:00", 
-            "13:00", 
-            "14:00", 
-            "15:00", 
-            "16:00", 
-            "17:00", 
-            "18:00", 
-            "19:00", 
-            "20:00", 
-            "21:00", 
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
             "22:00",
         ];
         return view('inspiniaViews.candidatos.form-candidatos', ['candidato' => $candidato, 'horas' => $horas], compact('areas'));
     }
 
-    public function store(Request $request)
+
+    public function store(StoreCandidatosRequest $request)
     {
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'apellido' => 'required|string|min:1|max:100',
-                'dni' => 'required|string|min:1|max:8',
-                'direccion' => 'required|string|min:1|max:100',
-                'fecha_nacimiento' => 'required|string|min:1|max:255',
-                'ciclo_de_estudiante' => 'required|string|min:1|max:50',
-                'sede_id' => 'required|integer|min:1|max:20',
-                'carrera_id' => 'required|integer|min:1|max:20',
-                'correo' => 'required|string|min:1|max:255',
-                'celular' => 'required|string|min:1|max:20',
-                'icono' => 'image'
-            ]);
-    
+            $request->validated();
+
             if ($request->hasFile('icono')) {
                 $icono = $request->file('icono');
                 $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
@@ -95,7 +84,7 @@ class CandidatosController extends Controller
             } else {
                 $nombreIcono = 'Default.png';
             }
-    
+
             Candidatos::create([
                 'nombre' => $request->nombre,
                 'apellido' => $request->apellido,
@@ -109,13 +98,14 @@ class CandidatosController extends Controller
                 'celular' => $request->celular,
                 'icono' => $nombreIcono
             ]);
+
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('candidatos.index');
             }
-        } catch(Exception $e) {
+        }catch(Exception $e) {
             DB::rollBack();
             // return $e;
             if($request->currentURL) {
@@ -124,27 +114,12 @@ class CandidatosController extends Controller
                 return redirect()->route('candidatos.index');
             }
         }
-        
-
     }
 
-    public function update(Request $request, $candidato_id)
+    public function update(UpdateCandidatosRequest $request, $candidato_id)
     {
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-                'apellido' => 'sometimes|string|min:1|max:100',
-                'dni' => 'sometimes|string|min:1|max:8',
-                'direccion' => 'sometimes|string|min:1|max:100',
-                'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
-                'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
-                'sede_id' => 'sometimes|integer|min:1|max:20',
-                'carrera_id' => 'sometimes|integer|min:1|max:20',
-                'correo' => 'sometimes|string|min:1|max:255',
-                'celular' => 'sometimes|string|min:1|max:20',
-                'icono' => 'sometimes|image'
-            ]);
 
             $candidato = Candidatos::findOrFail($candidato_id);
             $datosActualizar = $request->except(['icono']);
@@ -166,7 +141,7 @@ class CandidatosController extends Controller
                 $datosActualizar['icono'] = $nombreIcono;
             }
 
-            $candidato->update($datosActualizar);
+            $candidato->update($datosActualizar, $request->validated());
 
             DB::commit();
             if($request->currentURL) {
@@ -229,60 +204,6 @@ class CandidatosController extends Controller
         return response()->json(["data" => $candidatos, "conteo" => count($candidatos)]);
     }
 
-    /*
-    public function old(Request $request)
-    {
-        $request->validate([
-            'estado.*' => 'sometimes',
-            'carrera_id.*' => 'sometimes|integer',
-            'institucion_id.*' => 'sometimes|integer'
-        ]);
-        // return $request;
-
-        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
-        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
-        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
-
-        $sedes = $sedesAll->where('estado', 1);
-        $instituciones = $institucionesAll->where('estado', 1);
-        $carreras = $carrerasAll->where('estado', 1);
-
-        if (!$request->estado) {
-            $requestEstados = ["0", "1", "2"];
-        } else {
-            $requestEstados = $request->estado;
-        }
-        if (!$request->carrera_id) {
-            $requestCarreras = $carreras->pluck('id');
-        } else {
-            $requestCarreras = $request->carrera_id;
-        }
-        if (!$request->institucion_id) {
-            $requestInstituciones = $instituciones->pluck('id');
-        } else {
-            $requestInstituciones = $request->institucion_id;
-        }
-
-        $sedesId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
-
-        $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)->whereIn('sede_id', $sedesId)->whereIn('estado', $requestEstados)->get(); //paginate?
-
-        $hasPagination = false;
-        $pageData = [];
-
-        return view('inspiniaViews.candidatos.index', [
-            'candidatos' => $candidatos,
-            'hasPagination' => $hasPagination,
-            'pageData' => $pageData,
-            'sedes' => $sedes,
-            'instituciones' => $instituciones,
-            'carreras' => $carreras,
-            'sedesAll' => $sedesAll, //Not using
-            'institucionesAll' => $institucionesAll,
-            'carrerasAll' => $carrerasAll,
-        ]);
-    }
-    */
 
     public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '')
     {
@@ -329,7 +250,7 @@ class CandidatosController extends Controller
         //Filtrar por id
         $candidatoPorId = Candidatos::with('carrera', 'sede')->where('id', $busqueda)->paginate(6);
 
-        //Filtrar por nombre y apellido de candidato          
+        //Filtrar por nombre y apellido de candidato
         $candidatosPorNombre = Candidatos::with('sede', 'carrera')
             ->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%')
             ->paginate(6);
@@ -351,7 +272,7 @@ class CandidatosController extends Controller
 
         $hasPagination = true;
         $pageData = FunctionHelperController::getPageData($candidatos);
-        
+
         //return $colaboradoresConArea;
 
         return view('inspiniaViews.candidatos.index', [
@@ -396,7 +317,7 @@ class CandidatosController extends Controller
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);
-    
+
             if($candidato && $candidato->estado === 2){
                 $colaborador = Colaboradores::where('candidato_id', $candidato_id)->first();
                 if($colaborador) {

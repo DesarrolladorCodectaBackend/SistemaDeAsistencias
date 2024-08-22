@@ -113,9 +113,6 @@ Route::middleware('auth')->group(function () {
     Route::post('sedes/activar-inactivar/{sede_id}', [SedeController::class, 'activarInactivar'])->name('sedes.activarInactivar');
 
 
-    //OBJETOS
-    //Route::resource('objetos', ObjetoController::class);
-
     //CANDIDATOS
     // Route::resource('candidatos', CandidatosController::class);
     Route::get('candidatos', [CandidatosController::class, 'index'])->name('candidatos.index');
@@ -183,7 +180,7 @@ Route::middleware('auth')->group(function () {
 
     //ACTIVIDADES
     Route::resource('actividades', ActividadesController::class);
-    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividad.activarInactivar');
+    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividades.activarInactivar');
 
     //REUNIONES PROGRAMADAS
     Route::get('ReunionesProgramadas', [ReunionesProgramadasController::class, 'getAllProgramReuToCalendar'])->name('reunionesProgramadas.allReu');

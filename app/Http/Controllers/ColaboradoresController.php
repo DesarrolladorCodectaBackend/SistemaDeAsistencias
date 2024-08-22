@@ -19,6 +19,7 @@ use App\Models\Carrera;
 use App\Models\Maquina_reservada;
 use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
+use App\Http\Requests\UpdateColaboradoresRequest;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
 use App\Models\RegistroActividad;
@@ -46,7 +47,7 @@ class ColaboradoresController extends Controller
         $instituciones = $institucionesAll->where('estado', 1);
         $carreras = $carrerasAll->where('estado', 1);
         $areas = $areasAll->where('estado', 1);
-        
+
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
         // return $colabsActividades;
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
@@ -56,7 +57,7 @@ class ColaboradoresController extends Controller
         $hasPagination = true;
         // return $pageData;
         // return $actividades;
-        
+
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
@@ -199,14 +200,7 @@ class ColaboradoresController extends Controller
     {
         DB::beginTransaction();
         try{
-            $request->validate([
-                'candidato_id' => 'required|integer',
-                'areas_id.*' => 'required|integer',
-                'horarios' => 'required|array',
-                'horarios.*.hora_inicial' => 'required|date_format:H:i',
-                'horarios.*.hora_final' => 'required|date_format:H:i',
-                'horarios.*.dia' => 'required|string'
-            ]);
+
             //Se busca al candidato por su id
             $candidato = Candidatos::findOrFail($request->candidato_id);
             //Se verifica si el candidato está activo
@@ -216,7 +210,7 @@ class ColaboradoresController extends Controller
 
                 //Encontrar siguiente semana(Lunes)
                 $semana = FunctionHelperController::findOrCreateNextWeek();
-                
+
                 //Se recorre el request de areas
                 foreach($request->areas_id as $area_id){
                     //Se crea un nuevo registro en la tabla Colaboradores_por_Area con el id del colaborador y el id del área
@@ -252,28 +246,11 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function update(Request $request, $colaborador_id)
+    public function update(UpdateColaboradoresRequest $request, $colaborador_id)
     {
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-                'apellido' => 'sometimes|string|min:1|max:100',
-                'dni' => 'sometimes|string|min:1|max:8',
-                'direccion' => 'sometimes|string|min:1|max:100',
-                'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
-                'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
-                'sede_id' => 'sometimes|integer|min:1|max:20',
-                'carrera_id' => 'sometimes|integer|min:1|max:20',
-                'correo' => 'sometimes|string|min:1|max:255',
-                'celular' => 'sometimes|string|min:1|max:20',
-                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
-                'areas_id.*' => 'sometimes|integer',
-                'areas_apoyo_id.*' => 'sometimes|integer',
-                'actividades_id.*' => 'sometimes|integer',
-                'currentURL' => 'sometimes|string',
 
-            ]);
             //Encontrar al colaborador con su candidato por su id
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
             //Asignar el candidato a una variable
@@ -361,7 +338,7 @@ class ColaboradoresController extends Controller
                 //Lo mismo con las actividades
                 foreach($request->actividades_id as $actividad_id){
                     $actividad_recreativa = AreaRecreativa::where('colaborador_id', $colaborador->id)->where('actividad_id', $actividad_id)->first();
-    
+
                     if(!$actividad_recreativa){
                         AreaRecreativa::create([
                             'colaborador_id' => $colaborador->id,
@@ -397,7 +374,7 @@ class ColaboradoresController extends Controller
             }
 
             //Se actualizan los datos del candidato
-            $candidato->update($datosActualizar);
+            $candidato->update($datosActualizar, $request->validated());
             DB::commit();
 
             //Se redirige a la vista

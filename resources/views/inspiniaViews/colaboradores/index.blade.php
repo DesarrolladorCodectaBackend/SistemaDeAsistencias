@@ -28,13 +28,8 @@
             </div>
             <div class="col-lg-7 flex-centered">
                 <div class="flex-centered spc-per-90">
-                    {{-- <form method="POST" action="{{route('colaboradores.search')}}"
-                        class="flex-centered gap-20 spc-per-100">
-                        <input class="form-control wdt-per-80" type="search" name="busqueda"
-                            placeholder="Buscar Colaborador..." aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form> --}}
-                    <form id="searchColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL(event)"
+
+                    <form id="searchColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
                             placeholder="Buscar Colaborador..." aria-label="Search" required autocomplete="off">
@@ -267,7 +262,7 @@
                                         <style>
                                             .form-group {
                                                 margin: 0rem;
-                                                
+
                                             }
                                             p{
                                                 margin: 0px;
@@ -336,7 +331,8 @@
                                                 @endif
                                             </p></div>
                                         <div>
-                                            <a data-toggle="modal"
+                                            {{-- editar colaborador--}}
+                                            <a data-toggle="modal" id="editButton{{ $colaborador->id }}"
                                                 class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
                                                 onclick="abrirModalEdicion({{$colaborador->id}});"
                                                 style="font-size: 20px; width: 60px;"
@@ -455,15 +451,17 @@
                                     <div class="ibox-content">
                                         @if($colaborador->estado != 2)
                                         <div class="text-center">
+                                            {{-- Botón calendario colaborador --}}
                                             <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
                                                 style="font-size: 20px;"
                                                 onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
-                                            {{-- <button class="btn btn-primary btn-warning fa fa-book mx-1"
-                                                style="font-size: 20px;"></button> --}}
+
+                                            {{-- Botón ver colaborador --}}
                                             <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                 style="font-size: 20px;"
                                                 href="#modal-form-view{{$colaborador->id}}"></button>
                                         </div>
+                                        {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-custom">
@@ -474,6 +472,10 @@
                                                             enctype="multipart/form-data">
                                                             @csrf
                                                             @method('PUT')
+                                                            {{-- Campo oculto para identificar el tipo de formulario --}}
+                                                            <input type="hidden" name="form_type" value="edit">
+                                                            <input type="hidden" name="colaborador_id" value="{{ $colaborador->id }}">
+
                                                             <style>
                                                                 .form-group {
                                                                     margin-bottom: 0rem;
@@ -493,6 +495,9 @@
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
                                                                             value="{{ old('nombre', $colaborador->candidato->nombre) }}">
+                                                                            @error('nombre')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Apellidos:</h5>
@@ -500,6 +505,9 @@
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
                                                                             value="{{ old('apellido', $colaborador->candidato->apellido) }}">
+                                                                            @error('apellido')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Direccion:</h5>
@@ -507,6 +515,9 @@
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
                                                                             value="{{ old('direccion', $colaborador->candidato->direccion) }}">
+                                                                            @error('direccion')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Institucion - Sede:
@@ -526,7 +537,7 @@
                                                                             <h5 class="m-t-none">Ciclo:</h5>
                                                                         </label>
                                                                         <select name="ciclo_de_estudiante"
-                                                                            class="form-control" required>
+                                                                            class="form-control">
                                                                             @for($i = 4; $i <= 10; $i++) <option
                                                                                 @if($i==$colaborador->
                                                                                 candidato->ciclo_de_estudiante) selected
@@ -578,6 +589,9 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
                                                                             value="{{ old('dni', $colaborador->candidato->dni) }}"></input>
+                                                                        @error('dni')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Celular:</h5>
@@ -585,6 +599,10 @@
                                                                             class="form-control" name="celular"
                                                                             id="celular"
                                                                             value="{{ old('celular', $colaborador->candidato->celular) }}">
+                                                                            @error('celular')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+
                                                                     </div>
 
                                                                     <div class="form-group">
@@ -757,29 +775,7 @@
             </div>
             @endif
 
-            {{-- <div class="row mb-4">
-                <div class="col-6 d-flex justify-content-start align-items-center gap-10">
-                    @if($colaboradores->lastPag > 2 && $colaboradores->currentPage() !== 1)
-                    <a href="{{ $colaboradores->url(1) }}" class="btn btn-outline-dark rounded-5"><i
-                            class="fa fa-arrow-circle-left"></i> First</a>
-                    @endif
-                    @if($colaboradores->currentPage() > 1)
-                    <a href="{{$colaboradores->previousPageUrl()}}" class="btn btn-outline-dark rounded-5"> <i
-                            class="fa fa-arrow-circle-left"></i> Anterior </a>
-                    @endif
-                </div>
-                <div class="col-6 d-flex justify-content-end align-items-center gap-10">
-                    @if($colaboradores->currentPage() < $colaboradores->lastPage())
-                        <a href="{{ $colaboradores->nextPageUrl() }}" class="btn btn-outline-dark rounded-5"> Siguiente
-                            <i class="fa fa-arrow-circle-right"></i></a>
-                        @endif
-                        @if($colaboradores->lastPage() > 2 && $colaboradores->currentPage() !==
-                        $colaboradores->lastPage())
-                        <a href="{{ $colaboradores->url($colaboradores->lastPage()) }}"
-                            class="btn btn-outline-dark rounded-5">Last <i class="fa fa-arrow-circle-right"></i></a>
-                        @endif
-                </div>
-            </div> --}}
+
         </div>
 
 
@@ -790,29 +786,38 @@
 
 
 
-
-
-
     </div>
+
+
+
+    @if ($errors->any())
+    <script>
+        console.log(@json($errors->all())); // Muestra todos los errores en la consola
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (old('form_type') == 'edit' && old('colaborador_id'))
+            $('#modal-form-update' + {{ old('colaborador_id') }}).modal('show');
+            @endif
+        });
+    </script>
+@endif
+
+
+
+
+
+
     <style>
         .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
             width: 100% !important;
         }
 
-        /* .select2-container--default .select2-selection--multiple {
-            width: auto;
-            min-width: 100% !important;
-        } */
+
         .select2-container {
             display: inline !important;
         }
 
-        /* .select2.select2-container.select2-container--default.selection.select2-selection.select2-selection--multiple.
-        .select2-selection__rendered.select2-container--below.select2-selection__rendered{
-            z-index: 9999 !important;
-            width: 100% !important;
-        } */
+
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -860,7 +865,7 @@
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
-                modal.classList.add(' show');
+                modal.classList.add('show');
             }
         }
 
@@ -896,16 +901,16 @@
 
         function prepareSearchActionURL(event) {
             // preventDefault();
-            
+
             let busqueda = document.getElementById('searchInput').value;
 
             if(busqueda.trim().length > 0){
                 console.log(busqueda);
-    
+
                 let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#searchColaboradores').action = actionUrl;
-    
+
                 return true;
             } else{
                 event.preventDefault();
@@ -929,7 +934,7 @@
                 let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
-    
+
                 return true;
             }
 

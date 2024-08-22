@@ -19,7 +19,7 @@
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
-    
+
 </head>
 
 
@@ -114,12 +114,7 @@
             <div class="navbar-header">
                 <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i>
                 </a>
-                {{-- <form role="search" class="navbar-form-custom" action="">
-                    <div class="form-group">
-                        <input type="text" placeholder="Search for something..." class="form-control" name="top-search"
-                            id="top-search">
-                    </div>
-                </form> --}}
+
             </div>
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
@@ -191,24 +186,24 @@
     <script src="{{ asset('js/plugins/flot/jquery.flot.symbol.js') }}"></script>
     <script src="{{ asset('js/plugins/flot/jquery.flot.time.js') }}"></script>
 
-    
+
     <script class="Peity" src="{{ asset('js/plugins/peity/jquery.peity.min.js') }}"></script>
     <script src="{{ asset('js/demo/peity-demo.js') }}"></script>
 
-    
-    
 
-    
+
+
+
     <script class="Jvectormap" src="{{ asset('js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js') }}"></script>
     <script src="{{ asset('js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
 
-    
+
     <script class="EayPIE" src="{{ asset('js/plugins/easypiechart/jquery.easypiechart.js') }}"></script>
 
-    
+
     <script class="Sparkline" src="{{ asset('js/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
 
-    
+
     <script class="Sparkline demo data" src="{{ asset('js/demo/sparkline-demo.js') }}"></script>
     -->
 
