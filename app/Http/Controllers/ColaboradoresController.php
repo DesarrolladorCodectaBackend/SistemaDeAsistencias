@@ -246,7 +246,7 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function update(UpdateColaboradoresRequest $request, $colaborador_id)
+    public function update(Request $request, $colaborador_id)
     {
         DB::beginTransaction();
         try{
@@ -307,7 +307,7 @@ class ColaboradoresController extends Controller
                     $colaborador_apoyo_area->update(['estado' => 1]);
                 }
             }
-            
+
             // Buscar las areas que no estan en el request y que estan asociadas al colaborador
             $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $areas_id)->get();
             $areasInactivasApoyo = ColaboradoresApoyoAreas::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $areas_apoyo_id)->get();
