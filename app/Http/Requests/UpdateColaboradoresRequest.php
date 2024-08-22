@@ -31,18 +31,18 @@ class UpdateColaboradoresRequest extends FormRequest
             'ciclo_de_estudiante' => ['sometimes'],
             'sede_id' => ['required', 'exists:sedes,id'],
             'carrera_id' => ['required', 'exists:carreras,id'],
-            'dni' => [
+            /*'dni' => [
                 'sometimes',
                 'max:8',
                 'nullable',
                 Rule::unique('candidatos')->ignore($this->route('colaborador_id'))
-            ],
+            ],*/
             'icono' => 'sometimes|image|mimes:jpeg,png,jpg,svg',
             'areas_id.*' => 'sometimes|integer',
             'areas_apoyo_id.*' => 'sometimes|integer',
             'actividades_id.*' => 'sometimes|integer',
             'currentURL' => 'sometimes|string',
-            'correo' => [
+            /*'correo' => [
                 'sometimes',
                 'max:250',
                 'nullable',
@@ -54,7 +54,7 @@ class UpdateColaboradoresRequest extends FormRequest
                 'max:9',
                 'nullable',
                 Rule::unique('candidatos')->ignore($this->route('colaborador_id'))
-            ],
+            ],*/
 
         ];
     }

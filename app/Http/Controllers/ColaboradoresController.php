@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\FunctionHelperController;
+use App\Http\Requests\StoreColaboradoresRequest;
 use App\Models\Actividades;
 use App\Models\Area;
 use App\Models\AreaRecreativa;
@@ -195,8 +196,7 @@ class ColaboradoresController extends Controller
         ]);
     }
 
-
-    public function store(Request $request)
+    public function store(StoreColaboradoresRequest $request)
     {
         DB::beginTransaction();
         try{
@@ -246,7 +246,7 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function update(Request $request, $colaborador_id)
+    public function update(UpdateColaboradoresRequest $request, $colaborador_id)
     {
         DB::beginTransaction();
         try{
