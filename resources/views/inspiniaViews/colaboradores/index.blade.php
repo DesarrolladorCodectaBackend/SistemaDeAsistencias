@@ -38,7 +38,7 @@
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
                             placeholder="Buscar Colaborador..." aria-label="Search" required autocomplete="off">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                     </form>
                 </div>
             </div>
@@ -425,7 +425,7 @@
                                 </small>
                                 <div class="small m-t-xs text-left">
                                     @foreach($colaborador->areas as $area)
-                                    <h5>{{$area['nombre']}} @if($area['tipo'] === 1)(Apoyo) @endif</h5>
+                                    <h5>{{$area['nombre']}} @if($area['tipo'] === 1) <span style="color: #007">(Apoyo)</span>@endif</h5>
                                     @endforeach
                                 </div>
                                 <small class="text-muted text-left">
