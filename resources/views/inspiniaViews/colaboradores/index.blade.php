@@ -831,16 +831,7 @@
                 console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
             }
         });
-        /*
-        document.addEventListener('DOMContentLoaded', function() {
-            const colabCont = document.getElementById('colaboradoresCont');
-            if (colabCont) {
-                colabCont.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'colaboradoresCont' no se encontró en el DOM.");
-            }
-        });
-        */
+
         document.addEventListener('DOMContentLoaded', function() {
             const colaborador = document.getElementById('colaboradores');
             if (colaborador) {
