@@ -507,7 +507,7 @@
                                                                             value="{{ old('apellido', $colaborador->candidato->apellido) }}">
                                                                             @error('apellido')
                                                                             <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Direccion:</h5>
@@ -553,6 +553,9 @@
                                                                             class="form-control" name="correo"
                                                                             id="correo"
                                                                             value="{{ old('correo', $colaborador->candidato->correo) }}">
+                                                                            @error('correo')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label>
@@ -789,17 +792,17 @@
     </div>
 
 
-
+ {{-- MODAL SCRIPT --}}
     @if ($errors->any())
-    <script>
-        console.log(@json($errors->all())); // Muestra todos los errores en la consola
-        document.addEventListener('DOMContentLoaded', function() {
-            @if (old('form_type') == 'edit' && old('colaborador_id'))
-            $('#modal-form-update' + {{ old('colaborador_id') }}).modal('show');
-            @endif
-        });
-    </script>
-@endif
+        <script>
+            console.log(@json($errors->all())); // Muestra todos los errores en la consola
+            document.addEventListener('DOMContentLoaded', function() {
+                @if (old('form_type') == 'edit' && old('colaborador_id'))
+                $('#modal-form-update' + {{ old('colaborador_id') }}).modal('show');
+                @endif
+            });
+        </script>
+    @endif
 
 
 

@@ -39,6 +39,7 @@ class UpdateColaboradoresRequest extends FormRequest
             ],
             'icono' => 'sometimes|image|mimes:jpeg,png,jpg,svg',
             'areas_id.*' => 'sometimes|integer',
+            'areas_apoyo_id.*' => 'sometimes|integer',
             'actividades_id.*' => 'sometimes|integer',
             'currentURL' => 'sometimes|string',
             'correo' => [
