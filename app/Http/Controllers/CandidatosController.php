@@ -109,9 +109,9 @@ class CandidatosController extends Controller
             DB::rollBack();
             // return $e;
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al registrar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('candidatos.index');
+                return redirect()->route('candidatos.index')->with('error', 'Ocurrió un error al registrar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -152,9 +152,9 @@ class CandidatosController extends Controller
         } catch(Exception $e) {
             DB::rollBack();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('candidatos.index');
+                return redirect()->route('candidatos.index')->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
 }
@@ -178,9 +178,9 @@ class CandidatosController extends Controller
         } catch(Exception $e){
             DB::rollBack();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al rechazar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('candidatos.index');
+                return redirect()->route('candidatos.index')->with('error', 'Ocurrió un error al rechazar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -305,9 +305,9 @@ class CandidatosController extends Controller
         } catch(Exception $e){
             DB::rollback();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al reconsiderar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('candidatos.index');
+                return redirect()->route('candidatos.index')->with('error', 'Ocurrió un error al reconsiderar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -341,9 +341,9 @@ class CandidatosController extends Controller
         } catch(Exception $e) {
             DB::rollBack();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('candidatos.index');
+                return redirect()->route('candidatos.index')->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
 

@@ -250,9 +250,65 @@ class ColaboradoresController extends Controller
     {
         DB::beginTransaction();
         try{
+            $returnRoute = route('colaboradores.index');
+
+            if(isset($request->currentURL)) {
+                $returnRoute = $request->currentURL;
+            }
 
             //Encontrar al colaborador con su candidato por su id
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
+            //ERRORES
+            $errors = [];
+            // Verificar DNI
+            if(isset($request->dni)){
+                // Verificar que tenga exactamente 8 caracteres
+                if(strlen($request->dni) !== 8) {
+                    $errors['dni'] = 'El DNI debe contener 8 caracteres.';
+                } else {
+                    //Verificar que sea único
+                    $candidatos = Candidatos::where('dni', $request->dni)->get();
+                    foreach($candidatos as $candidato){
+                        if($candidato->id != $colaborador->candidato_id) {
+                            $errors['dni'] = 'El DNI ya está en uso.';
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Verificar correo
+            if(isset($request->correo)){
+                $candidatos = Candidatos::where('correo', $request->correo)->get();
+                foreach($candidatos as $candidato){
+                    if($candidato->id != $colaborador->candidato_id) {
+                        $errors['correo'] = 'El correo ya está en uso.';
+                        break;
+                    }
+                }
+            }
+
+            // Verificar celular
+            if(isset($request->celular)){
+                // Verificar que tenga exactamente 9 caracteres
+                if(strlen($request->celular) !== 9) {
+                    $errors['celular'] = 'El celular debe contener 9 números.';
+                } else {
+                    //Verificar que sea único
+                    $candidatos = Candidatos::where('celular', $request->celular)->get();
+                    foreach($candidatos as $candidato){
+                        if($candidato->id != $colaborador->candidato_id) {
+                            $errors['celular'] = 'El celular ya está en uso.';
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Si hay errores, redirigir con todos ellos
+            if(!empty($errors)) {
+                return redirect($returnRoute)->withErrors($errors)->withInput();
+            }
             //Asignar el candidato a una variable
             $candidato = $colaborador->candidato;
             //Areas recibidas
@@ -378,18 +434,14 @@ class ColaboradoresController extends Controller
             DB::commit();
 
             //Se redirige a la vista
-            if($request->currentURL) {
-                return redirect($request->currentURL);
-            } else {
-                return redirect()->route('colaboradores.index');
-            }
+            return redirect($returnRoute);
         } catch(Exception $e){
             DB::rollBack();
-            return $e;
+            // return $e;
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -423,12 +475,12 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            // return $e->getMessage();
             // return redirect()->route('colaboradores.index');
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al actualizar el estado, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al actualizar el estado, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -529,9 +581,9 @@ class ColaboradoresController extends Controller
         } catch(Exception $e){
             DB::rollBack();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al despedir, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al despedir, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -558,9 +610,9 @@ class ColaboradoresController extends Controller
         } catch(Exception $e){
             DB::rollBack();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al recontratar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al recontratar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -657,9 +709,9 @@ class ColaboradoresController extends Controller
             DB::rollBack();
             // return $e;
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
 

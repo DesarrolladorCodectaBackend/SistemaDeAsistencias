@@ -160,30 +160,38 @@
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
-                                            <div class="form-group"><label>Nombre</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" class="form-control" name="nombre" value="{{ old('nombre') }}"
-                                                    >
+                                            <div class="form-group"><label>Nombre</label> 
+                                                <input type="text" placeholder="Ingrese un nombre" required autocomplete="off" class="form-control" name="nombre" value="{{ old('nombre') }}">
+                                                @error('nombre')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                             <div class="form-group"><label>Apellido</label> <input type="text"
                                                     placeholder="Ingrese apellido" class="form-control" name="apellido" value="{{ old('apellido')}}"
-                                                    >
+                                                    required autocomplete="off">
+                                                    @error('apellido')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>DNI</label> <input type="number"
                                                     placeholder="Ingrese dni" class="form-control" name="dni"
-                                                    value="{{ old('dni') }}">
+                                                    value="{{ old('dni') }}" autocomplete="off">
                                                    @error('dni')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                             </div>
                                             <div class="form-group"><label>Dirección</label> <input type="text"
                                                     placeholder="Ingrese dirección" class="form-control"
-                                                    name="direccion" value="{{ old('direccion')}}">
+                                                    name="direccion" value="{{ old('direccion')}}" autocomplete="off">
+                                                    @error('direccion')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Fecha de Nacimiento</label> <input
-                                                    type="date" class="form-control" name="fecha_nacimiento" value="{{ old('fecha_nacimiento')}}">
+                                                    type="date" class="form-control" name="fecha_nacimiento" value="{{ old('fecha_nacimiento')}}" autocomplete="off">
                                             </div>
                                             <div class="form-group"><label>Ciclo de Estudiante</label>
-                                                <select name="ciclo_de_estudiante" class="form-control">
+                                                <select name="ciclo_de_estudiante" class="form-control" required>
                                                     @for($i = 4; $i <= 10; $i++)
                                                         <option value="{{ $i }}"
                                                             @if($i == old('ciclo_de_estudiante')) selected @endif>
@@ -191,6 +199,9 @@
                                                         </option>
                                                     @endfor
                                                 </select>
+                                                @error('ciclo_de_estudiante')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
 
 
@@ -202,9 +213,11 @@
                                             <button type="button" class="btn btn-link" id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
                                             </button>
-
+                                            @error('icono')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                             <div class="form-group"><label>Institucion - Sede</label>
-                                                <select class="form-control" name="sede_id">
+                                                <select class="form-control" name="sede_id" required>
                                                     @foreach($sedes as $sede)
                                                         <option value="{{ $sede->id }}"
                                                             @if($sede->id == old('sede_id')) selected @endif>
@@ -213,17 +226,22 @@
                                                     @endforeach
 
                                                 </select>
+                                                @error('sede_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                             <div class="form-group"><label>Carrera</label>
-                                                <select class="form-control" name="carrera_id">
+                                                <select class="form-control" name="carrera_id" required>
                                                     @foreach($carreras as $carrera)
                                                         <option value="{{ $carrera->id }}"
                                                             @if($carrera->id == old('carrera_id')) selected @endif>
                                                             {{ $carrera->nombre }}
                                                         </option>
                                                     @endforeach
-
                                                 </select>
+                                                @error('carrera_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                             <div class="form-group"><label>Correo</label> <input type="email"
                                                     placeholder="correo@gmail.com" class="form-control" name="correo" value="{{old('correo')}}">
@@ -256,6 +274,14 @@
 
 
         <div class="wrapper wrapper-content animated fadeInRight">
+            @if(session('error'))
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Error:</strong> {{ session('error') }}
+                </div>
+                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+            </div>
+            @endif
             <div class="row">
                 @foreach ($candidatos as $index => $candidato)
                 <div id="modal-form-view{{$candidato->id}}" class="modal fade" aria-hidden="true">
@@ -380,7 +406,7 @@
 
                                     @elseif($candidato->estado == 0)
                                     <div class="text-center">
-                                        <h1 style="color: gold" class="font-bold">Colaborador</h1>
+                                        <h3 style="color: gold" class="font-bold">Colaborador</h3>
                                     </div>
                                     @elseif($candidato->estado == 2)
                                     <div class="d-flex justify-content-center gap-10">
@@ -400,7 +426,7 @@
                                     </div>
                                     @elseif($candidato->estado == 3)
                                     <div class="text-center">
-                                        <h1 class="text-danger font-bold">Ex Colaborador</h1>
+                                        <h3 class="text-danger font-bold">Ex Colaborador</h3>
                                     </div>
                                     @endif
 
@@ -522,7 +548,9 @@
                                                                                     </option>
                                                                                 @endfor
                                                                             </select>
-
+                                                                            @error('ciclo_de_estudiante')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
 
                                                                 </div>
@@ -536,6 +564,9 @@
                                                                         id="icon-upload-{{ $candidato->id }}">
                                                                         <i class="fa fa-cloud-download big-icon"></i>
                                                                     </button>
+                                                                    @error('icono')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                                     <script>
                                                                         document.getElementById('icon-upload-{{ $candidato->id }}').addEventListener('click', function() {
                                                                         document.getElementById('icono-{{ $candidato->id }}').click();
@@ -553,6 +584,9 @@
                                                                             </option>
                                                                             @endforeach
                                                                         </select>
+                                                                        @error('sede_id')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Carrera</label>
                                                                         <select class="form-control" name="carrera_id">
@@ -563,6 +597,9 @@
                                                                                 @endif >{{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
+                                                                        @error('carrera_id')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Correo</label>
                                                                         <input type="text" placeholder="....."
@@ -670,6 +707,14 @@
 
     </style>
     <script>
+        const deleteAlertError = () => {
+            let alertError = document.getElementById('alert-error');
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error("Elemento con ID 'alert-error' no encontrado.");
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const personal = document.getElementById('personalCont');
             if (personal) {

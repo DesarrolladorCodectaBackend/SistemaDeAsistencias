@@ -29,9 +29,10 @@ class UpdateCandidatosRequest extends FormRequest
                 'apellido' => ['required','min:1','max:100'],
                 'direccion' => ['sometimes','max:100'],
                 'fecha_nacimiento' => ['sometimes'],
-                'ciclo_de_estudiante' => ['sometimes'],
-                'sede_id' => ['required'],
-                'carrera_id' => ['required'],
+                'ciclo_de_estudiante' => ['sometimes', 'integer'],
+                'sede_id' => ['required', 'integer'],
+                'carrera_id' => ['required', 'integer'],
+                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,svg,webp',
 
                 'dni' => [
                     'sometimes',
@@ -66,8 +67,11 @@ class UpdateCandidatosRequest extends FormRequest
             'celular.unique' => 'Error. Nro.celular en uso',
             'dni.min' => 'El DNI debe contener 8 números',
             'dni.max' => 'El DNI debe contener 8 números',
+            'celular.max' => 'El celular debe contener 9 números',
             'min' => 'Debe contener más de 1 letra.',
-            'max' => 'Debe contener menos de 100 letras.'
+            'max' => 'excedió limite permitido de caracteres.',
+            'icono.image' => 'El archivo debe ser una imagen.',
+            'icono.mimes' => 'La imagen debe ser de tipo jpeg, png, jpg, svg, webp',
         ];
     }
 }

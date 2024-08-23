@@ -249,6 +249,14 @@
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
+            @if(session('error'))
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Error:</strong> {{ session('error') }}
+                </div>
+                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+            </div>
+            @endif
             <div class="row">
                 @foreach($colaboradores->data as $index => $colaborador)
                 <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true">
@@ -497,7 +505,7 @@
                                                                             value="{{ old('nombre', $colaborador->candidato->nombre) }}">
                                                                             @error('nombre')
                                                                             <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Apellidos:</h5>
@@ -517,7 +525,7 @@
                                                                             value="{{ old('direccion', $colaborador->candidato->direccion) }}">
                                                                             @error('direccion')
                                                                             <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Institucion - Sede:
@@ -747,6 +755,8 @@
                 </div>
                 @endforeach
             </div>
+            
+
             @if($hasPagination === true)
             <div class="row mb-5 mb-md-4">
                 <div
@@ -823,6 +833,14 @@
 
     </style>
     <script>
+        const deleteAlertError = () => {
+            let alertError = document.getElementById('alert-error');
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error("Elemento con ID 'alert-error' no encontrado.");
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const personal = document.getElementById('personalCont');
             if (personal) {
