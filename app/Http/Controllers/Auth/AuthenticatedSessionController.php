@@ -40,7 +40,7 @@ class AuthenticatedSessionController extends Controller
     public function login(Request $request)
     {
         if (! Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(["status" => 401, "message" => "Email o contraseña incorrectos."], 401);
+            return response()->json(["status" => 401, "message" => "Email o contraseña incorrectos."]);
         }
 
         $user = User::where('email', $request->email)->firstOrFail();

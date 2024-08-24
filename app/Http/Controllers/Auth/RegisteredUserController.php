@@ -35,40 +35,40 @@ class RegisteredUserController extends Controller
             //Validar manualmente
             //NOMBRE (obligatorio, string, maximo 255 caracteres)
             if(!isset($request->name)){
-                return response()->json(["status"=> 400, "message" => "El nombre es un campo obligatorio"], 400);
+                return response()->json(["status"=> 400, "message" => "El nombre es un campo obligatorio"]);
             } else{
                 if(!is_string($request->name)) {
-                    return response()->json(["status"=> 400, "message" => "El nombre debe ser un texto"], 400);
+                    return response()->json(["status"=> 400, "message" => "El nombre debe ser un texto"]);
                 }
                 if(strlen($request->name) > 255) {
-                    return response()->json(["status"=> 400, "message" => "El nombre no debe exceder los 255 caracteres"], 400);
+                    return response()->json(["status"=> 400, "message" => "El nombre no debe exceder los 255 caracteres"]);
                 }
             }
     
             //EMAIL (obligatorio, string, maximo 255 caracteres, email valido, unico en la tabla users)
             if(!isset($request->email)){
-                return response()->json(["status"=> 400, "message" => "El email es un campo obligatorio"], 400);
+                return response()->json(["status"=> 400, "message" => "El email es un campo obligatorio"]);
             }else{
                 if(!is_string($request->email)) {
-                    return response()->json(["status"=> 400, "message" => "El email debe ser un texto"], 400);
+                    return response()->json(["status"=> 400, "message" => "El email debe ser un texto"]);
                 }
                 if(strlen($request->email) > 255) {
-                    return response()->json(["status"=> 400, "message" => "El email no debe exceder los 255 caracteres"], 400);
+                    return response()->json(["status"=> 400, "message" => "El email no debe exceder los 255 caracteres"]);
                 }
                 $sameUser = User::where('email', $request->email)->first();
                 if($sameUser) {
-                    return response()->json(["status"=>400, "message" => "Ya existe un usuario con ese email"], 400);
+                    return response()->json(["status"=>400, "message" => "Ya existe un usuario con ese email"]);
                 }
             }
             //PASSWORD (obligatorio,string, minimo 8 caracteres, maximo 50 caracteres)
             if(!isset($request->password)){
-                return response()->json(["status"=> 400, "message" => "La contraseña es un campo obligatorio"], 400);
+                return response()->json(["status"=> 400, "message" => "La contraseña es un campo obligatorio"]);
             }else{
                 if(strlen($request->password) < 8){
-                    return response()->json(["status"=> 400, "message" => "La contraseña debe contener mínimo 8 caracteres"], 400);
+                    return response()->json(["status"=> 400, "message" => "La contraseña debe contener mínimo 8 caracteres"]);
                 }
                 if(strlen($request->password) > 50){
-                    return response()->json(["status" => 400, "message" => "La contraseña no debe exceder los 50 caracteres"], 400);
+                    return response()->json(["status" => 400, "message" => "La contraseña no debe exceder los 50 caracteres"]);
                 }
             }
     
