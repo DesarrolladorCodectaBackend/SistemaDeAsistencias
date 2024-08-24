@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
@@ -34,28 +35,57 @@ class AuthenticatedSessionController extends Controller
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
         session(['api_token' => $token]);
-        // return response()->json(['token' => $token, 'user' => $user], 200);
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return response()->json(["access_token" => $token, "token_type"=> "Bearer", "user" => $user, "status" => "success"], 200);
+    }
+    public function login(Request $request)
+    {
+        if (! Auth::attempt($request->only('email', 'password'))) {
+            return response()->json(["status" => 401, "message" => "Email o contraseña incorrectos."], 401);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        
+        return response()->json(["access_token" => $token, "token_type"=> "Bearer", "user" => $user, "status" => "200"], 200);
     }
 
     /**
+     * LOGOUT
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    // public function destroy()
+    // {
+    //     $user = auth()->user();
+
+    //     // Auth::guard('web')->logout();
+
+    //     // $request->session()->invalidate();
+
+    //     // $request->session()->regenerateToken();
+
+    //     if ($user) {
+    //         $user->tokens()->delete();
+    //     }
+
+    //     return response()->json(["status" => "success", "message" => "Logout successfully"], 200);
+    // }
+    public function destroy()
     {
-        $user = auth()->user();
-        // return $user->tokens()->first()->token; //Obtener token
+        try {
+            $user = auth()->user();
 
-        Auth::guard('web')->logout();
+            if (!$user) {
+                // Si el usuario no está autenticado, devuelve un mensaje de error
+                return response()->json(["status" => "401", "message" => "Unauthorized"], 401);
+            }
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        if ($user) {
+            // Elimina los tokens del usuario autenticado
             $user->tokens()->delete();
-        }
 
-        return redirect('/');
+            return response()->json(["status" => "200", "message" => "Logout successfully"], 200);
+        } catch (Exception $e) {
+            // Captura cualquier excepción y devuelve un mensaje de error
+            return response()->json(["status" => "500", "message" => "An error occurred"], 500);
+        }
     }
 }
