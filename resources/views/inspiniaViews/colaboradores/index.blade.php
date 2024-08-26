@@ -804,7 +804,14 @@
 
 
     </div>
-
+<!-- Script para manejar los errores globalmente -->
+<script>
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            console.error("Error: {{ $error }}");
+        @endforeach
+    @endif
+</script>
 
  {{-- MODAL SCRIPT --}}
     @if ($errors->any())

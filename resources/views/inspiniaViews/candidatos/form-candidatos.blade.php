@@ -58,18 +58,23 @@
                                         <div class="form-group"><label>Telefono</label> <input type="text"
                                                 placeholder="Ingrese su telefono" value="{{ $candidato->celular }}"
                                                 class="form-control" disabled></div>
-                                        <div class="form-group"><label class="col-form-label">Area</label>
-                                            <div>
-                                                <select name="areas_id[]" multiple required
-                                                    class="form-control multiple_areas_select">
-                                                    @foreach ($areas as $key => $area)+
-                                                    <option value="{{ $area->id }}">
-                                                        {{ $area->especializacion }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <div class="form-group">
+                                                    <label class="col-form-label">Area</label>
+                                                    <div>
+                                                        <select name="areas_id[]" multiple class="form-control multiple_areas_select">
+                                                            @foreach ($areas as $key => $area)
+                                                            <option value="{{ $area->id }}"
+                                                                {{ in_array($area->id, old('areas_id', [])) ? 'selected' : '' }}>
+                                                                {{ $area->especializacion }}
+                                                            </option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('areas_id')
+                                                            <div class="text-danger mt-2">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
 
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -126,23 +131,26 @@
                                                                     @endforeach
                                                                 </select>
                                                             </div>
+                                                            @error('horarios.0.hora_inicial')
+                                                                <div class="text-danger mt-2">{{ $message }}</div>
+                                                            @enderror
                                                         </td>
                                                         <td>
                                                             <div class="input-group date">
-                                                                <span class="input-group-addon"><i
-                                                                        class="fa fa-calendar"></i></span>
-                                                                <!--
-                                                                <input type="time" class="form-control"
-                                                                    name="horarios[0][hora_final]" value="00:00"> -->
-                                                                <select class="form-control"
-                                                                    name="horarios[0][hora_final]" id="">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </span>
+                                                                <select class="form-control" name="horarios[0][hora_final]" id="">
                                                                     @foreach($horas as $key => $hora)
-                                                                    <option value="{{ $hora }}">{{ $hora }}</option>
-
+                                                                        <option value="{{ $hora }}">{{ $hora }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
+                                                            @error('horarios.0.hora_final')
+                                                                <div class="text-danger mt-2">{{ $message }}</div>
+                                                            @enderror
                                                         </td>
+
                                                         <td>
                                                             <button class="btn btn-danger float-right" type="button"
                                                                 onclick="eliminarFila(this)"><i
@@ -180,32 +188,14 @@
 
     </div>
     </div>
-    <!--
-    <script>
-        var contadorFilas = 0;
-        function agregarFila() {
-            var tabla = document.getElementById("tablaHorarios").getElementsByTagName('tbody')[0];
-            var nuevaFila = tabla.insertRow(tabla.rows.length);
-    
-            // Insertar celdas en la nueva fila
-            var celdaDia = nuevaFila.insertCell(0);
-            var celdaHoraInicial = nuevaFila.insertCell(1);
-            var celdaHoraFinal = nuevaFila.insertCell(2);
-            var celdaBotonEliminar = nuevaFila.insertCell(3);
-
-            contadorFilas++;
-    
-            celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sabado</option></select></div></div>';
-            celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_inicial]" value="00:00"></div>';
-            celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="time" class="form-control" name="horarios[' + contadorFilas + '][hora_final]" value="00:00"></div>';
-            celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
-        }
-    
-        function eliminarFila(boton) {
-            var fila = boton.parentNode.parentNode;
-            fila.parentNode.removeChild(fila);
-        }
-    </script> -->
+<!-- Script para manejar los errores globalmente -->
+<script>
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            console.error("Error: {{ $error }}");
+        @endforeach
+    @endif
+</script>
 
     <style type="text/css">
         [required] {
@@ -223,29 +213,29 @@
     <script>
         var contadorFilas = 0;
         var horas = @json($horas);
-    
+
         function agregarFila() {
             var tabla = document.getElementById("tablaHorarios").getElementsByTagName('tbody')[0];
             var nuevaFila = tabla.insertRow(tabla.rows.length);
-    
+
             // Insertar celdas en la nueva fila
             var celdaDia = nuevaFila.insertCell(0);
             var celdaHoraInicial = nuevaFila.insertCell(1);
             var celdaHoraFinal = nuevaFila.insertCell(2);
             var celdaBotonEliminar = nuevaFila.insertCell(3);
-    
+
             contadorFilas++;
-    
+
             // Construir el select de horas iniciales y finales
             var selectHoraInicial = construirSelectHora('horarios[' + contadorFilas + '][hora_inicial]');
             var selectHoraFinal = construirSelectHora('horarios[' + contadorFilas + '][hora_final]');
-            
+
             celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option></select></div></div>';
             celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraInicial + '</div>';
             celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
             celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
         }
-    
+
         function construirSelectHora(name) {
             var select = '<select class="form-control" name="' + name + '">';
             for (var i = 0; i < horas.length; i++) {
@@ -254,7 +244,7 @@
             select += '</select>';
             return select;
         }
-    
+
         function eliminarFila(boton) {
             var fila = boton.parentNode.parentNode;
             fila.parentNode.removeChild(fila);

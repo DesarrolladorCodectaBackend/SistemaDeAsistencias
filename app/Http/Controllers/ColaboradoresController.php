@@ -287,14 +287,14 @@ class ColaboradoresController extends Controller
             }
 
             // Ícono
-            if ($request->hasFile('icono')) {
-                $extensiones = ['jpeg', 'png', 'jpg', 'svg', 'webp'];
-                $extensionVal = $request->file('icono')->getClientOriginalExtension();
+        if ($request->hasFile('icono')) {
+            $extensiones = ['jpeg', 'png', 'jpg', 'svg', 'webp'];
+            $extensionVal = $request->file('icono')->getClientOriginalExtension();
 
-                if (!in_array($extensionVal, $extensiones)) {
-                    $errors['icono'.$colaborador_id] = 'El icono debe ser un archivo de tipo: ' . implode(', ', $extensiones);
-                }
+            if (!in_array($extensionVal, $extensiones)) {
+                $errors['icono'.$colaborador_id] = 'El icono debe ser un archivo de tipo: ' . implode(', ', $extensiones);
             }
+        }
 
             // Verificar DNI
             if(isset($request->dni)){
