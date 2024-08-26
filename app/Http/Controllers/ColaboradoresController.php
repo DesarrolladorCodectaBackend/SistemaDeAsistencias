@@ -260,12 +260,39 @@ class ColaboradoresController extends Controller
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
             //ERRORES
             $errors = [];
+
             // Nombre (Requerido, maximo 100 caracteres)
             if(!isset($request->nombre)){
-                $error['nombre'.$colaborador_id] = 'El nombre es un campo requerido.';
+                $errors['nombre'.$colaborador_id] = 'El nombre es un campo requerido.';
             } else{
                 if(strlen($request->nombre) > 100){
-                    $error['nombre'.$colaborador_id] = 'El nombre no puede exceder los 100 caracteres.';
+                    $errors['nombre'.$colaborador_id] = 'El nombre no puede exceder los 100 caracteres.';
+                }
+            }
+
+            //apellido
+            if(!isset($request->apellido)){
+                $errors['apellido'.$colaborador_id] = 'El apellido es un campo requerido';
+            }else{
+                if(strlen($request->apellido) > 100){
+                    $errors['apellido'.$colaborador_id] = 'El apellido no puede exceder los 100 caracteres.';
+                }
+            }
+
+            //dirección
+            if(isset($request->direccion)){
+                if (strlen($request->direccion) > 200) {
+                    $errors['direccion'.$colaborador_id] = 'La dirección no puede exceder los 200 caracteres.';
+                }
+            }
+
+            // Ícono
+            if ($request->hasFile('icono')) {
+                $extensiones = ['jpeg', 'png', 'jpg', 'svg', 'webp'];
+                $extensionVal = $request->file('icono')->getClientOriginalExtension();
+
+                if (!in_array($extensionVal, $extensiones)) {
+                    $errors['icono'.$colaborador_id] = 'El icono debe ser un archivo de tipo: ' . implode(', ', $extensiones);
                 }
             }
 

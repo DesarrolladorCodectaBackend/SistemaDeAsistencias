@@ -116,48 +116,112 @@ class CandidatosController extends Controller
         }
     }
 
-    public function update(UpdateCandidatosRequest $request, $candidato_id)
+    public function update(Request $request, $candidato_id)
     {
         DB::beginTransaction();
-        try{
+        try {
+            $returnRoute = route('colaboradores.index');
+            if (isset($request->currentURL)) {
+                $returnRoute = $request->currentURL;
+            }
 
             $candidato = Candidatos::findOrFail($candidato_id);
             $datosActualizar = $request->except(['icono']);
+            $errors = [];
 
+            // Validación de Nombre
+            if (!isset($request->nombre) || strlen($request->nombre) > 100) {
+                $errors['nombre'.$candidato_id] = !isset($request->nombre)
+                    ? 'El nombre es un campo requerido.'
+                    : 'El nombre no puede exceder los 100 caracteres.';
+            }
+
+            // Validación de Apellido
+            if (!isset($request->apellido) || strlen($request->apellido) > 100) {
+                $errors['apellido'.$candidato_id] = !isset($request->apellido)
+                    ? 'El apellido es un campo requerido.'
+                    : 'El apellido no puede exceder los 100 caracteres.';
+            }
+
+            // Validación de Ícono
+            if ($request->hasFile('icono')) {
+                $extensiones = ['jpeg', 'png', 'jpg', 'svg', 'webp'];
+                $extensionVal = $request->file('icono')->getClientOriginalExtension();
+                if (!in_array($extensionVal, $extensiones)) {
+                    $errors['icono'.$candidato_id] = 'El icono debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+                }
+            }
+
+            // Validación de Dirección
+            if (strlen($request->direccion) > 200) {
+                $errors['direccion'.$candidato_id] = 'La dirección no puede exceder los 200 caracteres.';
+            }
+
+            // Validación de DNI
+            if (isset($request->dni) && strlen($request->dni) !== 8) {
+                $errors['dni'.$candidato_id] = 'El DNI debe contener 8 caracteres.';
+            } else if (isset($request->dni)) {
+                $candidatos = Candidatos::where('dni', $request->dni)->get();
+                foreach ($candidatos as $cand) {
+                    if ($cand->id != $candidato_id) {
+                        $errors['dni'.$candidato_id] = 'El DNI ya está en uso.';
+                        break;
+                    }
+                }
+            }
+
+            // Validación de Correo
+            if (isset($request->correo)) {
+                $candidatos = Candidatos::where('correo', $request->correo)->get();
+                foreach ($candidatos as $cand) {
+                    if ($cand->id != $candidato_id) {
+                        $errors['correo'.$candidato_id] = 'El correo ya está en uso.';
+                        break;
+                    }
+                }
+            }
+
+            // Validación de Celular
+            if (isset($request->celular) && strlen($request->celular) !== 9) {
+                $errors['celular'.$candidato_id] = 'El celular debe contener 9 números.';
+            } else if (isset($request->celular)) {
+                $candidatos = Candidatos::where('celular', $request->celular)->get();
+                foreach ($candidatos as $cand) {
+                    if ($cand->id != $candidato_id) {
+                        $errors['celular'.$candidato_id] = 'El celular ya está en uso.';
+                        break;
+                    }
+                }
+            }
+
+            // Si hay errores, redirigir con ellos
+            if (!empty($errors)) {
+                return redirect($returnRoute)->withErrors($errors)->withInput();
+            }
+
+            // Manejo de Ícono
             if ($request->hasFile('icono')) {
                 $rutaPublica = public_path('storage/candidatos');
-
-                // Verificar si el icono actual no es el predeterminado
                 if ($candidato->icono && $candidato->icono !== 'default.png') {
-                    // Eliminar el icono actual si no es el predeterminado
                     unlink($rutaPublica . '/' . $candidato->icono);
                 }
-
                 $icono = $request->file('icono');
                 $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
-
                 $icono->move($rutaPublica, $nombreIcono);
-
                 $datosActualizar['icono'] = $nombreIcono;
             }
 
-            $candidato->update($datosActualizar, $request->validated());
+            // Actualización de Datos
+            $candidato->update($datosActualizar);
 
             DB::commit();
-            if($request->currentURL) {
-                return redirect($request->currentURL);
-            } else {
-                return redirect()->route('candidatos.index');
-            }
-        } catch(Exception $e) {
+            return redirect($returnRoute);
+        } catch (Exception $e) {
             DB::rollBack();
-            if($request->currentURL) {
-                return redirect($request->currentURL)->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
-            } else {
-                return redirect()->route('candidatos.index')->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
-            }
+            return redirect($returnRoute)->with('error', 'Ocurrió un error al actualizar, intente de nuevo. Si este error persiste, contacte a su equipo de soporte.');
         }
-}
+    }
+
 
     public function rechazarCandidato(Request $request, $candidato_id){
         DB::beginTransaction();

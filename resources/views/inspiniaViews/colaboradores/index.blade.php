@@ -502,8 +502,8 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
-                                                                            value="{{ old('nombre', $colaborador->candidato->nombre) }}">
-                                                                            @error('nombre')
+                                                                            value="{{ $colaborador->candidato->nombre }}">
+                                                                            @error('nombre'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                     </div>
@@ -512,8 +512,8 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
-                                                                            value="{{ old('apellido', $colaborador->candidato->apellido) }}">
-                                                                            @error('apellido')
+                                                                            value="{{ $colaborador->candidato->apellido }}">
+                                                                            @error('apellido'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                     </div>
@@ -522,8 +522,8 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
-                                                                            value="{{ old('direccion', $colaborador->candidato->direccion) }}">
-                                                                            @error('direccion')
+                                                                            value="{{  $colaborador->candidato->direccion }}">
+                                                                            @error('direccion'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                     </div>
@@ -560,8 +560,8 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
-                                                                            value="{{ old('correo', $colaborador->candidato->correo) }}">
-                                                                            @error('correo')
+                                                                            value="{{ $colaborador->candidato->correo }}">
+                                                                            @error('correo'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                     </div>
@@ -593,7 +593,7 @@
                                                                         </label><input type="date" placeholder="....."
                                                                             class="form-control" name="fecha_nacimiento"
                                                                             id="fecha_nacimiento"
-                                                                            value="{{ old('fecha_nacimiento', $colaborador->candidato->fecha_nacimiento) }}">
+                                                                            value="{{ $colaborador->candidato->fecha_nacimiento }}">
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">DNI:</h5>
@@ -609,8 +609,8 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="celular"
                                                                             id="celular"
-                                                                            value="{{ old('celular', $colaborador->candidato->celular) }}">
-                                                                            @error('celular')
+                                                                            value="{{ $colaborador->candidato->celular }}">
+                                                                            @error('celular'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
 
@@ -699,7 +699,11 @@
                                                                             id="icon-upload-{{ $colaborador->candidato->id }}">
                                                                             <img src="{{ asset('storage/candidatos/' . $colaborador->candidato->icono) }}"
                                                                                 class="img-lg w-200 max-min-h-w-200 img-cover">
+
                                                                         </button>
+                                                                        @error('icono'.$colaborador->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                                         <script>
                                                                             document.getElementById('icon-upload-{{ $colaborador->candidato->id }}').addEventListener('click', function() {
                                                                                 document.getElementById('icono-{{ $colaborador->candidato->id }}').click();
@@ -755,7 +759,7 @@
                 </div>
                 @endforeach
             </div>
-            
+
 
             @if($hasPagination === true)
             <div class="row mb-5 mb-md-4">
