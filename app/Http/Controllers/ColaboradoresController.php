@@ -260,11 +260,20 @@ class ColaboradoresController extends Controller
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
             //ERRORES
             $errors = [];
+            // Nombre (Requerido, maximo 100 caracteres)
+            if(!isset($request->nombre)){
+                $error['nombre'.$colaborador_id] = 'El nombre es un campo requerido.';
+            } else{
+                if(strlen($request->nombre) > 100){
+                    $error['nombre'.$colaborador_id] = 'El nombre no puede exceder los 100 caracteres.';
+                }
+            }
+
             // Verificar DNI
             if(isset($request->dni)){
                 // Verificar que tenga exactamente 8 caracteres
                 if(strlen($request->dni) !== 8) {
-                    $errors['dni'] = 'El DNI debe contener 8 caracteres.';
+                    $errors['dni'.$colaborador_id] = 'El DNI debe contener 8 caracteres.';
                 } else {
                     //Verificar que sea único
                     $candidatos = Candidatos::where('dni', $request->dni)->get();

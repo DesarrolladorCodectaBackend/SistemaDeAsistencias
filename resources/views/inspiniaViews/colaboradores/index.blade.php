@@ -599,8 +599,8 @@
                                                                             <h5 class="m-t-none">DNI:</h5>
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
-                                                                            value="{{ old('dni', $colaborador->candidato->dni) }}"></input>
-                                                                        @error('dni')
+                                                                            value="{{$colaborador->candidato->dni}}"></input>
+                                                                        @error('dni'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
