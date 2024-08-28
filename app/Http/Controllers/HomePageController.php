@@ -18,13 +18,6 @@ use App\Models\UsuarioJefeArea;
 class HomePageController extends Controller
 {
     public function home(){
-        $user = auth()->user();
-        $administrador = UsuarioAdministrador::where('user_id', $user->id)->where('estado', 1)->first();
-        $isAdmin = false;
-        if($administrador){$isAdmin = true;}
-        $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
-        $isBoss = false;
-        if($jefeArea->count() > 0){$isBoss = true;}
 
         $userData = FunctionHelperController::getUserRol();
         $returning = [];
@@ -42,6 +35,10 @@ class HomePageController extends Controller
         if($userData['isBoss']){
             $areasJefeId = $userData['Jefeareas']->pluck('area_id');
             $selectedAreas = Area::whereIn('id', $areasJefeId)->get();
+            foreach($selectedAreas as $area){
+                $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
+                $area->count_colabs = $colaboradoresAreaCount;
+            }
 
             $returning['selectedAreas'] = $selectedAreas;
         }
