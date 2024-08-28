@@ -22,6 +22,10 @@
 
 </head>
 
+@php
+    use App\Http\Controllers\FunctionHelperController;
+    $userData = FunctionHelperController::getUserRol();
+@endphp
 
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
@@ -30,7 +34,7 @@
                 <div class="dropdown profile-element">
                     <img alt="image" class="rounded-circle img-lg" src="{{asset('img/image.png')}}" />
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="block m-t-xs font-bold">Administrador</span>
+                        <span class="block m-t-xs font-bold">{{$userData['user']['name']}}</span>
                         <span class="text-muted text-xs block">Art Director <b class="caret"></b></span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
@@ -49,6 +53,7 @@
             <li>
                 <a href="/dashboard"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span></a>
             </li>
+            @if($userData['isAdmin'])
             <li>
                 <a href="/horarioGeneral"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
                         Generales</span><span class="fa arrow"></span></a>
@@ -80,10 +85,14 @@
             <li id="areas">
                 <a href="/areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
+            @endif
+            @if($userData['isBoss'])
             <li>
                 <a href="/responsabilidades"><i class="fa fa-list-alt"></i> <span
                         class="nav-label">Responsabilidades</span></a>
             </li>
+            @endif
+            @if($userData['isAdmin'])
             <li id="maquinas">
                 <a href="/maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
             </li>
@@ -93,6 +102,7 @@
             <li id="ajustes">
                 <a href="/ajustes"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
             </li>
+            @endif
             <li>
                 <form id="logoutForm" method="POST" action="http://127.0.0.1:8000/logout">
                     @csrf

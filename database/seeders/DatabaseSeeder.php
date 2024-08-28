@@ -32,8 +32,9 @@ class DatabaseSeeder extends Seeder
             HorarioPresencialAsignadoSeeder::class,
             ColaboradoresSeeder::class,
             ColaboradoresPorAreaSeeder::class,
-            HorarioDeClasesSeeder::class
-
+            HorarioDeClasesSeeder::class,
+            UsuarioAdministradorSeeder::class,
+            UsuarioJefeAreaSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
 

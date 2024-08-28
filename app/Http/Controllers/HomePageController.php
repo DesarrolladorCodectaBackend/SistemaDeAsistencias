@@ -12,18 +12,41 @@ use App\Models\Semanas;
 use App\Models\ReunionesProgramadas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\UsuarioAdministrador;
+use App\Models\UsuarioJefeArea;
 
 class HomePageController extends Controller
 {
     public function home(){
-        $areasProm = $this->getMonthPromAreas();
-        $reunionesProgramadas = $this->getTodayProgramReu();
-        $areas = $this->getAreasToday();
-        return view('dashboard', [
-            'areasProm' => $areasProm,
-            'reunionesProgramadas' => $reunionesProgramadas,
-            'areas' => $areas
-        ]);
+        $user = auth()->user();
+        $administrador = UsuarioAdministrador::where('user_id', $user->id)->where('estado', 1)->first();
+        $isAdmin = false;
+        if($administrador){$isAdmin = true;}
+        $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
+        $isBoss = false;
+        if($jefeArea->count() > 0){$isBoss = true;}
+
+        $userData = FunctionHelperController::getUserRol();
+        $returning = [];
+        
+        if($userData['isAdmin']){
+            $areasProm = $this->getMonthPromAreas();
+            $reunionesProgramadas = $this->getTodayProgramReu();
+            $areas = $this->getAreasToday();
+
+            $returning['areasProm'] = $areasProm;
+            $returning['reunionesProgramadas'] = $reunionesProgramadas;
+            $returning['areas'] = $areas;
+        }
+
+        if($userData['isBoss']){
+            $areasJefeId = $userData['Jefeareas']->pluck('area_id');
+            $selectedAreas = Area::whereIn('id', $areasJefeId)->get();
+
+            $returning['selectedAreas'] = $selectedAreas;
+        }
+        // return $returning;
+        return view('dashboard', $returning);
     }
 
     function getMonthPromAreas(){

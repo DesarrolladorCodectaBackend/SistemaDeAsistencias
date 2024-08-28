@@ -15,6 +15,7 @@ use App\Models\Salones;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -30,6 +31,8 @@ class AreaController extends Controller
      */
     public function index()
     {
+        
+        // return auth()->user();
         //Recurar todos los registros en áreas
         $areas = Area::with('salon')->paginate(12);
         $salones = Salones::where('estado', 1)->get();

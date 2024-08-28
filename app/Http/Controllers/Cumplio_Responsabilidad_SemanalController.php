@@ -18,7 +18,15 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 {
     public function index()
     {
-        $areas = Area::with('salon')->where('estado', 1)->paginate(12);
+        $userData = FunctionHelperController::getUserRol();
+        if($userData['isAdmin']){
+            $areas = Area::with('salon')->where('estado', 1)->paginate(12);
+        }else if($userData['isBoss']){
+            $bossAreasId = $userData['Jefeareas']->pluck('area_id');
+            $areas = Area::with('salon')->where('estado', 1)->where('id', $bossAreasId)->paginate(12);
+        } else{
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar áreas. No lo intente denuevo o puede ser baneado.');
+        }
 
         $Years = FunctionHelperController::getYears();
         $countYears = count($Years);
@@ -39,6 +47,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
     public function getYearsArea($area_id)
     {
+        $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+        }
 
         $Years = FunctionHelperController::getYears();
 
@@ -53,6 +66,12 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
     public function getMesesAreas($year, $area_id)
     {
+        $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+        }
+        
         $Meses = FunctionHelperController::getMonths();
 
         $area = Area::findOrFail($area_id);
@@ -141,6 +160,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
     public function getFormAsistencias($year, $mes, $area_id)
     {
+        $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+        }
         //$area_id = $request->area_id;
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
@@ -584,6 +608,12 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $year = $request->year;
             $mes = $request->mes;
             $area_id = $request->area_id;
+
+            $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+            if(!$access){
+                return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+            }
             
             //Verificar que estemos en una semana posterior a la que se esta registrando, si no, no se puede registrar la semana.
             $semana = Semanas::find($request->semana_id);
@@ -629,6 +659,12 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     {
         DB::beginTransaction();
         try{
+            $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+            if(!$access){
+                return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+            }
+
             $request->validate([
                 'colaborador_area_id.*' => 'sometimes|integer|min:1|max:100',
                 'responsabilidad_id.*' => 'sometimes|integer|min:1|max:255',
@@ -675,6 +711,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
     public function getMonthProm($year, $mes, $area_id)
     {
+        $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para ver esa area. No lo intente denuevo o puede ser baneado.');
+        }
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
 
@@ -818,6 +859,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     }
 
     public function getMonthsProm(Request $request, $area_id){
+        $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para ver esa area. No lo intente denuevo o puede ser baneado.');
+        }
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
 

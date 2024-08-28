@@ -8,6 +8,8 @@ use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Maquina_reservada;
 use App\Models\Semanas;
+use App\Models\UsuarioAdministrador;
+use App\Models\UsuarioJefeArea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,8 +17,42 @@ use Exception;
 
 class FunctionHelperController extends Controller
 {
-    //COLABORADORES
+    //USERS
+    public static function getUserRol(){
+        $user = auth()->user();
+        $administrador = UsuarioAdministrador::where('user_id', $user->id)->where('estado', 1)->first();
+        $isAdmin = false;
+        if($administrador){$isAdmin = true;}
+        $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
+        $isBoss = false;
+        if($jefeArea->count() > 0){$isBoss = true;}
+        return [
+            "user" => $user,
+            "administrador" => $administrador,
+            "Jefeareas" => $jefeArea,
+            "isAdmin" => $isAdmin,
+            "isBoss" => $isBoss,
+        ];
+    }
 
+    public static function verifyAreaAccess($area_id){
+        $userData = FunctionHelperController::getUserRol();
+        if($userData['isAdmin']){
+            return true;
+        }else if($userData['isBoss']){
+            $bossAreasId = $userData['Jefeareas']->pluck('area_id')->toArray();
+            if(in_array($area_id, $bossAreasId)){
+                return true;
+            }else{
+                return false;
+            }
+        } else{
+            return false;
+        }
+    }
+
+
+    //COLABORADORES
     public static function colaboradoresConArea($colaboradoresBase){
         $colaboradoresConArea = [];
 
