@@ -51,6 +51,15 @@ class FunctionHelperController extends Controller
         }
     }
 
+    public static function verifyAdminAccess(){
+        $userData = FunctionHelperController::getUserRol();
+        if($userData['isAdmin']){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
 
     //COLABORADORES
     public static function colaboradoresConArea($colaboradoresBase){

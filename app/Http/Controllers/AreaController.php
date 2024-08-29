@@ -31,7 +31,10 @@ class AreaController extends Controller
      */
     public function index()
     {
-        
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         // return auth()->user();
         //Recurar todos los registros en áreas
         $areas = Area::with('salon')->paginate(12);
@@ -57,6 +60,10 @@ class AreaController extends Controller
     }
 
     public function getFormHorarios($area_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         // Encontrar area
         $area = Area::findOrFail($area_id);
         // Encontrar el id de los colaboradores del área
@@ -178,6 +185,10 @@ class AreaController extends Controller
 
 
     public function getMaquinasByArea($area_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $area = Area::findOrFail($area_id);
         //Datos esta area
         $horariosArea = Horario_Presencial_Asignado::where('area_id', $area->id)->get()->pluck('horario_presencial_id');
@@ -311,6 +322,10 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         //Se inicia la transacción
         DB::beginTransaction();
         try{
@@ -390,6 +405,10 @@ class AreaController extends Controller
 
     public function update(Request $request, $area_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         //Se inicia la transacción
         DB::beginTransaction();
         try{
@@ -472,6 +491,10 @@ class AreaController extends Controller
 
 
     public function activarInactivar(Request $request, $area_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $area = Area::findOrFail($area_id);

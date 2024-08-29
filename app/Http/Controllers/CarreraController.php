@@ -14,6 +14,10 @@ class CarreraController extends Controller
 
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $carreras = Carrera::paginate(12);
 
         $pageData = FunctionHelperController::getPageData($carreras);
@@ -30,6 +34,10 @@ class CarreraController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
 
@@ -65,6 +73,10 @@ class CarreraController extends Controller
 
     public function update(Request $request, $carrera_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -96,6 +108,10 @@ class CarreraController extends Controller
 
     public function destroy($carrera_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $carrera = Carrera::findOrFail($carrera_id);
 
         $carrera->delete();
@@ -106,6 +122,10 @@ class CarreraController extends Controller
 
     public function activarInactivar(Request $request,$carrera_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $carrera = Carrera::findOrFail($carrera_id);

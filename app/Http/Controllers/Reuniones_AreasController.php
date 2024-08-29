@@ -12,6 +12,10 @@ class Reuniones_AreasController extends Controller
 {
     
     public function getAllReu(){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $areasActivasId = Area::where('estado', 1)->get()->pluck('id');
 
         $reuniones = Reuniones_Areas::with('area')->whereIn('area_id', $areasActivasId)->get();
@@ -35,6 +39,10 @@ class Reuniones_AreasController extends Controller
     }
 
     public function reunionesGest($area_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $area = Area::findOrFail($area_id);
         $reuniones = Reuniones_Areas::with('area')->where('area_id', $area_id)->get();
         $dias = FunctionHelperController::getDays();
@@ -91,6 +99,10 @@ class Reuniones_AreasController extends Controller
     }
 
     public function store(Request $request){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             // return $request;
@@ -127,6 +139,10 @@ class Reuniones_AreasController extends Controller
     }
 
     public function update(Request $request, $id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             // return $request;
@@ -152,6 +168,10 @@ class Reuniones_AreasController extends Controller
     }
 
     public function destroy($id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $reunion = Reuniones_Areas::findOrFail($id);

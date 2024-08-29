@@ -16,6 +16,10 @@ class PrestamoObjetoColaboradorController extends Controller
 {
     public function getColaboradorObjetos($colaborador_id)
 {
+    $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
     // busqueda colaborador
     $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
 
@@ -44,6 +48,10 @@ class PrestamoObjetoColaboradorController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             Prestamos_objetos_por_colaborador::create([
@@ -66,6 +74,10 @@ class PrestamoObjetoColaboradorController extends Controller
 
     public function inactivate(Request $request, $id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try {
             $prestamo = Prestamos_objetos_por_colaborador::findOrFail($id);

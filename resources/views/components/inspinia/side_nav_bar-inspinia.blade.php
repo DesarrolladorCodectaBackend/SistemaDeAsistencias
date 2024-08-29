@@ -86,10 +86,12 @@
                 <a href="/areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
             @endif
+            @if($userData['isAdmin'] || $userData['isBoss'])
             <li>
                 <a href="/responsabilidades"><i class="fa fa-list-alt"></i> <span
                         class="nav-label">Responsabilidades</span></a>
             </li>
+            @endif
             @if($userData['isAdmin'])
             <li id="maquinas">
                 <a href="/maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>

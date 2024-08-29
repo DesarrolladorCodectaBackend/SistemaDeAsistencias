@@ -19,6 +19,10 @@ class CandidatosController extends Controller
 
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 1)->paginate(6);
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
@@ -47,6 +51,10 @@ class CandidatosController extends Controller
 
     public function getFormToColab($candidato_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $candidato = Candidatos::findOrFail($candidato_id);
         $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
         $horas = [
@@ -73,6 +81,10 @@ class CandidatosController extends Controller
 
     public function store(StoreCandidatosRequest $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validated();
@@ -118,6 +130,10 @@ class CandidatosController extends Controller
 
     public function update(UpdateCandidatosRequest $request, $candidato_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
 
@@ -160,6 +176,10 @@ class CandidatosController extends Controller
 }
 
     public function rechazarCandidato(Request $request, $candidato_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);
@@ -207,6 +227,10 @@ class CandidatosController extends Controller
 
     public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '')
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $estados = explode(',', $estados);
         $carreras = $carreras ? explode(',', $carreras) : [];
         $instituciones = $instituciones ? explode(',', $instituciones) : [];
@@ -247,17 +271,25 @@ class CandidatosController extends Controller
 
     public function search(string $busqueda = '')
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         //Filtrar por id
-        $candidatoPorId = Candidatos::with('carrera', 'sede')->where('id', $busqueda)->paginate(6);
+        $candidatosPorDni = Candidatos::with('carrera', 'sede')->where('dni', $busqueda)->paginate(6);
 
         //Filtrar por nombre y apellido de candidato
+        // $candidatosPorDni = Candidatos::with('sede', 'carrera')
+        //     ->where(DB::raw("dni"), 'like', '%' . $busqueda . '%')
+        //     ->paginate(6);                             
+
         $candidatosPorNombre = Candidatos::with('sede', 'carrera')
             ->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%')
             ->paginate(6);
 
         //Si existe un registro encontrado por el id
-        if ($candidatoPorId->count() > 0) {
-            $candidatos = $candidatoPorId;
+        if ($candidatosPorDni->count() > 0) {
+            $candidatos = $candidatosPorDni;
         } else { //Si no existe
             $candidatos = $candidatosPorNombre;
         }
@@ -290,6 +322,10 @@ class CandidatosController extends Controller
     }
 
     public function reActivate(Request $request, $candidato_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);
@@ -314,6 +350,10 @@ class CandidatosController extends Controller
 
     public function destroy(Request $request, $candidato_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);
