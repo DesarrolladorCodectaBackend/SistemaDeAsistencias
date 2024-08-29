@@ -246,7 +246,7 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function update(UpdateColaboradoresRequest $request, $colaborador_id)
+    public function update(Request $request, $colaborador_id)
     {
         DB::beginTransaction();
         try{
@@ -296,22 +296,25 @@ class ColaboradoresController extends Controller
             }
         }
 
-            // Verificar DNI
-            if(isset($request->dni)){
-                // Verificar que tenga exactamente 8 caracteres
-                if(strlen($request->dni) !== 8) {
+        // Validación de DNI
+            if (isset($request->dni)) {
+                if(strlen($request->dni) !== 8){
+
+                    // Verificar si el DNI está definido y tiene 8 caracteres
                     $errors['dni'.$colaborador_id] = 'El DNI debe contener 8 caracteres.';
-                } else {
-                    //Verificar que sea único
-                    $candidatos = Candidatos::where('dni', $request->dni)->get();
-                    foreach($candidatos as $candidato){
-                        if($candidato->id != $colaborador->candidato_id) {
-                            $errors['dni'] = 'El DNI ya está en uso.';
-                            break;
-                        }
+                }
+            } else {
+                // Verificar si el DNI ya está en uso
+                $candidatos = Candidatos::where('dni', $request->dni)->get();
+                foreach ($candidatos as $cand) {
+                    if ($cand->id != $colaborador_id) {
+                        $errors['dni'.$colaborador_id] = 'El DNI ya está en uso.';
+                        break;
                     }
                 }
             }
+
+
 
             // Verificar correo
             if(isset($request->correo)){
@@ -324,23 +327,21 @@ class ColaboradoresController extends Controller
                 }
             }
 
-            // Verificar celular
-            if(isset($request->celular)){
-                // Verificar que tenga exactamente 9 caracteres
-                if(strlen($request->celular) !== 9) {
-                    $errors['celular'] = 'El celular debe contener 9 números.';
-                } else {
-                    //Verificar que sea único
-                    $candidatos = Candidatos::where('celular', $request->celular)->get();
-                    foreach($candidatos as $candidato){
-                        if($candidato->id != $colaborador->candidato_id) {
-                            $errors['celular'] = 'El celular ya está en uso.';
-                            break;
-                        }
+             // Validación de Celular
+             if (isset($request->celular) && strlen($request->celular) !== 9) {
+                $errors['celular'.$colaborador_id] = 'El celular debe contener 9 números.';
+            } else if (isset($request->celular)) {
+                $candidatos = Candidatos::where('celular', $request->celular)->get();
+                foreach ($candidatos as $cand) {
+                    if ($cand->id != $colaborador_id) {
+                        $errors['celular'.$colaborador_id] = 'El celular ya está en uso.';
+                        break;
                     }
                 }
             }
 
+
+            // return $errors;
             // Si hay errores, redirigir con todos ellos
             if(!empty($errors)) {
                 return redirect($returnRoute)->withErrors($errors)->withInput();
@@ -466,7 +467,7 @@ class ColaboradoresController extends Controller
             }
 
             //Se actualizan los datos del candidato
-            $candidato->update($datosActualizar, $request->validated());
+            $candidato->update($datosActualizar);
             DB::commit();
 
             //Se redirige a la vista

@@ -600,7 +600,7 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
                                                                             value="{{$colaborador->candidato->dni}}"></input>
-                                                                        @error('dni'.$colaborador->id)
+                                                                            @error('dni'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
