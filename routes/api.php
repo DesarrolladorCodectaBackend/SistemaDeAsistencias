@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\SalonesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -26,6 +27,12 @@ Route::middleware(['auth:sanctum'])->group(function (){
         //LOGOUT
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
 
+        //SALONES
+        Route::get('salones/get', [SalonesController::class, 'index']);
+        Route::post('salones/store', [SalonesController::class, 'store']);
+        Route::put('salones/update/{salon_id}', [SalonesController::class, 'update']);
+        Route::put('salones/activar_inactivar/{salon_id}', [SalonesController::class, 'activarInactivar']);
+        
         //NOTIFICATIONS
         Route::get('notificaciones', [NotificationController::class, 'index']);
 

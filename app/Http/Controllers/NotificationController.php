@@ -91,6 +91,7 @@ class NotificationController extends Controller
                 "icon" => "fa fa-clock-o",
                 "message" => "Área ".$area['area']." asiste presencialmente el día de hoy de ".$area['hora_inicial']." a ".$area['hora_final'],
                 "url" => route('areas.getHorario', $area['area_id']),
+                // "url" => "/horario",
             ];
             $notifications[] = $notificacion;
         }
