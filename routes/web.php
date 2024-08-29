@@ -9,6 +9,7 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
+use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InstitucionController;
@@ -43,9 +44,9 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/dashboard-prueba', function () {
     return view('dashboard-prueba');
@@ -56,6 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //HOME 
+    Route::get('/dashboard', [HomePageController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');
 
     //AREAS
     Route::resource('areas', AreaController::class);
@@ -109,11 +113,12 @@ Route::middleware('auth')->group(function () {
     Route::post('sedes/activar-inactivar/{sede_id}', [SedeController::class, 'activarInactivar'])->name('sedes.activarInactivar');
 
 
-    //OBJETOS
-    //Route::resource('objetos', ObjetoController::class);
-
     //CANDIDATOS
-    Route::resource('candidatos', CandidatosController::class);
+    // Route::resource('candidatos', CandidatosController::class);
+    Route::get('candidatos', [CandidatosController::class, 'index'])->name('candidatos.index');
+    Route::post('candidatos/store', [CandidatosController::class, 'store'])->name('candidatos.store');
+    Route::put('candidatos/update/{candidato_id}', [CandidatosController::class, 'update'])->name('candidatos.update');
+    Route::delete('candidatos/{candidato_id}', [CandidatosController::class, 'destroy'])->name('candidatos.destroy');
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     Route::post('candidato/rechazarCandidato/{candidato_id}', [CandidatosController::class, 'rechazarCandidato'])->name('candidatos.rechazarCandidato');
     Route::post('candidato/reconsiderarCandidato/{candidato_id}', [CandidatosController::class, 'reActivate'])->name('candidatos.reconsiderarCandidato');
@@ -124,7 +129,11 @@ Route::middleware('auth')->group(function () {
 
 
     //COLABORADORES
-    Route::resource('colaboradores', ColaboradoresController::class);
+    // Route::resource('colaboradores', ColaboradoresController::class);
+    Route::get('colaboradores', [ColaboradoresController::class, 'index'])->name('colaboradores.index');
+    Route::post('colaboradores/store', [ColaboradoresController::class, 'store'])->name('colaboradores.store');
+    Route::put('colaboradores/update/{colaborador_id}', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
+    Route::delete('colaboradores/{colaborador_id}', [ColaboradoresController::class, 'destroy'])->name('colaboradores.destroy');
     Route::post('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
     Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}', [ColaboradoresController::class, 'filtrarColaboradores'])
     ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*'])->name('colaboradores.filtrar');
@@ -173,7 +182,7 @@ Route::middleware('auth')->group(function () {
 
     //ACTIVIDADES
     Route::resource('actividades', ActividadesController::class);
-    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividad.activarInactivar');
+    Route::post('actividades/{actividad}/activar-inactivar',[ActividadesController::class, 'activarInactivar'])->name('actividades.activarInactivar');
 
     //REUNIONES PROGRAMADAS
     Route::get('ReunionesProgramadas', [ReunionesProgramadasController::class, 'getAllProgramReuToCalendar'])->name('reunionesProgramadas.allReu');

@@ -35,13 +35,21 @@ class AreaController extends Controller
         $salones = Salones::where('estado', 1)->get();
         $pageData = FunctionHelperController::getPageData($areas);
         $hasPagination = true;
+        foreach($areas as $area){
+            $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
+            $area->count_colabs = $colaboradoresAreaCount;
+        }
+        $countAreas = Area::where('estado', 1)->count();
+        $countColabs = Colaboradores::where('estado', 1)->count();
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
         return view('inspiniaViews.areas.index', [
             'areas' => $areas,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
-            'salones' => $salones
+            'salones' => $salones,
+            'countAreas' => $countAreas,
+            'countColabs' => $countColabs,
         ]);
     }
 
@@ -480,6 +488,26 @@ class AreaController extends Controller
                     RegistroActividadController::crearRegistro($colaboradorArea->id, false);
                     //Se busca si tiene computadoras
                     $ColabMachines = Maquina_reservada::where('colaborador_area_id', $colaboradorArea->id)->get();
+                    //Recorrer maquinas encontradas
+                    foreach($ColabMachines as $machine){
+                        //Eliminar maquinas
+                        $machine->delete();
+                    }
+                }
+            }
+
+
+            if($area->estado==1){
+                // Buscar las areas que no estan en el request y que estan asociadas al colaborador
+                $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $area_id)->where('estado', 1)->where('area_id', $area_id)->get();
+                // Por cada registro encontrado
+                foreach ($areasInactivas as $areaInactiva) {
+                    //Se inactiva su estado
+                    $areaInactiva->update(['estado' => 0]);
+                    //Crear registro de inactivación
+                    RegistroActividadController::crearRegistro($areaInactiva->id, false);
+                    //Se busca si tiene computadoras
+                    $ColabMachines = Maquina_reservada::where('colaborador_area_id', $areaInactiva->id)->get();
                     //Recorrer maquinas encontradas
                     foreach($ColabMachines as $machine){
                         //Eliminar maquinas

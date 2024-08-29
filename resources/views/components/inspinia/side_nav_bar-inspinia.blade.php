@@ -14,7 +14,12 @@
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/alertify.min.css') }}">
+    <link href="{{ asset('css/plugins/chartist/chartist.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/inspinia.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
+
 </head>
 
 
@@ -109,21 +114,16 @@
             <div class="navbar-header">
                 <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i>
                 </a>
-                {{-- <form role="search" class="navbar-form-custom" action="">
-                    <div class="form-group">
-                        <input type="text" placeholder="Search for something..." class="form-control" name="top-search"
-                            id="top-search">
-                    </div>
-                </form> --}}
+
             </div>
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell"></i>
-                        {{-- <span class="label label-primary">8</span> --}}
+                        <i style="font-size: 20px" class="fa fa-bell "></i>
+                        <span id="notificationsCountContainer" class="label label-primary" hidden>8</span>
                     </a>
                     <ul id="notificationsContainer" class="dropdown-menu dropdown-alerts max-height-scrollable">
-                        {{-- Aquí irían los mensajes --}}
+
                     </ul>
                 </li>
 
@@ -174,6 +174,9 @@
     <!-- Select2 -->
     <script src="{{asset('js/plugins/select2/select2.full.min.js')}} "></script>
 
+    <!-- Chartist -->
+    <script src="{{asset('js/plugins/chartist/chartist.min.js')}}"></script>
+
     <!--
     <script class="Flot" src="{{ asset('js/plugins/flot/jquery.flot.js') }}"></script>
     <script src="{{ asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
@@ -183,29 +186,31 @@
     <script src="{{ asset('js/plugins/flot/jquery.flot.symbol.js') }}"></script>
     <script src="{{ asset('js/plugins/flot/jquery.flot.time.js') }}"></script>
 
-    
+
     <script class="Peity" src="{{ asset('js/plugins/peity/jquery.peity.min.js') }}"></script>
     <script src="{{ asset('js/demo/peity-demo.js') }}"></script>
 
-    
-    
 
-    
+
+
+
     <script class="Jvectormap" src="{{ asset('js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js') }}"></script>
     <script src="{{ asset('js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
 
-    
+
     <script class="EayPIE" src="{{ asset('js/plugins/easypiechart/jquery.easypiechart.js') }}"></script>
 
-    
+
     <script class="Sparkline" src="{{ asset('js/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
 
-    
+
     <script class="Sparkline demo data" src="{{ asset('js/demo/sparkline-demo.js') }}"></script>
     -->
 
     <script>
         let notificationsContainer = document.getElementById('notificationsContainer');
+        let notificationsCountContainer = document.getElementById('notificationsCountContainer');
+
         const UserToken = <?php echo json_encode(session('api_token')); ?>;
         const notificationCard = (icon, message, url) => {
             let card = `<li>
@@ -229,7 +234,7 @@
         };
 
         let data = null;
-        fetch('http://127.0.0.1:8000/api/notificaciones', {
+        fetch(/*'http://127.0.0.1:8000/*/'api/notificaciones', {
             headers: {
                 'Authorization': 'Bearer '+UserToken
             }
@@ -245,6 +250,8 @@
                 if (data.notifications.length === 0) {
                 nothingCard()
                 }
+                notificationsCountContainer.removeAttribute('hidden');
+                notificationsCountContainer.innerText = data.notifications.length;
             })
             .catch(error => console.error('Error:', error));
 

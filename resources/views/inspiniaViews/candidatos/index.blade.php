@@ -29,11 +29,11 @@
             </div>
             <div class="col-lg-7 flex-centered">
                 <div class="flex-centered spc-per-90">
-                    <form id="searchCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
+                    <form id="searchCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL(event)"
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
-                            placeholder="Buscar Candidato..." aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            placeholder="Buscar Candidato..." aria-label="Search" required autocomplete="off">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                     </form>
                 </div>
             </div>
@@ -47,64 +47,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
-                                {{-- <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
-                                    <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-6 b-r">
-                                            <div class="form-group">
-                                                <label>
-                                                    <h4 class="m-t-none m-b">Estados:</h4>
-                                                </label>
-                                                <div class="form-group">
-                                                    <input type="checkbox" id="select-all-estados"><span>Seleccionar todos</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="estado-checkbox" value="1"><span>Pendiente</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="estado-checkbox" value="0"><span>Colaborador</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="estado-checkbox" value="2"><span>Rechazado</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="estado-checkbox" value="3"><span>Ex colaborador</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-6 b-r">
-                                            <div class="form-group">
-                                                <label>
-                                                    <h4 class="m-t-none m-b">Carreras:</h4>
-                                                </label>
-                                                <div class="form-group">
-                                                    <input type="checkbox" id="select-all-carreras"><span>Seleccionar todos</span>
-                                                </div>
-                                                @foreach($carrerasAll as $index => $carrera)
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="carrera-checkbox" value="{{ $carrera->id }}"><span>{{ $carrera->nombre }}</span>
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                            <div class="form-group">
-                                                <label>
-                                                    <h4 class="m-t-none m-b">Instituciones:</h4>
-                                                </label>
-                                                <div class="form-group">
-                                                    <input type="checkbox" id="select-all-instituciones"><span>Seleccionar todos</span>
-                                                </div>
-                                                @foreach($institucionesAll as $index => $institucion)
-                                                <div class="form-group">
-                                                    <input type="checkbox" class="institucion-checkbox" value="{{ $institucion->id }}"><span>{{ $institucion->nombre }}</span>
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                            <div class="form-group mt-3 text-center">
-                                                <button type="submit" class="btn btn-primary px-5">Filtrar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form> --}}
+
                                 <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                     <h2 class="m-t-none m-b font-bold text-center">Filtrar Candidatos</h2>
                                     <div class="accordion" id="accordionExampleCandidatos">
@@ -141,7 +84,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                
+
                                         <!-- Carreras -->
                                         <div class="card">
                                             <div class="card-header" id="headingCarrerasCandidatos">
@@ -165,7 +108,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                
+
                                         <!-- Instituciones -->
                                         <div class="card">
                                             <div class="card-header" id="headingInstitucionesCandidatos">
@@ -189,18 +132,19 @@
                                                 </div>
                                             </div>
                                         </div>
-                                
+
                                         <!-- Submit Button -->
                                         <div class="text-center mt-4">
                                             <button type="submit" class="btn btn-primary px-5">Filtrar</button>
                                         </div>
                                     </div>
                                 </form>
-                                
+
                             </div>
                         </div>
                     </div>
                 </div>
+                {{-- MODAL STORE --}}
                 <div id="modal-form-add" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -208,76 +152,114 @@
                                 <form role="form" method="POST" action="{{ route('candidatos.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="form_type" value="create">
+
                                     @isset($pageData->currentURL)
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                     @endisset
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
-                                            <div class="form-group"><label>Nombre</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" class="form-control" name="nombre"
-                                                    required>
+                                            <div class="form-group"><label>Nombre</label>
+                                                <input type="text" placeholder="Ingrese un nombre"  autocomplete="off" class="form-control" name="nombre" value="{{ old('nombre') }}">
+                                                @error('nombre')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                             <div class="form-group"><label>Apellido</label> <input type="text"
-                                                    placeholder="Ingrese apellido" class="form-control" name="apellido"
-                                                    required>
+                                                    placeholder="Ingrese apellido" class="form-control" name="apellido" value="{{ old('apellido')}}"
+                                                     autocomplete="off">
+                                                    @error('apellido')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>DNI</label> <input type="number"
-                                                    placeholder="Ingrese dni" class="form-control" name="dni" required>
+                                                    placeholder="Ingrese dni" class="form-control" name="dni"
+                                                    value="{{ old('dni') }}" autocomplete="off">
+                                                   @error('dni')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Dirección</label> <input type="text"
                                                     placeholder="Ingrese dirección" class="form-control"
-                                                    name="direccion" required>
+                                                    name="direccion" value="{{ old('direccion')}}" autocomplete="off">
+                                                    @error('direccion')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Fecha de Nacimiento</label> <input
-                                                    type="date" class="form-control" name="fecha_nacimiento" required>
+                                                    type="date" class="form-control" name="fecha_nacimiento" value="{{ old('fecha_nacimiento')}}" autocomplete="off">
                                             </div>
                                             <div class="form-group"><label>Ciclo de Estudiante</label>
-                                                <select name="ciclo_de_estudiante" class="form-control" required>
+                                                <select name="ciclo_de_estudiante" class="form-control" >
                                                     @for($i = 4; $i <= 10; $i++)
-                                                    <option value="{{$i}}">{{$i}}</option>
+                                                        <option value="{{ $i }}"
+                                                            @if($i == old('ciclo_de_estudiante')) selected @endif>
+                                                            {{ $i }}
+                                                        </option>
                                                     @endfor
                                                 </select>
+                                                @error('ciclo_de_estudiante')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
 
 
                                         </div>
                                         <div class="col-sm-6">
                                             <h4>Subir Icono</h4>
-                                            <input type="file" class="form-control-file" id="icono" name="icono"
+                                            <input type="file" class="form-control-file" id="icono" name="icono" value="{{ old('icono')}}"
                                                 style="display: none;">
                                             <button type="button" class="btn btn-link" id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
                                             </button>
-
+                                            @error('icono')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                             <div class="form-group"><label>Institucion - Sede</label>
-                                                <select class="form-control" name="sede_id" required>
+                                                <select class="form-control" name="sede_id" >
                                                     @foreach($sedes as $sede)
-                                                    <option value="{{ $sede->id }}">{{ $sede->nombre }}
-                                                    </option>
+                                                        <option value="{{ $sede->id }}"
+                                                            @if($sede->id == old('sede_id')) selected @endif>
+                                                            {{ $sede->nombre }}
+                                                        </option>
                                                     @endforeach
+
                                                 </select>
+                                                @error('sede_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                             <div class="form-group"><label>Carrera</label>
-                                                <select class="form-control" name="carrera_id" required>
+                                                <select class="form-control" name="carrera_id" >
                                                     @foreach($carreras as $carrera)
-                                                    <option value="{{ $carrera->id }}">{{ $carrera->nombre }}</option>
+                                                        <option value="{{ $carrera->id }}"
+                                                            @if($carrera->id == old('carrera_id')) selected @endif>
+                                                            {{ $carrera->nombre }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
+                                                @error('carrera_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                             <div class="form-group"><label>Correo</label> <input type="email"
-                                                    placeholder="correo@gmail.com" class="form-control" name="correo"
-                                                    required>
+                                                    placeholder="correo@gmail.com" class="form-control" name="correo" value="{{old('correo')}}">
+                                                    @error('correo')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Celular</label> <input type="text"
-                                                    placeholder="Ingrese celular" class="form-control" name="celular"
-                                                    required>
+                                                    placeholder="Ingrese celular" class="form-control" name="celular" value="{{ old('celular')}}">
+                                                    @error('celular')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
 
 
                                         </div>
                                         <div>
-                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit"><i
+                                            <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit" ><i
                                                     class="fa fa-check"></i>&nbsp;Confirmar</button>
                                         </div>
                                     </div>
@@ -292,6 +274,14 @@
 
 
         <div class="wrapper wrapper-content animated fadeInRight">
+            @if(session('error'))
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Error:</strong> {{ session('error') }}
+                </div>
+                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+            </div>
+            @endif
             <div class="row">
                 @foreach ($candidatos as $index => $candidato)
                 <div id="modal-form-view{{$candidato->id}}" class="modal fade" aria-hidden="true">
@@ -413,11 +403,11 @@
                                             </button>
                                         </form>
                                     </div>
-                                    
+
                                     @elseif($candidato->estado == 0)
                                     <div class="text-center">
-                                        <h1 style="color: gold" class="font-bold">Colaborador</h1>
-                                    </div>  
+                                        <h3 style="color: gold" class="font-bold">Colaborador</h3>
+                                    </div>
                                     @elseif($candidato->estado == 2)
                                     <div class="d-flex justify-content-center gap-10">
                                         <form class="text-center" method="POST"
@@ -436,8 +426,8 @@
                                     </div>
                                     @elseif($candidato->estado == 3)
                                     <div class="text-center">
-                                        <h1 class="text-danger font-bold">Ex Colaborador</h1>
-                                    </div> 
+                                        <h3 class="text-danger font-bold">Ex Colaborador</h3>
+                                    </div>
                                     @endif
 
                                     </p>
@@ -470,16 +460,18 @@
                                     </dl>
                                     <div>
                                         <div class="mb-4">
+                                            {{-- botón ver colaborador --}}
                                             <button class="btn btn-success float-right mx-2" type="button"
                                                 href="#modal-form-view{{$candidato->id}}" data-toggle="modal"><i
                                                     style="font-size: 20px" class="fa fa-eye"></i></button>
 
-                                    
 
-                                            <button class="btn btn-info float-right mx-2" type="button"
+                                            {{-- botón editar colaborador --}}
+                                            <button id="editButton{{ $candidato->id }}" class="btn btn-info float-right mx-2" type="button"
                                                 href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
                                                     style="font-size: 20px" class="fa fa-paste"></i></button>
                                         </div>
+                                        {{-- MODAL UPDATE --}}
                                         <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -492,6 +484,10 @@
                                                             @isset($pageData->currentURL)
                                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                             @endisset
+
+                                                            <input type="hidden" name="form_type" value="edit">
+                                                            <input type="hidden" name="candidato_id" value="{{ $candidato->id }}">
+
                                                             <div class="row">
                                                                 <div class="col-sm-6 b-r">
                                                                     <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -500,47 +496,61 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
-                                                                            value="{{ old('nombre', $candidato->nombre) }}"
-                                                                            required>
+                                                                            value="{{ $candidato->nombre }}">
+                                                                            @error('nombre'.$candidato->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label>Apellido</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
-                                                                            value="{{ old('apellido', $candidato->apellido) }}"
-                                                                            required>
+                                                                            value="{{ $candidato->apellido }}">
+                                                                            @error('apellido'.$candidato->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>DNI</label>
                                                                         <input type="number" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
-                                                                            value="{{ old('dni', $candidato->dni) }}"
-                                                                            required>
+                                                                            value="{{ $candidato->dni }}">
+
+                                                                        @error('dni'.$candidato->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Dirección</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
-                                                                            value="{{ old('direccion', $candidato->direccion) }}"
-                                                                            required>
+                                                                            value="{{ $candidato->direccion }}">
+                                                                            @error('direccion'.$candidato->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Fecha de
                                                                             Nacimiento</label>
                                                                         <input type="date" placeholder="....."
                                                                             class="form-control" name="fecha_nacimiento"
                                                                             id="fecha_nacimiento"
-                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}"
-                                                                            required>
+                                                                            value="{{ $candidato->fecha_nacimiento }}">
+
                                                                     </div>
                                                                     <div class="form-group"><label>Ciclo de
                                                                             Estudiante</label>
-                                                                        <select name="ciclo_de_estudiante"
-                                                                            id="ciclo_de_estudiante"
-                                                                            class="form-control" required>
-                                                                            @for($i = 4; $i <= 10; $i++)
-                                                                            <option @if($i === $candidato->ciclo_de_estudiante) selected @endif value="{{$i}}">{{$i}}</option>
-                                                                            @endfor
-                                                                        </select>
+                                                                            <select name="ciclo_de_estudiante" id="ciclo_de_estudiante" class="form-control" >
+                                                                                @for($i = 4; $i <= 10; $i++)
+                                                                                    <option value="{{ $i }}"
+                                                                                        @if($i ==  $candidato->ciclo_de_estudiante) selected @endif>
+                                                                                        {{ $i }}
+                                                                                    </option>
+                                                                                @endfor
+                                                                            </select>
+                                                                            @error('ciclo_de_estudiante')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
 
                                                                 </div>
@@ -554,6 +564,9 @@
                                                                         id="icon-upload-{{ $candidato->id }}">
                                                                         <i class="fa fa-cloud-download big-icon"></i>
                                                                     </button>
+                                                                    @error('icono'.$candidato->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                                     <script>
                                                                         document.getElementById('icon-upload-{{ $candidato->id }}').addEventListener('click', function() {
                                                                         document.getElementById('icono-{{ $candidato->id }}').click();
@@ -561,42 +574,50 @@
                                                                     </script>
                                                                     <div class="form-group">
                                                                         <label>Institucion - Sede</label>
-                                                                        <select class="form-control" name="sede_id"
-                                                                            required>
+                                                                        <select class="form-control" name="sede_id">
                                                                             @foreach($sedes as $sede)
                                                                             <option value="{{ $sede->id }}" @if($sede->
                                                                                 id ==
-                                                                                old('institucion_id',
-                                                                                $candidato->sede_id)) selected
+
+                                                                                $candidato->sede_id) selected
                                                                                 @endif>{{ $sede->nombre }}
                                                                             </option>
                                                                             @endforeach
                                                                         </select>
+                                                                        @error('sede_id')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Carrera</label>
-                                                                        <select class="form-control" name="carrera_id"
-                                                                            required>
+                                                                        <select class="form-control" name="carrera_id">
                                                                             @foreach($carreras as $carrera)
                                                                             <option value="{{ $carrera->id }}"
-                                                                                @if($carrera->id == old('carrera_id',
-                                                                                $candidato->carrera_id)) selected
+                                                                                @if($carrera->id ==
+                                                                                $candidato->carrera_id) selected
                                                                                 @endif >{{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
+                                                                        @error('carrera_id')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Correo</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
-                                                                            value="{{ old('correo', $candidato->correo) }}"
-                                                                            required>
+                                                                            value="{{ $candidato->correo }}">
+                                                                        @error('correo'.$candidato->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>Celular</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="celular"
                                                                             id="celular"
-                                                                            value="{{ old('celular', $candidato->celular) }}"
-                                                                            required>
+                                                                            value="{{ $candidato->celular }}">
+                                                                        @error('celular'.$candidato->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                     </div>
                                                                     <div class="mt-4">
                                                                         <button
@@ -653,61 +674,47 @@
 
         @include('components.inspinia.footer-inspinia')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
     </div>
+
+    @if ($errors->any())
+    <script>
+        // Reabrir el modal de creación si el error proviene del formulario de creación
+        console.log(@json($errors->all()));
+        @if (old('form_type') == 'create')
+            $('#modal-form-add').modal('show');
+        @endif
+
+        // Reabrir el modal de edición si el error proviene del formulario de edición
+        @if (old('form_type') == 'edit' && old('candidato_id'))
+            $('#modal-form' + {{ old('candidato_id') }}).modal('show');
+        @endif
+    </script>
+@endif
+
+
+
     <style>
         .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
             width: 100% !important;
         }
 
-        /* .select2-container--default .select2-selection--multiple {
-            width: auto;
-            min-width: 100% !important; 
-        } */
         .select2-container {
             display: inline !important;
         }
 
-        /* .select2.select2-container.select2-container--default.selection.select2-selection.select2-selection--multiple.
-        .select2-selection__rendered.select2-container--below.select2-selection__rendered{
-            z-index: 9999 !important;
-            width: 100% !important;
-        } */
+
     </style>
     <script>
+        const deleteAlertError = () => {
+            let alertError = document.getElementById('alert-error');
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error("Elemento con ID 'alert-error' no encontrado.");
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const personal = document.getElementById('personalCont');
             if (personal) {
@@ -716,16 +723,7 @@
                 console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
             }
         });
-        /*
-        document.addEventListener('DOMContentLoaded', function() {
-            const candidatoCont = document.getElementById('candidatosCont');
-            if (candidatoCont) {
-                candidatoCont.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'candidatosCont' no se encontró en el DOM.");
-            }
-        });
-        */
+
         document.addEventListener('DOMContentLoaded', function() {
             const candidato = document.getElementById('candidatos');
             if (candidato) {
@@ -761,7 +759,7 @@
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
-                modal.classList.add(' show');
+                modal.classList.add('show');
             }
         }
 
@@ -786,7 +784,7 @@
                         inputHidden.value = currentURL;
                         form.appendChild(inputHidden)
                     }
-                    
+
                     document.body.appendChild(form)
                     form.submit()
                 } else {
@@ -841,33 +839,22 @@
         });
 
 
-        // function prepareQuery() {
-        //     const estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(el => el.value).join(',');
-        //     const carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(el => el.value).join(',');
-        //     const instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(el => el.value).join(',');
-
-        //     document.getElementById('estados-hidden').value = estados;
-        //     document.getElementById('carreras-hidden').value = carreras;
-        //     document.getElementById('instituciones-hidden').value = instituciones;
-
-        //     // Remove names to prevent them from being sent
-        //     document.querySelectorAll('.estado-checkbox, .carrera-checkbox, .institucion-checkbox').forEach(el => el.removeAttribute('name'));
-
-        //     return true;
-        // }
-        
-        
 
     </script>
     <script>
-        function prepareSearchActionURL() {
+        function prepareSearchActionURL(event) {
             let busqueda = document.getElementById('searchInput').value;
 
-            let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#searchCandidatos').action = actionUrl;
+            if(busqueda.trim().length > 0) {
+                let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#searchCandidatos').action = actionUrl;
 
-            return true;
+                return true;
+            } else{
+                event.preventDefault();
+                return false;
+            }
         }
 
         function prepareFilterActionURL() {
@@ -878,12 +865,13 @@
             estados = estados.length ? estados.join(',') : '0,1,2,3';
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
+            if(estados != null && carreras != null && instituciones != null) {
+                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#filtrarCandidatos').action = actionUrl;
 
-            let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#filtrarCandidatos').action = actionUrl;
-
-            return true;
+                return true;
+            }
         }
 
     document.getElementById('select-all-estados').addEventListener('change', function() {

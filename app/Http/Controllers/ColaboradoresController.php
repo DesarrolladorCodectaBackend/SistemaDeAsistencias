@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\FunctionHelperController;
+use App\Http\Requests\StoreColaboradoresRequest;
 use App\Models\Actividades;
 use App\Models\Area;
 use App\Models\AreaRecreativa;
@@ -10,6 +11,7 @@ use App\Models\Asistentes_Clase;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
+use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Computadora_colaborador;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
@@ -18,6 +20,7 @@ use App\Models\Carrera;
 use App\Models\Maquina_reservada;
 use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
+use App\Http\Requests\UpdateColaboradoresRequest;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
 use App\Models\RegistroActividad;
@@ -45,7 +48,7 @@ class ColaboradoresController extends Controller
         $instituciones = $institucionesAll->where('estado', 1);
         $carreras = $carrerasAll->where('estado', 1);
         $areas = $areasAll->where('estado', 1);
-        
+
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
         // return $colabsActividades;
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
@@ -55,7 +58,7 @@ class ColaboradoresController extends Controller
         $hasPagination = true;
         // return $pageData;
         // return $actividades;
-        
+
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
@@ -193,19 +196,11 @@ class ColaboradoresController extends Controller
         ]);
     }
 
-
-    public function store(Request $request)
+    public function store(StoreColaboradoresRequest $request)
     {
         DB::beginTransaction();
         try{
-            $request->validate([
-                'candidato_id' => 'required|integer',
-                'areas_id.*' => 'required|integer',
-                'horarios' => 'required|array',
-                'horarios.*.hora_inicial' => 'required|date_format:H:i',
-                'horarios.*.hora_final' => 'required|date_format:H:i',
-                'horarios.*.dia' => 'required|string'
-            ]);
+
             //Se busca al candidato por su id
             $candidato = Candidatos::findOrFail($request->candidato_id);
             //Se verifica si el candidato está activo
@@ -215,7 +210,7 @@ class ColaboradoresController extends Controller
 
                 //Encontrar siguiente semana(Lunes)
                 $semana = FunctionHelperController::findOrCreateNextWeek();
-                
+
                 //Se recorre el request de areas
                 foreach($request->areas_id as $area_id){
                     //Se crea un nuevo registro en la tabla Colaboradores_por_Area con el id del colaborador y el id del área
@@ -255,31 +250,116 @@ class ColaboradoresController extends Controller
     {
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-                'apellido' => 'sometimes|string|min:1|max:100',
-                'dni' => 'sometimes|string|min:1|max:8',
-                'direccion' => 'sometimes|string|min:1|max:100',
-                'fecha_nacimiento' => 'sometimes|string|min:1|max:255',
-                'ciclo_de_estudiante' => 'sometimes|string|min:1|max:50',
-                'sede_id' => 'sometimes|integer|min:1|max:20',
-                'carrera_id' => 'sometimes|integer|min:1|max:20',
-                'correo' => 'sometimes|string|min:1|max:255',
-                'celular' => 'sometimes|string|min:1|max:20',
-                'icono' => 'sometimes|image|mimes:jpeg,png,jpg,gif',
-                'areas_id.*' => 'sometimes|integer',
-                'actividades_id.*' => 'sometimes|integer',
-                'currentURL' => 'sometimes|string',
+            $returnRoute = route('colaboradores.index');
 
-            ]);
+            if(isset($request->currentURL)) {
+                $returnRoute = $request->currentURL;
+            }
+
             //Encontrar al colaborador con su candidato por su id
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
+            //ERRORES
+            $errors = [];
+
+            // Nombre (Requerido, maximo 100 caracteres)
+            if(!isset($request->nombre)){
+                $errors['nombre'.$colaborador_id] = 'El nombre es un campo requerido.';
+            } else{
+                if(strlen($request->nombre) > 100){
+                    $errors['nombre'.$colaborador_id] = 'El nombre no puede exceder los 100 caracteres.';
+                }
+            }
+
+            //apellido
+            if(!isset($request->apellido)){
+                $errors['apellido'.$colaborador_id] = 'El apellido es un campo requerido';
+            }else{
+                if(strlen($request->apellido) > 100){
+                    $errors['apellido'.$colaborador_id] = 'El apellido no puede exceder los 100 caracteres.';
+                }
+            }
+
+            //dirección
+            if(isset($request->direccion)){
+                if (strlen($request->direccion) > 200) {
+                    $errors['direccion'.$colaborador_id] = 'La dirección no puede exceder los 200 caracteres.';
+                }
+            }
+
+            // Ícono
+        if ($request->hasFile('icono')) {
+            $extensiones = ['jpeg', 'png', 'jpg', 'svg', 'webp'];
+            $extensionVal = $request->file('icono')->getClientOriginalExtension();
+
+            if (!in_array($extensionVal, $extensiones)) {
+                $errors['icono'.$colaborador_id] = 'El icono debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+            }
+        }
+
+        // Validación de DNI
+            if (isset($request->dni)) {
+                if(strlen($request->dni) !== 8){
+
+                    // Verificar si el DNI está definido y tiene 8 caracteres
+                    $errors['dni'.$colaborador_id] = 'El DNI debe contener 8 caracteres.';
+                } else {
+                    // Verificar si el DNI ya está en uso
+                    $candidatos = Candidatos::where('dni', $request->dni)->get();
+                    foreach ($candidatos as $cand) {
+                        if ($cand->id != $colaborador_id) {
+                            $errors['dni'.$colaborador_id] = 'El DNI ya está en uso.';
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Verificar correo
+            if(isset($request->correo)){
+                $candidatos = Candidatos::where('correo', $request->correo)->get();
+                foreach($candidatos as $candidato){
+                    if($candidato->id != $colaborador->candidato_id) {
+                        $errors['correo'.$colaborador_id] = 'El correo ya está en uso.';
+                        break;
+                    }
+                }
+            }
+
+             // Validación de Celular
+             if (isset($request->celular) && strlen($request->celular) !== 9) {
+                $errors['celular'.$colaborador_id] = 'El celular debe contener 9 números.';
+            } else if (isset($request->celular)) {
+                $candidatos = Candidatos::where('celular', $request->celular)->get();
+                foreach ($candidatos as $cand) {
+                    if ($cand->id != $colaborador_id) {
+                        $errors['celular'.$colaborador_id] = 'El celular ya está en uso.';
+                        break;
+                    }
+                }
+            }
+
+
+            // return $errors;
+            // Si hay errores, redirigir con todos ellos
+            if(!empty($errors)) {
+                return redirect($returnRoute)->withErrors($errors)->withInput();
+            }
             //Asignar el candidato a una variable
             $candidato = $colaborador->candidato;
+            //Areas recibidas
+            $areas_id = [];
+            $areas_apoyo_id = [];
+            if(isset($request->areas_id)){
+                $areas_id = $request->areas_id;
+            }
+            if(isset($request->areas_apoyo_id)){
+                $areas_apoyo_id = $request->areas_apoyo_id;
+            }
+            // return ["areas" => $areas_apoyo_id];
             //Encontrar siguiente semana(Lunes)
             $semana = FunctionHelperController::findOrCreateNextWeek();
             //Recorrer cada area enviado en el request
-            foreach($request->areas_id as $area_id){
+            foreach($areas_id as $area_id){
                 //Buscar Si hay colaborador por area y colaborador
                 $colaborador_por_area = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('area_id', $area_id)->first();
                 //Si no se encuentra un colaborador con esta area
@@ -299,9 +379,29 @@ class ColaboradoresController extends Controller
                     RegistroActividadController::crearRegistro($colaborador_por_area->id, true);
                 }
             }
-            
+            foreach($areas_apoyo_id as $area_id){
+                //Buscar Si hay colaborador por area y colaborador
+                $colaborador_apoyo_area = ColaboradoresApoyoAreas::where('colaborador_id', $colaborador->id)->where('area_id', $area_id)->first();
+                //Si no se encuentra un colaborador con esta area
+                // return $colaborador_apoyo_area;
+                if (!$colaborador_apoyo_area) {
+                    //Se crea un nuevo registro con esta area y colaborador
+                    ColaboradoresApoyoAreas::create([
+                        'colaborador_id' => $colaborador->id,
+                        'area_id' => $area_id,
+                        'estado' => 1,
+                    ]);
+                    //Si se encuentra un colaborador con esta area y esta inactivo
+                } else if ($colaborador_apoyo_area->estado == 0) {
+                    //Se actualiza el estado a activo
+                    // return 'here';
+                    $colaborador_apoyo_area->update(['estado' => 1]);
+                }
+            }
+
             // Buscar las areas que no estan en el request y que estan asociadas al colaborador
-            $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $request->areas_id)->get();
+            $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $areas_id)->get();
+            $areasInactivasApoyo = ColaboradoresApoyoAreas::where('colaborador_id', $colaborador_id)->where('estado', 1)->whereNotIn('area_id', $areas_apoyo_id)->get();
             // Por cada registro encontrado
             foreach ($areasInactivas as $areaInactiva) {
                 //Se inactiva su estado
@@ -316,6 +416,10 @@ class ColaboradoresController extends Controller
                     $machine->delete();
                 }
             }
+            foreach ($areasInactivasApoyo as $areaInactivaApoyo) {
+                //Se inactiva su estado
+                $areaInactivaApoyo->update(['estado' => 0]);
+            }
             if($request->actividades_id == null){
                 $actividadesInactivas = AreaRecreativa::where('colaborador_id', $colaborador_id)->where('estado', 1)->get();
                 foreach($actividadesInactivas as $actividadInactiva){
@@ -325,7 +429,7 @@ class ColaboradoresController extends Controller
                 //Lo mismo con las actividades
                 foreach($request->actividades_id as $actividad_id){
                     $actividad_recreativa = AreaRecreativa::where('colaborador_id', $colaborador->id)->where('actividad_id', $actividad_id)->first();
-    
+
                     if(!$actividad_recreativa){
                         AreaRecreativa::create([
                             'colaborador_id' => $colaborador->id,
@@ -365,18 +469,14 @@ class ColaboradoresController extends Controller
             DB::commit();
 
             //Se redirige a la vista
-            if($request->currentURL) {
-                return redirect($request->currentURL);
-            } else {
-                return redirect()->route('colaboradores.index');
-            }
+            return redirect($returnRoute);
         } catch(Exception $e){
             DB::rollBack();
-            return $e;
+            // return $e;
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -410,12 +510,12 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            // return $e->getMessage();
             // return redirect()->route('colaboradores.index');
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al actualizar el estado, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al actualizar el estado, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -516,9 +616,9 @@ class ColaboradoresController extends Controller
         } catch(Exception $e){
             DB::rollBack();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al despedir, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al despedir, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -545,9 +645,9 @@ class ColaboradoresController extends Controller
         } catch(Exception $e){
             DB::rollBack();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al recontratar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al recontratar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
     }
@@ -644,9 +744,9 @@ class ColaboradoresController extends Controller
             DB::rollBack();
             // return $e;
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             }
         }
 

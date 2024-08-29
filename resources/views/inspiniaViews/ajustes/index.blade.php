@@ -23,44 +23,6 @@
                     </li>
                 </ol>
             </div>
-            <div class="col-lg-2">
-                <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
-                    type="button">Agregar</button>
-                <div id="modal-form-add" class="modal fade" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-sm-6 b-r">
-                                        <h3 class="m-t-none m-b">Ingrese los Datos</h3>
-
-                                        <!--
-                                                                <p>Sign in today for more expirience.</p>
-                                                            -->
-
-                                        <form role="form">
-                                            <div class="form-group"><label>Tipo de Configuracion</label> <input
-                                                    type="text" placeholder="Ingrese un nombre" class="form-control">
-                                            </div>
-                                            <div>
-                                                <button class="btn btn-primary btn-sm m-t-n-xs float-right"
-                                                    type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <h4>Subir Icono</h4>
-                                        <p class="text-center">
-                                            <a href=""><i class="fa fa-cloud-download big-icon"></i></a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
         <div class="wrapper wrapper-content animated fadeInRight">
@@ -70,51 +32,11 @@
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <img src="{{asset('img/svg/apariencia.svg')}}" class="">
-                                </div>
-                                <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Apariencias</p>
-                                </div>
-                                <div class="col-sm-2">
-                                    <a class="btn btn-success" href=""><i class="fa fa-cog"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-5">
-                    <div class="ibox ">
-                        <div class="show-grid container-fluid">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <img src={{asset('img/svg/usuarios.svg')}} class="">
-                                </div>
-                                <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Usuarios</p>
-                                </div>
-                                <div class="col-sm-2">
-                                    <a class="btn btn-success" href=""><i class="fa fa-cog"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="row">
-                <div class="col-lg-5">
-                    <div class="ibox ">
-                        <div class="show-grid container-fluid">
-                            <div class="row">
-                                <div class="col-sm-3">
                                     <img src={{asset('img/svg/institucion.svg')}} class="">
                                 </div>
                                 <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Institucion</p>
+                                    <h4><strong>Institución</strong></h4>
+                                    <p>Tabla de instituciones</p>
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/institucion"><i class="fa fa-cog"></i></a>
@@ -132,8 +54,8 @@
                                     <img src={{asset('img/svg/carrera.svg')}} class="">
                                 </div>
                                 <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Carrera</p>
+                                    <h4><strong>Carrera</strong></h4>
+                                    <p>Tabla de carreras academicas</p>
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/carreras"><i class="fa fa-cog"></i></a>
@@ -154,8 +76,8 @@
                                     <img src={{asset('img/svg/curso.svg')}} class="">
                                 </div>
                                 <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Curso</p>
+                                    <h4><strong>Cursos</strong></h4>
+                                    <p>Tabla de cursos</p>
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/cursos"><i class="fa fa-cog"></i></a>
@@ -173,8 +95,8 @@
                                     <img src={{asset('img/svg/programa.svg')}} class="">
                                 </div>
                                 <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Programas</p>
+                                    <h4><strong>Programas</strong></h4>
+                                    <p>Tabla de programas</p>
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/programas"><i class="fa fa-cog"></i></a>
@@ -191,8 +113,8 @@
                                     <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
                                 </div>
                                 <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Sedes</p>
+                                    <h4><strong>Sedes</strong></h4>
+                                    <p>Tabla de sedes</p>
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/sedes"><i class="fa fa-cog"></i></a>
@@ -210,8 +132,8 @@
                                     <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
                                 </div>
                                 <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Objetos</p>
+                                    <h4><strong>Objetos</strong></h4>
+                                    <p>Tabla de objetos de la empresa</p>
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/objeto"><i class="fa fa-cog"></i></a>
@@ -229,8 +151,8 @@
                                     <img src={{asset('img/svg/carrera.svg')}} class="">
                                 </div>
                                 <div class="col-sm">
-                                    <h4><strong>Tipo de Configuracion</strong></h4>
-                                    <p>Actividades</p>
+                                    <h4><strong>Actividades</strong></h4>
+                                    <p>Tabla de Actividades Recreativas</p>
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/actividades"><i class="fa fa-cog"></i></a>

@@ -28,17 +28,12 @@
             </div>
             <div class="col-lg-7 flex-centered">
                 <div class="flex-centered spc-per-90">
-                    {{-- <form method="POST" action="{{route('colaboradores.search')}}"
-                        class="flex-centered gap-20 spc-per-100">
-                        <input class="form-control wdt-per-80" type="search" name="busqueda"
-                            placeholder="Buscar Colaborador..." aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form> --}}
+
                     <form id="searchColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
                         class="flex-centered gap-20 spc-per-100">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
-                            placeholder="Buscar Colaborador..." aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            placeholder="Buscar Colaborador..." aria-label="Search" required autocomplete="off">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                     </form>
                 </div>
             </div>
@@ -254,6 +249,14 @@
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
+            @if(session('error'))
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Error:</strong> {{ session('error') }}
+                </div>
+                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+            </div>
+            @endif
             <div class="row">
                 @foreach($colaboradores->data as $index => $colaborador)
                 <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true">
@@ -267,7 +270,7 @@
                                         <style>
                                             .form-group {
                                                 margin: 0rem;
-                                                
+
                                             }
                                             p{
                                                 margin: 0px;
@@ -312,7 +315,7 @@
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Área(s):</p>
                                             @foreach($colaborador->areas as $area)
-                                            <p style='font-size: 0.9rem;' class=''>{{$area}}</p>
+                                            <p style='font-size: 0.9rem;' class=''>{{$area['nombre']}} @if($area['tipo'] === 1)(Apoyo) @endif</p>
                                             @endforeach
                                         </div>
                                         <div class="form-group">
@@ -336,7 +339,8 @@
                                                 @endif
                                             </p></div>
                                         <div>
-                                            <a data-toggle="modal"
+                                            {{-- editar colaborador--}}
+                                            <a data-toggle="modal" id="editButton{{ $colaborador->id }}"
                                                 class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
                                                 onclick="abrirModalEdicion({{$colaborador->id}});"
                                                 style="font-size: 20px; width: 60px;"
@@ -425,7 +429,7 @@
                                 </small>
                                 <div class="small m-t-xs text-left">
                                     @foreach($colaborador->areas as $area)
-                                    <h5>{{$area}}</h5>
+                                    <h5>{{$area['nombre']}} @if($area['tipo'] === 1) <span style="color: #007">(Apoyo)</span>@endif</h5>
                                     @endforeach
                                 </div>
                                 <small class="text-muted text-left">
@@ -455,15 +459,17 @@
                                     <div class="ibox-content">
                                         @if($colaborador->estado != 2)
                                         <div class="text-center">
+                                            {{-- Botón calendario colaborador --}}
                                             <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
                                                 style="font-size: 20px;"
                                                 onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
-                                            {{-- <button class="btn btn-primary btn-warning fa fa-book mx-1"
-                                                style="font-size: 20px;"></button> --}}
+
+                                            {{-- Botón ver colaborador --}}
                                             <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                 style="font-size: 20px;"
                                                 href="#modal-form-view{{$colaborador->id}}"></button>
                                         </div>
+                                        {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-custom">
@@ -474,6 +480,10 @@
                                                             enctype="multipart/form-data">
                                                             @csrf
                                                             @method('PUT')
+                                                            {{-- Campo oculto para identificar el tipo de formulario --}}
+                                                            <input type="hidden" name="form_type" value="edit">
+                                                            <input type="hidden" name="colaborador_id" value="{{ $colaborador->id }}">
+
                                                             <style>
                                                                 .form-group {
                                                                     margin-bottom: 0rem;
@@ -492,21 +502,30 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
-                                                                            value="{{ old('nombre', $colaborador->candidato->nombre) }}">
+                                                                            value="{{ $colaborador->candidato->nombre }}">
+                                                                            @error('nombre'.$colaborador->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Apellidos:</h5>
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
-                                                                            value="{{ old('apellido', $colaborador->candidato->apellido) }}">
+                                                                            value="{{ $colaborador->candidato->apellido }}">
+                                                                            @error('apellido'.$colaborador->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Direccion:</h5>
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
-                                                                            value="{{ old('direccion', $colaborador->candidato->direccion) }}">
+                                                                            value="{{  $colaborador->candidato->direccion }}">
+                                                                            @error('direccion'.$colaborador->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Institucion - Sede:
@@ -526,7 +545,7 @@
                                                                             <h5 class="m-t-none">Ciclo:</h5>
                                                                         </label>
                                                                         <select name="ciclo_de_estudiante"
-                                                                            class="form-control" required>
+                                                                            class="form-control">
                                                                             @for($i = 4; $i <= 10; $i++) <option
                                                                                 @if($i==$colaborador->
                                                                                 candidato->ciclo_de_estudiante) selected
@@ -541,51 +560,10 @@
                                                                         </label><input type="text" placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
-                                                                            value="{{ old('correo', $colaborador->candidato->correo) }}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-4 b-r">
-                                                                    <h3 class="m-t-none m-b">.</h3>
-                                                                    <div class="form-group"><label>
-                                                                            <h5 class="m-t-none">fecha de Nacimiento:
-                                                                            </h5>
-                                                                        </label><input type="date" placeholder="....."
-                                                                            class="form-control" name="fecha_nacimiento"
-                                                                            id="fecha_nacimiento"
-                                                                            value="{{ old('fecha_nacimiento', $colaborador->candidato->fecha_nacimiento) }}">
-                                                                    </div>
-                                                                    <div class="form-group"><label>
-                                                                            <h5 class="m-t-none">DNI:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control" name="dni" id="dni"
-                                                                            value="{{ old('dni', $colaborador->candidato->dni) }}"></input>
-                                                                    </div>
-                                                                    <div class="form-group"><label>
-                                                                            <h5 class="m-t-none">Celular:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control" name="celular"
-                                                                            id="celular"
-                                                                            value="{{ old('celular', $colaborador->candidato->celular) }}">
-                                                                    </div>
-
-                                                                    <div class="form-group">
-                                                                        <label>
-                                                                            <h5 class="m-t-none">Area:</h5>
-                                                                        </label>
-                                                                        <select name="areas_id[]" multiple required
-                                                                            class="form-control multiple_areas_select">
-                                                                            @foreach ($areas as $key => $area)
-                                                                            <option value="{{ $area->id }}"
-                                                                                @foreach($colaborador->areas as $areaNombre)
-                                                                                @if($area->especializacion ==
-                                                                                $areaNombre)
-                                                                                selected
-                                                                                @endif
-                                                                                @endforeach
-                                                                                >
-                                                                                {{ $area->especializacion }}</option>
-                                                                            @endforeach
-                                                                        </select>
+                                                                            value="{{ $colaborador->candidato->correo }}">
+                                                                            @error('correo'.$colaborador->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label>
@@ -603,6 +581,80 @@
                                                                                 @endforeach
                                                                                 >
                                                                                 {{ $actividad->nombre }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-4 b-r">
+                                                                    <h3 class="m-t-none m-b">.</h3>
+                                                                    <div class="form-group"><label>
+                                                                            <h5 class="m-t-none">fecha de Nacimiento:
+                                                                            </h5>
+                                                                        </label><input type="date" placeholder="....."
+                                                                            class="form-control" name="fecha_nacimiento"
+                                                                            id="fecha_nacimiento"
+                                                                            value="{{ $colaborador->candidato->fecha_nacimiento }}">
+                                                                    </div>
+                                                                    <div class="form-group"><label>
+                                                                            <h5 class="m-t-none">DNI:</h5>
+                                                                        </label><input type="text" placeholder="....."
+                                                                            class="form-control" name="dni" id="dni"
+                                                                            value="{{$colaborador->candidato->dni}}"></input>
+                                                                            @error('dni'.$colaborador->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                    </div>
+                                                                    <div class="form-group"><label>
+                                                                            <h5 class="m-t-none">Celular:</h5>
+                                                                        </label><input type="text" placeholder="....."
+                                                                            class="form-control" name="celular"
+                                                                            id="celular"
+                                                                            value="{{ $colaborador->candidato->celular }}">
+                                                                            @error('celular'.$colaborador->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Área(s):</h5>
+                                                                        </label>
+                                                                        <select name="areas_id[]" multiple
+                                                                            class="form-control multiple_areas_select">
+                                                                            @foreach ($areas as $key => $area)
+                                                                            <option value="{{ $area->id }}"
+                                                                                @foreach($colaborador->areas as $areaNombre)
+                                                                                    @if($areaNombre['tipo'] === 0)
+                                                                                        @if($area->especializacion ==
+                                                                                        $areaNombre['nombre'])
+                                                                                        selected
+                                                                                        @endif
+                                                                                    @endif
+                                                                                @endforeach
+                                                                                >
+                                                                                {{ $area->especializacion }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Área(s) Apoyo:</h5>
+                                                                        </label>
+                                                                        <select name="areas_apoyo_id[]" multiple
+                                                                            class="form-control multiple_apoyo_select">
+                                                                            @foreach ($areas as $key => $area)
+                                                                            <option value="{{ $area->id }}"
+                                                                                @foreach($colaborador->areas as $areaNombre)
+                                                                                    @if($areaNombre['tipo'] === 1)
+                                                                                        @if($area->especializacion ==
+                                                                                        $areaNombre['nombre'])
+                                                                                        selected
+                                                                                        @endif
+                                                                                    @endif
+                                                                                @endforeach
+                                                                                >
+                                                                                {{ $area->especializacion }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
@@ -647,7 +699,11 @@
                                                                             id="icon-upload-{{ $colaborador->candidato->id }}">
                                                                             <img src="{{ asset('storage/candidatos/' . $colaborador->candidato->icono) }}"
                                                                                 class="img-lg w-200 max-min-h-w-200 img-cover">
+
                                                                         </button>
+                                                                        @error('icono'.$colaborador->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                                         <script>
                                                                             document.getElementById('icon-upload-{{ $colaborador->candidato->id }}').addEventListener('click', function() {
                                                                                 document.getElementById('icono-{{ $colaborador->candidato->id }}').click();
@@ -703,6 +759,8 @@
                 </div>
                 @endforeach
             </div>
+
+
             @if($hasPagination === true)
             <div class="row mb-5 mb-md-4">
                 <div
@@ -734,29 +792,7 @@
             </div>
             @endif
 
-            {{-- <div class="row mb-4">
-                <div class="col-6 d-flex justify-content-start align-items-center gap-10">
-                    @if($colaboradores->lastPag > 2 && $colaboradores->currentPage() !== 1)
-                    <a href="{{ $colaboradores->url(1) }}" class="btn btn-outline-dark rounded-5"><i
-                            class="fa fa-arrow-circle-left"></i> First</a>
-                    @endif
-                    @if($colaboradores->currentPage() > 1)
-                    <a href="{{$colaboradores->previousPageUrl()}}" class="btn btn-outline-dark rounded-5"> <i
-                            class="fa fa-arrow-circle-left"></i> Anterior </a>
-                    @endif
-                </div>
-                <div class="col-6 d-flex justify-content-end align-items-center gap-10">
-                    @if($colaboradores->currentPage() < $colaboradores->lastPage())
-                        <a href="{{ $colaboradores->nextPageUrl() }}" class="btn btn-outline-dark rounded-5"> Siguiente
-                            <i class="fa fa-arrow-circle-right"></i></a>
-                        @endif
-                        @if($colaboradores->lastPage() > 2 && $colaboradores->currentPage() !==
-                        $colaboradores->lastPage())
-                        <a href="{{ $colaboradores->url($colaboradores->lastPage()) }}"
-                            class="btn btn-outline-dark rounded-5">Last <i class="fa fa-arrow-circle-right"></i></a>
-                        @endif
-                </div>
-            </div> --}}
+
         </div>
 
 
@@ -767,31 +803,55 @@
 
 
 
-
-
-
     </div>
+<!-- Script para manejar los errores globalmente -->
+<script>
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            console.error("Error: {{ $error }}");
+        @endforeach
+    @endif
+</script>
+
+ {{-- MODAL SCRIPT --}}
+    @if ($errors->any())
+        <script>
+            console.log(@json($errors->all())); // Muestra todos los errores en la consola
+            document.addEventListener('DOMContentLoaded', function() {
+                @if (old('form_type') == 'edit' && old('colaborador_id'))
+                $('#modal-form-update' + {{ old('colaborador_id') }}).modal('show');
+                @endif
+            });
+        </script>
+    @endif
+
+
+
+
+
+
     <style>
         .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
             width: 100% !important;
         }
 
-        /* .select2-container--default .select2-selection--multiple {
-            width: auto;
-            min-width: 100% !important;
-        } */
+
         .select2-container {
             display: inline !important;
         }
 
-        /* .select2.select2-container.select2-container--default.selection.select2-selection.select2-selection--multiple.
-        .select2-selection__rendered.select2-container--below.select2-selection__rendered{
-            z-index: 9999 !important;
-            width: 100% !important;
-        } */
+
     </style>
     <script>
+        const deleteAlertError = () => {
+            let alertError = document.getElementById('alert-error');
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error("Elemento con ID 'alert-error' no encontrado.");
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const personal = document.getElementById('personalCont');
             if (personal) {
@@ -800,16 +860,7 @@
                 console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
             }
         });
-        /*
-        document.addEventListener('DOMContentLoaded', function() {
-            const colabCont = document.getElementById('colaboradoresCont');
-            if (colabCont) {
-                colabCont.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'colaboradoresCont' no se encontró en el DOM.");
-            }
-        });
-        */
+
         document.addEventListener('DOMContentLoaded', function() {
             const colaborador = document.getElementById('colaboradores');
             if (colaborador) {
@@ -837,7 +888,7 @@
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
-                modal.classList.add(' show');
+                modal.classList.add('show');
             }
         }
 
@@ -871,14 +922,24 @@
             });
         }
 
-        function prepareSearchActionURL() {
+        function prepareSearchActionURL(event) {
+            // preventDefault();
+
             let busqueda = document.getElementById('searchInput').value;
 
-            let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#searchColaboradores').action = actionUrl;
+            if(busqueda.trim().length > 0){
+                console.log(busqueda);
 
-            return true;
+                let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#searchColaboradores').action = actionUrl;
+
+                return true;
+            } else{
+                event.preventDefault();
+                return false;
+            }
+
         }
 
         function prepareFilterActionURL() {
@@ -892,11 +953,14 @@
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
 
-            let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
-            console.log(actionUrl);
-            document.querySelector('#filtrarColaboradores').action = actionUrl;
+            if(estados != null && areas != null && carreras != null && instituciones != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#filtrarColaboradores').action = actionUrl;
 
-            return true;
+                return true;
+            }
+
         }
 
         document.getElementById('select-all-estados').addEventListener('change', function() {
@@ -996,6 +1060,9 @@
         //JQuery para select multiple de areas
         $(document).ready(function() {
             $('.multiple_areas_select').select2();
+        });
+        $(document).ready(function() {
+            $('.multiple_apoyo_select').select2();
         });
         $(document).ready(function() {
             $('.multiple_actividades_select').select2();
