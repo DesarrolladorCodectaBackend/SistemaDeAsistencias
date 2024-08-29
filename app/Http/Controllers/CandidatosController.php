@@ -276,12 +276,12 @@ class CandidatosController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         //Filtrar por id
-        $candidatosPorDni = Candidatos::with('carrera', 'sede')->where('dni', $busqueda)->paginate(6);
+        // $candidatosPorDni = Candidatos::with('carrera', 'sede')->where('dni', $busqueda)->paginate(6);
 
         //Filtrar por nombre y apellido de candidato
-        // $candidatosPorDni = Candidatos::with('sede', 'carrera')
-        //     ->where(DB::raw("dni"), 'like', '%' . $busqueda . '%')
-        //     ->paginate(6);                             
+        $candidatosPorDni = Candidatos::with('sede', 'carrera')
+            ->where(DB::raw("dni"), 'like', '%' . $busqueda . '%')
+            ->paginate(6);
 
         $candidatosPorNombre = Candidatos::with('sede', 'carrera')
             ->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%')
