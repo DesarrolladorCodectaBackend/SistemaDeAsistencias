@@ -302,26 +302,24 @@ class ColaboradoresController extends Controller
 
                     // Verificar si el DNI está definido y tiene 8 caracteres
                     $errors['dni'.$colaborador_id] = 'El DNI debe contener 8 caracteres.';
-                }
-            } else {
-                // Verificar si el DNI ya está en uso
-                $candidatos = Candidatos::where('dni', $request->dni)->get();
-                foreach ($candidatos as $cand) {
-                    if ($cand->id != $colaborador_id) {
-                        $errors['dni'.$colaborador_id] = 'El DNI ya está en uso.';
-                        break;
+                } else {
+                    // Verificar si el DNI ya está en uso
+                    $candidatos = Candidatos::where('dni', $request->dni)->get();
+                    foreach ($candidatos as $cand) {
+                        if ($cand->id != $colaborador_id) {
+                            $errors['dni'.$colaborador_id] = 'El DNI ya está en uso.';
+                            break;
+                        }
                     }
                 }
             }
-
-
 
             // Verificar correo
             if(isset($request->correo)){
                 $candidatos = Candidatos::where('correo', $request->correo)->get();
                 foreach($candidatos as $candidato){
                     if($candidato->id != $colaborador->candidato_id) {
-                        $errors['correo'] = 'El correo ya está en uso.';
+                        $errors['correo'.$colaborador_id] = 'El correo ya está en uso.';
                         break;
                     }
                 }
