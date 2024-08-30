@@ -200,7 +200,7 @@ class ColaboradoresController extends Controller
     {
         DB::beginTransaction();
         try{
-
+            // return $request;
             //Se busca al candidato por su id
             $candidato = Candidatos::findOrFail($request->candidato_id);
             //Se verifica si el candidato está activo
