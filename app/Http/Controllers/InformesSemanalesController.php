@@ -10,7 +10,12 @@ use Illuminate\Http\Request;
 class InformesSemanalesController extends Controller
 {
 
-    public function store()
+    public function getInformes()
+    {
+        
+    }
+
+    public function store(Request $request, )
     {
 
     }
@@ -22,7 +27,7 @@ class InformesSemanalesController extends Controller
 
     public function delete()
     {
-        
+
     }
 
 

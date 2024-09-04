@@ -109,155 +109,207 @@
                 /* Cambia la opacidad para simular el efecto de deshabilitar */
             }
         </style>
+
+
         @foreach($semanasMes as $index => $semana)
-        <section id="semana{{$index+1}}" style="display: none">
-            <table class="juntar">
-                <tr>
-                    <th> {{$mes}} </th>
-                    <th class="semana" colspan="8">Semana: {{$index+1}}
-                        <div>
-                            <button id="backButton{{$index+1}}" onclick="regresarSemana()"
-                                style="margin-right: 30px">←</button>
-                            <button id="nextButton{{$index+1}}" onclick="avanzarSemana()">→</button>
+            <section id="semana{{$index+1}}" style="display: none">
+                <table class="juntar">
+                    <tr>
+                        <th> {{$mes}} </th>
+                        <th class="semana" colspan="8">Semana: {{$index+1}}
+                            <div>
+                                <button id="backButton{{$index+1}}" onclick="regresarSemana("
+                                    style="margin-right: 30px">←</button>
+                                <button id="nextButton{{$index+1}}" onclick="avanzarSemana()">→</button>
+                            </div>
+
+
+                        </th>
+                    </tr>
+                    <tr>
+                        <th> Área</th>
+                        <th class="area" colspan="8">{{$area->especializacion}}
+                        {{-- Botón ver informe --}}
+                        <a class="btn btn-primary btn-success"
+                     style="font-size: 20px;"
+                     onclick="showModal('modal-form-view-{{$index+1}}')">Ver Informes</a>
+                        </th>
+                    </tr>
+                </table>
+
+               <!-- Modal para la semana actual -->
+                <div id="modal-form-view-{{$index+1}}" class="modal" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
+                                <button type="button" class="close" onclick="hideModal('modal-form-view-{{$index+1}}')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Contenido del modal para la semana {{$index+1}} -->
+                                <form id="crud-form-{{$index+1}}">
+                                    <input type="hidden" name="semana_id" value="{{$semana->id}}">
+                                    <!-- Otros campos del formulario aquí -->
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="hideModal('modal-form-view-{{$index+1}}')">Cerrar</button>
+                            </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Segundo Modal -->
+                <div id="secondary-modal" class="modal" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Segundo Modal</h5>
+                                <button type="button" class="close" onclick="hideModal('secondary-modal')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Contenido del segundo modal -->
+                                <p>Este es el contenido del segundo modal.</p>
+                                <!-- Aquí puedes agregar más campos o formularios si es necesario -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="hideModal('secondary-modal')">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
-                    </th>
-                </tr>
-                <tr>
-                    <th> Área </th>
-                    <th class="area" colspan="8">{{$area->especializacion}}</th>
-                </tr>
-            </table>
-            @if($semana->cumplido == true)
-            <table id="table-semana-cumplida{{$index+1}}" class="disabled">
-                <form id="cumplioUpdate{{$index+1}}" role="form" method="POST"
-                    action="{{ route('responsabilidades.actualizar', ['semana_id' => $semana->id, 'area_id' => $area->id]) }}">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="year" value="{{$year}}">
-                    <input type="hidden" name="mes" value="{{$mes}}">
-                    <thead>
-                        <tr>
-                            <th> Colaboradores / Responsabilidades </th>
-                            @foreach($responsabilidades as $responsabilidad)
-                            <td class="respon">{{$responsabilidad->nombre}}</td>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($semana->colaboradores as $colaboradorArea)
-                        <tr>
-                            <th class="colabo">
-                                {{$colaboradorArea->colaborador->candidato->nombre}}
-                                {{$colaboradorArea->colaborador->candidato->apellido}}
-                                <input type="number" name="colaborador_area_id[]" value="{{$colaboradorArea->id}}"
+                @if($semana->cumplido == true)
+                <table id="table-semana-cumplida{{$index+1}}" class="disabled">
+                    <form id="cumplioUpdate{{$index+1}}" role="form" method="POST"
+                        action="{{ route('responsabilidades.actualizar', ['semana_id' => $semana->id, 'area_id' => $area->id]) }}">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="year" value="{{$year}}">
+                        <input type="hidden" name="mes" value="{{$mes}}">
+                        <thead>
+                            <tr>
+                                <th> Colaboradores / Responsabilidades </th>
+                                @foreach($responsabilidades as $responsabilidad)
+                                <td class="respon">{{$responsabilidad->nombre}}</td>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($semana->colaboradores as $colaboradorArea)
+                            <tr>
+                                <th class="colabo">
+                                    {{$colaboradorArea->colaborador->candidato->nombre}}
+                                    {{$colaboradorArea->colaborador->candidato->apellido}}
+                                    <input type="number" name="colaborador_area_id[]" value="{{$colaboradorArea->id}}"
+                                        style="display: none">
+                                    <input type="number" name="semana_id" value="{{$semana->id}}" style="display: none">
+                                </th>
+                                @foreach($responsabilidades as $responsabilidad)
+
+                                <?php
+                                    $registro = $registros->where('colaborador_area_id', $colaboradorArea->id)
+                                                        ->where('responsabilidad_id', $responsabilidad->id)
+                                                        ->where('semana_id', $semana->id)
+                                                        ->first();
+                                ?>
+                                <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
                                     style="display: none">
-                                <input type="number" name="semana_id" value="{{$semana->id}}" style="display: none">
-                            </th>
-                            @foreach($responsabilidades as $responsabilidad)
-
-                            <?php
-                                $registro = $registros->where('colaborador_area_id', $colaboradorArea->id)
-                                                    ->where('responsabilidad_id', $responsabilidad->id)
-                                                    ->where('semana_id', $semana->id)
-                                                    ->first();
-                            ?>
-                            <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
-                                style="display: none">
-                            <td class="check" onclick="toggleCheck(this)">
-                                <div>
-                                    <span>
+                                <td class="check" onclick="toggleCheck(this)">
+                                    <div>
+                                        <span>
+                                            @isset($registro->cumplio)
+                                            @if($registro->cumplio == true)
+                                            ✔️
+                                            @else
+                                            ❌
+                                            @endif
+                                            @endisset
+                                        </span>
                                         @isset($registro->cumplio)
-                                        @if($registro->cumplio == true)
-                                        ✔️
+                                        <input type="number" name="cumplio[]"
+                                            value="{{ old('cumplio', $registro->cumplio) }}" style="display: none">
                                         @else
-                                        ❌
-                                        @endif
+                                        <input type="number" name="cumplio[]" style="display: none">
                                         @endisset
-                                    </span>
-                                    @isset($registro->cumplio)
-                                    <input type="number" name="cumplio[]"
-                                        value="{{ old('cumplio', $registro->cumplio) }}" style="display: none">
-                                    @else
-                                    <input type="number" name="cumplio[]" style="display: none">
-                                    @endisset
 
-                                </div>
-                            </td>
+                                    </div>
+                                </td>
+                                @endforeach
+                            </tr>
                             @endforeach
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </form>
-            </table>
-            <div class="text-center">
-                <button onclick="habilitarEdicion({{$index+1}})"
-                    class="ladda-button btn btn-success mr-2">Editar</button>
-                <a href="#" id="BtnGuardar{{$index+1}}" class="ladda-button btn btn-primary mr-2 disabled"
-                    onclick="document.getElementById('cumplioUpdate{{$index+1}}').submit();" disabled>Guardar</a>
-                <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
-                    data-style="expand-left">Descartar</button>
-            </div>
-            <script>
-                function habilitarEdicion(index) {
-                    let tabla = document.getElementById(`table-semana-cumplida${index}`);
-                    let botonGuardar = document.getElementById(`BtnGuardar${index}`);
+                        </tbody>
+                    </form>
+                </table>
+                <div class="text-center">
+                    <button onclick="habilitarEdicion({{$index+1}})"
+                        class="ladda-button btn btn-success mr-2">Editar</button>
+                    <a href="#" id="BtnGuardar{{$index+1}}" class="ladda-button btn btn-primary mr-2 disabled"
+                        onclick="document.getElementById('cumplioUpdate{{$index+1}}').submit();" disabled>Guardar</a>
+                    <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
+                        data-style="expand-left">Descartar</button>
+                </div>
+                <script>
+                    function habilitarEdicion(index) {
+                        let tabla = document.getElementById(`table-semana-cumplida${index}`);
+                        let botonGuardar = document.getElementById(`BtnGuardar${index}`);
 
-                    tabla.classList.remove('disabled');
-                    botonGuardar.classList.remove('disabled');
-                }
-            </script>
-            @else
-            <table id="table-semana{{$index+1}}">
-                <form id="cumplioStore{{$index+1}}" role="form" method="POST"
-                    action="{{ route('responsabilidades.store') }}">
-                    @csrf
-                    <input type="hidden" name="year" value="{{$year}}">
-                    <input type="hidden" name="mes" value="{{$mes}}">
-                    <input type="hidden" name="area_id" value="{{$area->id}}">
-                    <thead>
-                        <tr>
-                            <th> Colaboradores / Responsabilidades </th>
-                            @foreach($responsabilidades as $responsabilidad)
-                            <td class="respon">{{$responsabilidad->nombre}}</td>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($semana->colaboradores as $colaboradorArea)
-                        <tr>
-                            <th class="colabo">
-                                {{$colaboradorArea->colaborador->candidato->nombre}}
-                                {{$colaboradorArea->colaborador->candidato->apellido}}
-                                <input type="number" name="colaborador_area_id[]" value="{{$colaboradorArea->id}}"
+                        tabla.classList.remove('disabled');
+                        botonGuardar.classList.remove('disabled');
+                    }
+                </script>
+                @else
+                <table id="table-semana{{$index+1}}">
+                    <form id="cumplioStore{{$index+1}}" role="form" method="POST"
+                        action="{{ route('responsabilidades.store') }}">
+                        @csrf
+                        <input type="hidden" name="year" value="{{$year}}">
+                        <input type="hidden" name="mes" value="{{$mes}}">
+                        <input type="hidden" name="area_id" value="{{$area->id}}">
+                        <thead>
+                            <tr>
+                                <th> Colaboradores / Responsabilidades </th>
+                                @foreach($responsabilidades as $responsabilidad)
+                                <td class="respon">{{$responsabilidad->nombre}}</td>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($semana->colaboradores as $colaboradorArea)
+                            <tr>
+                                <th class="colabo">
+                                    {{$colaboradorArea->colaborador->candidato->nombre}}
+                                    {{$colaboradorArea->colaborador->candidato->apellido}}
+                                    <input type="number" name="colaborador_area_id[]" value="{{$colaboradorArea->id}}"
+                                        style="display: none">
+                                    <input type="number" name="semana_id" value="{{$semana->id}}" style="display: none">
+                                </th>
+                                @foreach($responsabilidades as $responsabilidad)
+                                <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
                                     style="display: none">
-                                <input type="number" name="semana_id" value="{{$semana->id}}" style="display: none">
-                            </th>
-                            @foreach($responsabilidades as $responsabilidad)
-                            <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
-                                style="display: none">
-                            <td class="check" onclick="toggleCheck(this)">
-                                <div>
-                                    <span></span>
-                                    <input type="number" name="cumplio[]" value="0" style="display: none">
-                                </div>
-                            </td>
+                                <td class="check" onclick="toggleCheck(this)">
+                                    <div>
+                                        <span></span>
+                                        <input type="number" name="cumplio[]" value="0" style="display: none">
+                                    </div>
+                                </td>
+                                @endforeach
+                            </tr>
                             @endforeach
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </form>
-            </table>
-            <div class="text-center">
-                <a href="#" class="ladda-button btn btn-primary mr-5"
-                    onclick="document.getElementById('cumplioStore{{$index+1}}').submit();">Guardar</a>
-                <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
-                    data-style="expand-left">Descartar</button>
-            </div>
-            @endif
+                        </tbody>
+                    </form>
+                </table>
+                <div class="text-center">
+                    <a href="#" class="ladda-button btn btn-primary mr-5"
+                        onclick="document.getElementById('cumplioStore{{$index+1}}').submit();">Guardar</a>
+                    <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
+                        data-style="expand-left">Descartar</button>
+                </div>
+                @endif
 
-        </section>
+            </section>
 
         @endforeach
 
@@ -345,21 +397,39 @@
                     }
                 }
 
-
         </script>
-
-
-
-
-
-
-
-
 
 
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
+
+    <script>
+        function showModal(modalId) {
+            var modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function hideModal(modalId) {
+            var modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Opcional: Cierra el modal si se hace clic fuera de él
+        window.onclick = function(event) {
+            var modals = document.querySelectorAll('.modal');
+            modals.forEach(function(modal) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
 
 </body>
 
