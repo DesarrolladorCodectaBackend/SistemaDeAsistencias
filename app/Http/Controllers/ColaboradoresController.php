@@ -262,7 +262,7 @@ class ColaboradoresController extends Controller
 
     }
 
-    public function update(UpdateColaboradoresRequest $request, $colaborador_id)
+    public function update(Request $request, $colaborador_id)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -280,26 +280,54 @@ class ColaboradoresController extends Controller
             $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
             //ERRORES
             $errors = [];
+
             // Nombre (Requerido, maximo 100 caracteres)
             if(!isset($request->nombre)){
-                $error['nombre'.$colaborador_id] = 'El nombre es un campo requerido.';
+                $errors['nombre'.$colaborador_id] = 'El nombre es un campo requerido.';
             } else{
                 if(strlen($request->nombre) > 100){
-                    $error['nombre'.$colaborador_id] = 'El nombre no puede exceder los 100 caracteres.';
+                    $errors['nombre'.$colaborador_id] = 'El nombre no puede exceder los 100 caracteres.';
                 }
             }
 
-            // Verificar DNI
-            if(isset($request->dni)){
-                // Verificar que tenga exactamente 8 caracteres
-                if(strlen($request->dni) !== 8) {
+            //apellido
+            if(!isset($request->apellido)){
+                $errors['apellido'.$colaborador_id] = 'El apellido es un campo requerido';
+            }else{
+                if(strlen($request->apellido) > 100){
+                    $errors['apellido'.$colaborador_id] = 'El apellido no puede exceder los 100 caracteres.';
+                }
+            }
+
+            //dirección
+            if(isset($request->direccion)){
+                if (strlen($request->direccion) > 200) {
+                    $errors['direccion'.$colaborador_id] = 'La dirección no puede exceder los 200 caracteres.';
+                }
+            }
+
+            // Ícono
+        if ($request->hasFile('icono')) {
+            $extensiones = ['jpeg', 'png', 'jpg', 'svg', 'webp'];
+            $extensionVal = $request->file('icono')->getClientOriginalExtension();
+
+            if (!in_array($extensionVal, $extensiones)) {
+                $errors['icono'.$colaborador_id] = 'El icono debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+            }
+        }
+
+        // Validación de DNI
+            if (isset($request->dni)) {
+                if(strlen($request->dni) !== 8){
+
+                    // Verificar si el DNI está definido y tiene 8 caracteres
                     $errors['dni'.$colaborador_id] = 'El DNI debe contener 8 caracteres.';
                 } else {
-                    //Verificar que sea único
+                    // Verificar si el DNI ya está en uso
                     $candidatos = Candidatos::where('dni', $request->dni)->get();
-                    foreach($candidatos as $candidato){
-                        if($candidato->id != $colaborador->candidato_id) {
-                            $errors['dni'] = 'El DNI ya está en uso.';
+                    foreach ($candidatos as $cand) {
+                        if ($cand->id != $colaborador_id) {
+                            $errors['dni'.$colaborador_id] = 'El DNI ya está en uso.';
                             break;
                         }
                     }
@@ -311,29 +339,27 @@ class ColaboradoresController extends Controller
                 $candidatos = Candidatos::where('correo', $request->correo)->get();
                 foreach($candidatos as $candidato){
                     if($candidato->id != $colaborador->candidato_id) {
-                        $errors['correo'] = 'El correo ya está en uso.';
+                        $errors['correo'.$colaborador_id] = 'El correo ya está en uso.';
                         break;
                     }
                 }
             }
 
-            // Verificar celular
-            if(isset($request->celular)){
-                // Verificar que tenga exactamente 9 caracteres
-                if(strlen($request->celular) !== 9) {
-                    $errors['celular'] = 'El celular debe contener 9 números.';
-                } else {
-                    //Verificar que sea único
-                    $candidatos = Candidatos::where('celular', $request->celular)->get();
-                    foreach($candidatos as $candidato){
-                        if($candidato->id != $colaborador->candidato_id) {
-                            $errors['celular'] = 'El celular ya está en uso.';
-                            break;
-                        }
+             // Validación de Celular
+             if (isset($request->celular) && strlen($request->celular) !== 9) {
+                $errors['celular'.$colaborador_id] = 'El celular debe contener 9 números.';
+            } else if (isset($request->celular)) {
+                $candidatos = Candidatos::where('celular', $request->celular)->get();
+                foreach ($candidatos as $cand) {
+                    if ($cand->id != $colaborador_id) {
+                        $errors['celular'.$colaborador_id] = 'El celular ya está en uso.';
+                        break;
                     }
                 }
             }
 
+
+            // return $errors;
             // Si hay errores, redirigir con todos ellos
             if(!empty($errors)) {
                 return redirect($returnRoute)->withErrors($errors)->withInput();
@@ -459,7 +485,7 @@ class ColaboradoresController extends Controller
             }
 
             //Se actualizan los datos del candidato
-            $candidato->update($datosActualizar, $request->validated());
+            $candidato->update($datosActualizar);
             DB::commit();
 
             //Se redirige a la vista

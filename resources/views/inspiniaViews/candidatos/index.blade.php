@@ -144,7 +144,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- MODAL CREATE --}}
+                {{-- MODAL STORE --}}
                 <div id="modal-form-add" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -160,15 +160,15 @@
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
-                                            <div class="form-group"><label>Nombre</label> 
-                                                <input type="text" placeholder="Ingrese un nombre" required autocomplete="off" class="form-control" name="nombre" value="{{ old('nombre') }}">
+                                            <div class="form-group"><label>Nombre</label>
+                                                <input type="text" placeholder="Ingrese un nombre"  autocomplete="off" class="form-control" name="nombre" value="{{ old('nombre') }}">
                                                 @error('nombre')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                             <div class="form-group"><label>Apellido</label> <input type="text"
                                                     placeholder="Ingrese apellido" class="form-control" name="apellido" value="{{ old('apellido')}}"
-                                                    required autocomplete="off">
+                                                     autocomplete="off">
                                                     @error('apellido')
                                                     <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -191,7 +191,7 @@
                                                     type="date" class="form-control" name="fecha_nacimiento" value="{{ old('fecha_nacimiento')}}" autocomplete="off">
                                             </div>
                                             <div class="form-group"><label>Ciclo de Estudiante</label>
-                                                <select name="ciclo_de_estudiante" class="form-control" required>
+                                                <select name="ciclo_de_estudiante" class="form-control" >
                                                     @for($i = 4; $i <= 10; $i++)
                                                         <option value="{{ $i }}"
                                                             @if($i == old('ciclo_de_estudiante')) selected @endif>
@@ -217,7 +217,7 @@
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                             <div class="form-group"><label>Institucion - Sede</label>
-                                                <select class="form-control" name="sede_id" required>
+                                                <select class="form-control" name="sede_id" >
                                                     @foreach($sedes as $sede)
                                                         <option value="{{ $sede->id }}"
                                                             @if($sede->id == old('sede_id')) selected @endif>
@@ -231,7 +231,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group"><label>Carrera</label>
-                                                <select class="form-control" name="carrera_id" required>
+                                                <select class="form-control" name="carrera_id" >
                                                     @foreach($carreras as $carrera)
                                                         <option value="{{ $carrera->id }}"
                                                             @if($carrera->id == old('carrera_id')) selected @endif>
@@ -496,8 +496,8 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="nombre"
                                                                             id="nombre"
-                                                                            value="{{ old('nombre', $candidato->nombre) }}">
-                                                                            @error('nombre')
+                                                                            value="{{ $candidato->nombre }}">
+                                                                            @error('nombre'.$candidato->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
 
@@ -507,17 +507,17 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="apellido"
                                                                             id="apellido"
-                                                                            value="{{ old('apellido', $candidato->apellido) }}">
-                                                                            @error('apellido')
+                                                                            value="{{ $candidato->apellido }}">
+                                                                            @error('apellido'.$candidato->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>DNI</label>
                                                                         <input type="number" placeholder="....."
                                                                             class="form-control" name="dni" id="dni"
-                                                                            value="{{ old('dni', $candidato->dni) }}">
+                                                                            value="{{ $candidato->dni }}">
 
-                                                                        @error('dni')
+                                                                        @error('dni'.$candidato->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
@@ -525,8 +525,8 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
                                                                             id="direccion"
-                                                                            value="{{ old('direccion', $candidato->direccion) }}">
-                                                                            @error('direccion')
+                                                                            value="{{ $candidato->direccion }}">
+                                                                            @error('direccion'.$candidato->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
@@ -535,15 +535,15 @@
                                                                         <input type="date" placeholder="....."
                                                                             class="form-control" name="fecha_nacimiento"
                                                                             id="fecha_nacimiento"
-                                                                            value="{{ old('fecha_nacimiento', $candidato->fecha_nacimiento) }}">
+                                                                            value="{{ $candidato->fecha_nacimiento }}">
 
                                                                     </div>
                                                                     <div class="form-group"><label>Ciclo de
                                                                             Estudiante</label>
-                                                                            <select name="ciclo_de_estudiante" id="ciclo_de_estudiante" class="form-control" required>
+                                                                            <select name="ciclo_de_estudiante" id="ciclo_de_estudiante" class="form-control" >
                                                                                 @for($i = 4; $i <= 10; $i++)
                                                                                     <option value="{{ $i }}"
-                                                                                        @if($i == old('ciclo_de_estudiante', $candidato->ciclo_de_estudiante)) selected @endif>
+                                                                                        @if($i ==  $candidato->ciclo_de_estudiante) selected @endif>
                                                                                         {{ $i }}
                                                                                     </option>
                                                                                 @endfor
@@ -564,7 +564,7 @@
                                                                         id="icon-upload-{{ $candidato->id }}">
                                                                         <i class="fa fa-cloud-download big-icon"></i>
                                                                     </button>
-                                                                    @error('icono')
+                                                                    @error('icono'.$candidato->id)
                                                                         <span class="text-danger">{{ $message }}</span>
                                                                     @enderror
                                                                     <script>
@@ -578,8 +578,8 @@
                                                                             @foreach($sedes as $sede)
                                                                             <option value="{{ $sede->id }}" @if($sede->
                                                                                 id ==
-                                                                                old('institucion_id',
-                                                                                $candidato->sede_id)) selected
+
+                                                                                $candidato->sede_id) selected
                                                                                 @endif>{{ $sede->nombre }}
                                                                             </option>
                                                                             @endforeach
@@ -592,8 +592,8 @@
                                                                         <select class="form-control" name="carrera_id">
                                                                             @foreach($carreras as $carrera)
                                                                             <option value="{{ $carrera->id }}"
-                                                                                @if($carrera->id == old('carrera_id',
-                                                                                $candidato->carrera_id)) selected
+                                                                                @if($carrera->id ==
+                                                                                $candidato->carrera_id) selected
                                                                                 @endif >{{ $carrera->nombre }}</option>
                                                                             @endforeach
                                                                         </select>
@@ -605,8 +605,8 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="correo"
                                                                             id="correo"
-                                                                            value="{{ old('correo', $candidato->correo) }}">
-                                                                        @error('correo')
+                                                                            value="{{ $candidato->correo }}">
+                                                                        @error('correo'.$candidato->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
@@ -614,8 +614,8 @@
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="celular"
                                                                             id="celular"
-                                                                            value="{{ old('celular', $candidato->celular) }}">
-                                                                        @error('celular')
+                                                                            value="{{ $candidato->celular }}">
+                                                                        @error('celular'.$candidato->id)
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
