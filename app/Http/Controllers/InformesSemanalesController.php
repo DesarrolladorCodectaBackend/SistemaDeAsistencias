@@ -10,14 +10,20 @@ use Illuminate\Http\Request;
 class InformesSemanalesController extends Controller
 {
 
-    public function index()
-{
-    // Obtener todos los informes semanales
-    $informes = InformeSemanal::with(['semana', 'area'])->get();
+    public function store()
+    {
 
-    // Pasar los datos a la vista
-    return view('inspiniaViews.responsabilidades.asistencia', ['informes' => $informes]);
-}
+    }
+
+    public function update()
+    {
+
+    }
+
+    public function delete()
+    {
+        
+    }
 
 
 }

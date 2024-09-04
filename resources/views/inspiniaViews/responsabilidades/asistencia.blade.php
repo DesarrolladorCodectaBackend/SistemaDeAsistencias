@@ -109,72 +109,26 @@
                 /* Cambia la opacidad para simular el efecto de deshabilitar */
             }
         </style>
-
         @foreach($semanasMes as $index => $semana)
         <section id="semana{{$index+1}}" style="display: none">
-                <table class="juntar">
-                    <tr>
-                        <th> {{$mes}} </th>
-                        <th class="semana" colspan="8">Semana: {{$index+1}}
-                            <div>
-                                <button id="backButton{{$index+1}}" onclick="regresarSemana()"
-                                    style="margin-right: 30px">←</button>
-                                <button id="nextButton{{$index+1}}" onclick="avanzarSemana()">→</button>
-                            </div>
-
-
-                        </th>
-                    </tr>
-                    <tr>
-                        <th> Área </th>
-                        <th class="area" colspan="8">{{$area->especializacion}}
-                            {{-- Botón para abrir el modal de agregar informe --}}
-                            <button class="btn btn-primary" onclick="showModal('modal-informes')">Agregar Informe</button>
-                        </th>
-                    </tr>
-                </table>
-
-
- <!-- Modal para mostrar los informes -->
-<div id="modal-informes" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close" onclick="hideModal('modal-informes')">&times;</span>
-        <h2>Informes Semanales</h2>
-        <!-- Tabla de informes -->
-        <table>
-            <thead>
+            <table class="juntar">
                 <tr>
-                    <th>Título</th>
+                    <th> {{$mes}} </th>
+                    <th class="semana" colspan="8">Semana: {{$index+1}}
+                        <div>
+                            <button id="backButton{{$index+1}}" onclick="regresarSemana()"
+                                style="margin-right: 30px">←</button>
+                            <button id="nextButton{{$index+1}}" onclick="avanzarSemana()">→</button>
+                        </div>
 
-                    <th>Acciones</th>
+
+                    </th>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach($informes as $informe)
-                    <tr>
-                        <td>{{ $informe->titulo }}</td>
-                      </a></td>
-                        <td>
-                            {{-- <!-- Botones para editar y eliminar -->
-                            <button onclick="showEditModal({{ $informe->id }})">Editar</button>
-                            <form method="POST" action="{{ route('informes.destroy', $informe->id) }}" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit">Eliminar</button>
-                            </form> --}}
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        <button class="btn btn-primary" onclick="showModal('modal-create')">Agregar Nuevo Informe</button>
-    </div>
-</div>
-
-
-
-
-
+                <tr>
+                    <th> Área </th>
+                    <th class="area" colspan="8">{{$area->especializacion}}</th>
+                </tr>
+            </table>
             @if($semana->cumplido == true)
             <table id="table-semana-cumplida{{$index+1}}" class="disabled">
                 <form id="cumplioUpdate{{$index+1}}" role="form" method="POST"
@@ -391,25 +345,18 @@
                     }
                 }
 
+
         </script>
 
-<script>
-    function showModal(modalId) {
-        document.getElementById(modalId).style.display = 'block';
-    }
 
-    function hideModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
 
-    function editarInforme(informeId) {
-        // Lógica para editar informe
-    }
 
-    function eliminarInforme(informeId) {
-        // Lógica para eliminar informe
-    }
-</script>
+
+
+
+
+
+
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>

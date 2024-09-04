@@ -21,14 +21,12 @@ class InformeSemanal extends Model
 
     // Relación con el modelo Semana
     public function semana()
-{
+    {
     return $this->belongsTo(Semanas::class);
-}
+    }
 
-public function area()
-{
-    return $this->belongsTo(Area::class);
-}
-
-
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
 }
