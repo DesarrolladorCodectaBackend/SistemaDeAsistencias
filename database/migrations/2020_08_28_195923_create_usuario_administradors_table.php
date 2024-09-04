@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->boolean('estado')->default(true);
+            $table->boolean('super_admin')->default(false);
             $table->timestamps();
         });
     }

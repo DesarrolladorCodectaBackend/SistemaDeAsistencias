@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
@@ -61,6 +62,10 @@ Route::middleware('auth')->group(function () {
 
     //HOME
     Route::get('/dashboard', [HomePageController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');
+
+    //ACCOUNTS
+    Route::get('/cuentas', [AccountsController::class, 'index'])->name('accounts.index');
+    Route::put('/cuentas/activar-inactivar/{user_id}', [AccountsController::class, 'activarInactivar'])->name('accounts.activarInactivar');
 
     //AREAS
     Route::resource('areas', AreaController::class);

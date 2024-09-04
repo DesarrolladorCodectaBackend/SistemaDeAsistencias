@@ -16,11 +16,13 @@ class UsuarioAdministradorSeeder extends Seeder
     public function run()
     {
         UsuarioAdministrador::create([
-            'user_id' => 1
+            'user_id' => 1,
+            'super_admin' => true,
         ]);
 
         UsuarioAdministrador::create([
-            'user_id' => 2
+            'user_id' => 2,
+            'super_admin' => false,
         ]);
     }
 }

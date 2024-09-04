@@ -8,6 +8,7 @@ use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Maquina_reservada;
 use App\Models\Semanas;
+use App\Models\User;
 use App\Models\UsuarioAdministrador;
 use App\Models\UsuarioJefeArea;
 use Carbon\Carbon;
@@ -58,6 +59,16 @@ class FunctionHelperController extends Controller
         } else{
             return false;
         }
+    }
+
+    public static function verifySuperAdmin($user_id){
+        $SuperAdministrador = UsuarioAdministrador::where('user_id', $user_id)->where('super_admin', 1)->first();
+        if($SuperAdministrador){
+            return true;
+        }else{
+            return false;
+        }
+        
     }
 
 
