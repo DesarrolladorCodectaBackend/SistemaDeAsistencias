@@ -12,6 +12,7 @@ use App\Http\Controllers\CursosController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
+use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\ObjetoController;
@@ -58,12 +59,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //HOME 
+    //HOME
     Route::get('/dashboard', [HomePageController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');
 
     //AREAS
     Route::resource('areas', AreaController::class);
     Route::put('areas/activarInactivar/{area_id}',[AreaController::class,'activarInactivar'])->name('areas.activarInactivar');
+    Route::get('area/showing/{area_id}', [AreaController::class, 'showArea'])->name('areas.showArea');
 
     //Horarios (Area)
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');
@@ -193,6 +195,11 @@ Route::middleware('auth')->group(function () {
     //REPORTES
     Route::get('Reportes', [ReporteController::class, 'index']);
 
+    // INFORMESSEMANALES
+    Route::get('/InformesSemanales', [InformesSemanalesController::class, 'index'])->name('informes.index');
+    Route::get('/InformesSemanales/create', [InformesSemanalesController::class, 'create'])->name('informesSemanales.create');
+    Route::post('/InformesSemanales/store', [InformesSemanalesController::class, 'store'])->name('informesSemanales.store');
+    Route::get('/InformesSemanales/show/{informeSemanal}', [InformesSemanalesController::class, 'show'])->name('informesSemanales.show');
 });
 
 require __DIR__ . '/auth.php';

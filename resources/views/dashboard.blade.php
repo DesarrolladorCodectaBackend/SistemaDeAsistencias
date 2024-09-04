@@ -28,11 +28,14 @@
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             @if(session('error'))
-            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
+                role="alert" style="position: relative;">
                 <div style="flex-grow: 1;">
                     <strong>Error:</strong> {{ session('error') }}
                 </div>
-                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs"
+                    style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
+                        class="fa fa-close"></i></button>
             </div>
             @endif
             <div class="row">
@@ -83,14 +86,17 @@
                                 <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
                             </div>
                             <div class="product-desc">
-                                <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant. Integrantes: {{$area->count_colabs}}</small>
+                                <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant.
+                                    Integrantes: {{$area->count_colabs}}</small>
                                 <a href="#" class="product-name">{{ $area->especializacion }}</a>
                                 <div class="small m-t-xs">
                                     {{ $area->descripcion }}
                                 </div>
                                 <div class="m-t text-left d-flex justify-content-center align-items-center gap-10">
-                                    <a class="btn btn-success text-white">
+                                    <a href="{{route('areas.showArea', $area->id)}}" class="btn btn-success text-white">
                                         Ver Área
+                                    </a>
+                                    <a href="{{route('areas.getReuniones', $area->id)}}" class="btn btn-success fa fa-video-camera" style="font-size: 20px;">
                                     </a>
                                 </div>
                             </div>
@@ -302,4 +308,5 @@
             }
         }    
 </script>
+
 </html>

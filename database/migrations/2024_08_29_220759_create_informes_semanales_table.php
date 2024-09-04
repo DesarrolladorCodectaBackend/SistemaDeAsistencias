@@ -20,8 +20,10 @@ return new class extends Migration
             $table->text('nota_semanal')->nullable();
             $table->boolean('estado')->default(true);
             $table->string('informe_url');
-            // $table->foreign('semana_id')-> references('id')->on('semanas');
-            // $table->foreign('area_id')-> references('id')->on('areas');
+            $table->unsignedBigInteger('semana_id');
+            $table->unsignedBigInteger('area_id');
+            $table->foreign('semana_id')-> references('id')->on('semanas');
+            $table->foreign('area_id')-> references('id')->on('areas');
             $table->timestamps();
         });
     }
