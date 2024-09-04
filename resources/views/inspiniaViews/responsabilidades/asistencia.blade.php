@@ -143,14 +143,20 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
+                                <!-- Botón para abrir el modal de creación -->
+                                <a data-toggle="modal" class="btn btn-primary btn-success"
+                                style="font-size: 20px;"
+                                onclick="showModal('modal-create-form-{{$index+1}}')">Crear Informe</a>
                                 <button type="button" class="close" onclick="hideModal('modal-form-view-{{$index+1}}')">&times;</button>
                             </div>
                             <div class="modal-body">
                                 <!-- Contenido del modal para la semana {{$index+1}} -->
                                 <form id="crud-form-{{$index+1}}">
                                     <input type="hidden" name="semana_id" value="{{$semana->id}}">
-                                    <!-- Otros campos del formulario aquí -->
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                    @forelse($informesSemanales as $informe)
+                                    @empty
+                                        <p>No hay informes.</p>
+                                    @endforelse
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -160,25 +166,47 @@
                     </div>
                 </div>
 
-                <!-- Segundo Modal -->
-                <div id="secondary-modal" class="modal" style="display: none;">
+                <!-- Modal store -->
+                <div id="modal-create-form-{{$index+1}}" class="modal" style="display: none;">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Segundo Modal</h5>
-                                <button type="button" class="close" onclick="hideModal('secondary-modal')">&times;</button>
+                                <h5 class="modal-title">Crear Informe de Semana {{$index+1}}</h5>
+                                <button type="button" class="close" onclick="hideModal('modal-create-form-{{$index+1}}')">&times;</button>
                             </div>
                             <div class="modal-body">
-                                <!-- Contenido del segundo modal -->
-                                <p>Este es el contenido del segundo modal.</p>
-                                <!-- Aquí puedes agregar más campos o formularios si es necesario -->
+                                <!-- Contenido del modal para crear un informe -->
+                                <form id="create-crud-form-{{$index+1}}" method="POST" action="{{ route('InformeSemanal.store') }}">
+                                    @csrf
+                                    <input type="hidden" name="semana_id" value="{{$semana->id}}">
+
+                                    <!-- Aquí puedes agregar más campos necesarios para crear el informe -->
+                                    <div class="form-group">
+                                        <label for="titulo">Título:</label>
+                                        <input type="text" id="titulo" name="titulo" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nota_semanal">Nota Semanal::</label>
+                                        <textarea id="nota_semanal" name="nota_semanal" class="form-control" rows="4"></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="informe_url">Archivo:</label>
+                                        <input type="file" id="informe_url" name="informe_url" class="form-control"">
+                                    </div>
+
+
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="hideModal('secondary-modal')">Cerrar</button>
+                                <button type="button" class="btn btn-secondary" onclick="hideModal('modal-create-form-{{$index+1}}')">Cerrar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
 
                 @if($semana->cumplido == true)
