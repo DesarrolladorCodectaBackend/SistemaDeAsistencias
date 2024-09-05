@@ -130,13 +130,22 @@
                                                                 <div class="form-group">
                                                                     <label>Nombres:</label>
                                                                     <input class='form-control' name="name" required value="{{$user->name}}" type="text">
+                                                                    @error('name'.$user->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                                 <div class="form-group">
                                                                     <label>Apellidos:</label>
                                                                     <input class='form-control' name="apellido" required value="{{$user->apellido}}" type="text">
+                                                                    @error('apellido'.$user->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label>Email:</label>
-                                                                    <input class='form-control' name="email" required value="{{$user->email}}" type="text">
+                                                                    <input class='form-control' name="email" required value="{{$user->email}}" type="email">
+                                                                    @error('email'.$user->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                                 </div>
                                                                 @if($user->rol === 'Jefe de Área')
                                                                 <div class="form-group">
@@ -177,6 +186,18 @@
                 </div>
             </div>
         </div>
+
+        @if ($errors->any())
+            <script>
+                console.log(@json($errors->all())); // Muestra todos los errores en la consola
+                // let errores = @json($errors);
+                const UserId = <?php echo json_encode(session('userError')); ?>;
+                console.log(UserId)
+                document.addEventListener('DOMContentLoaded', function() {
+                    $(`#modal-form-update${UserId}`).modal('show');
+                });
+            </script>
+        @endif
 
         <style>
             .select2-container.select2-container--default.select2-container--open {

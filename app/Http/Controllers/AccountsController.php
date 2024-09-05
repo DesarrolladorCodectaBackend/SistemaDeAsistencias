@@ -123,10 +123,15 @@ class AccountsController extends Controller
                             $errors['email'.$user_id] = 'El email debe ser mayor a 1 caracter';
                         }
                     }
+                    $sameUserEmail = User::where('email', $request->email)->whereNot('id', $user_id)->first();
+                    if($sameUserEmail){
+                        $errors['email'.$user_id] = 'ya hay un usuario registrado con ese email';
+                    }
                 }
                 if(!empty($errors)) {
                     $errors['user'] = $user_id;
-                    return redirect('accounts.index')->withErrors($errors)->withInput();
+                    // return $errors;
+                    return redirect()->route('accounts.index')->with('userError', $user_id)->withErrors($errors)->withInput();
                 }
 
                 $areas = [];
