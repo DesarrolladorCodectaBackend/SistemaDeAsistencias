@@ -143,12 +143,15 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
+
                                 <!-- Botón para abrir el modal de creación -->
                                 <a data-toggle="modal" class="btn btn-primary btn-success"
                                 style="font-size: 20px;"
                                 onclick="showModal('modal-create-form-{{$index+1}}')">Crear Informe</a>
-                                <button type="button" class="close" onclick="hideModal('modal-form-view-{{$index+1}}')">&times;</button>
+                                {{-- <button type="button" class="close" onclick="hideModal('modal-form-view-{{$index+1}}')">&times;</button> --}}
+
                             </div>
+
                             <div class="modal-body">
                                 <!-- Contenido del modal para la semana {{$index+1}} -->
                                 <form id="crud-form-{{$index+1}}">
@@ -159,12 +162,14 @@
                                     @endforelse
                                 </form>
                             </div>
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" onclick="hideModal('modal-form-view-{{$index+1}}')">Cerrar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Modal store -->
                 <div id="modal-create-form-{{$index+1}}" class="modal" style="display: none;">
@@ -176,36 +181,37 @@
                             </div>
                             <div class="modal-body">
                                 <!-- Contenido del modal para crear un informe -->
-                                <form id="create-crud-form-{{$index+1}}" method="POST" action="{{ route('InformeSemanal.store') }}">
+                                <form id="create-crud-form-{{$index+1}}" method="POST" action="{{ route('InformeSemanal.store') }}" enctype="multipart/form-data">
                                     @csrf
-                                    <input type="hidden" name="semana_id" value="{{$semana->id}}">
+                                    <!-- Agrega los campos ocultos necesarios -->
+                                    <input type="hidden" name="semana_id" value="{{ $semana->id }}">
+                                    <input type="hidden" name="area_id" value="{{ $area_id }}">
 
-                                    <!-- Aquí puedes agregar más campos necesarios para crear el informe -->
                                     <div class="form-group">
                                         <label for="titulo">Título:</label>
-                                        <input type="text" id="titulo" name="titulo" class="form-control">
+                                        <input type="text" id="titulo" name="titulo" class="form-control" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="nota_semanal">Nota Semanal::</label>
-                                        <textarea id="nota_semanal" name="nota_semanal" class="form-control" rows="4"></textarea>
+                                        <label for="nota_semanal">Nota Semanal:</label>
+                                        <textarea id="nota_semanal" name="nota_semanal" class="form-control" rows="4" required></textarea>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="informe_url">Archivo:</label>
-                                        <input type="file" id="informe_url" name="informe_url" class="form-control"">
+                                        <input type="file" id="informe_url" name="informe_url" class="form- control" required>
                                     </div>
-
 
                                     <button type="submit" class="btn btn-primary">Guardar</button>
                                 </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="hideModal('modal-create-form-{{$index+1}}')">Cerrar</button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" onclick="hideModal('modal-create-form-{{$index+1}}')">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
 
 
 
