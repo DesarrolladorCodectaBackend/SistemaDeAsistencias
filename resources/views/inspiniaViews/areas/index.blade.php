@@ -107,7 +107,7 @@
                                     </form>
     
                                     <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant. Integrantes: {{$area->count_colabs}}</small>
-                                    <a href="#" class="product-name">{{ $area->especializacion }}</a>
+                                    <a href="#"  class="product-name">{{ $area->especializacion }}</a>
                                     <div class="small m-t-xs">
                                         {{ $area->descripcion }}
                                     </div>

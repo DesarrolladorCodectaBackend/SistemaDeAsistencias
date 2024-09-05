@@ -45,7 +45,7 @@
             <div id="alert-success" class="alert alert-success alert-dismissible fade show d-flex align-items-start"
                 role="alert" style="position: relative;">
                 <div style="flex-grow: 1;">
-                    <strong>Success:</strong> {{ session('success') }}
+                    <strong>Éxito:</strong> {{ session('success') }}
                 </div>
                 <button onclick="deleteAlert('alert-success')" type="button" class="btn btn-outline-dark btn-xs"
                     style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
@@ -83,7 +83,8 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Nombre</th>
+                                            <th>Nombres</th>
+                                            <th>Apellidos</th>
                                             <th>Email</th>
                                             <th>Rol</th>
                                             <th>Estado</th>
@@ -97,6 +98,7 @@
                                         <tr class="gradeX">
                                             <td>{{ $user->id }}</td>
                                             <td>{{ $user->name }}</td>
+                                            <td>{{ $user->apellido }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->rol }}</td>
                                             <td>
@@ -109,8 +111,60 @@
                                                         == 1) Activado @else Inactivo @endif</button>
                                                 </form>
                                             </td>
-                                            <td class="oculto"><button class="btn btn-sm btn-success">Editar</button>
+                                            <td class="oculto">
+                                                <a data-toggle="modal" href="#modal-form-update{{$user->id}}"
+                                                    class="btn btn-sm btn-success text-white">Editar</a>
                                             </td>
+                                            <div id="modal-form-update{{$user->id}}" class="modal fade"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-custom">
+                                                    <div style="min-width: 750px" class="modal-content">
+                                                        <div
+                                                            class="modal-header d-flex flex-column align-items-center justify-content-center">
+                                                            <h2 class="font-bold">Editar Usuario</h2>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form method="POST" action="{{route('accounts.update', $user->id)}}">
+                                                                @method('put')
+                                                                @csrf
+                                                                <div class="form-group">
+                                                                    <label>Nombres:</label>
+                                                                    <input class='form-control' name="name" required value="{{$user->name}}" type="text">
+                                                                <div class="form-group">
+                                                                    <label>Apellidos:</label>
+                                                                    <input class='form-control' name="apellido" required value="{{$user->apellido}}" type="text">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Email:</label>
+                                                                    <input class='form-control' name="email" required value="{{$user->email}}" type="text">
+                                                                </div>
+                                                                @if($user->rol === 'Jefe de Área')
+                                                                <div class="form-group">
+                                                                    <label>Áreas:</label>
+                                                                    <select required class='form-control multiple_areas_select'
+                                                                        multiple name="areas_id[]">
+                                                                        @foreach($areas as $area)
+                                                                        <option value="{{$area->id}}"
+                                                                            @foreach($user->areas as $areaJefe)
+                                                                                @if($areaJefe->id === $area->id)
+                                                                                        selected
+                                                                                @endif
+                                                                            @endforeach
+                                                                        >
+                                                                           
+                                                                            {{$area->especializacion}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                @endif
+                                                                <div class="d-flex justify-content-end">
+                                                                    <button type="submit" class="btn btn-success">Editar</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                         </tr>
                                         @endforeach
@@ -124,13 +178,17 @@
             </div>
         </div>
 
+        <style>
+            .select2-container.select2-container--default.select2-container--open {
+                z-index: 9999 !important;
+                width: 100% !important;
+            }
 
 
-
-
-
-
-
+            .select2-container {
+                display: inline !important;
+            }
+        </style>
 
 
         @include('components.inspinia.footer-inspinia')
@@ -208,6 +266,13 @@
                     }
                 ]
             });
+        });
+    </script>
+    <script src="{{asset('js/plugins/select2/select2.full.min.js')}} "></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.multiple_areas_select').select2();
         });
     </script>
 

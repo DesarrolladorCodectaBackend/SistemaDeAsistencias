@@ -8,8 +8,7 @@
     <link href="{{ asset('css/plugins/switchery/switchery.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     <link href="{{asset('css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css">
 
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -25,7 +24,9 @@
 @php
     use App\Http\Controllers\FunctionHelperController;
     $userData = FunctionHelperController::getUserRol();
+    $user = $userData['user'];
 @endphp
+
 
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
@@ -149,6 +150,12 @@
 
         </nav>
     </div>
+    @if($user['estado'] == 0)
+        <script>
+            console.log('baneado');
+            document.getElementById('logoutForm').submit();
+        </script>
+    @endif
     <style>
         .max-height-scrollable {
             max-height: 300px;

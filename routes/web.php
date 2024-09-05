@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
     //ACCOUNTS
     Route::get('/cuentas', [AccountsController::class, 'index'])->name('accounts.index');
     Route::put('/cuentas/activar-inactivar/{user_id}', [AccountsController::class, 'activarInactivar'])->name('accounts.activarInactivar');
+    Route::put('/cuentas/update/{user_id}', [AccountsController::class, 'update'])->name('accounts.update');
 
     //AREAS
     Route::resource('areas', AreaController::class);

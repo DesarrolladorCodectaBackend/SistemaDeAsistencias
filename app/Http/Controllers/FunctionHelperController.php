@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
 use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Horario_Presencial_Asignado;
@@ -35,6 +36,42 @@ class FunctionHelperController extends Controller
             "isBoss" => $isBoss,
         ];
     }
+
+    public static function getUserRolById($user_id){
+        $user = User::findOrFail($user_id);
+        $administrador = UsuarioAdministrador::where('user_id', $user->id)->where('estado', 1)->first();
+        $isAdmin = false;
+        if($administrador){$isAdmin = true;}
+        $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
+        $isBoss = false;
+        if($jefeArea->count() > 0){$isBoss = true;}
+        return [
+            "user" => $user,
+            "administrador" => $administrador,
+            "Jefeareas" => $jefeArea,
+            "isAdmin" => $isAdmin,
+            "isBoss" => $isBoss,
+        ];
+    }
+
+    public static function modifyColabByBoss($user, $newData){
+        //Encontrar colaborador / Candidato
+        $colaborador = Candidatos::where('correo', $user->email)->where('estado', 0)->first();
+        $user->update([
+            'name'=> $newData['name'],
+            'apellido'=> $newData['apellido'],
+            'email' => $newData['email']
+        ]);
+        if($colaborador){
+            $colaborador->update([
+                'nombre' => $newData['name'],
+                'apellido'=> $newData['apellido'],
+                'correo' => $newData['email']
+            ]);
+        }
+
+    }
+  
 
     public static function verifyAreaAccess($area_id){
         $userData = FunctionHelperController::getUserRol();
@@ -69,6 +106,12 @@ class FunctionHelperController extends Controller
             return false;
         }
         
+    }
+
+    public static function getAreasJefe($user_id){
+        $AreasJefe = UsuarioJefeArea::with('area')->where('user_id', $user_id)->where('estado', 1)->get()->pluck('area');
+
+        return $AreasJefe;
     }
 
 
