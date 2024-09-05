@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InformesSemanalesRequest;
 use App\Models\Area;
+use App\Models\Colaboradores_por_Area;
 use App\Models\InformeSemanal;
 use App\Models\Semanas;
 use Illuminate\Http\Request;
@@ -15,39 +16,31 @@ class InformesSemanalesController extends Controller
 {
 
     public function store(Request $request)
-{
-    DB::beginTransaction();
-    try {
-        $request->validate([
-            'titulo' => 'required|min:1|max:255',
-            'nota_semanal' => 'required|min:1|max:255',
-            'informe_url' => 'required|file|mimes:pdf,doc,docx|max:2048',
-            'area_id' => 'required|exists:areas,id',
-            'semana_id' => 'required|exists:semanas,id',
-        ]);
+    {
+        $year = $request->year;
+        $mes = $request->mes;
+        $area_id = $request->area_id;
+        $semana_id = $request->semana_id;
 
-        $informe_url = $request->file('informe_url')->store('informe_archivos');
+        $nombreInforme = '';
+        
+        if ($request->hasFile('informe_url')) {
+            $informe = $request->file('informe_url');
+            $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
+            $informe->move(public_path('storage/informes'), $nombreInforme);
+        }
 
         InformeSemanal::create([
-            'titulo' => $request->input('titulo'),
-            'nota_semanal' => $request->input('nota_semanal'),
-            'informe_url' => $informe_url,
-            'area_id' => $request->input('area_id'),
-            'semana_id' => $request->input('semana_id'),
+            'titulo' => $request->titulo,
+            'nota_semanal' => $request->nota_semanal,
+            'informe_url' => $nombreInforme,
+            'semana_id' => $semana_id,
+            'area_id' => $area_id
         ]);
+        // storage/informes
 
-        DB::commit();
-
-        return redirect()->route('responsabilidades.asis', [
-            'year' => now()->year,
-            'mes' => now()->month,
-            'area_id' => $request->input('area_id'),
-        ]);
-    } catch (Exception $e) {
-        DB::rollBack();
-        return redirect()->back()->withErrors('Error al guardar el informe. Por favor, intente nuevamente.');
+        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
     }
-}
 
 
 

@@ -624,7 +624,6 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
         }
 
-
     }
 
     public function actualizar(Request $request, $semana_id, $area_id)

@@ -196,6 +196,7 @@ Route::middleware('auth')->group(function () {
 
     // INFORMESSEMANALES
    Route::resource('/InformeSemanal', InformesSemanalesController::class);
+
 });
 
 require __DIR__ . '/auth.php';

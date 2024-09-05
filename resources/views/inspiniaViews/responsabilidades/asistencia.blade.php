@@ -171,46 +171,53 @@
                 </div>
 
 
-                <!-- Modal store -->
-                <div id="modal-create-form-{{$index+1}}" class="modal" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Crear Informe de Semana {{$index+1}}</h5>
-                                <button type="button" class="close" onclick="hideModal('modal-create-form-{{$index+1}}')">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Contenido del modal para crear un informe -->
-                                <form id="create-crud-form-{{$index+1}}" method="POST" action="{{ route('InformeSemanal.store') }}" enctype="multipart/form-data">
-                                    @csrf
-                                    <!-- Agrega los campos ocultos necesarios -->
-                                    <input type="hidden" name="semana_id" value="{{ $semana->id }}">
-                                    <input type="hidden" name="area_id" value="{{ $area_id }}">
+                <!-- Modal para crear informe -->
+            <div id="modal-create-form-{{$index+1}}" class="modal" style="display: none;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Crear Informe de Semana {{$index+1}}</h5>
+                            <button type="button" class="close" onclick="hideModal('modal-create-form-{{$index+1}}')">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="create-crud-form-{{$index+1}}" method="POST"
+                                  action="{{ route('InformeSemanal.store')}}"
+                                  enctype="multipart/form-data">
+                                @csrf
+                                <!-- Campo oculto para la semana actual -->
+                                <input type="hidden" name="semana_id" value="{{ $semana->id }}">
+                                <!-- Campo oculto para la area actual -->
+                                <input type="hidden" name="area_id" value="{{ $area->id }}">
+                                <!-- Campo oculto para la area actual -->
+                                <input type="hidden" name="year" value="{{ $year}}">
+                                <!-- Campo oculto para la area actual -->
+                                <input type="hidden" name="mes" value="{{ $mes }}">
 
-                                    <div class="form-group">
-                                        <label for="titulo">Título:</label>
-                                        <input type="text" id="titulo" name="titulo" class="form-control" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="nota_semanal">Nota Semanal:</label>
-                                        <textarea id="nota_semanal" name="nota_semanal" class="form-control" rows="4" required></textarea>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="informe_url">Archivo:</label>
-                                        <input type="file" id="informe_url" name="informe_url" class="form- control" required>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                </form>
+                                <!-- Campos del formulario -->
+                                <div class="form-group">
+                                    <label for="titulo">Título:</label>
+                                    <input type="text" id="titulo" name="titulo" class="form-control" required>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" onclick="hideModal('modal-create-form-{{$index+1}}')">Cerrar</button>
+
+                                <div class="form-group">
+                                    <label for="nota_semanal">Nota Semanal:</label>
+                                    <textarea id="nota_semanal" name="nota_semanal" class="form-control" rows="4" required></textarea>
                                 </div>
-                            </div>
+
+                                <div class="form-group">
+                                    <label for="informe_url">Archivo:</label>
+                                    <input type="file" id="informe_url" name="informe_url" class="form-control" required>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="hideModal('modal-create-form-{{$index+1}}')">Cerrar</button>
                         </div>
                     </div>
+                </div>
+            </div>
 
 
 
