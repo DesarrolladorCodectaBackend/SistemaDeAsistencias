@@ -148,20 +148,48 @@
                                 <a data-toggle="modal" class="btn btn-primary btn-success"
                                 style="font-size: 20px;"
                                 onclick="showModal('modal-create-form-{{$index+1}}')">Crear Informe</a>
-                                {{-- <button type="button" class="close" onclick="hideModal('modal-form-view-{{$index+1}}')">&times;</button> --}}
+                                
+                                <!-- {{-- <button type="button" class="close" onclick="hideModal('modal-form-view-{{$index+1}}')">&times;</button> --}}-->
 
                             </div>
 
                             <div class="modal-body">
+
                                 <!-- Contenido del modal para la semana {{$index+1}} -->
-                                <form id="crud-form-{{$index+1}}">
-                                    <input type="hidden" name="semana_id" value="{{$semana->id}}">
-                                    @forelse($informesSemanales as $informe)
-                                    @empty
-                                        <p>No hay informes.</p>
-                                    @endforelse
-                                </form>
+                                    <form id="crud-form-{{$index+1}}">
+                                        <input type="hidden" name="semana_id" value="{{$semana->id}}">
+                                
+
+                                <!--Historial de Informes-->
+                                @forelse($informesSemanales as $informe)
+                                <div class="informe-item d-flex justify-content-between align-items-center">
+                                    <!-- Contenido del informe -->
+                                    <div>
+                                        <h4>{{ $informe->titulo }}</h4>
+                                        <p>{{ $informe->nota_semanal }}</p>
+                                        <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo</a></p>
+                                    </div>
+                                    <!-- Botones alineados a la derecha -->
+                                    <div>
+                                        <button type="button" class="btn btn-info mr-2">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-warning mr-2">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                    <hr>
+                                @empty
+                                    <p>No hay informes registrados.</p>
+                                @endforelse
+                                    </form>
                             </div>
+
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" onclick="hideModal('modal-form-view-{{$index+1}}')">Cerrar</button>
