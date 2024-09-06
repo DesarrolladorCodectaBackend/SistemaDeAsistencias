@@ -42,7 +42,7 @@
                         <span class="text-muted text-xs block">{{$rol}}<b class="caret"></b></span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a class="dropdown-item" href="">Perfil</a></li>
+                        <li><a class="dropdown-item" href="{{route('perfil.index')}}">Perfil</a></li>
                         @if($userData['isAdmin'])
                         <li><a class="dropdown-item" href="{{route('accounts.index')}}">Administrar Cuentas</a></li>
                         @endif

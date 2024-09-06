@@ -17,6 +17,7 @@ use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\ObjetoController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\PrestamoObjetoColaboradorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
@@ -69,6 +70,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/cuentas/store', [AccountsController::class, 'store'])->name('accounts.store');
     Route::put('/cuentas/activar-inactivar/{user_id}', [AccountsController::class, 'activarInactivar'])->name('accounts.activarInactivar');
     Route::put('/cuentas/update/{user_id}', [AccountsController::class, 'update'])->name('accounts.update');
+
+    //PERFIL
+    Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil.index');
+    Route::put('/perfil-update', [PerfilController::class, 'update'])->name('perfil.update');
+    Route::put('/perfil-updatePassword', [PerfilController::class, 'updatePassword'])->name('perfil.updatePassword');
 
     //AREAS
     Route::resource('areas', AreaController::class);

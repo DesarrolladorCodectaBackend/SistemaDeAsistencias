@@ -112,7 +112,7 @@ class AccountsController extends Controller
             if(!isset($request->password)) {
                 $errors['password'] = 'La contraseña es requerida.';
             } else{
-                if(strlen($request->password) < 1) {
+                if(strlen($request->password) < 8) {
                     $errors['password'] = 'La contraseña debe tener al menos 8 caracter.';
                 } else if (strlen($request->password) > 100) {
                     $errors['password'] = 'La contraseña no debe tener más de 100 caracteres.';
@@ -122,7 +122,7 @@ class AccountsController extends Controller
             if(!isset($request->confirm_password)) {
                 $errors['confirm_password'] = 'La contraseña de confirmación es requerida.';
             } else{
-                if(strlen($request->confirm_password) < 1) {
+                if(strlen($request->confirm_password) < 8) {
                     $errors['confirm_password'] = 'La contraseña de confirmación debe tener al menos 8 caracter.';
                 } else if (strlen($request->confirm_password) > 100) {
                     $errors['confirm_password'] = 'La contraseña de confirmación no debe tener más de 100 caracteres.';
@@ -240,6 +240,7 @@ class AccountsController extends Controller
         try {
             $user = User::findOrFail($user_id);
             if ($user) {
+                $userData = FunctionHelperController::getUserRolById($user_id);
                 //VALIDACIONES
                 $errors = [];
                 //Name(Requerido, String, Minimo 1)
@@ -281,12 +282,26 @@ class AccountsController extends Controller
                     if($sameUserEmail){
                         $errors['email'.$user_id] = 'ya hay un usuario registrado con ese email';
                     }
+                    $candidato = FunctionHelperController::findUserCandidato(1, $user->email);
+                    if($candidato != null){
+                        $conflict = FunctionHelperController::verifyEmailCandidatoConflict($request->email, $candidato->id);
+                        if($conflict){
+                            $errors['email'.$user_id] = 'ya hay un colaborador usuario registrado con ese email';
+                        }
+                    }
+                    if($userData['isAdmin']){
+                        $conflict = FunctionHelperController::verifyEmailCandidatoConflict($request->email);
+                        if($conflict){
+                            $errors['email'.$user_id] = 'ya hay un colaborador registrado con ese email';
+                        }
+                    }
                 }
                 if(!empty($errors)) {
                     $errors['user'] = $user_id;
                     // return $errors;
                     return redirect()->route('accounts.index')->with('userError', $user_id)->withErrors($errors)->withInput();
                 }
+
 
                 $areas = [];
                 if(isset($request->areas_id)){

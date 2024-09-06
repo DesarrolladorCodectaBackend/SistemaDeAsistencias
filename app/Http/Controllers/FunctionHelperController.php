@@ -88,6 +88,7 @@ class FunctionHelperController extends Controller
     }
   
 
+
     public static function verifyAreaAccess($area_id){
         $userData = FunctionHelperController::getUserRol();
         if($userData['isAdmin']){
@@ -155,12 +156,32 @@ class FunctionHelperController extends Controller
         return $colaboradoresConArea;
     }
 
-    public static function verifySameCandidatoUserEmail($email, $updating = false, $candidato_id = null){
-        if(!$updating){
-            $user = User::where('email', $email)->first();
+    public static function verifyEmailCandidatoConflict($email, $candidato_id = null){
+        if($candidato_id != null){
+            $candidato = Candidatos::where('correo', $email)->whereNot('id', $candidato_id)->first();
         } else{
-            
-            $user = User::where('email', $email)->whereNot('id', $candidato_id)->first();
+            $candidato = Candidatos::where('correo', $email)->first();
+        }
+        if($candidato){
+            return true; //Si hay conflicto
+        }else{
+            return false; //No hay conflicto
+        }
+    }
+
+    public static function findUserCandidato($type, $email){
+        switch($type){
+            //Si type es 1, se busca al candidato de un usuario
+            case 1:
+                $candidato = Candidatos::where('correo', $email)->first();
+                return $candidato;
+            //Si type es 2, se busca el usuario de un candidato
+            case 2:
+                $user = User::where('email', $email)->first();
+                return $user;
+            //Sino se retorna null
+            default:
+                return null;
         }
     }
     //PAGINATION
