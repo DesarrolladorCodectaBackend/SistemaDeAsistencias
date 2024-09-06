@@ -10,7 +10,8 @@ class UsuarioAdministrador extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'estado'
+        'estado',
+        'super_admin'
     ];
 
 

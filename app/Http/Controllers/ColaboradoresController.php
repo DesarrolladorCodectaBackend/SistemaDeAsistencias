@@ -26,6 +26,7 @@ use App\Models\Registro_Mantenimiento;
 use App\Models\RegistroActividad;
 use App\Models\Sede;
 use App\Models\Semanas;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -374,6 +375,35 @@ class ColaboradoresController extends Controller
             }
             if(isset($request->areas_apoyo_id)){
                 $areas_apoyo_id = $request->areas_apoyo_id;
+            }
+            
+            $usuarioAsociado = null;
+            if($candidato->correo != null){
+                $user = User::where('email', $candidato->correo)->first();
+                if($user){
+                    $usuarioAsociado = $user;
+                    if(!isset($request->correo)){
+                        return redirect($returnRoute)->with('error', 'Debe ingresar el correo para este registro que es un usuario.');
+                    } else{
+                        if(strlen($request->correo) < 5 || strlen($request->correo) > 100) {
+                            return redirect($returnRoute)->with('error', 'El correo debe tener entre 5 y 100 caracteres.');
+                        }
+                    }
+                }
+            }
+            if(isset($request->correo)){
+                if($usuarioAsociado != null) {
+                    $sameUser = User::where('email', $request->correo)->whereNot('id', $usuarioAsociado->id)->first();
+                } else{
+                    $sameUser = User::where('email', $request->correo)->first();
+                }
+                if($sameUser) {
+                    return redirect($returnRoute)->with('error', 'El correo ingresado ya se encuentra registrado en un usuario del sistema.');
+                }
+            }
+
+            if($usuarioAsociado != null){
+                FunctionHelperController::modifyUserByColab($candidato, $request);
             }
             // return ["areas" => $areas_apoyo_id];
             //Encontrar siguiente semana(Lunes)

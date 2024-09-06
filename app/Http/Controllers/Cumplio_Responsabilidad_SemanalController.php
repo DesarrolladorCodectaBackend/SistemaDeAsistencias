@@ -23,7 +23,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $areas = Area::with('salon')->where('estado', 1)->paginate(12);
         }else if($userData['isBoss']){
             $bossAreasId = $userData['Jefeareas']->pluck('area_id');
-            $areas = Area::with('salon')->where('estado', 1)->where('id', $bossAreasId)->paginate(12);
+            // return $bossAreasId;
+            $areas = Area::with('salon')->where('estado', 1)->whereIn('id', $bossAreasId)->paginate(12);
         } else{
             return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar áreas. No lo intente denuevo o puede ser baneado.');
         }

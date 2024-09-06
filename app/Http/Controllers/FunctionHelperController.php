@@ -54,7 +54,7 @@ class FunctionHelperController extends Controller
         ];
     }
 
-    public static function modifyColabByBoss($user, $newData){
+    public static function modifyColabByUser($user, $newData){
         //Encontrar colaborador / Candidato
         $colaborador = Candidatos::where('correo', $user->email)->where('estado', 0)->first();
         $user->update([
@@ -69,7 +69,22 @@ class FunctionHelperController extends Controller
                 'correo' => $newData['email']
             ]);
         }
+    }
 
+    public static function modifyUserByColab($colab, $newData){
+        $user = User::where('email', $colab->correo)->first();
+        $colab->update([
+            'nombre' => $newData['nombre'],
+            'apellido'=> $newData['apellido'],
+            'correo' => $newData['correo']
+        ]);
+        if($user){
+            $user->update([
+                'name'=> $newData['nombre'],
+                'apellido'=> $newData['apellido'],
+                'email' => $newData['correo']
+            ]);
+        }
     }
   
 
@@ -138,6 +153,15 @@ class FunctionHelperController extends Controller
             $colaboradoresConArea[] = $colaborador;
         }
         return $colaboradoresConArea;
+    }
+
+    public static function verifySameCandidatoUserEmail($email, $updating = false, $candidato_id = null){
+        if(!$updating){
+            $user = User::where('email', $email)->first();
+        } else{
+            
+            $user = User::where('email', $email)->whereNot('id', $candidato_id)->first();
+        }
     }
     //PAGINATION
     public static function getPageData($collection){

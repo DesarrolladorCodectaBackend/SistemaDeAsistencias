@@ -7,6 +7,7 @@ use App\Models\Colaboradores;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Area;
+use App\Models\User;
 use App\Models\Sede;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCandidatosRequest;
@@ -88,6 +89,13 @@ class CandidatosController extends Controller
         DB::beginTransaction();
         try{
             $request->validated();
+
+            if(isset($request->correo)){
+                $user = User::where('email', $request->correo)->first();
+                if($user){
+                    return redirect($request->currentURL)->with('error', 'El correo ingresado ya se encuentra registrado en un usuario del sistema.');
+                }
+            }
 
             if ($request->hasFile('icono')) {
                 $icono = $request->file('icono');
@@ -215,6 +223,35 @@ class CandidatosController extends Controller
                 return redirect($returnRoute)->withErrors($errors)->withInput();
             }
 
+            $usuarioAsociado = null;
+            if($candidato->correo != null){
+                $user = User::where('email', $candidato->correo)->first();
+                if($user){
+                    $usuarioAsociado = $user;
+                    if(!isset($request->correo)){
+                        return redirect($returnRoute)->with('error', 'Debe ingresar el correo para este registro que es un usuario.');
+                    } else{
+                        if(strlen($request->correo) < 5 || strlen($request->correo) > 100) {
+                            return redirect($returnRoute)->with('error', 'El correo debe tener entre 5 y 100 caracteres.');
+                        }
+                    }
+                }
+            }
+            if(isset($request->correo)){
+                if($usuarioAsociado != null) {
+                    $sameUser = User::where('email', $request->correo)->whereNot('id', $usuarioAsociado->id)->first();
+                } else{
+                    $sameUser = User::where('email', $request->correo)->first();
+                }
+                if($sameUser) {
+                    return redirect($returnRoute)->with('error', 'El correo ingresado ya se encuentra registrado en un usuario del sistema.');
+                }
+            }
+
+            if($usuarioAsociado != null){
+                FunctionHelperController::modifyUserByColab($candidato, $request);
+            }
+
             // Manejo de Ícono
             if ($request->hasFile('icono')) {
                 $rutaPublica = public_path('storage/candidatos');
@@ -233,6 +270,7 @@ class CandidatosController extends Controller
             DB::commit();
             return redirect($returnRoute);
         } catch (Exception $e) {
+            // return $e;
             DB::rollBack();
             return redirect($returnRoute)->with('error', 'Ocurrió un error al actualizar, intente de nuevo. Si este error persiste, contacte a su equipo de soporte.');
         }

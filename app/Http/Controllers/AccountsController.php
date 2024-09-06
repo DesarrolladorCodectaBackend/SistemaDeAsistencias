@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Candidatos;
+use App\Models\Colaboradores;
 use App\Models\User;
 use App\Models\UsuarioAdministrador;
 use App\Models\UsuarioJefeArea;
 use Exception;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -44,6 +46,158 @@ class AccountsController extends Controller
             return view('inspiniaViews.accounts.index', ['users' => $users, "areas" => $areas]);
         } catch (Exception $e) {
             return redirect('dashboard')->with('error', 'Ocurrió un error al acceder a la vista. Si el error persiste comuniquese con su equipo de soporte.');
+        }
+    }
+
+    public function create(){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect('dashboard')->with('error', 'No tiene permisos para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+        $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->get();
+        $areas = Area::where(["estado" => 1])->get();
+        return view('inspiniaViews.accounts.create', ["colaboradores" => $colaboradores, "areas" => $areas]);
+    }
+
+    public function store(Request $request){
+        // return $request;
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect('dashboard')->with('error', 'No tiene permisos para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+        try{
+            DB::beginTransaction();
+            //VALIDACIONES
+            $errors = [];
+            //Type (Required)
+            if(!isset($request->type)){
+                $errors['type'] = 'El tipo de usuario es requerido.';
+            }
+            //Email (Required, min: 3, max:100,unique)
+            if(!isset($request->email)) {
+                $errors['email'] = 'El email es requerido.';
+            }else{
+                if(strlen($request->email) < 3) {
+                    $errors['email'] = 'El email debe tener al menos 3 caracteres.';
+                } elseif (strlen($request->email) > 100) {
+                    $errors['email'] = 'El email no debe tener más de 100 caracteres.';
+                } else{
+                    $userEmail = User::where('email', $request->email)->first();
+                    if ($userEmail) {
+                        $errors['email'] = 'El email ya se encuentra registrado.';
+                    }
+                }
+            }
+            //Name (Required, min: 1, max:100)
+            if(!isset($request->name)) {
+                $errors['name'] = 'El nombre es requerido.';
+            } else{
+                if(strlen($request->name) < 1) {
+                    $errors['name'] = 'El nombre debe tener al menos 1 caracter.';
+                } else if (strlen($request->name) > 100) {
+                    $errors['name'] = 'El nombre no debe tener más de 100 caracteres.';
+                }
+            }
+            //Apellido (Required, min: 1, max:100)
+            if(!isset($request->apellido)) {
+                $errors['apellido'] = 'El apellido es requerido.';
+            } else{
+                if(strlen($request->apellido) < 1) {
+                    $errors['apellido'] = 'El apellido debe tener al menos 1 caracter.';
+                } else if (strlen($request->apellido) > 100) {
+                    $errors['apellido'] = 'El apellido no debe tener más de 100 caracteres.';
+                }
+            }
+            //Contraseña (Required, min: 8, max:100)
+            if(!isset($request->password)) {
+                $errors['password'] = 'La contraseña es requerida.';
+            } else{
+                if(strlen($request->password) < 1) {
+                    $errors['password'] = 'La contraseña debe tener al menos 8 caracter.';
+                } else if (strlen($request->password) > 100) {
+                    $errors['password'] = 'La contraseña no debe tener más de 100 caracteres.';
+                }
+            }
+            //Confirmacion de Contraseña(Required, min: 8, max:100, igual a contraseña)
+            if(!isset($request->confirm_password)) {
+                $errors['confirm_password'] = 'La contraseña de confirmación es requerida.';
+            } else{
+                if(strlen($request->confirm_password) < 1) {
+                    $errors['confirm_password'] = 'La contraseña de confirmación debe tener al menos 8 caracter.';
+                } else if (strlen($request->confirm_password) > 100) {
+                    $errors['confirm_password'] = 'La contraseña de confirmación no debe tener más de 100 caracteres.';
+                }else{
+                    if($request->password != $request->confirm_password) {
+                        $errors['confirm_password'] = 'Las contraseñas no coinciden.';
+                    }
+                }
+            }
+            //ColaboradorId (Puede ser usado solo si el tipo es igual a 2, pero no es requerido, integer, existe en la tabla colaboradores)
+            $SelectedColaborador = null;
+            $colaboradorExists = false;
+            if($request->type == 2) {
+                if(isset($request->colaborador_id)) {
+                    $colaborador = Colaboradores::with('candidato')->whereNot('estado', 2)->where('id', $request->colaborador_id)->first();
+                    if($colaborador){
+                        $SelectedColaborador = $colaborador;
+                        $colaboradorExists = true;
+                    }else{
+                        $errors['colaborador_id'] = 'No existe un colaborador con ese id.';
+                    }
+                }
+            }
+
+            //AreasId (Requerido si el tipo es igual a 2, array, minimo 1)
+            if($request->type == 2){
+                if(!isset($request->areas_id)){
+                    $errors['areas_id'] = 'El área es requerida si el usuario es un jefe de Área.';
+                } else if(count($request->areas_id) < 1) {
+                    $errors['areas_id'] = 'Debe seleccionar al menos un área.';
+                }
+            }
+
+            if(!empty($errors)) {
+                return redirect()->route('accounts.create')->withErrors($errors)->withInput();
+            }
+
+            //Se crea el usuario Base
+            $user = User::create([
+                'name' => $request->name,
+                'apellido' => $request->apellido,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            //Si el type es 1 se crea un administrador, si es 2 se crea como jefe de área
+            if($request->type == 1) {
+                UsuarioAdministrador::create([
+                    'user_id' => $user->id
+                ]);
+            } else if($request->type == 2){
+                if($colaboradorExists){
+                    //Se actualiza el colaborador para que tenga los datos del usuario creado
+                    $candidato = $SelectedColaborador->candidato;
+                    $candidato->update([
+                        'nombre' => $user->name,
+                        'apellido' => $user->apellido,
+                        'correo' => $user->email,
+                    ]);
+                }
+                foreach($request->areas_id as $area_id) {
+                    UsuarioJefeArea::create([
+                        'user_id' => $user->id,
+                        'area_id' => $area_id,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('accounts.index')->with('success', 'Usuario creado exitosamente.');
+
+        } catch(Exception $e){
+            // return $e;
+            DB::rollback();
+            return redirect()->route('accounts.create')->with('error', 'Ocurrió un error al realizar la acción. Si el error persiste comuniquese con su equipo de soporte.');
         }
     }
 
@@ -144,7 +298,7 @@ class AccountsController extends Controller
                 if($userData['isBoss']){
                     // $newData = 
                     //Buscar el colaborador asociado por el email
-                    FunctionHelperController::modifyColabByBoss($user, $request);
+                    FunctionHelperController::modifyColabByUser($user, $request);
                     //Modificar Areas
                     foreach($areas as $area_id){
                         $usuariosArea = UsuarioJefeArea::where('user_id', $user_id)->where('area_id', $area_id)->first();

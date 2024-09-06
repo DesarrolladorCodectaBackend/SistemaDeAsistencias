@@ -151,7 +151,7 @@ class Reuniones_AreasController extends Controller
             // return $request;
             $reunion = Reuniones_Areas::findOrFail($id);
             $area_id = $reunion->area_id;
-            $access = FunctionHelperController::verifyAreaAccess($request->area_id);
+            $access = FunctionHelperController::verifyAreaAccess($area_id);
             if (!$access) {
                 return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para modificar esa area. No lo intente denuevo o puede ser baneado.');
             }

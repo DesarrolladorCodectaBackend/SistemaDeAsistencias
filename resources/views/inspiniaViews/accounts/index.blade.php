@@ -24,8 +24,8 @@
                 </ol>
             </div>
             <div class="col-lg-2 ">
-                <form action="">
-                    <button class="btn btn-success dim float-right" type="button">Agregar</button>
+                <form action="{{route('accounts.create')}}">
+                    <button type="submit" class="btn btn-success dim float-right" >Agregar</button>
                 </form>
             </div>
         </div>
@@ -55,28 +55,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox ">
-                        <div class="ibox-title">
-                            <h5>Basic Data Tables example with responsive plugin</h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link">
-                                    <i class="fa fa-chevron-up"></i>
-                                </a>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <i class="fa fa-wrench"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-user">
-                                    <li><a href="#" class="dropdown-item">Config option 1</a>
-                                    </li>
-                                    <li><a href="#" class="dropdown-item">Config option 2</a>
-                                    </li>
-                                </ul>
-                                <a class="close-link">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </div>
-                        </div>
                         <div class="ibox-content">
-
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-hover dataTables-example">
 
@@ -93,7 +72,6 @@
                                     </thead>
 
                                     <tbody>
-                                        {{-- ARRAY INSTITUCIONES --}}
                                         @foreach ($users as $user)
                                         <tr class="gradeX">
                                             <td>{{ $user->id }}</td>
@@ -124,51 +102,59 @@
                                                             <h2 class="font-bold">Editar Usuario</h2>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <form method="POST" action="{{route('accounts.update', $user->id)}}">
+                                                            <form method="POST"
+                                                                action="{{route('accounts.update', $user->id)}}">
                                                                 @method('put')
                                                                 @csrf
                                                                 <div class="form-group">
                                                                     <label>Nombres:</label>
-                                                                    <input class='form-control' name="name" required value="{{$user->name}}" type="text">
+                                                                    <input class='form-control' name="name" required
+                                                                        value="{{$user->name}}" type="text">
                                                                     @error('name'.$user->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    <span class="text-danger">{{ $message }}</span>
                                                                     @enderror
-                                                                <div class="form-group">
-                                                                    <label>Apellidos:</label>
-                                                                    <input class='form-control' name="apellido" required value="{{$user->apellido}}" type="text">
-                                                                    @error('apellido'.$user->id)
+                                                                    <div class="form-group">
+                                                                        <label>Apellidos:</label>
+                                                                        <input class='form-control' name="apellido"
+                                                                            required value="{{$user->apellido}}"
+                                                                            type="text">
+                                                                        @error('apellido'.$user->id)
                                                                         <span class="text-danger">{{ $message }}</span>
-                                                                    @enderror
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label>Email:</label>
-                                                                    <input class='form-control' name="email" required value="{{$user->email}}" type="email">
-                                                                    @error('email'.$user->id)
+                                                                        @enderror
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Email:</label>
+                                                                        <input class='form-control' name="email"
+                                                                            required value="{{$user->email}}"
+                                                                            type="email">
+                                                                        @error('email'.$user->id)
                                                                         <span class="text-danger">{{ $message }}</span>
-                                                                    @enderror
-                                                                </div>
-                                                                @if($user->rol === 'Jefe de Área')
-                                                                <div class="form-group">
-                                                                    <label>Áreas:</label>
-                                                                    <select required class='form-control multiple_areas_select'
-                                                                        multiple name="areas_id[]">
-                                                                        @foreach($areas as $area)
-                                                                        <option value="{{$area->id}}"
-                                                                            @foreach($user->areas as $areaJefe)
+                                                                        @enderror
+                                                                    </div>
+                                                                    @if($user->rol === 'Jefe de Área')
+                                                                    <div class="form-group">
+                                                                        <label>Áreas:</label>
+                                                                        <select required
+                                                                            class='form-control multiple_areas_select'
+                                                                            multiple name="areas_id[]">
+                                                                            @foreach($areas as $area)
+                                                                            <option value="{{$area->id}}"
+                                                                                @foreach($user->areas as $areaJefe)
                                                                                 @if($areaJefe->id === $area->id)
-                                                                                        selected
+                                                                                selected
                                                                                 @endif
+                                                                                @endforeach
+                                                                                >
+
+                                                                                {{$area->especializacion}}</option>
                                                                             @endforeach
-                                                                        >
-                                                                           
-                                                                            {{$area->especializacion}}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                                @endif
-                                                                <div class="d-flex justify-content-end">
-                                                                    <button type="submit" class="btn btn-success">Editar</button>
-                                                                </div>
+                                                                        </select>
+                                                                    </div>
+                                                                    @endif
+                                                                    <div class="d-flex justify-content-end">
+                                                                        <button type="submit"
+                                                                            class="btn btn-success">Editar</button>
+                                                                    </div>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -187,17 +173,16 @@
             </div>
         </div>
 
-        @if ($errors->any())
-            <script>
-                console.log(@json($errors->all())); // Muestra todos los errores en la consola
-                // let errores = @json($errors);
-                const UserId = <?php echo json_encode(session('userError')); ?>;
-                console.log(UserId)
+        <script>
+            let errores = @json($errors->all());
+            if(errores.length > 0){
+                const UserId = @json(session('userError'));
                 document.addEventListener('DOMContentLoaded', function() {
                     $(`#modal-form-update${UserId}`).modal('show');
                 });
-            </script>
-        @endif
+            }
+        </script>
+
 
         <style>
             .select2-container.select2-container--default.select2-container--open {
@@ -215,18 +200,6 @@
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <script src="js/plugins/dataTables/datatables.min.js"></script>
-    <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
     <script>
         const deleteAlert = (id) => {
             let alertError = document.getElementById(id);
@@ -289,7 +262,6 @@
             });
         });
     </script>
-    <script src="{{asset('js/plugins/select2/select2.full.min.js')}} "></script>
 
     <script>
         $(document).ready(function() {

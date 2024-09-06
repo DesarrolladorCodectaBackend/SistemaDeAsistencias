@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function () {
 
     //ACCOUNTS
     Route::get('/cuentas', [AccountsController::class, 'index'])->name('accounts.index');
+    Route::get('/cuentas/create', [AccountsController::class, 'create'])->name('accounts.create');
+    Route::post('/cuentas/store', [AccountsController::class, 'store'])->name('accounts.store');
     Route::put('/cuentas/activar-inactivar/{user_id}', [AccountsController::class, 'activarInactivar'])->name('accounts.activarInactivar');
     Route::put('/cuentas/update/{user_id}', [AccountsController::class, 'update'])->name('accounts.update');
 

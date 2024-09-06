@@ -25,6 +25,9 @@
     use App\Http\Controllers\FunctionHelperController;
     $userData = FunctionHelperController::getUserRol();
     $user = $userData['user'];
+    $rol = '';
+    if($userData['isBoss']) $rol = 'Jefe de Área';
+    if($userData['isAdmin']) $rol = 'Administrador';
 @endphp
 
 
@@ -36,19 +39,20 @@
                     <img alt="image" class="rounded-circle img-lg" src="{{asset('img/image.png')}}" />
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <span class="block m-t-xs font-bold">{{$userData['user']['name']}}</span>
-                        <span class="text-muted text-xs block">Art Director <b class="caret"></b></span>
+                        <span class="text-muted text-xs block">{{$rol}}<b class="caret"></b></span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a class="dropdown-item" href="">Profile</a></li>
-                        <li><a class="dropdown-item" href="">Contacts</a></li>
-                        <li><a class="dropdown-item" href="">Mailbox</a></li>
+                        <li><a class="dropdown-item" href="">Perfil</a></li>
+                        @if($userData['isAdmin'])
+                        <li><a class="dropdown-item" href="{{route('accounts.index')}}">Administrar Cuentas</a></li>
+                        @endif
                         <li class="dropdown-divider"></li>
                         <li><a class="dropdown-item"
-                                onclick="document.getElementById('logoutForm').submit();">Logout</a></li>
+                                onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a></li>
                     </ul>
                 </div>
                 <div class="logo-element">
-                    IN+
+                    SDA
                 </div>
             </li>
             <li>
@@ -142,7 +146,7 @@
                 <li>
 
                     <a href="#" onclick="document.getElementById('logoutForm').submit();">
-                        <i class="fa fa-sign-out"></i>Log Out
+                        <i class="fa fa-sign-out"></i>Cerrar Sesión
                     </a>
 
                 </li>
@@ -171,6 +175,9 @@
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
     <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+    <script src="js/plugins/dataTables/datatables.min.js"></script>
+    <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Custom and plugin javascript -->
     <script src="{{ asset('js/inspinia.js') }}"></script>
