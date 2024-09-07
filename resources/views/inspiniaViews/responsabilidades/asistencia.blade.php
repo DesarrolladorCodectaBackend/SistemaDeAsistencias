@@ -130,73 +130,60 @@
                         <th> Área</th>
                         <th class="area" colspan="8">{{$area->especializacion}}
                         {{-- Botón ver informe --}}
-                        <a class="btn btn-primary btn-success"
-                     style="font-size: 20px;"
-                     onclick="showModal('modal-form-view-{{$index+1}}')">Ver Informes</a>
+                            <a class="btn btn-primary btn-success btn-md float-right fa fa-file-o"
+                                style="font-size: 20px;"
+                                onclick="showModal('modal-form-view-{{$index+1}}')">
+                            </a>
                         </th>
                     </tr>
                 </table>
 
-               <!-- Modal para la semana actual -->
-                <div id="modal-form-view-{{$index+1}}" class="modal" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
+                            <!-- Modal para la semana actual -->
+                    <div id="modal-form-view-{{$index+1}}" class="modal" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
 
-                                <!-- Botón para abrir el modal de creación -->
-                                <a data-toggle="modal" class="btn btn-primary btn-success"
-                                style="font-size: 20px;"
-                                onclick="showModal('modal-create-form-{{$index+1}}')">Crear Informe</a>
-                                
-                                <!-- {{-- <button type="button" class="close" onclick="hideModal('modal-form-view-{{$index+1}}')">&times;</button> --}}-->
-
-                            </div>
-
-                            <div class="modal-body">
-
-                                <!-- Contenido del modal para la semana {{$index+1}} -->
-                                    <form id="crud-form-{{$index+1}}">
-                                        <input type="hidden" name="semana_id" value="{{$semana->id}}">
-                                
-
-                                <!--Historial de Informes-->
-                                @forelse($informesSemanales as $informe)
-                                <div class="informe-item d-flex justify-content-between align-items-center">
-                                    <!-- Contenido del informe -->
-                                    <div>
-                                        <h4>{{ $informe->titulo }}</h4>
-                                        <p>{{ $informe->nota_semanal }}</p>
-                                        <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo</a></p>
-                                    </div>
-                                    <!-- Botones alineados a la derecha -->
-                                    <div>
-                                        <button type="button" class="btn btn-info mr-2">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-warning mr-2">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </div>
+                                    <!-- Botón para abrir el modal de creación -->
+                                    <a data-toggle="modal" class="btn btn-primary btn-success" style="font-size: 20px;"
+                                    onclick="showModal('modal-create-form-{{$index+1}}')">Crear Informe</a>
                                 </div>
 
-                                    <hr>
-                                @empty
-                                    <p>No hay informes registrados.</p>
-                                @endforelse
+                                <div class="modal-body">
+                                    <!-- Contenido del historial de informes para la semana {{$index+1}} -->
+                                    <form id="crud-form-{{$index+1}}">
+                                        <input type="hidden" name="semana_id" value="{{$semana->id}}">
+
+                                        @forelse($informesSemanales as $informe)
+                                            @if($informe->semana_id == $semana->id)  <!-- Solo muestra los informes de la semana actual -->
+                                                <div class="informe-item d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h6>{{ $informe->titulo }}</h6>
+                                                        <p>{{ $informe->nota_semanal }}</p>
+                                                        <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo</a></p>
+                                                    </div>
+                                                    <div>
+                                                        <button type="button" class="btn btn-info mr-2 fa fa-eye"></button>
+                                                        <button type="button" class="btn btn-warning mr-2 fa fa-edit"></button>
+                                                        <button type="button" class="btn btn-danger fa fa-trash"></button>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                            @endif
+                                        @empty
+                                            <p>No hay informes registrados para esta semana.</p>
+                                        @endforelse
                                     </form>
-                            </div>
+                                </div>
 
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="hideModal('modal-form-view-{{$index+1}}')">Cerrar</button>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" onclick="hideModal('modal-form-view-{{$index+1}}')">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
 
 
                 <!-- Modal para crear informe -->
