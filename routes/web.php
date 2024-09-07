@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\ObjetoController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\PrestamoObjetoColaboradorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Programas_instaladosController;
@@ -62,9 +64,22 @@ Route::middleware('auth')->group(function () {
     //HOME
     Route::get('/dashboard', [HomePageController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');
 
+    //ACCOUNTS
+    Route::get('/cuentas', [AccountsController::class, 'index'])->name('accounts.index');
+    Route::get('/cuentas/create', [AccountsController::class, 'create'])->name('accounts.create');
+    Route::post('/cuentas/store', [AccountsController::class, 'store'])->name('accounts.store');
+    Route::put('/cuentas/activar-inactivar/{user_id}', [AccountsController::class, 'activarInactivar'])->name('accounts.activarInactivar');
+    Route::put('/cuentas/update/{user_id}', [AccountsController::class, 'update'])->name('accounts.update');
+
+    //PERFIL
+    Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil.index');
+    Route::put('/perfil-update', [PerfilController::class, 'update'])->name('perfil.update');
+    Route::put('/perfil-updatePassword', [PerfilController::class, 'updatePassword'])->name('perfil.updatePassword');
+
     //AREAS
     Route::resource('areas', AreaController::class);
     Route::put('areas/activarInactivar/{area_id}',[AreaController::class,'activarInactivar'])->name('areas.activarInactivar');
+    Route::get('area/showing/{area_id}', [AreaController::class, 'showArea'])->name('areas.showArea');
 
     //Horarios (Area)
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');

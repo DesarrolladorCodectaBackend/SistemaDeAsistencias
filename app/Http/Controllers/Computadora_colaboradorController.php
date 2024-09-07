@@ -11,6 +11,10 @@ class Computadora_colaboradorController extends Controller
 
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $computadora_colaborador = Computadora_colaborador::all();
 
         return view('computadora_colaborador.index', compact('computadora_colaborador'));
@@ -36,6 +40,10 @@ class Computadora_colaboradorController extends Controller
     public function store(Request $request)
     {
         // return $request;
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -85,6 +93,10 @@ class Computadora_colaboradorController extends Controller
     
     public function update(Request $request, $computadora_colaborador_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             // return $request;
@@ -141,7 +153,12 @@ class Computadora_colaboradorController extends Controller
         return redirect()->route('computadora_colaborador.index');
     }
 
+
     public function activarInactivar($colaborador_id, $computadora_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $registro = Computadora_colaborador::findOrFail($computadora_id);

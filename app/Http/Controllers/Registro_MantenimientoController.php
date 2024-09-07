@@ -20,6 +20,10 @@ class Registro_MantenimientoController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             // return $request;
@@ -47,6 +51,10 @@ class Registro_MantenimientoController extends Controller
     }
 
     public function inactivar($colaborador_id, $registro_Mantenimiento_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $registro_Mantenimiento = Registro_Mantenimiento::findOrFail($registro_Mantenimiento_id);
@@ -67,6 +75,10 @@ class Registro_MantenimientoController extends Controller
 
     public function update(Request $request, $registro_mantenimiento_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $request->validate([
             'horario_presencial_id' => 'required|string|min:1|max:100',
             'fecha' => 'required|datetime|min:1|max:255',
@@ -84,6 +96,10 @@ class Registro_MantenimientoController extends Controller
 
     public function destroy($registro_mantenimiento_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $registro_Mantenimiento = Registro_Mantenimiento::findOrFail($registro_mantenimiento_id);
 
         $registro_Mantenimiento->delete();

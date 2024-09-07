@@ -602,7 +602,7 @@
                                                                             value="{{$colaborador->candidato->dni}}"></input>
                                                                             @error('dni'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Celular:</h5>
@@ -612,8 +612,7 @@
                                                                             value="{{ $colaborador->candidato->celular }}">
                                                                             @error('celular'.$colaborador->id)
                                                                             <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
-
+                                                                            @enderror
                                                                     </div>
 
                                                                     <div class="form-group">

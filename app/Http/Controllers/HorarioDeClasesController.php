@@ -28,6 +28,10 @@ class HorarioDeClasesController extends Controller
 
     public function getCalendariosColaborador($colaborador_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $horariosDeClases = Horario_de_Clases::where('colaborador_id', $colaborador_id)->get();
         $horariosFormateados = [];
 
@@ -77,6 +81,10 @@ class HorarioDeClasesController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -106,6 +114,10 @@ class HorarioDeClasesController extends Controller
 
     public function update(Request $request, $horario_de_clases_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);

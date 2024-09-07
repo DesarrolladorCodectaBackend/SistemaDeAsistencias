@@ -10,6 +10,10 @@ use Exception;
 class ObjetoController extends Controller
 {
     public function index(){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $objetos = Objetos::paginate(12);
 
         $pageData = FunctionHelperController::getPageData($objetos);
@@ -25,6 +29,10 @@ class ObjetoController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try {
             $request->validate([
@@ -55,6 +63,10 @@ class ObjetoController extends Controller
     }
 
     public function update(Request $request, $objeto_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -85,6 +97,10 @@ class ObjetoController extends Controller
 
     public function destroy($objeto_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $objeto = Objetos::findOrFail($objeto_id);
 
         $objeto->delete();
@@ -93,7 +109,10 @@ class ObjetoController extends Controller
     }
     
     public function activarInactivar(Request $request, $objeto_id){
-
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $objeto = Objetos::findOrFail($objeto_id);

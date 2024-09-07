@@ -10,6 +10,10 @@
 </head>
 
 <body>
+    @php
+    use App\Http\Controllers\FunctionHelperController;
+    $userData = FunctionHelperController::getUserRol();
+    @endphp
     <div id="wrapper">
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
@@ -23,7 +27,19 @@
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
+            @if(session('error'))
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
+                role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Error:</strong> {{ session('error') }}
+                </div>
+                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs"
+                    style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
+                        class="fa fa-close"></i></button>
+            </div>
+            @endif
             <div class="row">
+                @if($userData['isAdmin'])
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <div class="row">
                         <div class="col-sm-6">
@@ -60,11 +76,40 @@
                         </div>
                     </div>
                 </div>
+                @endif
+                @if($userData['isBoss'])
+                @foreach($selectedAreas as $area)
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                    <div class="ibox">
+                        <div class="ibox-content product-box">
+                            <div class="product-imitation">
+                                <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
+                            </div>
+                            <div class="product-desc">
+                                <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant.
+                                    Integrantes: {{$area->count_colabs}}</small>
+                                <a href="#" class="product-name">{{ $area->especializacion }}</a>
+                                <div class="small m-t-xs">
+                                    {{ $area->descripcion }}
+                                </div>
+                                <div class="m-t text-left d-flex justify-content-center align-items-center gap-10">
+                                    <a href="{{route('areas.showArea', $area->id)}}" class="btn btn-success text-white">
+                                        Ver Área
+                                    </a>
+                                    <a href="{{route('areas.getReuniones', $area->id)}}" class="btn btn-success fa fa-video-camera" style="font-size: 20px;">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                @endif
             </div>
         </div>
 
         @include('components.inspinia.footer-inspinia')
-        </div>
+    </div>
     </div>
 
 </body>
@@ -82,7 +127,7 @@
         text-align: center;
     }
 </style>
-
+@if($userData['isAdmin'])
 <script>
     // Datos para el calendario de reuniones
     $(document).ready(function() {
@@ -207,7 +252,6 @@
             });
         });
 </script>
-
 <script>
     // Datos de ejemplo para el gráfico de barras
     let areasProm = <?php echo json_encode($areasProm); ?>;
@@ -252,6 +296,17 @@
                 }
             }
         });
+</script>
+@endif
+<script>
+    const deleteAlertError = () => {
+            let alertError = document.getElementById('alert-error');
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error("Elemento con ID 'alert-error' no encontrado.");
+            }
+        }    
 </script>
 
 </html>

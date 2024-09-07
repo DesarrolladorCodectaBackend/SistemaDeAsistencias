@@ -12,6 +12,10 @@ class ProgramasController extends Controller
 {
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $programas = Programas::paginate(12);
         $pageData = FunctionHelperController::getPageData($programas);
         $hasPagination = true;
@@ -39,6 +43,10 @@ class ProgramasController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
 
@@ -82,6 +90,10 @@ class ProgramasController extends Controller
 
     public function show($programa_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $programa = Programas::find($programa_id);
 
         return response()->json(["data" => $programa]);
@@ -90,6 +102,10 @@ class ProgramasController extends Controller
 
     public function update(Request $request, $programa_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
 
@@ -141,6 +157,10 @@ class ProgramasController extends Controller
 
     public function destroy($programa_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $programa = Programas::findOrFail($programa_id);
 
         $programa->delete();
@@ -150,6 +170,10 @@ class ProgramasController extends Controller
 
     public function activarInactivar(Request $request, $programa_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $programa = Programas::findOrFail($programa_id);

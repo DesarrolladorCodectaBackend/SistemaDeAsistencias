@@ -12,6 +12,10 @@ class Programas_instaladosController extends Controller
 
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $programas_instalados = Programas_instalados::all();
 
         return view('programas_instalados.index', compact('programas_instalados'));
@@ -22,6 +26,10 @@ class Programas_instaladosController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $request->validate([
             'computadora_id' => 'required|integer|min:1|max:100',
             'programa_id' => 'required|integer|min:1|max:255'
@@ -37,6 +45,10 @@ class Programas_instaladosController extends Controller
     }
 
     public function selectProgramas(Request $request, $computadora_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             // return $request;
@@ -78,6 +90,10 @@ class Programas_instaladosController extends Controller
 
     }
     public function inactivate($colaborador_id, $id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $registro = Programas_instalados::findOrFail($id);
@@ -97,6 +113,10 @@ class Programas_instaladosController extends Controller
 
     public function show($programas_instalados_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         try{
             $programas_instalados = Programas_instalados::with([
                 'computadora_colaborador' => function ($query) {
@@ -129,6 +149,10 @@ class Programas_instaladosController extends Controller
 
     public function update(Request $request, $programas_instalados_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $request->validate([
             'computadora_id' => 'required|integer|min:1|max:100',
             'programa_id' => 'required|integer|min:1|max:255',
@@ -145,6 +169,10 @@ class Programas_instaladosController extends Controller
 
     public function destroy($programas_instalados_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $programas_instalados = Programas_instalados::findOrFail($programas_instalados_id);
 
         $programas_instalados->delete();

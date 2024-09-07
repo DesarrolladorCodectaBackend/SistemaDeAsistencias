@@ -12,18 +12,38 @@ use App\Models\Semanas;
 use App\Models\ReunionesProgramadas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\UsuarioAdministrador;
+use App\Models\UsuarioJefeArea;
 
 class HomePageController extends Controller
 {
     public function home(){
-        $areasProm = $this->getMonthPromAreas();
-        $reunionesProgramadas = $this->getTodayProgramReu();
-        $areas = $this->getAreasToday();
-        return view('dashboard', [
-            'areasProm' => $areasProm,
-            'reunionesProgramadas' => $reunionesProgramadas,
-            'areas' => $areas
-        ]);
+
+        $userData = FunctionHelperController::getUserRol();
+        $returning = [];
+        
+        if($userData['isAdmin']){
+            $areasProm = $this->getMonthPromAreas();
+            $reunionesProgramadas = $this->getTodayProgramReu();
+            $areas = $this->getAreasToday();
+
+            $returning['areasProm'] = $areasProm;
+            $returning['reunionesProgramadas'] = $reunionesProgramadas;
+            $returning['areas'] = $areas;
+        }
+
+        if($userData['isBoss']){
+            $areasJefeId = $userData['Jefeareas']->pluck('area_id');
+            $selectedAreas = Area::whereIn('id', $areasJefeId)->get();
+            foreach($selectedAreas as $area){
+                $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
+                $area->count_colabs = $colaboradoresAreaCount;
+            }
+
+            $returning['selectedAreas'] = $selectedAreas;
+        }
+        // return $returning;
+        return view('dashboard', $returning);
     }
 
     function getMonthPromAreas(){
