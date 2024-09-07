@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('informes_semanales', function (Blueprint $table) {
+        Schema::create('informe_semanals', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
             //text->alamacena más de 255 caracteres
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('informes_semanales');
+        Schema::dropIfExists('informe_semanals');
     }
 };

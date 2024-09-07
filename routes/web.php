@@ -210,10 +210,8 @@ Route::middleware('auth')->group(function () {
     Route::get('Reportes', [ReporteController::class, 'index']);
 
     // INFORMESSEMANALES
-    Route::get('/InformesSemanales', [InformesSemanalesController::class, 'index'])->name('informes.index');
-    Route::get('/InformesSemanales/create', [InformesSemanalesController::class, 'create'])->name('informesSemanales.create');
-    Route::post('/InformesSemanales/store', [InformesSemanalesController::class, 'store'])->name('informesSemanales.store');
-    Route::get('/InformesSemanales/show/{informeSemanal}', [InformesSemanalesController::class, 'show'])->name('informesSemanales.show');
+   Route::resource('/InformeSemanal', InformesSemanalesController::class);
+
 });
 
 require __DIR__ . '/auth.php';
