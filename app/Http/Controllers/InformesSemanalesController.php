@@ -23,7 +23,7 @@ class InformesSemanalesController extends Controller
         $semana_id = $request->semana_id;
 
         $nombreInforme = '';
-        
+
         if ($request->hasFile('informe_url')) {
             $informe = $request->file('informe_url');
             $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
@@ -41,30 +41,6 @@ class InformesSemanalesController extends Controller
 
         return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
     }
-
-
-
-    /*public function store(Request $request){
-        DB::beginTransaction();
-        try{
-            $area = Area::findOrFail($area_id);
-            $semana = Semanas::findOrFail($semana_id);
-
-            $request->validate([
-                'titulo' => 'required|min:1|max:255',
-                'nota_semanal' => 'required|min:1|max:255',
-                'informe_url' => 'required',
-            ]);
-            $year = $request->year;
-            $mes = $request->mes;
-            $area_id = $request->area_id;
-            DB::commit();
-        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
-        }catch(Exception $e){
-            DB::rollBack();
-        }
-    }*/
-
 
     public function update()
     {
