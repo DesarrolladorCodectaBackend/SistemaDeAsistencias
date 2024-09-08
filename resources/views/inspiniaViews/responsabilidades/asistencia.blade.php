@@ -152,8 +152,11 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
                                         <!-- Botón para abrir el modal de creación -->
-                                        <a class="btn btn-primary btn-success" style="font-size: 20px;" onclick="showModal('modal-create-form-{{$index+1}}')">Crear Informe</a>
-
+                                        <button class="btn btn-success dim float-right"
+                                                data-toggle="modal"
+                                                data-target="#modal-form-add-{{ $index+1 }}"
+                                                type="button">Agregar Informe
+                                        </button>
                                     </div>
                                     <div class="modal-body">
                                         <!-- Contenido del historial de informes para la semana {{$index+1}} -->
@@ -197,47 +200,46 @@
 
 
 
-               <!-- Modal para crear un nuevo informe -->
-                <div id="modal-create-form-{{ $index+1 }}" class="modal hidden">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Crear Informe</h5>
-                                <button type="button" class="close" onclick="hideModal('modal-create-form-{{ $index+1 }}')">&times;</button>
+                       
+                        <!-- Modal para crear un nuevo informe -->
+                        <div id="modal-form-add-{{ $index+1 }}" class="modal fade" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Crear Informe - Semana {{ $index+1 }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('InformeSemanal.store') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="semana_id" value="{{ $semana->id }}">
+                                            <input type="hidden" name="year" value="{{ $year }}">
+                                            <input type="hidden" name="mes" value="{{ $mes }}">
+                                            <input type="hidden" name="area_id" value="{{ $area->id }}">
+                    
+                                            <div class="form-group">
+                                                <label for="titulo">Título</label>
+                                                <input type="text" class="form-control" id="titulo-{{ $index+1 }}" name="titulo" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nota_semanal">Nota Semanal</label>
+                                                <textarea class="form-control" id="nota_semanal-{{ $index+1 }}" name="nota_semanal" rows="3" required></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="informe_url">Archivo</label>
+                                                <input type="file" class="form-control" id="informe_url-{{ $index+1 }}" name="informe_url">
+                                            </div>
+                    
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                            <form action="{{ route('InformeSemanal.store') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="modal-body">
-                                    <!-- Campos del formulario para crear un informe -->
-                                    <input type="hidden" name="semana_id" value="{{ $semana->id }}">
-                                    <input type="hidden" name="year" value="{{ $year }}">
-                                    <input type="hidden" name="mes" value="{{ $mes }}">
-                                    <input type="hidden" name="area_id" value="{{ $area->id }}">
-
-                                    <div class="form-group">
-                                        <label for="titulo">Título</label>
-                                        <input type="text" class="form-control" id="titulo" name="titulo" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="nota_semanal">Nota Semanal</label>
-                                        <textarea class="form-control" id="nota_semanal" name="nota_semanal" rows="3" required></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="informe_url">Archivo</label>
-                                        <input type="file" class="form-control" id="informe_url" name="informe_url">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" onclick="hideModal('modal-create-form-{{ $index+1 }}')">Cerrar</button>
-                                    <button type="submit" class="btn btn-success">Crear Informe</button>
-                                </div>
-                            </form>
                         </div>
-                    </div>
-                </div>
-
-
-
+                    
+                    
 
 
                     <!-- Modal para editar informe -->
@@ -512,26 +514,33 @@
 
     {{-- scripts modals --}}
     <script>
-        // Función para mostrar el modal
         function showModal(modalId) {
-    $('#' + modalId).modal('show');
-}
-
-function hideModal(modalId) {
-    $('#' + modalId).modal('hide');
-}
-
-    
-        // Función para abrir el modal de edición
-        function abrirModalEdicion(id) {
-            // Ocultar cualquier otro modal que esté abierto
-            hideModal('modal-form-view-' + id);
-            hideModal('modal-form-create-' + id);
-            // Mostrar el modal de edición
-            showModal('modal-form-update-' + id);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+            modal.classList.add('show');
+            modal.style.display = 'block'; // Asegúrate de que el modal se muestre
+            }
         }
-    </script>
-    
-</body>
 
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none'; // Asegúrate de que el modal se oculte
+            }
+        }
+
+        function abrirModalCreacion(index) {
+    ocultarTodosLosModales();
+    showModal('modal-form-add-' + index);
+}
+
+
+
+        function abrirModalEdicion(id) {
+            hideModal('modal-form-view' + id);
+            showModal('modal-form-update' + id);
+        }
+    </scritp>
+</body>
 </html>
