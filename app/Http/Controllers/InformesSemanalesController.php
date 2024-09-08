@@ -45,16 +45,13 @@ class InformesSemanalesController extends Controller
 
     public function update(Request $request, $InformeSemanal)
     {
-        $year = $request->year;
-        $mes = $request->mes;
-        $area_id = $request->area_id;
-        $semana_id = $request->semana_id;
-
+    
+        // Encontrar el informe
         $informe = InformeSemanal::findOrFail($InformeSemanal);
 
         // Actualizar el archivo si se sube uno nuevo
         if ($request->hasFile('informe_url')) {
-            // Elimina el archivo existente
+            // Eliminar el archivo existente
             if ($informe->informe_url && file_exists(public_path('storage/informes/' . $informe->informe_url))) {
                 unlink(public_path('storage/informes/' . $informe->informe_url));
             }
@@ -68,6 +65,7 @@ class InformesSemanalesController extends Controller
             $informe->informe_url = $nombreInforme;
         }
 
+        // Actualizar otros campos
         $informe->update([
             'titulo' => $request->titulo,
             'nota_semanal' => $request->nota_semanal,
@@ -75,8 +73,14 @@ class InformesSemanalesController extends Controller
             'area_id' => $request->area_id,
         ]);
 
-        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+        // Redireccionar con parámetros
+        return redirect()->route('responsabilidades.asis', [
+            'year' => $request->year,
+            'mes' => $request->mes,
+            'area_id' => $request->area_id
+        ]);
     }
+
 
 
     public function show($InformeSemanal)

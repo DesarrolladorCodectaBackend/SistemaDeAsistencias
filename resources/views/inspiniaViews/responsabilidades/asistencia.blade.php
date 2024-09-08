@@ -136,165 +136,151 @@
                         {{-- Botón ver informes --}}
                         <a class="btn btn-primary btn-success btn-md float-right fa fa-file-o"
                         style="font-size: 20px;"
-                        data-toggle="modal" 
-                        data-target="#modal-show-form-{{$index+1}}">
+                        data-toggle="modal"
+                        data-target="#modal-form-{{$index+1}}">
                         </a>
+
+
                         </th>
                     </tr>
                 </table>
 
-                        <!-- Modal para la semana actual -->
-<div id="modal-show-form-{{$index+1}}" class="modal hidden">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
-                <!-- Botón para cerrar el modal -->
-                <button type="button" class="close" onclick="hideModal('modal-show-form-{{$index+1}}')">&times;</button>
-            </div>
+                      <!-- Modal para la semana actual -->
+                        <div id="modal-form-{{$index+1}}" class="modal" style="display: none;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
+                                        <!-- Botón para abrir el modal de creación -->
+                                        <a class="btn btn-primary btn-success" style="font-size: 20px;" onclick="showModal('modal-create-form-{{$index+1}}')">Crear Informe</a>
 
-            <div class="modal-body">
-                <!-- Contenido del historial de informes para la semana {{$index+1}} -->
-                <form id="crud-form-{{$index+1}}">
-                    <input type="hidden" name="semana_id" value="{{$semana->id}}">
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Contenido del historial de informes para la semana {{$index+1}} -->
+                                        <form id="crud-form-{{$index+1}}">
+                                            <input type="hidden" name="semana_id" value="{{$semana->id}}">
+                                            @forelse($informesSemanales as $informe)
+                                                @if($informe->semana_id == $semana->id)  <!-- Solo muestra los informes de la semana actual -->
+                                                    <div class="informe-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h6>{{ $informe->titulo }}</h6>
+                                                            <p>{{ $informe->nota_semanal }}</p>
+                                                            @if($informe->informe_url)
+                                                                <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo</a></p>
+                                                            @else
+                                                                <p>No hay archivo disponible.</p>
+                                                            @endif
+                                                        </div>
+                                                        <div>
+                                                            <button type="button" class="btn btn-info mr-2 fa fa-eye"></button>
 
-                    @forelse($informesSemanales as $informe)
-                        @if($informe->semana_id == $semana->id)
-                            <div class="informe-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6>{{ $informe->titulo }}</h6>
-                                    <p>{{ $informe->nota_semanal }}</p>
-                                    @if($informe->informe_url)
-                                        <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo</a></p>
-                                    @else
-                                        <p>No hay archivo disponible</p>
-                                    @endif
-                                </div>
-                                <div>
-                                    <!-- Ver informe respectivo -->
-                                    <button type="button" class="btn btn-info mr-2 fa fa-eye" onclick="abrirModalVisualizacion({{$informe->id}}, {{$index+1}})"></button>
+                                                            <button type="button" class="btn btn-warning mr-2 fa fa-edit" onclick="showModal('modal-update-form-{{ $informe->id }}')"></button>
 
-                                    <!-- Editar informe respectivo -->
-                                    <a data-toggle="modal" id="editButton{{ $informe->id }}"
-                                        class="btn btn-warning mr-2 fa fa-edit"
-                                        onclick="abrirModalEdicion({{ $informe->id }});"
-                                        style="font-size: 20px; width: 60px;"
-                                        href="#modal-edit-form-{{ $informe->id }}"></a>
 
-                                    <!-- Eliminar informe respectivo -->
-                                    <button type="button" class="btn btn-danger mr-2 fa fa-trash" onclick="confirmDelete({{$informe->id}}, '{{ url()->current() }}')"></button>
+                                                            <button type="button" class="btn btn-danger fa fa-trash"></button>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                @endif
+                                            @empty
+                                                <p>No hay informes registrados para esta semana.</p>
+                                            @endforelse
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" onclick="hideModal('modal-form-{{$index+1}}')">Cerrar</button>
+                                    </div>
                                 </div>
                             </div>
-                            <hr>
-                        @endif
-                    @empty
-                        <p>No hay informes registrados para esta semana.</p>
-                    @endforelse
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <!-- Botón para crear un nuevo informe -->
-                <button type="button" class="btn btn-success" onclick="abrirModalCreacion({{$index+1}})">Crear Informe</button>
-                <!-- Botón para cerrar el modal -->
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-               <!-- Modal para crear informe -->
-<div id="modal-create-form-{{$index+1}}" class="modal hidden">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Crear Informe de Semana {{$index+1}}</h5>
-                <button type="button" class="close" onclick="hideModal('modal-create-form-{{$index+1}}')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="create-crud-form-{{$index+1}}" method="POST"
-                      action="{{ route('InformeSemanal.store')}}"
-                      enctype="multipart/form-data">
-                    @csrf
-                    <!-- Campos ocultos para la semana, área, año y mes -->
-                    <input type="hidden" name="semana_id" value="{{ $semana->id }}">
-                    <input type="hidden" name="area_id" value="{{ $area->id }}">
-                    <input type="hidden" name="year" value="{{ $year}}">
-                    <input type="hidden" name="mes" value="{{ $mes }}">
-
-                    <!-- Campos del formulario -->
-                    <div class="form-group">
-                        <label for="titulo">Título:</label>
-                        <input type="text" id="titulo" name="titulo" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nota_semanal">Nota Semanal:</label>
-                        <textarea id="nota_semanal" name="nota_semanal" class="form-control" rows="4" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="informe_url">Archivo:</label>
-                        <input type="file" id="informe_url" name="informe_url" class="form-control" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="hideModal('modal-create-form-{{$index+1}}')">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
+                        </div>
 
 
 
 
-           <!-- Modal para editar informe -->
-<div id="modal-edit-form-{{ $informe->id }}" class="modal hidden">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editar Informe</h5>
-                <button type="button" class="close" onclick="hideModal('modal-edit-form-{{ $informe->id }}')">&times;</button>
-            </div>
-            <form action="{{ route('InformeSemanal.update', $informe->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <input type="hidden" name="semana_id" value="{{ $informe->semana_id }}">
-                    <input type="hidden" name="year" value="{{ $year }}">
-                    <input type="hidden" name="mes" value="{{ $mes }}">
-                    <input type="hidden" name="area_id" value="{{ $area->id }}">
-                    <input type="hidden" name="informe" value="{{ $informe->id }}">
+               <!-- Modal para crear un nuevo informe -->
+                <div id="modal-create-form-{{ $index+1 }}" class="modal hidden">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Crear Informe</h5>
+                                <button type="button" class="close" onclick="hideModal('modal-create-form-{{ $index+1 }}')">&times;</button>
+                            </div>
+                            <form action="{{ route('InformeSemanal.store') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="modal-body">
+                                    <!-- Campos del formulario para crear un informe -->
+                                    <input type="hidden" name="semana_id" value="{{ $semana->id }}">
+                                    <input type="hidden" name="year" value="{{ $year }}">
+                                    <input type="hidden" name="mes" value="{{ $mes }}">
+                                    <input type="hidden" name="area_id" value="{{ $area->id }}">
 
-                    <div class="form-group">
-                        <label for="titulo">Título</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" value="{{ $informe->titulo }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="nota_semanal">Nota Semanal</label>
-                        <textarea class="form-control" id="nota_semanal" name="nota_semanal" rows="3" required>{{ $informe->nota_semanal }}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="informe_url">Archivo</label>
-                        <input type="file" class="form-control" id="informe_url" name="informe_url">
-                        @if($informe->informe_url)
-                            <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo actual</a></p>
-                        @endif
+                                    <div class="form-group">
+                                        <label for="titulo">Título</label>
+                                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nota_semanal">Nota Semanal</label>
+                                        <textarea class="form-control" id="nota_semanal" name="nota_semanal" rows="3" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="informe_url">Archivo</label>
+                                        <input type="file" class="form-control" id="informe_url" name="informe_url">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" onclick="hideModal('modal-create-form-{{ $index+1 }}')">Cerrar</button>
+                                    <button type="submit" class="btn btn-success">Crear Informe</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="hideModal('modal-edit-form-{{ $informe->id }}')">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
+
+
+
+
+                    <!-- Modal para editar informe -->
+                    <div id="modal-update-form-{{ $informe->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Editar Informe</h5>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <form action="{{ route('InformeSemanal.update', $informe->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="modal-body">
+                                            <input type="hidden" name="semana_id" value="{{ $informe->semana_id }}">
+                                            <input type="hidden" name="year" value="{{ $year }}">
+                                            <input type="hidden" name="mes" value="{{ $mes }}">
+                                            <input type="hidden" name="area_id" value="{{ $area->id }}">
+                                            <input type="hidden" name="informe" value="{{ $informe->id }}">
+
+                                            <div class="form-group">
+                                                <label for="titulo">Título</label>
+                                                <input type="text" class="form-control" id="titulo" name="titulo" value="{{ $informe->titulo }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nota_semanal">Nota Semanal</label>
+                                                <textarea class="form-control" id="nota_semanal" name="nota_semanal" rows="3" required>{{ $informe->nota_semanal }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="informe_url">Archivo</label>
+                                                <input type="file" class="form-control" id="informe_url" name="informe_url">
+                                                @if($informe->informe_url)
+                                                    <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo actual</a></p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
 
 
 
@@ -526,93 +512,26 @@
 
     {{-- scripts modals --}}
     <script>
-/// Función para ocultar el modal
+        // Función para mostrar el modal
+        function showModal(modalId) {
+    $('#' + modalId).modal('show');
+}
+
 function hideModal(modalId) {
-    console.log('Ocultando modal con ID: ' + modalId);
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = 'none'; // Oculta el modal
-        // También ocultar el backdrop si existe
-        const backdrop = document.querySelector('.modal-backdrop');
-        if (backdrop) {
-            backdrop.remove();
-        }
-    }
+    $('#' + modalId).modal('hide');
 }
 
-// Función para mostrar el modal
-function showModal(modalId) {
-    // Primero ocultar todos los modales para asegurarnos de que solo uno esté visible
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        modal.style.display = 'none';
-    });
     
-    // Mostrar el modal deseado
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = 'block';
-
-        // Añadir el backdrop
-        const existingBackdrop = document.querySelector('.modal-backdrop');
-        if (!existingBackdrop) {
-            const backdrop = document.createElement('div');
-            backdrop.className = 'modal-backdrop';
-            document.body.appendChild(backdrop);
+        // Función para abrir el modal de edición
+        function abrirModalEdicion(id) {
+            // Ocultar cualquier otro modal que esté abierto
+            hideModal('modal-form-view-' + id);
+            hideModal('modal-form-create-' + id);
+            // Mostrar el modal de edición
+            showModal('modal-form-update-' + id);
         }
-    }
-}
-
-// Función para abrir el modal de creación
-function abrirModalCreacion(index) {
-    hideModal('modal-show-form-' + index);
-    hideModal('modal-edit-form-' + index);
-    showModal('modal-create-form-' + index);
-}
-
-// Función para abrir el modal de visualización
-function abrirModalVisualizacion(informeId, index) {
-    hideModal('modal-show-form-' + index);
-    hideModal('modal-create-form-' + index);
-    showModal('modal-visualize-form-' + informeId);
-}
-
-// Función para abrir el modal de edición
-function abrirModalEdicion(informeId) {
-    hideModal('modal-show-form-' + index);
-    hideModal('modal-create-form-' + index);
-    showModal('modal-edit-form-' + informeId);
-}
-
-// Función para confirmar eliminación
-function confirmDelete(informeId, url) {
-    if (confirm('¿Estás seguro de que deseas eliminar este informe?')) {
-        fetch(url + '/' + informeId, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('informe-' + informeId).remove();
-            } else {
-                alert('No se pudo eliminar el informe.');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-}
-
-
     </script>
     
-    
-    
-    
-
-
 </body>
 
 </html>
