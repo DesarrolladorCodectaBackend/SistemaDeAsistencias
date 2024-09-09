@@ -31,6 +31,7 @@
 
                     <form id="searchColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareSearchActionURL()"
                         class="flex-centered gap-20 spc-per-100">
+                        <input type="hidden" id="searchRoute" value="{{route('colaboradores.search', ['busqueda' => '/'])}}">
                         <input id="searchInput" class="form-control wdt-per-80" type="search"
                             placeholder="Buscar Colaborador..." aria-label="Search" required autocomplete="off">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
@@ -842,7 +843,8 @@
 
 
     </style>
-    <script>
+    <script src="{{asset('js/inspiniaViewsJS/indexColaboradores.js')}}"></script>
+    {{-- <script>
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');
             if (alertError) {
@@ -1066,7 +1068,7 @@
         $(document).ready(function() {
             $('.multiple_actividades_select').select2();
         });
-    </script>
+    </script> --}}
 </body>
 
 </html>

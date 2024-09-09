@@ -73,7 +73,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
         }
-        
+
         $Meses = FunctionHelperController::getMonths();
 
         $area = Area::findOrFail($area_id);
