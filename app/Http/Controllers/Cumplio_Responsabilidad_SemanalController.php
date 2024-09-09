@@ -198,7 +198,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         }
 
 
-
+        $colaboradoresArea = [];
         // Definir semanas cumplidas
         foreach ($semanasMes as $index => &$semana) {
             // return $semana;
