@@ -13,7 +13,7 @@ class InformesSemanalesRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,9 +24,19 @@ class InformesSemanalesRequest extends FormRequest
     public function rules()
     {
         return [
-            'year' => 'required|integer',
-                'mes' => 'required|string',
-                'area_id' => 'required|integer',
+            'titulo' => 'required|max:150',
+            'nota_semanal' => 'nullable|max:2000',
+            'informe_url' => 'required|mimes:pdf,docx',
+        ];
+    }
+
+    public function messages(){
+        return[
+            'titulo.required' => 'El título es un campo requerido.',
+            'titulo.max' => 'El título no puede exceder los 150 caracteres.',
+            'nota_semanal.max' => 'Este campo no puede exceder los 2000 caracteres.',
+            'informe_url.required' => 'Este campo es un campo requerido',
+            'informe_url.mimes' => 'El informe debe ser un archivo de tipo: pdf, docx.'
         ];
     }
 }

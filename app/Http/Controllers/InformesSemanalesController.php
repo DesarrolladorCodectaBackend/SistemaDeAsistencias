@@ -15,70 +15,108 @@ use App\Http\Log;
 class InformesSemanalesController extends Controller
 {
 
-    public function store(Request $request)
+    public function store(InformesSemanalesRequest $request)
     {
-        // obtiene el a;o, mes, area_id, semana_id para la creacion de dicho informe ubicandolo en las semanas, anios, mes y area respectivas
-        $year = $request->year;
-        $mes = $request->mes;
-        $area_id = $request->area_id;
-        $semana_id = $request->semana_id;
+        DB::beginTransaction();
+        try{
+            // obtiene el a;o, mes, area_id, semana_id para la creacion de dicho informe ubicandolo en las semanas, anios, mes y area respectivas
+            $year = $request->year;
+            $mes = $request->mes;
+            $area_id = $request->area_id;
+            $semana_id = $request->semana_id;
 
-        $nombreInforme = '';
+            $nombreInforme = '';
 
-        if ($request->hasFile('informe_url')) {
-            $informe = $request->file('informe_url');
-            $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
-            $informe->move(public_path('storage/informes'), $nombreInforme);
+            if ($request->hasFile('informe_url')) {
+                $informe = $request->file('informe_url');
+                $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
+                $informe->move(public_path('storage/informes'), $nombreInforme);
+            }
+
+            InformeSemanal::create([
+                'titulo' => $request->titulo,
+                'nota_semanal' => $request->nota_semanal,
+                'informe_url' => $nombreInforme,
+                'semana_id' => $semana_id,
+                'area_id' => $area_id
+            ]);
+            DB::commit();
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+        }catch(Exception $e){
+            DB::rollBack();
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
         }
-
-        InformeSemanal::create([
-            'titulo' => $request->titulo,
-            'nota_semanal' => $request->nota_semanal,
-            'informe_url' => $nombreInforme,
-            'semana_id' => $semana_id,
-            'area_id' => $area_id
-        ]);
-        // return $request;
-
-        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
     }
 
     public function update(Request $request, $InformeSemanal)
     {
-        $year = $request->year;
-        $mes = $request->mes;
-        $area_id = $request->area_id;
-        $semana_id = $request->semana_id;
+        DB::beginTransaction();
+        try {
+            $year = $request->year;
+            $mes = $request->mes;
+            $area_id = $request->area_id;
+            $semana_id = $request->semana_id;
 
-        $informe = InformeSemanal::findOrFail($InformeSemanal);
-        
-        // Preparar los datos para actualizar
-        $datosActualizar = $request->except(['informe_url']);
-        
-        // Actualizar el archivo si se sube uno nuevo
-        if ($request->hasFile('informe_url')) {
-            $rutaPublica = public_path('storage/informes');
-            
-            // Eliminar el archivo existente
-            if ($informe->informe_url && file_exists($rutaPublica . '/' . $informe->informe_url)) {
-                unlink($rutaPublica . '/' . $informe->informe_url);
+            $returnRoute = route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]);
+
+            $informe = InformeSemanal::findOrFail($InformeSemanal);
+
+            // Validaciones
+            $errors = [];
+
+            if (!isset($request->titulo)) {
+                $errors['titulo' . $informe->id] = 'El titulo es un campo requerido.';
+            } else {
+                if (strlen($request->titulo) > 150) {
+                    $errors['titulo' . $informe->id] = 'El titulo no puede exceder los 150 caracteres.';
+                }
             }
 
-            // Subir el nuevo archivo
-            $archivo = $request->file('informe_url');
-            $nombreInforme = time() . '.' . $archivo->getClientOriginalExtension();
-            $archivo->move($rutaPublica, $nombreInforme);
             
-            $datosActualizar['informe_url'] = $nombreInforme;
+            if (strlen($request->nota_semanal) > 2000) {
+                $errors['nota_semanal' . $informe->id] = 'Este campo no puede exceder los 2000 caracteres.';
+            }
+            
+
+            if ($request->hasFile('informe_url')) {
+                $extensiones = ['pdf', 'docx'];
+                $extensionVal = $request->file('informe_url')->getClientOriginalExtension();
+
+                if (!in_array($extensionVal, $extensiones)) {
+                    $errors['informe_url' . $informe->id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+                }
+            }
+
+            if (!empty($errors)) {
+                return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                                ->withErrors($errors)
+                                ->withInput();
+            }
+
+            // Preparar los datos para actualizar
+            $datosActualizar = $request->except(['informe_url']);
+
+            if ($request->hasFile('informe_url')) {
+                $rutaPublica = public_path('storage/informes');
+
+                if ($informe->informe_url && file_exists($rutaPublica . '/' . $informe->informe_url)) {
+                    unlink($rutaPublica . '/' . $informe->informe_url);
+                }
+
+                $archivo = $request->file('informe_url');
+                $nombreInforme = time() . '.' . $archivo->getClientOriginalExtension();
+                $archivo->move($rutaPublica, $nombreInforme);
+
+                $datosActualizar['informe_url'] = $nombreInforme;
+            }
+
+            $informe->update($datosActualizar);
+            DB::commit();
+            return redirect($returnRoute);
+        } catch (Exception $e) {
+            return redirect()->route($returnRoute)->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
         }
-
-        $informe->update($datosActualizar);
-        return $informe;
-
-        // return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
     }
-
-
 
 
     public function show($InformeSemanal)
@@ -86,8 +124,8 @@ class InformesSemanalesController extends Controller
         // Obtener el informe con el ID proporcionado
         $informe = InformeSemanal::findOrFail($InformeSemanal);
 
-        $year = $informe->year; 
-        $mes = $informe->mes; 
+        $year = $informe->year;
+        $mes = $informe->mes;
         $semana_id = $informe->semana_id;
         $area_id = $informe->area_id;
 
@@ -95,11 +133,25 @@ class InformesSemanalesController extends Controller
         return view('inspiniaViews.responsabilidades.asistencia', compact('informe', 'year', 'mes', 'semana_id', 'area_id'));
     }
 
-
-
-
-    public function delete()
+    public function destroy(Request $request, $InformeSemanal)
     {
-        //
+        $area_id = $request->area_id;
+        $year = $request->year;
+        $mes = $request->mes;
+
+        $informe = InformeSemanal::findOrFail($InformeSemanal);
+
+        // Eliminar el archivo asociado si existe
+        if ($informe->informe_url) {
+            $rutaPublica = public_path('storage/informes');
+            if (file_exists($rutaPublica . '/' . $informe->informe_url)) {
+                unlink($rutaPublica . '/' . $informe->informe_url);
+            }
+        }
+
+        $informe->delete();
+
+        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]);
     }
+
 }
