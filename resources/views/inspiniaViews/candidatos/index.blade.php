@@ -39,6 +39,7 @@
             </div>
             <div class="col-lg-2">
                 <div class="py-3">
+                    {{-- abrir modal agregar --}}
                     <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
                         type="button">Agregar</button>
                     <button data-toggle="modal" class="btn btn-primary dim float-right" href="#modal-filtrar"> Filtrar </button>
@@ -283,7 +284,8 @@
             </div>
             @endif
             <div class="row">
-                @foreach ($candidatos as $index => $candidato)
+                @foreach ($candidatos as $index => $candidato)\
+                {{-- MODAL SHOW --}}
                 <div id="modal-form-view{{$candidato->id}}" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -743,25 +745,27 @@
     </script>
 
     <script>
-        function hideModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('show');
-
-                // Remover el Backdrop
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) {
-                    backdrop.parentNode.removeChild(backdrop);
-                }
-            }
-        }
-
         function showModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('show');
-            }
-        }
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('show');
+        modal.style.display = 'block'; // Asegúrate de que el modal se muestre
+    }
+}
+
+function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('show');
+        modal.style.display = 'none'; // Asegúrate de que el modal se oculte
+    }
+}
+
+function abrirModalCreacion(index) {
+    ocultarTodosLosModales();
+    showModal('modal-create-form-' + index);
+}
+
 
         function abrirModalEdicion(id) {
             hideModal('modal-form-view' + id);
