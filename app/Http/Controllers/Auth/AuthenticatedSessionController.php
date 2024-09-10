@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use RateLimiter;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -26,6 +28,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // $loginUser = User::where('email', $request->email)->where('estado', 1)->first();
+        // if(!$loginUser){
+        //     RateLimiter::hit($this->throttleKey());
+
+        //     throw ValidationException::withMessages([
+        //         'email' => trans('auth.failed'),
+        //     ]);
+        // }
         $request->authenticate();
 
         $request->session()->regenerate();
@@ -36,6 +46,23 @@ class AuthenticatedSessionController extends Controller
         session(['api_token' => $token]);
         // return response()->json(['token' => $token, 'user' => $user], 200);
         return redirect()->intended(RouteServiceProvider::HOME);
+    }
+
+    public function login(Request $request)
+    {
+
+        if (! Auth::attempt($request->only('email', 'password'))) {
+            return response()->json(["message" => "Unauthorized"], 401);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        
+        return response()->json([
+            'AccessToken' => $token,
+            'TokenType' => 'Bearer',
+            'user' => $user
+        ], 200);
     }
 
     /**

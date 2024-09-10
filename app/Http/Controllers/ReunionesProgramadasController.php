@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Mail;
 class ReunionesProgramadasController extends Controller
 {
     public function getAllProgramReuToCalendar(){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $reunionesProgramadas = ReunionesProgramadas::get();
         foreach ($reunionesProgramadas as $horario) {
             $horaInicial = (int) date('H', strtotime($horario->hora_inicial));
@@ -77,6 +81,10 @@ class ReunionesProgramadasController extends Controller
     }
 
     public function createReunionProgramada(Request $request){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         // return $request;
         DB::beginTransaction();
         try{
@@ -138,6 +146,10 @@ class ReunionesProgramadasController extends Controller
     }
     
     public function showReunionProgramada($reunion_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $reunion = ReunionesProgramadas::findOrFail($reunion_id);
         if($reunion){
             $integrantes = IntegrantesReuniones::where('reunion_programada_id', $reunion_id)->where('estado', 1)->get();
@@ -181,6 +193,10 @@ class ReunionesProgramadasController extends Controller
     }
 
     public function update(Request $request, $reunion_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         // return $request;
         DB::beginTransaction();
         try{

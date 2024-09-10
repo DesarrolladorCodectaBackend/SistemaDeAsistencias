@@ -8,8 +8,7 @@
     <link href="{{ asset('css/plugins/switchery/switchery.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     <link href="{{asset('css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css">
 
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -22,6 +21,15 @@
 
 </head>
 
+@php
+    use App\Http\Controllers\FunctionHelperController;
+    $userData = FunctionHelperController::getUserRol();
+    $user = $userData['user'];
+    $rol = '';
+    if($userData['isBoss']) $rol = 'Jefe de Área';
+    if($userData['isAdmin']) $rol = 'Administrador';
+@endphp
+
 
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
@@ -30,25 +38,27 @@
                 <div class="dropdown profile-element">
                     <img alt="image" class="rounded-circle img-lg" src="{{asset('img/image.png')}}" />
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="block m-t-xs font-bold">Administrador</span>
-                        <span class="text-muted text-xs block">Art Director <b class="caret"></b></span>
+                        <span class="block m-t-xs font-bold">{{$userData['user']['name']}}</span>
+                        <span class="text-muted text-xs block">{{$rol}}<b class="caret"></b></span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a class="dropdown-item" href="">Profile</a></li>
-                        <li><a class="dropdown-item" href="">Contacts</a></li>
-                        <li><a class="dropdown-item" href="">Mailbox</a></li>
+                        <li><a class="dropdown-item" href="{{route('perfil.index')}}">Perfil</a></li>
+                        @if($userData['isAdmin'])
+                        <li><a class="dropdown-item" href="{{route('accounts.index')}}">Administrar Cuentas</a></li>
+                        @endif
                         <li class="dropdown-divider"></li>
                         <li><a class="dropdown-item"
-                                onclick="document.getElementById('logoutForm').submit();">Logout</a></li>
+                                onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a></li>
                     </ul>
                 </div>
                 <div class="logo-element">
-                    IN+
+                    SDA
                 </div>
             </li>
             <li>
                 <a href="/dashboard"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span></a>
             </li>
+            @if($userData['isAdmin'])
             <li>
                 <a href="/horarioGeneral"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
                         Generales</span><span class="fa arrow"></span></a>
@@ -80,10 +90,14 @@
             <li id="areas">
                 <a href="/areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
+            @endif
+            @if($userData['isAdmin'] || $userData['isBoss'])
             <li>
                 <a href="/responsabilidades"><i class="fa fa-list-alt"></i> <span
                         class="nav-label">Responsabilidades</span></a>
             </li>
+            @endif
+            @if($userData['isAdmin'])
             <li id="maquinas">
                 <a href="/maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
             </li>
@@ -93,6 +107,7 @@
             <li id="ajustes">
                 <a href="/ajustes"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
             </li>
+            @endif
             <li>
                 <form id="logoutForm" method="POST" action="http://127.0.0.1:8000/logout">
                     @csrf
@@ -131,7 +146,7 @@
                 <li>
 
                     <a href="#" onclick="document.getElementById('logoutForm').submit();">
-                        <i class="fa fa-sign-out"></i>Log Out
+                        <i class="fa fa-sign-out"></i>Cerrar Sesión
                     </a>
 
                 </li>
@@ -139,6 +154,12 @@
 
         </nav>
     </div>
+    @if($user['estado'] == 0)
+        <script>
+            console.log('baneado');
+            document.getElementById('logoutForm').submit();
+        </script>
+    @endif
     <style>
         .max-height-scrollable {
             max-height: 300px;
@@ -154,6 +175,9 @@
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
     <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+    <script src="js/plugins/dataTables/datatables.min.js"></script>
+    <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Custom and plugin javascript -->
     <script src="{{ asset('js/inspinia.js') }}"></script>

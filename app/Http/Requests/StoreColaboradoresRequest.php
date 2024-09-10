@@ -32,8 +32,6 @@ class StoreColaboradoresRequest extends FormRequest
                     return $query->where('candidato_id', $this->candidato_id);
                 }),
             ],
-
-            'areas_id' => 'required|array|min:1',
             'areas_id.*' => 'required|integer|exists:areas,id',
             'horarios' => 'required|array',
             'horarios.*.hora_inicial' => 'required|date_format:H:i',

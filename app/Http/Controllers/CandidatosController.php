@@ -7,6 +7,7 @@ use App\Models\Colaboradores;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Area;
+use App\Models\User;
 use App\Models\Sede;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCandidatosRequest;
@@ -19,6 +20,10 @@ class CandidatosController extends Controller
 
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 1)->paginate(6);
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
@@ -47,6 +52,10 @@ class CandidatosController extends Controller
 
     public function getFormToColab($candidato_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $candidato = Candidatos::findOrFail($candidato_id);
         $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
         $horas = [
@@ -73,9 +82,20 @@ class CandidatosController extends Controller
 
     public function store(StoreCandidatosRequest $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validated();
+
+            if(isset($request->correo)){
+                $user = User::where('email', $request->correo)->first();
+                if($user){
+                    return redirect($request->currentURL)->with('error', 'El correo ingresado ya se encuentra registrado en un usuario del sistema.');
+                }
+            }
 
             if ($request->hasFile('icono')) {
                 $icono = $request->file('icono');
@@ -118,6 +138,10 @@ class CandidatosController extends Controller
 
     public function update(Request $request, $candidato_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try {
             $returnRoute = route('colaboradores.index');
@@ -199,6 +223,35 @@ class CandidatosController extends Controller
                 return redirect($returnRoute)->withErrors($errors)->withInput();
             }
 
+            $usuarioAsociado = null;
+            if($candidato->correo != null){
+                $user = User::where('email', $candidato->correo)->first();
+                if($user){
+                    $usuarioAsociado = $user;
+                    if(!isset($request->correo)){
+                        return redirect($returnRoute)->with('error', 'Debe ingresar el correo para este registro que es un usuario.');
+                    } else{
+                        if(strlen($request->correo) < 5 || strlen($request->correo) > 100) {
+                            return redirect($returnRoute)->with('error', 'El correo debe tener entre 5 y 100 caracteres.');
+                        }
+                    }
+                }
+            }
+            if(isset($request->correo)){
+                if($usuarioAsociado != null) {
+                    $sameUser = User::where('email', $request->correo)->whereNot('id', $usuarioAsociado->id)->first();
+                } else{
+                    $sameUser = User::where('email', $request->correo)->first();
+                }
+                if($sameUser) {
+                    return redirect($returnRoute)->with('error', 'El correo ingresado ya se encuentra registrado en un usuario del sistema.');
+                }
+            }
+
+            if($usuarioAsociado != null){
+                FunctionHelperController::modifyUserByColab($candidato, $request);
+            }
+
             // Manejo de Ícono
             if ($request->hasFile('icono')) {
                 $rutaPublica = public_path('storage/candidatos');
@@ -217,6 +270,7 @@ class CandidatosController extends Controller
             DB::commit();
             return redirect($returnRoute);
         } catch (Exception $e) {
+            // return $e;
             DB::rollBack();
             return redirect($returnRoute)->with('error', 'Ocurrió un error al actualizar, intente de nuevo. Si este error persiste, contacte a su equipo de soporte.');
         }
@@ -224,6 +278,10 @@ class CandidatosController extends Controller
 
 
     public function rechazarCandidato(Request $request, $candidato_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);
@@ -271,6 +329,10 @@ class CandidatosController extends Controller
 
     public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '')
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $estados = explode(',', $estados);
         $carreras = $carreras ? explode(',', $carreras) : [];
         $instituciones = $instituciones ? explode(',', $instituciones) : [];
@@ -311,17 +373,25 @@ class CandidatosController extends Controller
 
     public function search(string $busqueda = '')
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         //Filtrar por id
-        $candidatoPorId = Candidatos::with('carrera', 'sede')->where('id', $busqueda)->paginate(6);
+        // $candidatosPorDni = Candidatos::with('carrera', 'sede')->where('dni', $busqueda)->paginate(6);
 
         //Filtrar por nombre y apellido de candidato
+        $candidatosPorDni = Candidatos::with('sede', 'carrera')
+            ->where(DB::raw("dni"), 'like', '%' . $busqueda . '%')
+            ->paginate(6);
+
         $candidatosPorNombre = Candidatos::with('sede', 'carrera')
             ->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%')
             ->paginate(6);
 
         //Si existe un registro encontrado por el id
-        if ($candidatoPorId->count() > 0) {
-            $candidatos = $candidatoPorId;
+        if ($candidatosPorDni->count() > 0) {
+            $candidatos = $candidatosPorDni;
         } else { //Si no existe
             $candidatos = $candidatosPorNombre;
         }
@@ -354,6 +424,10 @@ class CandidatosController extends Controller
     }
 
     public function reActivate(Request $request, $candidato_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);
@@ -378,6 +452,10 @@ class CandidatosController extends Controller
 
     public function destroy(Request $request, $candidato_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $candidato = Candidatos::findOrFail($candidato_id);

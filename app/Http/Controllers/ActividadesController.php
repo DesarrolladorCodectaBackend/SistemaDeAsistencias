@@ -11,12 +11,20 @@ class ActividadesController extends Controller
 {
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $actividades = Actividades::get();
         return view('inspiniaViews.actividades.index', ['actividades'=>$actividades]);
     }
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try {
             $request->validate([
@@ -38,6 +46,10 @@ class ActividadesController extends Controller
 
     public function update(Request $request, $actividad_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -60,6 +72,10 @@ class ActividadesController extends Controller
 
     public function activarInactivar($actividad_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $actividad = Actividades::findOrFail($actividad_id);

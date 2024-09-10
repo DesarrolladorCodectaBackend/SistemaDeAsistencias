@@ -14,6 +14,10 @@ class InstitucionController extends Controller
 
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $institucion = Institucion::paginate(12);
 
         $pageData = FunctionHelperController::getPageData($institucion);
@@ -29,6 +33,7 @@ class InstitucionController extends Controller
     }
     public function getAll()
     {
+        
         $instituciones = Institucion::get();
 
         return response()->json(['data' => $instituciones]);
@@ -102,6 +107,10 @@ public function activarInactivarJSON(Request $request,$institucion_id)
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -130,6 +139,10 @@ public function activarInactivarJSON(Request $request,$institucion_id)
 
     public function update(Request $request, $institucion_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -170,6 +183,10 @@ public function activarInactivarJSON(Request $request,$institucion_id)
 
     public function activarInactivar(Request $request,$institucion_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $institucion = Institucion::findOrFail($institucion_id);

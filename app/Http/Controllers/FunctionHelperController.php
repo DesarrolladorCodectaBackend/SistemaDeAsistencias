@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
 use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Maquina_reservada;
 use App\Models\Semanas;
+use App\Models\User;
+use App\Models\UsuarioAdministrador;
+use App\Models\UsuarioJefeArea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,8 +19,119 @@ use Exception;
 
 class FunctionHelperController extends Controller
 {
-    //COLABORADORES
+    //USERS
+    public static function getUserRol(){
+        $user = auth()->user();
+        $administrador = UsuarioAdministrador::where('user_id', $user->id)->where('estado', 1)->first();
+        $isAdmin = false;
+        if($administrador){$isAdmin = true;}
+        $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
+        $isBoss = false;
+        if($jefeArea->count() > 0){$isBoss = true;}
+        return [
+            "user" => $user,
+            "administrador" => $administrador,
+            "Jefeareas" => $jefeArea,
+            "isAdmin" => $isAdmin,
+            "isBoss" => $isBoss,
+        ];
+    }
 
+    public static function getUserRolById($user_id){
+        $user = User::findOrFail($user_id);
+        $administrador = UsuarioAdministrador::where('user_id', $user->id)->where('estado', 1)->first();
+        $isAdmin = false;
+        if($administrador){$isAdmin = true;}
+        $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
+        $isBoss = false;
+        if($jefeArea->count() > 0){$isBoss = true;}
+        return [
+            "user" => $user,
+            "administrador" => $administrador,
+            "Jefeareas" => $jefeArea,
+            "isAdmin" => $isAdmin,
+            "isBoss" => $isBoss,
+        ];
+    }
+
+    public static function modifyColabByUser($user, $newData){
+        //Encontrar colaborador / Candidato
+        $colaborador = Candidatos::where('correo', $user->email)->where('estado', 0)->first();
+        $user->update([
+            'name'=> $newData['name'],
+            'apellido'=> $newData['apellido'],
+            'email' => $newData['email']
+        ]);
+        if($colaborador){
+            $colaborador->update([
+                'nombre' => $newData['name'],
+                'apellido'=> $newData['apellido'],
+                'correo' => $newData['email']
+            ]);
+        }
+    }
+
+    public static function modifyUserByColab($colab, $newData){
+        $user = User::where('email', $colab->correo)->first();
+        $colab->update([
+            'nombre' => $newData['nombre'],
+            'apellido'=> $newData['apellido'],
+            'correo' => $newData['correo']
+        ]);
+        if($user){
+            $user->update([
+                'name'=> $newData['nombre'],
+                'apellido'=> $newData['apellido'],
+                'email' => $newData['correo']
+            ]);
+        }
+    }
+  
+
+
+    public static function verifyAreaAccess($area_id){
+        $userData = FunctionHelperController::getUserRol();
+        if($userData['isAdmin']){
+            return true;
+        }else if($userData['isBoss']){
+            $bossAreasId = $userData['Jefeareas']->pluck('area_id')->toArray();
+            if(in_array($area_id, $bossAreasId)){
+                return true;
+            }else{
+                return false;
+            }
+        } else{
+            return false;
+        }
+    }
+
+    public static function verifyAdminAccess(){
+        $userData = FunctionHelperController::getUserRol();
+        if($userData['isAdmin']){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public static function verifySuperAdmin($user_id){
+        $SuperAdministrador = UsuarioAdministrador::where('user_id', $user_id)->where('super_admin', 1)->first();
+        if($SuperAdministrador){
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+
+    public static function getAreasJefe($user_id){
+        $AreasJefe = UsuarioJefeArea::with('area')->where('user_id', $user_id)->where('estado', 1)->get()->pluck('area');
+
+        return $AreasJefe;
+    }
+
+
+    //COLABORADORES
     public static function colaboradoresConArea($colaboradoresBase){
         $colaboradoresConArea = [];
 
@@ -39,6 +154,35 @@ class FunctionHelperController extends Controller
             $colaboradoresConArea[] = $colaborador;
         }
         return $colaboradoresConArea;
+    }
+
+    public static function verifyEmailCandidatoConflict($email, $candidato_id = null){
+        if($candidato_id != null){
+            $candidato = Candidatos::where('correo', $email)->whereNot('id', $candidato_id)->first();
+        } else{
+            $candidato = Candidatos::where('correo', $email)->first();
+        }
+        if($candidato){
+            return true; //Si hay conflicto
+        }else{
+            return false; //No hay conflicto
+        }
+    }
+
+    public static function findUserCandidato($type, $email){
+        switch($type){
+            //Si type es 1, se busca al candidato de un usuario
+            case 1:
+                $candidato = Candidatos::where('correo', $email)->first();
+                return $candidato;
+            //Si type es 2, se busca el usuario de un candidato
+            case 2:
+                $user = User::where('email', $email)->first();
+                return $user;
+            //Sino se retorna null
+            default:
+                return null;
+        }
     }
     //PAGINATION
     public static function getPageData($collection){

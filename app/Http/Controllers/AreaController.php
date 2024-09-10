@@ -15,6 +15,7 @@ use App\Models\Salones;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -30,12 +31,17 @@ class AreaController extends Controller
      */
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+        // return auth()->user();
         //Recurar todos los registros en áreas
         $areas = Area::with('salon')->paginate(12);
         $salones = Salones::where('estado', 1)->get();
         $pageData = FunctionHelperController::getPageData($areas);
         $hasPagination = true;
-        foreach($areas as $area){
+        foreach ($areas as $area) {
             $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
             $area->count_colabs = $colaboradoresAreaCount;
         }
@@ -53,7 +59,12 @@ class AreaController extends Controller
         ]);
     }
 
-    public function getFormHorarios($area_id) {
+    public function getFormHorarios($area_id)
+    {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         // Encontrar area
         $area = Area::findOrFail($area_id);
         // Encontrar el id de los colaboradores del área
@@ -119,7 +130,7 @@ class AreaController extends Controller
         //Array de horariosFormateados
         $horariosFormateados = [];
         //Si el area tiene horarios asignados
-        if(count($horarioAsignado)>0){
+        if (count($horarioAsignado) > 0) {
             //Se marca hasHorario como true
             $hasHorario = true;
             //Se recorre el horarios asignado
@@ -134,19 +145,19 @@ class AreaController extends Controller
                 ];
             }
 
-        } else{
+        } else {
             // Si no tiene horarios asignados, se marca hasHorario como false
             $hasHorario = false;
         }
         // Recorrer los horarios disponibles
-        foreach($horariosDisponibles as $horario) {
+        foreach ($horariosDisponibles as $horario) {
             //En caso sea igual al horario asignado, darle un campo "using" true
             //Si hasHorario es true
-            if($hasHorario) {
+            if ($hasHorario) {
                 //Se recorre cada horario Asignado
-                foreach($horarioAsignado as $horarioAsig) {
+                foreach ($horarioAsignado as $horarioAsig) {
                     //Si el horario asignado es igual al horario disponible
-                    if($horarioAsig->horario_presencial_id == $horario->id) {
+                    if ($horarioAsig->horario_presencial_id == $horario->id) {
                         // Se marca como en uso
                         $horario->using = true;
                         break;
@@ -174,7 +185,12 @@ class AreaController extends Controller
     }
 
 
-    public function getMaquinasByArea($area_id){
+    public function getMaquinasByArea($area_id)
+    {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $area = Area::findOrFail($area_id);
         //Datos esta area
         $horariosArea = Horario_Presencial_Asignado::where('area_id', $area->id)->get()->pluck('horario_presencial_id');
@@ -193,9 +209,9 @@ class AreaController extends Controller
         $colaboradoresThisArea = Colaboradores_por_Area::with('colaborador')->where('estado', 1)->whereIn('colaborador_id', $colaboradoresActivosID)->where('area_id', $area->id)->get();
         $colaboradoresBaseThisArea = $colaboradoresThisArea->pluck('colaborador');
         // return $colaboradoresBaseThisAreaID->candidato;
-        foreach($colaboradoresThisArea as $colabHere){
-            foreach($colaboradoresOtherAreas as $key => $colabThere){
-                if($colabHere->colaborador_id == $colabThere->colaborador_id) {
+        foreach ($colaboradoresThisArea as $colabHere) {
+            foreach ($colaboradoresOtherAreas as $key => $colabThere) {
+                if ($colabHere->colaborador_id == $colabThere->colaborador_id) {
                     //Añadir el colab there a la lista de colaboradores de esta area
                     // $colaboradoresThisArea->push($colabThere); //Ya no agregar para evitar duplicados, se modificará el asignador de maquinas para que al asignar o editar lo haga con todas los colaboradores de ese colaborador que tengan horarios concurrentes
                     //Quitar colabThere de su colección original
@@ -219,52 +235,52 @@ class AreaController extends Controller
         $maquinas = Maquinas::where('salon_id', $area->salon_id)->where('estado', 1)->get();
         // return $maquinas;
 
-        foreach($maquinas as $maquina){
+        foreach ($maquinas as $maquina) {
             $maquina->estaArea = false;
             $maquina->otraArea = false;
             $maquina->maquina_reservada_id = null;
             $maquina->colaborador = 'Sin asignar';
             $maquina->colaborador_id = null;
             $maquina->colaborador_base_id = null;
-            foreach($maquinasOtherAreas as $otherMaquina){
-                if($maquina->id === $otherMaquina->maquina_id){
+            foreach ($maquinasOtherAreas as $otherMaquina) {
+                if ($maquina->id === $otherMaquina->maquina_id) {
                     $areaNombre = $otherMaquina->colaborador_area->area->especializacion;
                     $maquina->otraArea = true;
-                    $maquina->colaborador = 'Asignada a otra area ('.$areaNombre.')';
+                    $maquina->colaborador = 'Asignada a otra area (' . $areaNombre . ')';
                     $maquina->colaborador_base_id = $otherMaquina->colaborador_area->colaborador_id;
                     $maquina->colaborador_id = $otherMaquina->colaborador_area_id;
                     $maquina->maquina_reservada_id = $otherMaquina->id;
                 }
             }
-            foreach($maquinasThisArea as $thisMaquina){
-                if($maquina->id === $thisMaquina->maquina_id){
+            foreach ($maquinasThisArea as $thisMaquina) {
+                if ($maquina->id === $thisMaquina->maquina_id) {
                     $maquina->estaArea = true;
                     $colaborador = Colaboradores::where('id', $thisMaquina->colaborador_area->colaborador_id)->first();
                     $candidato = $colaborador->candidato;
-                    $maquina->colaborador = $candidato->nombre." ".$candidato->apellido;
+                    $maquina->colaborador = $candidato->nombre . " " . $candidato->apellido;
                     $maquina->colaborador_id = $thisMaquina->colaborador_area_id;
                     $maquina->colaborador_base_id = $colaborador->id;
                     $maquina->maquina_reservada_id = $thisMaquina->id;
                 }
             }
 
-            foreach($colaboradoresBaseThisArea as $colabBase){
-                if($maquina->colaborador_base_id === $colabBase->id){
+            foreach ($colaboradoresBaseThisArea as $colabBase) {
+                if ($maquina->colaborador_base_id === $colabBase->id) {
                     // return [$maquina->colaborador_base_id , $colabBase->id];
                     $maquina->estaArea = true;
                     $maquina->otraArea = false;
                     $candidato = $colabBase->candidato;
-                    $maquina->colaborador = $candidato->nombre." ".$candidato->apellido;
+                    $maquina->colaborador = $candidato->nombre . " " . $candidato->apellido;
                 }
             }
 
 
         }
 
-        foreach($colaboradoresBaseThisArea as $colaboradorArea){
+        foreach ($colaboradoresBaseThisArea as $colaboradorArea) {
             $colaboradorArea->hasMaquina = false;
-            $candidato =  Candidatos::findOrFail($colaboradorArea->candidato_id);
-            $colaboradorArea->nombre = $candidato->nombre." ".$candidato->apellido;
+            $candidato = Candidatos::findOrFail($colaboradorArea->candidato_id);
+            $colaboradorArea->nombre = $candidato->nombre . " " . $candidato->apellido;
             $allColabsAreasID = Colaboradores_por_Area::where('colaborador_id', $colaboradorArea->id)->whereIn('area_id', $totalAreaConcurrentesId)->where('estado', 1)->get()->pluck('id');
 
             // if($colaboradorArea->nombre == "Karla Lopez"){
@@ -272,7 +288,7 @@ class AreaController extends Controller
 
             // }
             $maquina = Maquina_reservada::whereIn('colaborador_area_id', $allColabsAreasID)->first();
-            if($maquina){
+            if ($maquina) {
                 $colaboradorArea->hasMaquina = true;
             }
 
@@ -308,9 +324,13 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         //Se inicia la transacción
         DB::beginTransaction();
-        try{
+        try {
             //Solicitar los datos requeridos
             $request->validate([
                 'especializacion' => 'required|string|min:1|max:100',
@@ -350,7 +370,7 @@ class AreaController extends Controller
             DB::commit();
             //return response()->json(["resp" => "Área creada correctamente"]);
             //Se redirige a la vista index.blade.php de la carpeta areas
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('areas.index');
@@ -359,7 +379,7 @@ class AreaController extends Controller
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollback();
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('areas.index');
@@ -387,9 +407,13 @@ class AreaController extends Controller
 
     public function update(Request $request, $area_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         //Se inicia la transacción
         DB::beginTransaction();
-        try{
+        try {
             //Se raliza la validación de los datos ingresados por el usuario
             $request->validate([
                 'especializacion' => 'sometimes|string|min:1|max:100',
@@ -437,7 +461,7 @@ class AreaController extends Controller
             //Se confirma la transacción
             DB::commit();
             //Se redirige a la vista index.blade.php de la carpeta areas
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('areas.index');
@@ -446,7 +470,7 @@ class AreaController extends Controller
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollBack();
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('areas.index');
@@ -468,9 +492,14 @@ class AreaController extends Controller
     // }
 
 
-    public function activarInactivar(Request $request, $area_id){
+    public function activarInactivar(Request $request, $area_id)
+    {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
-        try{
+        try {
             $area = Area::findOrFail($area_id);
 
             // $area->estado = !$area->estado;
@@ -478,7 +507,7 @@ class AreaController extends Controller
             // $area->save();
             $area->update(["estado" => !$area->estado]);
 
-            if($area->estado == 0){
+            if ($area->estado == 0) {
                 $colaboradoresArea = Colaboradores_por_Area::where('estado', 1)->where('area_id', $area_id)->get();
                 // Por cada registro encontrado
                 foreach ($colaboradoresArea as $colaboradorArea) {
@@ -489,7 +518,7 @@ class AreaController extends Controller
                     //Se busca si tiene computadoras
                     $ColabMachines = Maquina_reservada::where('colaborador_area_id', $colaboradorArea->id)->get();
                     //Recorrer maquinas encontradas
-                    foreach($ColabMachines as $machine){
+                    foreach ($ColabMachines as $machine) {
                         //Eliminar maquinas
                         $machine->delete();
                     }
@@ -497,7 +526,7 @@ class AreaController extends Controller
             }
 
 
-            if($area->estado==1){
+            if ($area->estado == 1) {
                 // Buscar las areas que no estan en el request y que estan asociadas al colaborador
                 $areasInactivas = Colaboradores_por_Area::where('colaborador_id', $area_id)->where('estado', 1)->where('area_id', $area_id)->get();
                 // Por cada registro encontrado
@@ -509,7 +538,7 @@ class AreaController extends Controller
                     //Se busca si tiene computadoras
                     $ColabMachines = Maquina_reservada::where('colaborador_area_id', $areaInactiva->id)->get();
                     //Recorrer maquinas encontradas
-                    foreach($ColabMachines as $machine){
+                    foreach ($ColabMachines as $machine) {
                         //Eliminar maquinas
                         $machine->delete();
                     }
@@ -517,19 +546,58 @@ class AreaController extends Controller
             }
 
             DB::commit();
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('areas.index');
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('areas.index');
             }
         }
+    }
+
+    public function showArea($area_id)
+    {
+        $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para visualizar esa area. No lo intente denuevo o puede ser baneado.');
+        }
+
+        $area = Area::findOrFail($area_id);
+        if ($area) {
+            //Encontrar horarios del área
+            $horarioAsignado = Horario_Presencial_Asignado::with('horario_presencial')->where('area_id', $area_id)->get();
+            //Array de horariosFormateados
+            $horariosFormateados = [];
+            //Se marca hasHorario como true
+            //Se recorre el horarios asignado
+            foreach ($horarioAsignado as $horario) {
+                $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
+                $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
+                //Se formatean las horas y se guarda en el array
+                $horariosFormateados[] = [
+                    'hora_inicial' => $horaInicial,
+                    'hora_final' => $horaFinal,
+                    'dia' => $horario->horario_presencial->dia,
+                ];
+            }
+
+            //Encontrar Colaboradores del área
+            $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->get();
+            // return [$area, $horariosFormateados, $colaboradoresArea];
+            return view('inspiniaViews.areas.showArea', [
+                "area" => $area,
+                "horariosFormateados" => $horariosFormateados,
+                "colaboradores" => $colaboradoresArea,
+            ]);
+        }
+
     }
 
 }

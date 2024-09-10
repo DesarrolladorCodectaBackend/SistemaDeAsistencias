@@ -172,6 +172,10 @@ class MaquinaReservadaController extends Controller
     }
 
     public function asignarColaborador(Request $request, $area_id, $maquina_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -312,6 +316,10 @@ class MaquinaReservadaController extends Controller
         }
     }
     public function liberarMaquina($area_id, $maquina_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             //Buscar la maquina reservada
@@ -351,6 +359,10 @@ class MaquinaReservadaController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $request->validate([
             'colaborador_area_id' => 'required|integer|min:1|max:100',
             'maquina_id' => 'required|integer|min:1|max:255'
@@ -387,6 +399,10 @@ class MaquinaReservadaController extends Controller
 
     public function update(Request $request, $maquina_reservada_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $request->validate([
             'horario_presencial_id' => 'required|string|min:1|max:100',
             'maquina_id' => 'required|string|min:1|max:255'
@@ -401,6 +417,10 @@ class MaquinaReservadaController extends Controller
 
     public function destroy($maquina_reservada_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $maquina_reservada = Maquina_reservada::findOrFail($maquina_reservada_id);
 
         $maquina_reservada->delete();

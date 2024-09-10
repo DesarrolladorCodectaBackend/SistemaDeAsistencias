@@ -26,6 +26,7 @@ use App\Models\Registro_Mantenimiento;
 use App\Models\RegistroActividad;
 use App\Models\Sede;
 use App\Models\Semanas;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +38,10 @@ class ColaboradoresController extends Controller
 {
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->paginate(12);
         // return $colaboradores;
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
@@ -77,6 +82,10 @@ class ColaboradoresController extends Controller
     }
 
     public function getComputadoraColaborador($colaborador_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $colaborador = Colaboradores::with('candidato')->findOrFail($colaborador_id);
 
         $computerColab = Computadora_colaborador::where('colaborador_id', $colaborador_id)->first();
@@ -125,6 +134,10 @@ class ColaboradoresController extends Controller
 
     public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '')
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         // Validamos los request de los filtros que queremos aplicar
         $estados = explode(',', $estados);
         $areas = $areas ? explode(',', $areas) : [];
@@ -198,6 +211,10 @@ class ColaboradoresController extends Controller
 
     public function store(StoreColaboradoresRequest $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             // return $request;
@@ -248,6 +265,10 @@ class ColaboradoresController extends Controller
 
     public function update(Request $request, $colaborador_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $returnRoute = route('colaboradores.index');
@@ -354,6 +375,35 @@ class ColaboradoresController extends Controller
             }
             if(isset($request->areas_apoyo_id)){
                 $areas_apoyo_id = $request->areas_apoyo_id;
+            }
+            
+            $usuarioAsociado = null;
+            if($candidato->correo != null){
+                $user = User::where('email', $candidato->correo)->first();
+                if($user){
+                    $usuarioAsociado = $user;
+                    if(!isset($request->correo)){
+                        return redirect($returnRoute)->with('error', 'Debe ingresar el correo para este registro que es un usuario.');
+                    } else{
+                        if(strlen($request->correo) < 5 || strlen($request->correo) > 100) {
+                            return redirect($returnRoute)->with('error', 'El correo debe tener entre 5 y 100 caracteres.');
+                        }
+                    }
+                }
+            }
+            if(isset($request->correo)){
+                if($usuarioAsociado != null) {
+                    $sameUser = User::where('email', $request->correo)->whereNot('id', $usuarioAsociado->id)->first();
+                } else{
+                    $sameUser = User::where('email', $request->correo)->first();
+                }
+                if($sameUser) {
+                    return redirect($returnRoute)->with('error', 'El correo ingresado ya se encuentra registrado en un usuario del sistema.');
+                }
+            }
+
+            if($usuarioAsociado != null){
+                FunctionHelperController::modifyUserByColab($candidato, $request);
             }
             // return ["areas" => $areas_apoyo_id];
             //Encontrar siguiente semana(Lunes)
@@ -484,6 +534,10 @@ class ColaboradoresController extends Controller
 
     public function activarInactivar(Request $request, $colaborador_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $colaborador = Colaboradores::findOrFail($colaborador_id);
@@ -522,13 +576,17 @@ class ColaboradoresController extends Controller
 
     public function search(string $busqueda = '')
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
 
         //asignar a variable
         // $busqueda = $request->busqueda;
 
         //Obtener colaboradores con nombre
         //Filtrar por id
-        $colaboradorPorId = Colaboradores::with('candidato')->where('id', $busqueda)->paginate(12);
+        // $colaboradorPorId = Colaboradores::with('candidato')->where('id', $busqueda)->paginate(12);
 
         //Obtener todos los colabs con candidato por function query
         $colaboradoresTotales = Colaboradores::with([
@@ -536,14 +594,18 @@ class ColaboradoresController extends Controller
                 $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'sede_id', 'carrera_id', 'icono', 'correo', 'celular'); }
         ]);
         //Filtrar por nombre y apellido de candidato
+        $colaboradoresPorDni = $colaboradoresTotales->whereHas('candidato', function ($query) use ($busqueda) {
+            $query->where(DB::raw("dni"), 'like', '%' . $busqueda . '%');
+        })->paginate(12);
+
         $colaboradoresPorNombre = $colaboradoresTotales->whereHas('candidato', function ($query) use ($busqueda) {
             $query->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%');
         })->paginate(12);
 
         //Si existe un registro encontrado por el id
-        if ($colaboradorPorId->count() > 0) {
+        if ($colaboradoresPorDni->count() > 0) {
             //Se asigna el valor del colaboradorPorId
-            $colaboradores = $colaboradorPorId;
+            $colaboradores = $colaboradoresPorDni;
         } else { //Si no existe
             //Se asigna el valor de los colaboradoresPorNombre
             $colaboradores = $colaboradoresPorNombre;
@@ -585,6 +647,10 @@ class ColaboradoresController extends Controller
     }
 
     public function despedirColaborador(Request $request, $colaborador_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $colaborador = Colaboradores::findOrFail($colaborador_id);
@@ -624,6 +690,10 @@ class ColaboradoresController extends Controller
     }
 
     public function recontratarColaborador(Request $request, $colaborador_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             //encontrar Colaborador
@@ -653,6 +723,10 @@ class ColaboradoresController extends Controller
     }
     public function destroy(Request $request, $colaborador_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $colaborador = Colaboradores::findOrFail($colaborador_id);

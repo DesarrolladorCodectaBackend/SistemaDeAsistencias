@@ -10,8 +10,13 @@ use Exception;
 
 class Reuniones_AreasController extends Controller
 {
-    
-    public function getAllReu(){
+
+    public function getAllReu()
+    {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $areasActivasId = Area::where('estado', 1)->get()->pluck('id');
 
         $reuniones = Reuniones_Areas::with('area')->whereIn('area_id', $areasActivasId)->get();
@@ -19,7 +24,7 @@ class Reuniones_AreasController extends Controller
         foreach ($reuniones as $horario) {
             $horaInicial = (int) date('H', strtotime($horario->hora_inicial));
             $horaFinal = (int) date('H', strtotime($horario->hora_final));
-    
+
             $horariosFormateados = [
                 'hora_inicial' => $horaInicial,
                 'hora_final' => $horaFinal,
@@ -31,10 +36,15 @@ class Reuniones_AreasController extends Controller
 
         // return $reuniones;
 
-        return view('InspiniaViews.horarios.reuniones_generales', ['reuniones'=> $reuniones]);
+        return view('InspiniaViews.horarios.reuniones_generales', ['reuniones' => $reuniones]);
     }
 
-    public function reunionesGest($area_id){
+    public function reunionesGest($area_id)
+    {
+        $access = FunctionHelperController::verifyAreaAccess($area_id);
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para visualizar esa area. No lo intente denuevo o puede ser baneado.');
+        }
         $area = Area::findOrFail($area_id);
         $reuniones = Reuniones_Areas::with('area')->where('area_id', $area_id)->get();
         $dias = FunctionHelperController::getDays();
@@ -45,21 +55,21 @@ class Reuniones_AreasController extends Controller
             "04:00",
             "05:00",
             "06:00",
-            "07:00", 
-            "08:00", 
-            "09:00", 
-            "10:00", 
-            "11:00", 
-            "12:00", 
-            "13:00", 
-            "14:00", 
-            "15:00", 
-            "16:00", 
-            "17:00", 
-            "18:00", 
-            "19:00", 
-            "20:00", 
-            "21:00", 
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
             "22:00",
             "23:00",
             "24:00",
@@ -77,7 +87,7 @@ class Reuniones_AreasController extends Controller
                 'disponibilidad' => $reunion->disponibilidad,
             ];
         }
-        
+
         // return response()->json(["reuniones" => $reuniones, "area" => $area]);
         return view('inspiniaViews.areas.gestReuniones', [
             "area" => $area,
@@ -90,9 +100,11 @@ class Reuniones_AreasController extends Controller
 
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
+
         DB::beginTransaction();
-        try{
+        try {
             // return $request;
             $request->validate([
                 'area_id' => 'required',
@@ -102,7 +114,12 @@ class Reuniones_AreasController extends Controller
                 'reuniones.*.hora_final' => 'required',
                 'reuniones.*.disponibilidad' => 'required',
             ]);
-            
+
+            $access = FunctionHelperController::verifyAreaAccess($request->area_id);
+            if (!$access) {
+                return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para modificar esa area. No lo intente denuevo o puede ser baneado.');
+            }
+
             foreach ($request->reuniones as $reunion) {
                 Reuniones_Areas::create([
                     'area_id' => $request->area_id,
@@ -119,19 +136,25 @@ class Reuniones_AreasController extends Controller
 
             return redirect()->route('areas.getReuniones', $request->area_id);
 
-        } catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             // return response()->json(["error" => $e->getMessage()]);
             return redirect()->route('areas.getReuniones', $request->area_id);
         }
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
+        
         DB::beginTransaction();
-        try{
+        try {
             // return $request;
             $reunion = Reuniones_Areas::findOrFail($id);
             $area_id = $reunion->area_id;
+            $access = FunctionHelperController::verifyAreaAccess($area_id);
+            if (!$access) {
+                return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para modificar esa area. No lo intente denuevo o puede ser baneado.');
+            }
 
             $request->validate([
                 'dia' => 'sometimes',
@@ -144,23 +167,28 @@ class Reuniones_AreasController extends Controller
             // return response()->json(["resp" => "Registro Actualizado Correctamente"]);
             return redirect()->route('areas.getReuniones', $area_id);
 
-        } catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             // return response()->json(["error" => $e->getMessage()]);
             return redirect()->route('areas.getReuniones', $area_id);
         }
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $reunion = Reuniones_Areas::findOrFail($id);
             $area_id = $reunion->area_id;
+            $access = FunctionHelperController::verifyAreaAccess($area_id);
+            if (!$access) {
+                return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para modificar esa area. No lo intente denuevo o puede ser baneado.');
+            }
             $reunion->delete();
             DB::commit();
             // return response()->json(["resp" => "Registro Eliminado Correctamente"]);
             return redirect()->route('areas.getReuniones', $area_id)->with('success', 'Registro eliminado correctamente');
-        } catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             // return response()->json(["error" => $e->getMessage()]);
             return redirect()->route('areas.getReuniones', $area_id)->with('error', 'Error al eliminar el registro');
