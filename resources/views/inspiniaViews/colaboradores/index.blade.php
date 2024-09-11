@@ -898,30 +898,7 @@
             showModal('modal-form-update' + id);
         }
 
-        function confirmDelete(id, currentURL) {
-            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-
-                    form.method = 'POST'
-                    form.action = `/colaboradores/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-
-                    if(currentURL != null){
-                        let inputHidden = document.createElement('input');
-                        inputHidden.type = 'hidden';
-                        inputHidden.name = 'currentURL';
-                        inputHidden.value = currentURL;
-                        form.appendChild(inputHidden)
-                    }
-
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
+      
 
         function prepareSearchActionURL(event) {
             // preventDefault();

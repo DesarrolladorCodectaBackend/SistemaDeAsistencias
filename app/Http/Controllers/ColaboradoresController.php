@@ -376,7 +376,7 @@ class ColaboradoresController extends Controller
             if(isset($request->areas_apoyo_id)){
                 $areas_apoyo_id = $request->areas_apoyo_id;
             }
-            
+
             $usuarioAsociado = null;
             if($candidato->correo != null){
                 $user = User::where('email', $candidato->correo)->first();
