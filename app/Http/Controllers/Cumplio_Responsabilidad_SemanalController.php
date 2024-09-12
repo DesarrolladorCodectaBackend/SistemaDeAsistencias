@@ -612,6 +612,12 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $mes = $request->mes;
             $area_id = $request->area_id;
 
+            $access = FunctionHelperController::verifyAreaAccess($area_id);
+
+            if(!$access){
+                return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+            }
+            
             //Verificar que estemos en una semana posterior a la que se esta registrando, si no, no se puede registrar la semana.
             $semana = Semanas::find($request->semana_id);
             $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
