@@ -279,55 +279,60 @@
                                         </style>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; '>Nombres:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->nombre}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->nombre}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Apellidos:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->apellido}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->apellido}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Direccion:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->direccion}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->direccion ?? 'Sin Direccion'}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Institución - Sede:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->sede->nombre}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->sede->nombre ?? 'Sin Institucion - Sede'}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Ciclo:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->ciclo_de_estudiante}}°</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->ciclo_de_estudiante ?? 'Sin ciclo'}}°</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Correo:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->correo}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->correo ?? 'Sin correo'}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Fecha de nacimiento:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->fecha_nacimiento}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->fecha_nacimiento ?? 'Sin fecha de nacimiento'}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">DNI:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->dni}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->dni ?? 'Sin DNI'}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Celular:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->celular}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->celular ?? 'Sin celular'}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Área(s):</p>
+                                            <ol class="custom-list">
                                             @foreach($colaborador->areas as $area)
-                                            <p style='font-size: 0.9rem;' class=''>{{$area['nombre']}} @if($area['tipo'] === 1)(Apoyo) @endif</p>
+                                                <li class="overflowing-skipt" style='font-size: 0.9rem;'>{{$area['nombre']}} @if($area['tipo'] === 1)(Apoyo) @endif</li>
                                             @endforeach
+                                            </ol>
+                                            
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Actividades favoritas:</p>
-                                            @foreach($colaborador->actividadesFavoritas as $actividades)
-                                            <p style='font-size: 0.9rem;' class=''>{{$actividades}}</p>
-                                            @endforeach
+                                            <ol class="custom-list">
+                                                @foreach($colaborador->actividadesFavoritas as $actividades)
+                                                <li style='font-size: 0.9rem;' class="overflowing-skipt">{{$actividades}}</li>
+                                                @endforeach
+                                            </ol>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Carrera:</p>
-                                            <p style='font-size: 0.9rem;'>{{$colaborador->candidato->carrera->nombre}}</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->carrera->nombre}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Estado:</p>
@@ -391,10 +396,85 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 ">
-                    <div class="ibox">
-                        <div class="ibox-content product-box">
+                <style>
+                    /* .product-box {
+                        display: flex;
+                        flex-direction: column;
+                        height: 100%;
+                    }
+                
+                    .product-name h2 {
+                        font-size: 1.5rem;
+                        margin: 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                
+                    .product-desc h5 {
+                        font-size: 1rem;
+                        margin: 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    } */
 
+                    .overflowing-text{
+                        margin: 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+
+                    .overflowing-skipt{
+                        word-wrap: break-word; /* Permite que las palabras largas se rompan y continúen en la siguiente línea */
+                        overflow-wrap: break-word; /* Asegura que las palabras largas se rompan en navegadores más modernos */
+                        white-space: normal;/* Permite el salto de línea normal */
+                    }
+                    ol.custom-list {
+                        list-style-position: inside; /* Esto coloca los números dentro del contenedor, evitando el sangrado */
+                        padding-left: 0; /* Elimina el relleno a la izquierda del <ol> */
+                        margin-left: 0; /* Elimina el margen a la izquierda del <ol> */
+                    }
+
+                    ol.custom-list li {
+                        margin: 0; /* Elimina el margen de los elementos <li> */
+                        padding-left: 0; /* Opcional: Agrega un poco de espacio a la izquierda para el número, si es necesario */
+                    }
+                
+                    /* .text-center {
+                        text-align: center;
+                    }
+                
+                    .text-left {
+                        text-align: left;
+                    }
+                
+                    .small {
+                        font-size: 0.875rem;
+                    }
+                
+                    .product-desc {
+                        flex: 1;
+                    }
+                
+                    .product-box img {
+                        max-width: 100%;
+                        height: auto;
+                    }
+                
+                    .ibox-content {
+                        padding: 1rem;
+                        box-sizing: border-box;
+                    }
+                
+                    .btn {
+                        margin: 0.5rem;
+                    } */
+                </style>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 ">
+                    <div style="" class="ibox">
+                        <div class="ibox-content product-box">
                             <div class="text-center rounded-circle">
                                 <img src="{{asset('storage/candidatos/'.$colaborador->candidato->icono)}}"
                                     class="rounded-circle max-min-h-w-200 p-a-10 img-cover">
@@ -419,37 +499,39 @@
                                 @endif
 
 
-                                <a href="#" class="product-name">
-                                    <h2>{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}</h2>
-                                </a>
+                                <div href="#" class="product-name">
+                                    <h2 class="overflowing-text" >{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}</h2>
+                                </div>
 
 
 
                                 <small class="text-muted text-left">
-                                    <h3>Área(s):</h3>
+                                    <h3 class="text-dark" >Área(s):</h3>
                                 </small>
                                 <div class="small m-t-xs text-left">
-                                    @foreach($colaborador->areas as $area)
-                                    <h5>{{$area['nombre']}} @if($area['tipo'] === 1) <span style="color: #007">(Apoyo)</span>@endif</h5>
+                                    <h5 class="overflowing-text">
+                                    @foreach($colaborador->areas as $index => $area)
+                                    @if($index > 0) | @endif {{$area['nombre']}} @if($area['tipo'] === 1) <span style="color: #007">(Apoyo)</span>@endif
                                     @endforeach
+                                    </h5>
                                 </div>
                                 <small class="text-muted text-left">
-                                    <h3>DN1:</h3>
+                                    <h3 class="text-dark">DNI:</h3>
                                 </small>
                                 <div class="small m-t-xs text-left">
-                                    <h5>{{$colaborador->candidato->dni}}</h5>
+                                    <h5 class="overflowing-text">{{$colaborador->candidato->dni ?? 'Sin DNI'}}</h5>
                                 </div>
                                 <small class="text-muted text-left">
-                                    <h3>Correo:</h3>
+                                    <h3 class="text-dark">Correo:</h3>
                                 </small>
                                 <div class="small m-t-xs text-left">
-                                    <h5>{{$colaborador->candidato->correo}}</h5>
+                                    <h5 class="overflowing-text">{{$colaborador->candidato->correo ?? 'Sin correo'}}</h5>
                                 </div>
                                 <small class="text-muted text-left">
-                                    <h3>Celular:</h3>
+                                    <h3 class="text-dark">Celular:</h3>
                                 </small>
                                 <div class="small m-t-xs text-left">
-                                    <h5>{{$colaborador->candidato->celular}}</h5>
+                                    <h5 class="overflowing-text">{{$colaborador->candidato->celular ?? 'Sin celular'}}</h5>
                                 </div>
                                 <div class="m-t text-righ">
 

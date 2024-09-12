@@ -284,7 +284,7 @@
             </div>
             @endif
             <div class="row">
-                @foreach ($candidatos as $index => $candidato)\
+                @foreach ($candidatos as $index => $candidato)
                 {{-- MODAL SHOW --}}
                 <div id="modal-form-view{{$candidato->id}}" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
@@ -304,44 +304,44 @@
                                             </style>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Nombres:</h5>
-                                                </label><label for="">{{$candidato->nombre}}</label>
+                                                </label><label for="">{{$candidato->nombre ?? 'Sin nombre'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Apellidos:</h5>
-                                                </label><label for="">{{$candidato->apellido}}</label>
+                                                </label><label for="">{{$candidato->apellido ?? 'Sin apellido'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Direccion:</h5>
-                                                </label><label for="">{{$candidato->direccion}}</label>
+                                                </label><label for="">{{$candidato->direccion ?? 'Sin dirección'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Institucion - Sede:</h5>
-                                                </label><label for="">{{$candidato->sede->nombre}}</label>
+                                                </label><label for="">{{$candidato->sede->nombre ?? 'Sin Institucion - Sede'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Ciclo:</h5>
-                                                </label><label for="">{{$candidato->ciclo_de_estudiante}}°</label>
+                                                </label><label for="">{{$candidato->ciclo_de_estudiante  ?? 'Sin ciclo'}}°</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Correo:</h5>
-                                                </label><label for="">{{$candidato->correo}}</label>
+                                                </label><label for="">{{$candidato->correo  ?? 'Sin correo'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">fecha de
                                                         Nacimiento:</h5>
-                                                </label><label for="">{{$candidato->fecha_nacimiento}}</label>
+                                                </label><label for="">{{$candidato->fecha_nacimiento  ?? 'Sin fecha de nacimiento'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">DNI:</h5>
-                                                </label><label for="">{{$candidato->dni}}</label>
+                                                </label><label for="">{{$candidato->dni  ?? 'Sin DNI'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Celular:</h5>
-                                                </label><label for="">{{$candidato->celular}}</label>
+                                                </label><label for="">{{$candidato->celular  ?? 'Sin celular'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Carrera:</h5>
-                                                </label><label for="">{{$candidato->carrera->nombre}}</label>
+                                                </label><label for="">{{$candidato->carrera->nombre  ?? 'Sin carrera'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Estado: </h5>
@@ -439,25 +439,25 @@
                                     <dl class="row mb-0">
                                         <div class="col-sm-6 text-sm-left">
                                             <dt>Carrera:</dt>
-                                            <dd class="sm-2"> {{$candidato->carrera->nombre}} </dd>
+                                            <dd class="sm-2"> {{$candidato->carrera->nombre ?? 'Sin carrera'}} </dd>
                                         </div>
                                     </dl>
                                     <dl class="row mb-0">
                                         <div class="col-sm-6 text-sm-left">
                                             <dt>DNI:</dt>
-                                            <dd class="sm-2">{{$candidato->dni}}</dd>
+                                            <dd class="sm-2">{{$candidato->dni ?? 'Sin DNI'}}</dd>
                                         </div>
                                     </dl>
                                     <dl class="row mb-0">
                                         <div class="col-sm-6 text-sm-left">
                                             <dt>Correo</dt>
-                                            <dd class="sm-2">{{$candidato->correo}}</dd>
+                                            <dd class="sm-2">{{$candidato->correo ?? 'Sin correo'}}</dd>
                                         </div>
                                     </dl>
                                     <dl class="row mb-0">
                                         <div class="col-sm-6 text-sm-left">
                                             <dt>Celular</dt>
-                                            <dd class="sm-2">{{$candidato->celular}}</dd>
+                                            <dd class="sm-2">{{$candidato->celular ?? 'Sin celular'}}</dd>
                                         </div>
                                     </dl>
                                     <div>
