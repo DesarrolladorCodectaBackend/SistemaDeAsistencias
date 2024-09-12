@@ -335,6 +335,10 @@
                     </div>
                 </div>
 
+
+
+
+
                 @if($semana->cumplido == true)
                 <table id="table-semana-cumplida{{$index+1}}" class="disabled">
                     <form id="cumplioUpdate{{$index+1}}" role="form" method="POST"
@@ -557,15 +561,15 @@
         {{-- ERRORES MODALS --}}
         @if ($errors->any())
         <script>
+
             console.log(@json($errors->all())); // Muestra todos los errores en la consola
             document.addEventListener('DOMContentLoaded', function() {
                 @if (old('form_type') == 'edit' && old('informe'))
-                $('#modal-form-update' + {{ old('informe') }}).modal('show');
+                $('#modal-form-update-' + {{ old('informe') }}).modal('show');
                 @endif
             });
         </script>
         @endif
-
         {{-- scripts modals --}}
         <script>
              function ocultarTodosLosModales() {
@@ -674,6 +678,39 @@
     </div>
     </div>
 
+    <script>
+        function mostrarModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'block';
+        }
+    }
+
+    function cerrarModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    function abrirModalCreacion(index) {
+        mostrarModal('modal-form-add-' + index);
+    }
+
+    function abrirModalVista(id) {
+        mostrarModal('modal-form-view-' + id);
+    }
+
+    function abrirModalEdicion(id) {
+        mostrarModal('modal-form-update-' + id);
+    }
+
+
+    </script>
+
+
+
+
     @if ($errors->any())
     <script>
         $(document).ready(function() {
@@ -698,11 +735,6 @@
         });
     </script>
 @endif
-
-
-
-
-
 
 </body>
 </html>
