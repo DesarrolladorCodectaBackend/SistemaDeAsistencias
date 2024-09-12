@@ -142,7 +142,7 @@
                 </table>
 
                       {{--  Modal para la semana actual --}}
-                        <div id="modal-form-{{$index+1}}" class="modal"">
+                        <div id="modal-form-{{$index+1}}" class="modal" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-body">
@@ -157,6 +157,10 @@
                                                 data-target="#modal-form-add-{{ $index+1 }}"
                                                 onclick="abrirModalVista({{ $index+1 }});">
                                                 Agregar Informe
+                                            <button class="btn btn-success dim float-right"
+                                                    data-toggle="modal"
+                                                    data-target="#modal-form-add-{{ $index+1 }}"
+                                                    type="button">Agregar Informe
                                             </button>
 
                                         </div>
@@ -200,9 +204,7 @@
                                                                     href="#modal-form-update-{{ $informe->id }}"
                                                                     onclick="abrirModalEdicion({{ $informe->id }});">
                                                                     <i style="font-size: 20px" class="fa fa-paste"></i>
-                                                                    </a>
-
-
+                                                                </button>
 
 
                                                                 {{-- BOTON ELIMINAR --}}
@@ -225,21 +227,9 @@
                                                         </div>
 
                                                         <hr>
-                                                    @endif
-                                                @empty
-                                                    <p>No hay informes registrados para esta semana.</p>
-                                                @endforelse
-                                            </form>
 
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" onclick="hideModal('modal-form-{{$index+1}}')">Cerrar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        {{-- MODAL UPDDATE --}}
+                                                        {{-- MODAL UPDDATE --}}
                                                         <div id="modal-form-update-{{ $informe->id }}" class="modal fade" aria-hidden="true">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
@@ -289,12 +279,13 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
-                                                {{-- MODAL SHOW --}}
-                                                            <div id="modal-form-view{{ $informe->id }}" class="modal fade" aria-hidden="true">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-body">
+
+
+                                                        {{-- MODAL SHOW --}}
+                                                        <div id="modal-form-view{{ $informe->id }}" class="modal fade" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-body">
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title">Ver Informe</h5>
                                                                         </div>
@@ -335,13 +326,12 @@
                                                                 <h5 class="modal-title">Crear Informe - Semana {{ $index+1 }}</h5>
                                                             </div>
 
-                                                            <form action="{{ route('InformeSemanal.store') }}" method="POST" enctype="multipart/form-data">
-                                                                @csrf
-                                                                <input type="hidden" name="form_type" value="create">
-                                                                <input type="hidden" name="semana_id" value="{{ $semana->id }}">
-                                                                <input type="hidden" name="year" value="{{ $year }}">
-                                                                <input type="hidden" name="mes" value="{{ $mes }}">
-                                                                <input type="hidden" name="area_id" value="{{ $area->id }}">
+                                            <form action="{{ route('InformeSemanal.store') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="semana_id" value="{{ $semana->id }}">
+                                                <input type="hidden" name="year" value="{{ $year }}">
+                                                <input type="hidden" name="mes" value="{{ $mes }}">
+                                                <input type="hidden" name="area_id" value="{{ $area->id }}">
 
                                                                 <div class="form-group">
                                                                     <label for="titulo">Título</label>
@@ -596,10 +586,11 @@
         {{-- ERRORES MODALS --}}
         @if ($errors->any())
         <script>
+
             console.log(@json($errors->all())); // Muestra todos los errores en la consola
             document.addEventListener('DOMContentLoaded', function() {
                 @if (old('form_type') == 'edit' && old('informe'))
-                $('#modal-form-update' + {{ old('informe') }}).modal('show');
+                $('#modal-form-update-' + {{ old('informe') }}).modal('show');
                 @endif
             });
         </script>
@@ -627,23 +618,17 @@
             }
 
             function abrirModalCreacion(index) {
-                hideModal('modal-form');
                 showModal('modal-form-add-' + index);
             }
 
             function abrirModalEdicion(id) {
-                hideModal('modal-form-view' + id);
                 showModal('modal-form-update-' + id);
-            }
-            function abrirModalVista(id) {
-                hideModal('modal-form-update' + id);
-                showModal('modal-form-view-' + id);  // Mostrar el modal de vista
             }
 
             function confirmDelete(informeId) {
     ocultarTodosLosModales(); // Ocultar todos los modales antes de mostrar la alerta de confirmación
 
-    alertify.confirm("¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.", function(e) {
+        alertify.confirm("¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.", function(e) {
         if (e) {
             // Crear un formulario dinámicamente
             let form = document.createElement('form');
@@ -681,42 +666,12 @@
         console.log('Cancelado');
     });
 }
-
         </script>
-
-
 
 
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
-
-    @if ($errors->any())
-    <script>
-        $(document).ready(function() {
-            // Si hay errores, muestra los mensajes en consola (opcional)
-            console.log(@json($errors->all()));
-
-            // Obtener el índice del formulario con errores
-            var errorIndex = {{ old('semana_id') ? old('semana_id') : 'null' }};
-
-            // Verificar si el índice es válido
-            if (errorIndex !== null) {
-                var modalId = '#modal-form-add-' + errorIndex;
-                // Mostrar el modal correspondiente
-                if ($(modalId).length) {
-                    $(modalId).modal('show');
-                } else {
-                    console.error('El modal no se encuentra en el DOM:', modalId);
-                }
-            } else {
-                console.error('No se pudo determinar el índice del modal.');
-            }
-        });
-    </script>
-@endif
-
-
 
 
 
