@@ -149,12 +149,12 @@
                                         <div class="modal-header">
                                             <h5 class="modal-title">Informe de Semana {{$index+1}}</h5>
                                             {{-- Botón para abrir el modal de creación --}}
-                                            <button 
-                                                id="openModalButton{{ $index+1 }}" 
-                                                class="btn btn-success dim float-right" 
-                                                type="button" 
-                                                data-toggle="modal" 
-                                                data-target="#modal-form-add-{{ $index+1 }}" 
+                                            <button
+                                                id="openModalButton{{ $index+1 }}"
+                                                class="btn btn-success dim float-right"
+                                                type="button"
+                                                data-toggle="modal"
+                                                data-target="#modal-form-add-{{ $index+1 }}"
                                                 onclick="abrirModalVista({{ $index+1 }});">
                                                 Agregar Informe
                                             </button>
@@ -179,10 +179,10 @@
 
                                                             <div>
                                                             {{-- BOTON VER --}}
-                                                                <a data-toggle="modal" 
-                                                                id="viewButton{{ $informe->id }}" 
-                                                                class="btn btn-sm btn-success float-right mx-2 " 
-                                                                href="#modal-form-view{{ $informe->id }}" 
+                                                                <a data-toggle="modal"
+                                                                id="viewButton{{ $informe->id }}"
+                                                                class="btn btn-sm btn-success float-right mx-2 "
+                                                                href="#modal-form-view{{ $informe->id }}"
                                                                 onclick="abrirModalVista({{ $informe->id }});">
                                                                 <i style="font-size: 20px" class="fa fa-eye"></i>
                                                                 </a>
@@ -194,10 +194,10 @@
 
 
                                                             {{-- BOTON EDITAR --}}
-                                                                    <a data-toggle="modal" 
-                                                                    id="editButton{{ $informe->id }}" 
-                                                                    class="btn btn-sm btn-info float-right mx-2" 
-                                                                    href="#modal-form-update-{{ $informe->id }}" 
+                                                                    <a data-toggle="modal"
+                                                                    id="editButton{{ $informe->id }}"
+                                                                    class="btn btn-sm btn-info float-right mx-2"
+                                                                    href="#modal-form-update-{{ $informe->id }}"
                                                                     onclick="abrirModalEdicion({{ $informe->id }});">
                                                                     <i style="font-size: 20px" class="fa fa-paste"></i>
                                                                     </a>
@@ -289,6 +289,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        
                                                 {{-- MODAL SHOW --}}
                                                             <div id="modal-form-view{{ $informe->id }}" class="modal fade" aria-hidden="true">
                                                                 <div class="modal-dialog">
