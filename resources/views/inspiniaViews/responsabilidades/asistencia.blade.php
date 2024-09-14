@@ -206,15 +206,11 @@
                                 <p>No hay informes registrados para esta semana.</p>
                                 @endforelse
                             </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="hideModal('modal-form-{{$index+1}}')">Cerrar</button>
-                            </div>
                         </div>
                     </div>
                 </div>
                 @foreach ($semana->informesSemanales as $informe)
-                    <!-- Modal de vista -->
+                    {{-- MODAL VIEW --}}
                     <div id="modal-form-view-{{ $informe->id }}" class="modal fade" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -235,37 +231,37 @@
                         </div>
                     </div>
 
-                                                        <hr>
+                    {{-- MODAL UPDATE --}}
+                    <div id="modal-form-update-{{ $informe->id }}" class="modal fade" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                {{-- <div class="modal-header">
+                                    <h5 class="modal-title">Editar Informe</h5>
+                                    <button type="button" class="close" onclick="cerrarModal('modal-form-update-{{ $informe->id }}')">&times;</button>
+                                </div> --}}
+                                <div class="modal-body">
+                                    <form role="form" action="{{ route('InformeSemanal.update', $informe->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="semana_id" value="{{ $informe->semana_id }}">
+                                        <input type="hidden" name="year" value="{{ $year }}">
+                                        <input type="hidden" name="mes" value="{{ $mes }}">
+                                        <input type="hidden" name="area_id" value="{{ $informe->area_id }}">
 
-
-                                                        {{-- MODAL UPDDATE --}}
-                                                        <div id="modal-form-update-{{ $informe->id }}" class="modal fade" aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-body">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title">Editar Informe</h5>
-                                                                        </div>
-                                                                        <form role="form" action="{{ route('InformeSemanal.update', $informe->id) }}" method="POST" enctype="multipart/form-data">
-                                                                            @csrf
-                                                                            @method('PUT')
-
-                                                                                <input type="hidden" name="semana_id" value="{{ $informe->semana_id }}">
-                                                                                <input type="hidden" name="year" value="{{ $year }}">
-                                                                                <input type="hidden" name="mes" value="{{ $mes }}">
-                                                                                <input type="hidden" name="area_id" value="{{ $informe->area_id }}">
+                                        <input type="hidden" name="form_type" value="edit">
+                                        <input type="hidden" name="informe" value="{{ $informe->id }}">
 
                                         <div class="form-group">
                                             <label for="titulo">Título</label>
                                             <input type="text" class="form-control" name="titulo" value="{{ $informe->titulo }}">
-                                            @error('titulo')
+                                            @error('titulo'.$informe->id)
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                         <div class="form-group">
                                             <label for="nota_semanal">Nota Semanal</label>
                                             <textarea class="form-control" name="nota_semanal" rows="3" required>{{ $informe->nota_semanal }}</textarea>
-                                            @error('nota_semanal')
+                                            @error('nota_semanal'.$informe->id)
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
@@ -275,75 +271,32 @@
                                             @if($informe->informe_url)
                                                 <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo actual</a></p>
                                             @endif
-                                            @error('informe_url')
+                                            @error('informe_url'.$informe->id)
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
 
-                                                                            <div class="modal-footer">
-                                                                                <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-<<<<<<<<< Temporary merge branch 1
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
 
-
-                                                        {{-- MODAL SHOW --}}
-                                                        <div id="modal-form-view{{ $informe->id }}" class="modal fade" aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-body">
-=========
-
-                                                {{-- MODAL SHOW --}}
-                                                            <div id="modal-form-view{{ $informe->id }}" class="modal fade" aria-hidden="true">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-body">
->>>>>>>>> Temporary merge branch 2
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title">Ver Informe</h5>
-                                                                        </div>
-
-                                                                            <input type="hidden" name="semana_id" value="{{ $informe->semana_id }}">
-                                                                            <input type="hidden" name="year" value="{{ $year }}">
-                                                                            <input type="hidden" name="mes" value="{{ $mes }}">
-                                                                            <input type="hidden" name="area_id" value="{{ $informe->area_id }}">
-
-                                                                            <div class="form-group">
-                                                                                <label for="titulo">Título:</label>
-                                                                                <p class="form-control-static">{{ $informe->titulo }}</p>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label for="nota_semanal">Nota Semanal:</label>
-                                                                                <p class="form-control-static">{{ $informe->nota_semanal }}</p>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label for="informe_url">Archivo:</label>
-                                                                                @if($informe->informe_url)
-                                                                                    <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo actual</a></p>
-                                                                                @else
-                                                                                    <p>No hay archivo adjunto.</p>
-                                                                                @endif
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                            </div>
-                                                        </div>
-
-
-                {{-- MODAL STORE --}}
+               {{-- MODAL STORE --}}
                 <div id="modal-form-add-{{ $index+1 }}" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Crear Informe - Semana {{ $index+1 }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             <div class="modal-body">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Crear Informe - Semana {{ $index+1 }}</h5>
-                                </div>
-
                                 <form action="{{ route('InformeSemanal.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="form_type" value="create">
@@ -351,26 +304,27 @@
                                     <input type="hidden" name="year" value="{{ $year }}">
                                     <input type="hidden" name="mes" value="{{ $mes }}">
                                     <input type="hidden" name="area_id" value="{{ $area->id }}">
+                                    <input type="hidden" name="index" value="{{ $index+1 }}">
 
                                     <div class="form-group">
-                                        <label for="titulo">Título</label>
-                                        <input type="text" class="form-control" id="titulo-{{ $index+1 }}" name="titulo">
+                                        <label for="titulo-{{ $index+1 }}">Título</label>
+                                        <input type="text" class="form-control" id="titulo-{{ $index+1 }}" name="titulo" >
                                         @error('titulo')
-                                        <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="nota_semanal">Nota Semanal</label>
-                                        <textarea class="form-control" id="nota_semanal-{{ $index+1 }}" name="nota_semanal" rows="3"></textarea>
+                                        <label for="nota_semanal-{{ $index+1 }}">Nota Semanal</label>
+                                        <textarea class="form-control" id="nota_semanal-{{ $index+1 }}" name="nota_semanal" rows="3" value="nota_semanal"></textarea>
                                         @error('nota_semanal')
-                                        <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="informe_url">Archivo</label>
+                                        <label for="informe_url-{{ $index+1 }}">Archivo</label>
                                         <input type="file" class="form-control" id="informe_url-{{ $index+1 }}" name="informe_url">
                                         @error('informe_url')
-                                        <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
 
@@ -382,9 +336,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
 
 
                 @if($semana->cumplido == true)
@@ -604,148 +555,17 @@
                 }
 
         </script>
-
-
-        {{-- ERRORES MODALS --}}
-        @if ($errors->any())
-        <script>
-
-            console.log(@json($errors->all())); // Muestra todos los errores en la consola
-            document.addEventListener('DOMContentLoaded', function() {
-                @if (old('form_type') == 'edit' && old('informe'))
-                $('#modal-form-update' + {{ old('informe') }}).modal('show');
-                @endif
-            });
-        </script>
-        @endif
-        {{-- scripts modals --}}
-        <script>
-             function ocultarTodosLosModales() {
-        $('.modal').hide(); // Oculta todos los modales
-    }
-
-    function showModal(modalId) {
-        ocultarTodosLosModales(); // Primero oculta todos los modales
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            $(modal).show(); // Usa jQuery para mostrar el modal
-        }
-    }
-
-    function hideModal(modalId) {
-        // const modal = document.getElementById(modalId);
-        // if (modal) {
-        //     $(modal).hide(); // Usa jQuery para ocultar el modal
-        // }
-        const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('show');
-
-                // Remover el Backdrop
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) {
-                    backdrop.parentNode.removeChild(backdrop);
-                }
-            }
-    }
-
-    function abrirModalCreacion(index) {
-        hideModal('modal-form-'+index);
-        showModal('modal-form-add-' + index);
-    }
-
-    function abrirModalEdicion(id, index) {
-        hideModal('modal-form-' + index);
-        showModal('modal-form-update-' + id);
-    }
-
-    function abrirModalVista(id, index) {
-        hideModal('modal-form-' + index);
-        showModal('modal-form-view-' + id);  // Mostrar el modal de vista
-    }
-
-    const forzarCerrado = (modalId) =>{
-        const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('show');
-                modal.style.display = 'none';
-                // Remover el Backdrop
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) {
-                    backdrop.parentNode.removeChild(backdrop);
-                }
-            }
-    }
-
-    function confirmDelete(informeId, index, year, mes, area_id) {
-        forzarCerrado('modal-form-' + index);
-
-        alertify.confirm("¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.", function(e) {
-            if (e) {
-                let form = document.createElement('form')
-
-                form.method = 'POST'
-                form.action = `/InformeSemanal/${informeId}`
-                form.innerHTML = '@csrf @method('DELETE')'
-
-                let inputYear = document.createElement('input');
-                inputYear.type = 'hidden';
-                inputYear.name = 'year';
-                inputYear.value = year;
-                form.appendChild(inputYear)
-
-                let inputMes = document.createElement('input');
-                inputMes.type = 'hidden';
-                inputMes.name = 'mes';
-                inputMes.value = mes;
-                form.appendChild(inputMes)
-
-                let inputArea = document.createElement('input');
-                inputArea.type = 'hidden';
-                inputArea.name = 'area_id';
-                inputArea.value = area_id;
-                form.appendChild(inputArea)
-
-                document.body.appendChild(form)
-                form.submit()
-            } else {
-                return false;
-            }
-        }, function() {
-            // Callback para el botón de cancelar (si lo deseas)
-            console.log('Cancelado');
-        });
-    }
-
-        </script>
-
-
-
-
-        @include('components.inspinia.footer-inspinia')
-    </div>
-    </div>
-
-    @if ($errors->any())
+      
+      @if ($errors->any())
     <script>
-        $(document).ready(function() {
-            // Si hay errores, muestra los mensajes en consola (opcional)
+        document.addEventListener("DOMContentLoaded", function () {
             console.log(@json($errors->all()));
-
-            // Obtener el índice del formulario con errores
-            var errorIndex = {{ old('semana_id') ? old('semana_id') : 'null' }};
-
-            // Verificar si el índice es válido
-            if (errorIndex !== null) {
-                var modalId = '#modal-form-add-' + errorIndex;
-                // Mostrar el modal correspondiente
-                if ($(modalId).length) {
-                    $(modalId).modal('show');
-                } else {
-                    console.error('El modal no se encuentra en el DOM:', modalId);
-                }
-            } else {
-                console.error('No se pudo determinar el índice del modal.');
+            if ("{{ old('form_type') }}" === 'create' && "{{ old('index') }}") {
+                $('#modal-form-add-{{ old('index') }}').modal('show');
+            }
+            
+            if ("{{ old('form_type') }}" === 'edit' && "{{ old('informe') }}") {
+                $('#modal-form-update-{{ old('informe') }}').modal('show');
             }
         });
     </script>
@@ -753,7 +573,99 @@
 
 
 
+        {{-- scripts modals --}}
+        <script>
+            function ocultarTodosLosModales() {
+                $('.modal').hide(); 
+            }
 
+            function showModal(modalId) {
+                ocultarTodosLosModales(); 
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    $(modal).show(); 
+                }
+            }
+
+            function hideModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('show');
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    }
+                }
+            }
+
+            function abrirModalCreacion(index) {
+                hideModal('modal-form-' + index);
+                showModal('modal-form-add-' + index);
+            }
+
+            function abrirModalEdicion(id, index) {
+                hideModal('modal-form-' + index);
+                showModal('modal-form-update-' + id);
+            }
+
+            function abrirModalVista(id, index) {
+                hideModal('modal-form-' + index);
+                showModal('modal-form-view-' + id); 
+            }
+
+            const forzarCerrado = (modalId) => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    }
+                }
+            }
+
+            function confirmDelete(informeId, index, year, mes, area_id) {
+                forzarCerrado('modal-form-' + index);
+                alertify.confirm("¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.", function(e) {
+                    if (e) {
+                        let form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/InformeSemanal/${informeId}`;
+                        form.innerHTML = '@csrf @method('DELETE')';
+
+                        let inputYear = document.createElement('input');
+                        inputYear.type = 'hidden';
+                        inputYear.name = 'year';
+                        inputYear.value = year;
+                        form.appendChild(inputYear);
+
+                        let inputMes = document.createElement('input');
+                        inputMes.type = 'hidden';
+                        inputMes.name = 'mes';
+                        inputMes.value = mes;
+                        form.appendChild(inputMes);
+
+                        let inputArea = document.createElement('input');
+                        inputArea.type = 'hidden';
+                        inputArea.name = 'area_id';
+                        inputArea.value = area_id;
+                        form.appendChild(inputArea);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+                        return false;
+                    }
+                }, function() {
+                    console.log('Cancelado');
+                });
+            }
+        </script>
+
+        @include('components.inspinia.footer-inspinia')
+    </div>
+    </div>
 
 
 </body>

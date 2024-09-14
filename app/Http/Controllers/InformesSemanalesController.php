@@ -65,16 +65,16 @@ class InformesSemanalesController extends Controller
             $errors = [];
 
             if (!isset($request->titulo)) {
-                $errors['titulo' . $informe->id] = 'El titulo es un campo requerido.';
+                $errors['titulo' .$informe->id] = 'El titulo es un campo requerido.';
             } else {
                 if (strlen($request->titulo) > 150) {
-                    $errors['titulo' . $informe->id] = 'El titulo no puede exceder los 150 caracteres.';
+                    $errors['titulo' .$informe->id] = 'El titulo no puede exceder los 150 caracteres.';
                 }
             }
 
 
             if (strlen($request->nota_semanal) > 2000) {
-                $errors['nota_semanal' . $informe->id] = 'Este campo no puede exceder los 2000 caracteres.';
+                $errors['nota_semanal' .$informe->id] = 'Este campo no puede exceder los 2000 caracteres.';
             }
 
 
@@ -83,7 +83,7 @@ class InformesSemanalesController extends Controller
                 $extensionVal = $request->file('informe_url')->getClientOriginalExtension();
 
                 if (!in_array($extensionVal, $extensiones)) {
-                    $errors['informe_url' . $informe->id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+                    $errors['informe_url' .$informe->id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
                 }
             }
 
