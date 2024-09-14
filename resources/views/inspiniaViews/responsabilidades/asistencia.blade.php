@@ -557,19 +557,25 @@
         </script>
       
       @if ($errors->any())
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            console.log(@json($errors->all()));
-            if ("{{ old('form_type') }}" === 'create' && "{{ old('index') }}") {
-                $('#modal-form-add-{{ old('index') }}').modal('show');
-            }
-            
-            if ("{{ old('form_type') }}" === 'edit' && "{{ old('informe') }}") {
-                $('#modal-form-update-{{ old('informe') }}').modal('show');
-            }
-        });
-    </script>
-@endif
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    console.log(@json($errors->all()));
+        
+                    var formType = "{{ old('form_type') }}";
+                    var index = "{{ old('index') }}";
+                    var informeId = "{{ old('informe') }}";
+        
+                    if (formType === 'create' && index) {
+                        $('#modal-form-add-' + index).modal('show');
+                    }
+                    
+                    if (formType === 'edit' && informeId) {
+                        $('#modal-form-update-' + informeId).modal('show');
+                    }
+                });
+            </script>
+        @endif
+  
 
 
 

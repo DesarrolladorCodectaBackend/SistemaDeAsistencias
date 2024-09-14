@@ -285,7 +285,7 @@
             </div>
             @endif
             <div class="row">
-                @foreach ($candidatos as $index => $candidato)\
+                @foreach ($candidatos as $index => $candidato)
                 {{-- MODAL SHOW --}}
                 <div id="modal-form-view{{$candidato->id}}" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">

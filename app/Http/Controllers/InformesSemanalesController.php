@@ -32,7 +32,9 @@ class InformesSemanalesController extends Controller
                 $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
                 $informe->move(public_path('storage/informes'), $nombreInforme);
             }
-
+            if(isset($request->currentURL)) {
+                $request->currentURL;
+            }
             InformeSemanal::create([
                 'titulo' => $request->titulo,
                 'nota_semanal' => $request->nota_semanal,
@@ -45,6 +47,7 @@ class InformesSemanalesController extends Controller
         }catch(Exception $e){
             DB::rollBack();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+            
         }
     }
 
