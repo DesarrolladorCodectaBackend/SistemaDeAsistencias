@@ -25,6 +25,19 @@
             </div>
 
         </div>
+        {{-- @session('error')
+            {{ $message }}
+        @endsession --}}
+
+        @if(session('error'))
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Error:</strong> {{ session('error') }}
+                </div>
+                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+            </div>
+        @endif
+
         <style>
             .juntar {
                 margin-bottom: 0px;
@@ -292,9 +305,6 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Crear Informe - Semana {{ $index+1 }}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
                             </div>
                             <div class="modal-body">
                                 <form action="{{ route('InformeSemanal.store') }}" method="POST" enctype="multipart/form-data">
@@ -304,7 +314,7 @@
                                     <input type="hidden" name="year" value="{{ $year }}">
                                     <input type="hidden" name="mes" value="{{ $mes }}">
                                     <input type="hidden" name="area_id" value="{{ $area->id }}">
-                                    <input type="hidden" name="index" value="{{ $index+1 }}">
+                                    {{-- <input type="hidden" name="index" value="{{ $index+1 }}"> --}}
 
                                     <div class="form-group">
                                         <label for="titulo-{{ $index+1 }}">Título</label>
@@ -555,41 +565,42 @@
                 }
 
         </script>
-      
+
+      {{-- MODAL ERRORES --}}
       @if ($errors->any())
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
                     console.log(@json($errors->all()));
-        
+
                     var formType = "{{ old('form_type') }}";
                     var index = "{{ old('index') }}";
                     var informeId = "{{ old('informe') }}";
-        
+
                     if (formType === 'create' && index) {
                         $('#modal-form-add-' + index).modal('show');
                     }
-                    
+
                     if (formType === 'edit' && informeId) {
                         $('#modal-form-update-' + informeId).modal('show');
                     }
                 });
             </script>
         @endif
-  
+
 
 
 
         {{-- scripts modals --}}
         <script>
             function ocultarTodosLosModales() {
-                $('.modal').hide(); 
+                $('.modal').hide();
             }
 
             function showModal(modalId) {
-                ocultarTodosLosModales(); 
+                ocultarTodosLosModales();
                 const modal = document.getElementById(modalId);
                 if (modal) {
-                    $(modal).show(); 
+                    $(modal).show();
                 }
             }
 
@@ -616,7 +627,7 @@
 
             function abrirModalVista(id, index) {
                 hideModal('modal-form-' + index);
-                showModal('modal-form-view-' + id); 
+                showModal('modal-form-view-' + id);
             }
 
             const forzarCerrado = (modalId) => {
