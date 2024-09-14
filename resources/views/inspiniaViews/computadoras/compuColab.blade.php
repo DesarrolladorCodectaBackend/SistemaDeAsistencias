@@ -604,8 +604,8 @@
                                         <select name="programas_id[]" multiple required
                                             class="form-control multiple_programas_select">
                                             @foreach ($programas as $key => $programa)
-                                            <option value="{{ $programa->id }}" 
-                                                @foreach($programasInstalados as $programaInstalado) 
+                                            <option value="{{ $programa->id }}"
+                                                @foreach($programasInstalados as $programaInstalado)
                                                 @if($programaInstalado->programa_id ===
                                                 $programa->id)
                                                 selected
