@@ -25,19 +25,8 @@
             </div>
 
         </div>
-        {{-- @session('error')
-            {{ $message }}
-        @endsession --}}
 
-        @if(session('error'))
-            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
-                <div style="flex-grow: 1;">
-                    <strong>Error:</strong> {{ session('error') }}
-                </div>
-                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
-            </div>
-        @endif
-
+        
         <style>
             .juntar {
                 margin-bottom: 0px;
@@ -125,6 +114,7 @@
 
 
         @foreach($semanasMes as $index => $semana)
+           
             <section id="semana{{$index+1}}" style="display: none">
                 <table class="juntar">
                     <tr>
@@ -177,12 +167,7 @@
                                     <div style="border-bottom: 1px solid #ccc" class="row w-100 pb-1 mb-4">
                                         <div class="col-8">
                                             <h3>{{ $informe->titulo }}</h6>
-                                            {{-- <p>{{ $informe->nota_semanal }}</p>
-                                            @if($informe->informe_url)
-                                                <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo</a></p>
-                                            @else
-                                                <p>No hay archivo disponible.</p>
-                                            @endif --}}
+
                                         </div>
                                         <div class="col-4 d-flex justify-content-between">
                                         {{-- BOTON VER --}}
@@ -227,10 +212,6 @@
                     <div id="modal-form-view-{{ $informe->id }}" class="modal fade" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                {{-- <div class="modal-header">
-                                    <h5 class="modal-title">Vista del Informe</h5>
-                                    <button type="button" class="close" onclick="cerrarModal('modal-form-view-{{ $informe->id }}')">&times;</button>
-                                </div> --}}
                                 <div class="modal-body">
                                     <h6>{{ $informe->titulo }}</h6>
                                     <p>{{ $informe->nota_semanal }}</p>
@@ -248,10 +229,6 @@
                     <div id="modal-form-update-{{ $informe->id }}" class="modal fade" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                {{-- <div class="modal-header">
-                                    <h5 class="modal-title">Editar Informe</h5>
-                                    <button type="button" class="close" onclick="cerrarModal('modal-form-update-{{ $informe->id }}')">&times;</button>
-                                </div> --}}
                                 <div class="modal-body">
                                     <form role="form" action="{{ route('InformeSemanal.update', $informe->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
@@ -480,6 +457,23 @@
 
         @endforeach
 
+        {{-- Mostrar errores --}}
+        @if (session('error'))
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: fixed; bottom: 30px; right: 20px; max-width: 90%; min-width: 250px; z-index: 1050; border-radius: 15px;">
+                <div style="flex-grow: 1;">
+                    <strong>Error(es) en la Semana {{ session('current_semana_id') }}</strong>
+                    <ul>
+                        @foreach (session('error') as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                <button onclick="deleteAlert('alert-error')" type="button" class="btn btn-outline-dark btn-sm" style="position: absolute; top: 5px; right: 5px;" data-bs-dismiss="alert" aria-label="Close">
+                    <i class="fa fa-close"></i>
+                </button>
+            </div>
+        @endif
+        
         <script>
             var currentWeek = 1;
             var totalWeeks = {{ count($semanasMes) }};
@@ -567,26 +561,16 @@
         </script>
 
       {{-- MODAL ERRORES --}}
-      @if ($errors->any())
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    console.log(@json($errors->all()));
-
-                    var formType = "{{ old('form_type') }}";
-                    var index = "{{ old('index') }}";
-                    var informeId = "{{ old('informe') }}";
-
-                    if (formType === 'create' && index) {
-                        $('#modal-form-add-' + index).modal('show');
-                    }
-
-                    if (formType === 'edit' && informeId) {
-                        $('#modal-form-update-' + informeId).modal('show');
-                    }
-                });
-            </script>
-        @endif
-
+      <script>
+        const deleteAlert = (id) => {
+            let alertError = document.getElementById(id);
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error(`Elemento con ID '${id}' no encontrado.`);
+            }
+        }
+      </script>
 
 
 

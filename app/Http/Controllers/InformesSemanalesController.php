@@ -15,7 +15,7 @@ use App\Http\Log;
 class InformesSemanalesController extends Controller
 {
 
-    public function store(InformesSemanalesRequest $request)
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try{
@@ -24,6 +24,42 @@ class InformesSemanalesController extends Controller
             $mes = $request->mes;
             $area_id = $request->area_id;
             $semana_id = $request->semana_id;
+
+            $returnRoute = route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]);
+
+            // obtencion de todos los errores
+            $errors = [];
+
+            // validacion titulo
+            if (!isset($request->titulo)) {
+                $errors['titulo' .$semana_id] = 'El titulo es un campo requerido.';
+            } else {
+                if (strlen($request->titulo) > 150) {
+                    $errors['titulo' .$semana_id] = 'El titulo no puede exceder los 150 caracteres.';
+                }
+            }
+
+            // validacion nota_semanal
+            if (strlen($request->nota_semanal) > 2000) {
+                $errors['nota_semanal' .$semana_id] = 'La nota semanal no puede exceder los 2000 caracteres.';
+            }
+
+            // validacion informe_url
+            if(!isset($request->informe_url)){
+                $errors['informe_url'. $semana_id] = 'Es obligatorio subir un archivo.';       
+            } else if ($request->hasFile('informe_url')) {
+                $extensiones = ['pdf', 'docx'];
+                $extensionVal = $request->file('informe_url')->getClientOriginalExtension();
+
+                if (!in_array($extensionVal, $extensiones)) {
+                    $errors['informe_url' .$semana_id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+                }
+            }
+            
+            // redireccion con los errores obtenidos y semana obtenida
+            if (!empty($errors)) {
+                return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('error',$errors)->with('current_semana_id', $request->semana_id);
+            }
 
             $nombreInforme = '';
 
@@ -40,11 +76,13 @@ class InformesSemanalesController extends Controller
                 'semana_id' => $semana_id,
                 'area_id' => $area_id
             ]);
+
+
             DB::commit();
-            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+            return redirect($returnRoute);
         }catch(Exception $e){
             DB::rollBack();
-            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])->with('error', 'AAA');
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
 
         }
     }
@@ -66,16 +104,16 @@ class InformesSemanalesController extends Controller
             $errors = [];
 
             if (!isset($request->titulo)) {
-                $errors['titulo' .$informe->id] = 'El titulo es un campo requerido.';
+                $errors['titulo' .$semana_id] = 'El titulo es un campo requerido.';
             } else {
                 if (strlen($request->titulo) > 150) {
-                    $errors['titulo' .$informe->id] = 'El titulo no puede exceder los 150 caracteres.';
+                    $errors['titulo' .$semana_id] = 'El titulo no puede exceder los 150 caracteres.';
                 }
             }
 
 
             if (strlen($request->nota_semanal) > 2000) {
-                $errors['nota_semanal' .$informe->id] = 'Este campo no puede exceder los 2000 caracteres.';
+                $errors['nota_semanal' .$semana_id] = 'La nota semanal no puede exceder los 2000 caracteres.';
             }
 
 
@@ -84,14 +122,12 @@ class InformesSemanalesController extends Controller
                 $extensionVal = $request->file('informe_url')->getClientOriginalExtension();
 
                 if (!in_array($extensionVal, $extensiones)) {
-                    $errors['informe_url' .$informe->id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+                    $errors['informe_url' .$semana_id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
                 }
             }
 
             if (!empty($errors)) {
-                return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
-                                ->withErrors($errors)
-                                ->withInput();
+                return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('error',$errors)->with('current_semana_id', $request->semana_id);
             }
 
             // Preparar los datos para actualizar
