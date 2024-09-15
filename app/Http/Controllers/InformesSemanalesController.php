@@ -7,6 +7,7 @@ use App\Models\Area;
 use App\Models\Colaboradores_por_Area;
 use App\Models\InformeSemanal;
 use App\Models\Semanas;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -16,76 +17,86 @@ class InformesSemanalesController extends Controller
 {
 
     public function store(Request $request)
-    {
-        DB::beginTransaction();
-        try{
-            // obtiene el a;o, mes, area_id, semana_id para la creacion de dicho informe ubicandolo en las semanas, anios, mes y area respectivas
-            $year = $request->year;
-            $mes = $request->mes;
-            $area_id = $request->area_id;
-            $semana_id = $request->semana_id;
+{
+    DB::beginTransaction();
+    try {
+        // obtiene el año, mes, area_id, semana_id
+        $year = $request->year;
+        $mes = $request->mes;
+        $area_id = $request->area_id;
+        $semana_id = $request->semana_id;
 
-            $returnRoute = route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]);
+        $returnRoute = route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]);
 
-            // obtencion de todos los errores
-            $errors = [];
+        // Validación de la semana
+        $semana = Semanas::find($semana_id);
+        $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
+        $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
 
-            // validacion titulo
-            if (!isset($request->titulo)) {
-                $errors['titulo' .$semana_id] = 'El titulo es un campo requerido.';
-            } else {
-                if (strlen($request->titulo) > 150) {
-                    $errors['titulo' .$semana_id] = 'El titulo no puede exceder los 150 caracteres.';
-                }
-            }
-
-            // validacion nota_semanal
-            if (strlen($request->nota_semanal) > 2000) {
-                $errors['nota_semanal' .$semana_id] = 'La nota semanal no puede exceder los 2000 caracteres.';
-            }
-
-            // validacion informe_url
-            if(!isset($request->informe_url)){
-                $errors['informe_url'. $semana_id] = 'Es obligatorio subir un archivo.';       
-            } else if ($request->hasFile('informe_url')) {
-                $extensiones = ['pdf', 'docx'];
-                $extensionVal = $request->file('informe_url')->getClientOriginalExtension();
-
-                if (!in_array($extensionVal, $extensiones)) {
-                    $errors['informe_url' .$semana_id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
-                }
-            }
-            
-            // redireccion con los errores obtenidos y semana obtenida
-            if (!empty($errors)) {
-                return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('error',$errors)->with('current_semana_id', $request->semana_id);
-            }
-
-            $nombreInforme = '';
-
-            if ($request->hasFile('informe_url')) {
-                $informe = $request->file('informe_url');
-                $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
-                $informe->move(public_path('storage/informes'), $nombreInforme);
-            }
-
-            InformeSemanal::create([
-                'titulo' => $request->titulo,
-                'nota_semanal' => $request->nota_semanal,
-                'informe_url' => $nombreInforme,
-                'semana_id' => $semana_id,
-                'area_id' => $area_id
-            ]);
-
-
-            DB::commit();
-            return redirect($returnRoute);
-        }catch(Exception $e){
-            DB::rollBack();
-            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])->with('error', 'Ocurrió un error al actualizar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
-
+        if ($thisSemana->id < $semana->id) {
+            $warnings['semana_futura' . $semana_id] = 'No se puede crear informes en semanas futuras.';
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                ->with('warning', $warnings)
+                ->with('current_semana_id', $request->semana_id);
         }
+
+        // Validación de errores
+        $errors = [];
+
+        // Validación de título
+        if (!isset($request->titulo) || trim($request->titulo) === '') {
+            $errors['titulo' . $semana_id] = 'El título es un campo requerido.';
+        } else if (strlen($request->titulo) > 150) {
+            $errors['titulo' . $semana_id] = 'El título no puede exceder los 150 caracteres.';
+        }
+
+        // Validación de nota_semanal
+        if (strlen($request->nota_semanal) > 2000) {
+            $errors['nota_semanal' . $semana_id] = 'La nota semanal no puede exceder los 2000 caracteres.';
+        }
+
+        // Validación de informe_url
+        if (!$request->hasFile('informe_url')) {
+            $errors['informe_url' . $semana_id] = 'Es obligatorio subir un archivo.';
+        } else {
+            $informe = $request->file('informe_url');
+            $extensionVal = $informe->getClientOriginalExtension();
+            $extensiones = ['pdf', 'docx'];
+
+            if (!in_array($extensionVal, $extensiones)) {
+                $errors['informe_url' . $semana_id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+            }
+        }
+
+        // Si hay errores, redirigir sin procesar la creación
+        if (!empty($errors)) {
+            return redirect($returnRoute)
+                ->with('error', $errors)
+                ->with('current_semana_id', $request->semana_id);
+        }
+
+        // Procesar la creación del informe
+        $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
+        $informe->move(public_path('storage/informes'), $nombreInforme);
+
+        // Crear el informe
+        InformeSemanal::create([
+            'titulo' => $request->titulo,
+            'nota_semanal' => $request->nota_semanal,
+            'informe_url' => $nombreInforme,
+            'semana_id' => $semana_id,
+            'area_id' => $area_id
+        ]);
+
+        DB::commit();
+        return redirect($returnRoute);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+            ->with('error', 'Ocurrió un error al actualizar, intente de nuevo. Si este error persiste, contacte a su equipo de soporte.');
     }
+}
+
 
     public function update(Request $request, $InformeSemanal)
     {

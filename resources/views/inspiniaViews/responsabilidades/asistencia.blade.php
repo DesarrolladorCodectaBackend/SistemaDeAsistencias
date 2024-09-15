@@ -26,7 +26,7 @@
 
         </div>
 
-        
+
         <style>
             .juntar {
                 margin-bottom: 0px;
@@ -114,7 +114,7 @@
 
 
         @foreach($semanasMes as $index => $semana)
-           
+
             <section id="semana{{$index+1}}" style="display: none">
                 <table class="juntar">
                     <tr>
@@ -473,7 +473,24 @@
                 </button>
             </div>
         @endif
-        
+
+        {{-- Mostrar advertencias --}}
+        @if (session('warning'))
+            <div id="alert-warning" class="alert alert-warning alert-dismissible fade show d-flex align-items-start" role="alert" style="position: fixed; bottom: 30px; right: 20px; max-width: 90%; min-width: 250px; z-index: 1050; border-radius: 15px; background-color: #fff3cd; color: #856404;">
+                <div style="flex-grow: 1;">
+                    <strong>Advertencia para la Semana {{ session('current_semana_id') }}</strong>
+                    <ul>
+                        @foreach (session('warning') as $warning)
+                            <li>{{ $warning }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                <button onclick="deleteAlert('alert-warning')" type="button" class="btn btn-outline-dark btn-sm" style="position: absolute; top: 5px; right: 5px;" data-bs-dismiss="alert" aria-label="Close">
+                    <i class="fa fa-close"></i>
+                </button>
+            </div>
+        @endif
+
         <script>
             var currentWeek = 1;
             var totalWeeks = {{ count($semanasMes) }};
