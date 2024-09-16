@@ -616,6 +616,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $mes = $request->mes;
             $area_id = $request->area_id;
 
+
             $access = FunctionHelperController::verifyAreaAccess($area_id);
 
             if(!$access){
@@ -633,7 +634,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             if ($semana->id > $thisSemana->id) {
                 DB::rollBack();
                     return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
-                             ->with('error', 'No puedes registrar información en semanas posteriores a la actual.');
+                             ->with('EvaluacionWarning', 'No se puede evaluar semanas futuras.')->with('current_semana_id', $request->index);
             }
 
                 $responsabilidades = Responsabilidades_semanales::get();
@@ -660,13 +661,12 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 }
             
             DB::commit();
-            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])
-                ->with('success', 'Se guardo correctamente .');
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])->with('success', 'Se guardó correctamente.');
         } catch (Exception $e) {
             // return $e;
             DB::rollback();
             return redirect()->route('responsabilidades.asis', ['year' => $request->$year, 'mes' => $request->$mes,'area_id' => $request->$area_id])
-            ->with('error', 'Ocurrio un error.');
+            ->with('error', 'Ocurrió un error.');
 
         }
 
@@ -708,10 +708,11 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])->with('success', 'Se guardó correctamente.');
+
         } catch(Exception $e){
             DB::rollback();
-            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])->with('error', 'Ocurrió un error.');
         }
 
     }

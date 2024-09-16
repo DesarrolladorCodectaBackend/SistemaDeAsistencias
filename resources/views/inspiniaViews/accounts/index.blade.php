@@ -31,27 +31,29 @@
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             @if(session('error'))
-            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
-                role="alert" style="position: relative;">
-                <div style="flex-grow: 1;">
-                    <strong>Error:</strong> {{ session('error') }}
+                <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
+                    role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Error:</strong> {{ session('error') }}
+                    </div>
+                    <button onclick="deleteAlert('alert-error')" type="button" class="btn btn-outline-dark btn-xs"
+                        style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
+                            class="fa fa-close"></i></button>
                 </div>
-                <button onclick="deleteAlert('alert-error')" type="button" class="btn btn-outline-dark btn-xs"
-                    style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
-                        class="fa fa-close"></i></button>
-            </div>
             @endif
+
             @if(session('success'))
-            <div id="alert-success" class="alert alert-success alert-dismissible fade show d-flex align-items-start"
-                role="alert" style="position: relative;">
-                <div style="flex-grow: 1;">
-                    <strong>Éxito:</strong> {{ session('success') }}
+                <div id="alert-success" class="alert alert-success alert-dismissible fade show d-flex align-items-start"
+                    role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Éxito:</strong> {{ session('success') }}
+                    </div>
+                    <button onclick="deleteAlert('alert-success')" type="button" class="btn btn-outline-dark btn-xs"
+                        style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
+                            class="fa fa-close"></i></button>
                 </div>
-                <button onclick="deleteAlert('alert-success')" type="button" class="btn btn-outline-dark btn-xs"
-                    style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
-                        class="fa fa-close"></i></button>
-            </div>
             @endif
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox ">
@@ -208,7 +210,7 @@
             } else{
                 console.error(`Elemento con ID '${id}' no encontrado.`);
             }
-        }    
+        }
 
         $(document).ready(function(){
             $('.dataTables-example').DataTable({
