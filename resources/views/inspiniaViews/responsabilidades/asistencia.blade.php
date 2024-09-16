@@ -28,7 +28,7 @@
 
 
         <style>
-            
+
             .juntar {
                 margin-bottom: 0px;
             }
@@ -226,7 +226,7 @@
                                         <h4>Nota Semanal:</h4>
                                         <p>{{ $informe->nota_semanal ? $informe->nota_semanal : 'No se ha escrito una nota.' }}</p>
                                     </div>
-                                    
+
                                     <div class="d-flex flex-column justify-content-center mb-3">
                                         <h4>Archivo:</h4>
                                         @if($informe->informe_url)
@@ -251,12 +251,13 @@
                                     <form role="form" action="{{ route('InformeSemanal.update', $informe->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
+                                        {{-- obtención de la semana empezando desde semana 1 --}}
                                         <input type="hidden" name='index' value="{{ $index+1 }}" >
+
                                         <input type="hidden" name="semana_id" value="{{ $informe->semana_id }}">
                                         <input type="hidden" name="year" value="{{ $year }}">
                                         <input type="hidden" name="mes" value="{{ $mes }}">
                                         <input type="hidden" name="area_id" value="{{ $informe->area_id }}">
-
                                         <input type="hidden" name="form_type" value="edit">
                                         <input type="hidden" name="informe" value="{{ $informe->id }}">
 
@@ -310,8 +311,10 @@
                                     <input type="hidden" name="year" value="{{ $year }}">
                                     <input type="hidden" name="mes" value="{{ $mes }}">
                                     <input type="hidden" name="area_id" value="{{ $area->id }}">
+
+                                    {{-- obtención de la semana a partir desde el 1 --}}
                                     <input type="hidden" name="index" value="{{ $index+1 }}">
-                                    
+
 
                                     <div class="form-group">
                                         <label for="titulo-{{ $index+1 }}">Título</label>
@@ -477,7 +480,7 @@
                 </div>
                 @endif
 
-            
+
 
             </section>
 
@@ -514,7 +517,7 @@
                 </button>
             </div>
         @endif
-        
+
         @if (session('EvaluacionWarning'))
             <div id="alert-evaluacion-warning" class="alert alert-warning alert-dismissible fade show d-flex align-items-start" role="alert" style="position: fixed; bottom: 30px; right: 20px; max-width: 90%; min-width: 250px; z-index: 1050; border-radius: 15px; background-color: #fff3cd; color: #856404;">
                 <div style="flex-grow: 1;">
@@ -527,18 +530,18 @@
             </div>
         @endif
 
-            
 
 
+        {{-- tarjetas validaciones errores y warnings --}}
         <script>
             const deleteAlert = (id) => {
-            let alertError = document.getElementById(id);
-            if (alertError) {
-                alertError.remove();
-            } else{
-                console.error(`Elemento con ID '${id}' no encontrado.`);
-            }
-        }  
+                let alertError = document.getElementById(id);
+                if (alertError) {
+                    alertError.remove();
+                } else{
+                    console.error(`Elemento con ID '${id}' no encontrado.`);
+                }
+        }
         </script>
 
         <script>
@@ -737,7 +740,7 @@
 
         <!--===PRUEBAS===-->
 
-        
+
     @if(session('error'))
         <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
         role="alert" style="position: fixed; bottom: 25px; right: 10px; z-index: 1050;">
@@ -764,7 +767,7 @@
         </div>
     @endif
 
-            
+
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>

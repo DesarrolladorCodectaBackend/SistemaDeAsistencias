@@ -17,68 +17,68 @@ class InformesSemanalesController extends Controller
 {
 
     public function store(Request $request)
-{
-    DB::beginTransaction();
-    try {
-        // obtiene el año, mes, area_id, semana_id
-        $year = $request->year;
-        $mes = $request->mes;
-        $area_id = $request->area_id;
-        $semana_id = $request->semana_id;
-        $nroSemana = $request->index;
+    {
+        DB::beginTransaction();
+        try {
+            // obtiene el año, mes, area_id, semana_id
+            $year = $request->year;
+            $mes = $request->mes;
+            $area_id = $request->area_id;
+            $semana_id = $request->semana_id;
+            $nroSemana = $request->index;
 
-        $returnRoute = route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]);
+            $returnRoute = route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id]);
 
-        // validacion de la semana
-        $semana = Semanas::find($semana_id);
-        $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
-        $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
+            // validacion de la semana
+            $semana = Semanas::find($semana_id);
+            $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
+            $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
 
-        if ($thisSemana->id < $semana->id) {
-            $warnings['semana_futura' . $semana_id] = 'No se puede crear informes en semanas futuras.';
-            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
-                ->with('InformeWarning', $warnings)
-                ->with('current_semana_id', $request->index);
-        }
-
-        // validacion de errores
-        $errors = [];
-
-        // validacion de título
-        if (!isset($request->titulo) || trim($request->titulo) === '') {
-            $errors['titulo' . $semana_id] = 'El título es un campo requerido.';
-        } else if (strlen($request->titulo) > 150) {
-            $errors['titulo' . $semana_id] = 'El título no puede exceder los 150 caracteres.';
-        }
-
-        // validacion de nota_semanal
-        if (strlen($request->nota_semanal) > 2000) {
-            $errors['nota_semanal' . $semana_id] = 'La nota semanal no puede exceder los 2000 caracteres.';
-        }
-
-        // validacion de informe_url
-        if (!$request->hasFile('informe_url')) {
-            $errors['informe_url' . $semana_id] = 'Es obligatorio subir un archivo.';
-        } else {
-            $informe = $request->file('informe_url');
-            $extensionVal = $informe->getClientOriginalExtension();
-            $extensiones = ['pdf', 'docx', 'doc'];
-
-            if (!in_array($extensionVal, $extensiones)) {
-                $errors['informe_url' . $semana_id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+            if ($thisSemana->id < $semana->id) {
+                $warnings['semana_futura' . $semana_id] = 'No se puede crear informes en semanas futuras.';
+                return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                    ->with('InformeWarning', $warnings)
+                    ->with('current_semana_id', $request->index);
             }
-        }
 
-        // si hay errores, redirigir 
-        if (!empty($errors)) {
-            return redirect($returnRoute)
-                ->with('InformeError', $errors)
-                ->with('current_semana_id', $request->index);
-        }
+            // validacion de errores
+            $errors = [];
 
-        // Procesar la creación del informe
-        $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
-        $informe->move(public_path('storage/informes'), $nombreInforme);
+            // validacion de título
+            if (!isset($request->titulo) || trim($request->titulo) === '') {
+                $errors['titulo' . $semana_id] = 'El título es un campo requerido.';
+            } else if (strlen($request->titulo) > 150) {
+                $errors['titulo' . $semana_id] = 'El título no puede exceder los 150 caracteres.';
+            }
+
+            // validacion de nota_semanal
+            if (strlen($request->nota_semanal) > 2000) {
+                $errors['nota_semanal' . $semana_id] = 'La nota semanal no puede exceder los 2000 caracteres.';
+            }
+
+            // validacion de informe_url
+            if (!$request->hasFile('informe_url')) {
+                $errors['informe_url' . $semana_id] = 'Es obligatorio subir un archivo.';
+            } else {
+                $informe = $request->file('informe_url');
+                $extensionVal = $informe->getClientOriginalExtension();
+                $extensiones = ['pdf', 'docx', 'doc'];
+
+                if (!in_array($extensionVal, $extensiones)) {
+                    $errors['informe_url' . $semana_id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
+                }
+            }
+
+            // si hay errores, redirigir
+            if (!empty($errors)) {
+                return redirect($returnRoute)
+                    ->with('InformeError', $errors)
+                    ->with('current_semana_id', $request->index);
+            }
+
+            // Procesar la creación del informe
+            $nombreInforme = time() . '.' . $informe->getClientOriginalExtension();
+            $informe->move(public_path('storage/informes'), $nombreInforme);
 
         // crear el informe
         InformeSemanal::create([
@@ -96,7 +96,7 @@ class InformesSemanalesController extends Controller
         return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
             ->with('error', 'Ocurrió un error.');
     }
-}
+    }
 
 
     public function update(Request $request, $InformeSemanal)
@@ -190,9 +190,9 @@ class InformesSemanalesController extends Controller
         $year = $request->year;
         $mes = $request->mes;
         try{
-    
+
             $informe = InformeSemanal::findOrFail($InformeSemanal);
-    
+
             // Eliminar el archivo asociado si existe
             if ($informe->informe_url) {
                 $rutaPublica = public_path('storage/informes');
@@ -200,9 +200,9 @@ class InformesSemanalesController extends Controller
                     unlink($rutaPublica . '/' . $informe->informe_url);
                 }
             }
-    
+
             $informe->delete();
-            
+
             DB::commit();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('success', 'Informe eliminado correctamente.');
         } catch(Exception $e){
