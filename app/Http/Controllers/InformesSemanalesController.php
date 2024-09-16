@@ -72,11 +72,11 @@ class InformesSemanalesController extends Controller
                 }
             }
 
-            
+
             if (strlen($request->nota_semanal) > 2000) {
                 $errors['nota_semanal' . $informe->id] = 'Este campo no puede exceder los 2000 caracteres.';
             }
-            
+
 
             if ($request->hasFile('informe_url')) {
                 $extensiones = ['pdf', 'docx'];

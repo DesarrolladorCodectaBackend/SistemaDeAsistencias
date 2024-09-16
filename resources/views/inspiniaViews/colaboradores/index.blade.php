@@ -351,7 +351,6 @@
                                                 onclick="abrirModalEdicion({{$colaborador->id}});"
                                                 style="font-size: 20px; width: 60px;"
                                                 href="#modal-form-update{{$colaborador->id}}"></a>
-
                                         </div>
                                     </div>
                                     <div class="col-sm-6 text-center text-danger">

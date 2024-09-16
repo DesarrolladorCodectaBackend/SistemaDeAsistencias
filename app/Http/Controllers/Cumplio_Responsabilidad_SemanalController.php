@@ -202,6 +202,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         // Definir semanas cumplidas
         foreach ($semanasMes as $index => &$semana) {
             // return $semana;
+            //Añadir informes semanales de esta semana y area
+            $informesSemanalesArea = InformeSemanal::where('semana_id', $semana->id)->where('area_id', $area_id)->get();
+            //agregar como array key de esta semana
+            $semana->informesSemanales = $informesSemanalesArea;
             $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
                 $colaboradoresAreaId = $colaboradoresArea->pluck('id');
                 $colaboradoresActivosId = [];
@@ -253,7 +257,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         //return $semanasMes;
         //return $registros;
         // return response()->json(['year' => $year, 'mes' => $mes, 'registros' => $registros, 'area' => $area, 'responsabilidades' => $responsabilidades,
-        //     'colaboradoresArea' => $colaboradoresArea, 'semanasMes' => $semanasMes]);
+        //     'colaboradoresArea' => $colaboradoresArea, 'semanasMes' => $semanasMes, 'informesSemanales' => $informesSemanales]);
         return view('inspiniaViews.responsabilidades.asistencia', [
             'year' => $year,
             'mes' => $mes,
@@ -617,12 +621,21 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             if(!$access){
                 return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
             }
-            
+
             //Verificar que estemos en una semana posterior a la que se esta registrando, si no, no se puede registrar la semana.
-            $semana = Semanas::find($request->semana_id);
+            
             $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
-            $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
-            if ($thisSemana->id > $semana->id) {
+            $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();      
+            
+
+            $semana = Semanas::find($request->semana_id);
+
+            if ($semana->id > $thisSemana->id) {
+                DB::rollBack();
+                    return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                             ->with('error', 'No puedes registrar información en semanas posteriores a la actual.');
+            }
+
                 $responsabilidades = Responsabilidades_semanales::get();
                 $responsabilidadesIds = $responsabilidades->pluck('id');
 
@@ -645,13 +658,15 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                         $indiceColab++;
                     }
                 }
-            }
+            
             DB::commit();
-            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id]);
+            return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])
+                ->with('success', 'Se guardo correctamente .');
         } catch (Exception $e) {
             // return $e;
             DB::rollback();
-            return redirect()->route('responsabilidades.asis', ['year' => $request->$year, 'mes' => $request->$mes,'area_id' => $request->$area_id]);
+            return redirect()->route('responsabilidades.asis', ['year' => $request->$year, 'mes' => $request->$mes,'area_id' => $request->$area_id])
+            ->with('error', 'Ocurrio un error.');
 
         }
 

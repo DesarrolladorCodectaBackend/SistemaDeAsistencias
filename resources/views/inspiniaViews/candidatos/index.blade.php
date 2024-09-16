@@ -261,7 +261,8 @@
                                         </div>
                                         <div>
                                             <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit" ><i
-                                                    class="fa fa-check"></i>&nbsp;Confirmar</button>
+                                                    class="fa fa-check"></i>&nbsp;Confirmar
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
