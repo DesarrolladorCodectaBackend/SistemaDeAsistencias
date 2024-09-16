@@ -233,6 +233,7 @@
                                     <form role="form" action="{{ route('InformeSemanal.update', $informe->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
+                                        <input type="hidden" name='index' value="{{ $index+1 }}" >
                                         <input type="hidden" name="semana_id" value="{{ $informe->semana_id }}">
                                         <input type="hidden" name="year" value="{{ $year }}">
                                         <input type="hidden" name="mes" value="{{ $mes }}">
@@ -243,7 +244,7 @@
 
                                         <div class="form-group">
                                             <label for="titulo">Título</label>
-                                            <input type="text" class="form-control" name="titulo" value="{{ $informe->titulo }}">
+                                            <input type="text" class="form-control" name="titulo" value="{{ $informe->titulo }}" required>
                                             @error('titulo'.$informe->id)
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -257,7 +258,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="informe_url">Archivo</label>
-                                            <input type="file" class="form-control" name="informe_url">
+                                            <input type="file" class="form-control" name="informe_url" required>
                                             @if($informe->informe_url)
                                                 <p><a href="{{ asset('storage/informes/' . $informe->informe_url) }}" target="_blank">Ver archivo actual</a></p>
                                             @endif
@@ -291,25 +292,26 @@
                                     <input type="hidden" name="year" value="{{ $year }}">
                                     <input type="hidden" name="mes" value="{{ $mes }}">
                                     <input type="hidden" name="area_id" value="{{ $area->id }}">
-                                    {{-- <input type="hidden" name="index" value="{{ $index+1 }}"> --}}
+                                    <input type="hidden" name="index" value="{{ $index+1 }}">
+                                    
 
                                     <div class="form-group">
                                         <label for="titulo-{{ $index+1 }}">Título</label>
-                                        <input type="text" class="form-control" id="titulo-{{ $index+1 }}" name="titulo" >
+                                        <input type="text" class="form-control" id="titulo-{{ $index+1 }}" name="titulo" required>
                                         @error('titulo')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
                                         <label for="nota_semanal-{{ $index+1 }}">Nota Semanal</label>
-                                        <textarea class="form-control" id="nota_semanal-{{ $index+1 }}" name="nota_semanal" rows="3" value="nota_semanal"></textarea>
+                                        <textarea class="form-control" id="nota_semanal-{{ $index+1 }}" name="nota_semanal" rows="3" value="nota_semanal" required></textarea>
                                         @error('nota_semanal')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
                                         <label for="informe_url-{{ $index+1 }}">Archivo</label>
-                                        <input type="file" class="form-control" id="informe_url-{{ $index+1 }}" name="informe_url">
+                                        <input type="file" class="form-control" id="informe_url-{{ $index+1 }}" name="informe_url" required>
                                         @error('informe_url')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
