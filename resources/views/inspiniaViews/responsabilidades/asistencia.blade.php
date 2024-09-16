@@ -26,6 +26,7 @@
 
         </div>
         <style>
+            
             .juntar {
                 margin-bottom: 0px;
             }
@@ -401,7 +402,8 @@
                     <button onclick="habilitarEdicion({{$index+1}})"
                         class="ladda-button btn btn-success mr-2">Editar</button>
                     <a href="#" id="BtnGuardar{{$index+1}}" class="ladda-button btn btn-primary mr-2 disabled"
-                        onclick="document.getElementById('cumplioUpdate{{$index+1}}').submit();" disabled>Guardar</a>
+                        onclick="document.getElementById('cumplioUpdate{{$index+1}}').submit();" disabled>Guardar
+                    </a>
                     <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
                         data-style="expand-left">Descartar</button>
                 </div>
@@ -457,15 +459,33 @@
                 </table>
                 <div class="text-center">
                     <a href="#" class="ladda-button btn btn-primary mr-5"
-                        onclick="document.getElementById('cumplioStore{{$index+1}}').submit();">Guardar</a>
+                        onclick="document.getElementById('cumplioStore{{$index+1}}').submit();">Guardar
+                    </a>
                     <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
-                        data-style="expand-left">Descartar</button>
+                        data-style="expand-left">Descartar
+                    </button>
                 </div>
                 @endif
+
+            
 
             </section>
 
         @endforeach
+
+            
+
+
+        <script>
+            const deleteAlert = (id) => {
+            let alertError = document.getElementById(id);
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error(`Elemento con ID '${id}' no encontrado.`);
+            }
+        }  
+        </script>
 
         <script>
             var currentWeek = 1;
@@ -670,6 +690,37 @@
 
 
 
+
+        <!--===PRUEBAS===-->
+
+        
+    @if(session('error'))
+        <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
+        role="alert" style="position: fixed; bottom: 25px; right: 10px; z-index: 1050;">
+            <div style="flex-grow: 1;">
+                <strong>Error:</strong> {{ session('error') }}
+            </div>
+                <button onclick="deleteAlert('alert-error')" type="button" class="btn btn-outline-dark btn-xs"
+                    style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close">
+                        <i class="fa fa-close"></i>
+                </button>
+        </div>
+    @endif
+
+    @if(session('success'))
+        <div id="alert-success" class="alert alert-success alert-dismissible fade show d-flex align-items-start"
+            role="alert" style="position: fixed; bottom: 25px; right: 10px; z-index: 1050;">
+            <div style="flex-grow: 1;">
+                <strong>Éxito:</strong> {{ session('success') }}
+            </div>
+            <button onclick="deleteAlert('alert-success')" type="button" class="btn btn-outline-dark btn-xs"
+                style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close">
+                <i class="fa fa-close"></i>
+            </button>
+        </div>
+    @endif
+
+            
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
