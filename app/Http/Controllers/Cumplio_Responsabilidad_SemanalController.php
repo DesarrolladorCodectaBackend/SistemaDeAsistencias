@@ -169,7 +169,9 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         }
         //$area_id = $request->area_id;
         $area = Area::findOrFail($area_id);
-        $responsabilidades = Responsabilidades_semanales::get();
+        // $responsabilidades = Responsabilidades_semanales::get();
+        $responsabilidades = Responsabilidades_semanales::where('estado', 1)->get();
+
         //Estado 2 en colaboradores será igual a que ha sido despedido o que ya no pertenece a la empresa
         // $colaboradoresRemanentes = Colaboradores::where('estado', 1)->get()->pluck('id'); //SOLO MOSTRAR A LOS ACTIVOS, NO INACTIVOS NI EX COLABORADORES
         // $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->whereIn('colaborador_id', $colaboradoresRemanentes)->with('colaborador')->get();
@@ -735,7 +737,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para ver esa area. No lo intente de nuevo o puede ser baneado.');
         }
         $area = Area::findOrFail($area_id);
-        $responsabilidades = Responsabilidades_semanales::get();
+        $responsabilidades = Responsabilidades_semanales::where('estado',1)->get();
 
         $Meses = FunctionHelperController::getMonths();
 
@@ -883,7 +885,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para ver esa area. No lo intente denuevo o puede ser baneado.');
         }
         $area = Area::findOrFail($area_id);
-        $responsabilidades = Responsabilidades_semanales::get();
+        $responsabilidades = Responsabilidades_semanales::where('estado',1)->get();
 
         $year = $request->year;
         $selectedMonths = json_decode($request->input('selected_months'), true);
