@@ -162,6 +162,25 @@
                     </div>
                 </div>
 
+                <div class="col-lg-5">
+                    <div class="ibox ">
+                        <div class="show-grid container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
+                                </div>
+                                <div class="col-sm">
+                                    <h4><strong>Responsabilidades</strong></h4>
+                                    <p>Tabla de Responsabilidades</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a class="btn btn-success" href="/responsabilidad"><i class="fa fa-cog"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         @include('components.inspinia.footer-inspinia')

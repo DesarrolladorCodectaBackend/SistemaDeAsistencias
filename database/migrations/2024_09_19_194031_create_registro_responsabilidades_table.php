@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('responsabilidades_semanales', function (Blueprint $table) {
+        Schema::create('registro_responsabilidades', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('porcentaje_peso');
-            $table->boolean('estado')->default(true);
+            $table->boolean('estado');
+            $table->date('fecha');
+            $table->unSignedBigInteger('responsabilidad_id');
+            $table->foreign('responsabilidad_id')->references('id')->on('responsabilidades_semanales');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('responsabilidades_semanales');
+        Schema::dropIfExists('registro_responsabilidades');
     }
 };

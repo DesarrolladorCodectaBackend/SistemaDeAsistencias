@@ -624,10 +624,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             }
 
             //Verificar que estemos en una semana posterior a la que se esta registrando, si no, no se puede registrar la semana.
-            
+
             $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
-            $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();      
-            
+            $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
+
 
             $semana = Semanas::find($request->semana_id);
 
@@ -659,7 +659,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                         $indiceColab++;
                     }
                 }
-            
+
             DB::commit();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes,'area_id' => $area_id])->with('success', 'Se guardó correctamente.');
         } catch (Exception $e) {
@@ -732,7 +732,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $access = FunctionHelperController::verifyAreaAccess($area_id);
 
         if(!$access){
-            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para ver esa area. No lo intente denuevo o puede ser baneado.');
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para ver esa area. No lo intente de nuevo o puede ser baneado.');
         }
         $area = Area::findOrFail($area_id);
         $responsabilidades = Responsabilidades_semanales::get();
@@ -911,7 +911,9 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
                 $colaboradoresAreaId = $colaboradoresArea->pluck('id');
                 $colaboradoresActivosId = [];
+                // $colaboradoresInactivosId = [];
                 $countColabsActivos = 0;
+                // $countColabsInactivos = 0;
                 foreach($colaboradoresAreaId as $colabAreaId){
                     $inactividades = RegistroActividadController::obtenerInactividad($colabAreaId);
                     $activo = true;
@@ -929,6 +931,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                         $colaboradoresActivosId[] = $colabAreaId;
                         $countColabsActivos++;
                     }
+                    // else {
+                        // $colaboradoresInactivosId[] = $col;
+                        // $countColabsInactivos++;
+                    // }
                 }
                 $colaboradoresActivosToAdd = Colaboradores_por_Area::whereIn('id', $colaboradoresActivosId)->get();
 

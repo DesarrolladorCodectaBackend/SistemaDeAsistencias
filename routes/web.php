@@ -28,6 +28,7 @@ use App\Http\Controllers\Reuniones_AreasController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\MaquinaReservadaController;
+use App\Http\Controllers\ResponsabilidadController;
 use App\Http\Controllers\ReunionesProgramadasController;
 use App\Mail\ReunionProgramadaMailable;
 use Illuminate\Support\Facades\Route;
@@ -186,7 +187,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/responsabilidades/evaluacion/{year}/{mes}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getFormAsistencias'])->name('responsabilidades.asis');
     Route::get('/responsabilidades/promedio/{year}/{mes}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMonthProm'])->name('responsabilidades.getMonthProm');
     Route::post('/responsabilidades/promedios/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMonthsProm'])->name('responsabilidades.getMonthsProm');
+    Route::get('/responsabilidad', [ResponsabilidadController::class, 'index'])->name('responsabilidad.index');
 
+    
     //OBJETOS
     Route::resource('objeto', ObjetoController::class);
     Route::post('objeto/{objeto}/activar-inactivar',[ObjetoController::class, 'activarInactivar'])->name('objeto.activarInactivar');
