@@ -21,7 +21,7 @@
                         <a href="/ajustes">Ajustes</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>Objeto</strong>
+                        <strong>Responsabilidad</strong>
                     </li>
                 </ol>
             </div>
@@ -93,8 +93,8 @@
                         <thead>
                             <tr>
                                 <th class="col-lg-1">ID</th>
-                                <th class="col-lg-2">Objeto</th>
-                                <th class="col-lg-3">Descripción</th>
+                                <th class="col-lg-2">Responsabilidad</th>
+                                <th class="col-lg-3">Peso</th>
                                 <th class="col-lg-1">Estado</th>
                                 <th class="col-lg-1 oculto">Editar</th>
                             </tr>
@@ -137,7 +137,7 @@
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $obj->nombre) }}">
+                                                                    value="{{ old('nombre', $responsabilidad->nombre) }}">
                                                             </div>
                                                             <div class="form-group"><label>Peso</label>
                                                                 <input type="text" placeholder="....."
