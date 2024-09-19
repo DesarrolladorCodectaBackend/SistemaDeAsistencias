@@ -187,9 +187,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/responsabilidades/evaluacion/{year}/{mes}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getFormAsistencias'])->name('responsabilidades.asis');
     Route::get('/responsabilidades/promedio/{year}/{mes}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMonthProm'])->name('responsabilidades.getMonthProm');
     Route::post('/responsabilidades/promedios/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMonthsProm'])->name('responsabilidades.getMonthsProm');
-    Route::get('/responsabilidad', [ResponsabilidadController::class, 'index'])->name('responsabilidad.index');
 
-    
+    Route::get('/gestionResponsabilidad', [ResponsabilidadController::class, 'index'])->name('gestionResponsabilidad.index');
+    Route::post('/gestionResponsabilidad/store', [ResponsabilidadController::class, 'store'])->name('gestionResponsabilidad.store');
+    Route::put('/gestionResponsabilidad/update/{responsabilidad_semanal_id}', [ResponsabilidadController::class, 'update'])->name('gestionResponsabilidad.update');
+    Route::post('/gestionResponsabilidad/inactive/{responsabilidad_semanal_id}', [ResponsabilidadController::class, 'inactive'])->name('gestionResponsabilidad.inactive');
+
+
     //OBJETOS
     Route::resource('objeto', ObjetoController::class);
     Route::post('objeto/{objeto}/activar-inactivar',[ObjetoController::class, 'activarInactivar'])->name('objeto.activarInactivar');

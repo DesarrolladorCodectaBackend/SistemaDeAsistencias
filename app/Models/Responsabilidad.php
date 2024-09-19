@@ -9,10 +9,10 @@ class Responsabilidad extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nombre',
-        'porcentaje_peso'
-    ];
+    // protected $fillable = [
+    //     'nombre',
+    //     'porcentaje_peso'
+    // ];
 }
 
 

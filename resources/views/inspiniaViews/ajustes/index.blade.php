@@ -174,7 +174,7 @@
                                     <p>Tabla de Responsabilidades</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/responsabilidad"><i class="fa fa-cog"></i></a>
+                                    <a class="btn btn-success" href="/gestionResponsabilidad"><i class="fa fa-cog"></i></a>
                                 </div>
                             </div>
                         </div>
