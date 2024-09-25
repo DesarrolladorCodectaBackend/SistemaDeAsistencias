@@ -37,9 +37,6 @@
                                     <div class="col-sm-11">
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
 
-                                        <!--
-                                                                <p>Sign in today for more expirience.</p>
-                                                            -->
 
                                         <form role="form" method="POST" action="{{ route('gestionResponsabilidad.store') }}">
                                             @csrf
@@ -100,19 +97,20 @@
                             </tr>
                         </thead>
                         <tbody>
-   
+
                             @foreach ($responsabilidades as $responsabilidad)
                             <tr>
                                 <td>{{ $responsabilidad->id }}</td>
                                 <td>{{ $responsabilidad->nombre }}</td>
                                 <td>{{ $responsabilidad->porcentaje_peso }}</td>
-                                <td><form method="POST" action="{{ route('gestionResponsabilidad.inactive', $responsabilidad->id) }}">
-
-                                    @csrf
-                                    <button type="submit" class="btn btn-{{ $responsabilidad->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                        <span>{{ $responsabilidad->estado ? 'Activado' : 'Inactivo' }}</span>
-                                    </button>
-                                </form></td>
+                                <td>
+                                    <form method="POST" action="{{ route('gestionResponsabilidad.inactive', $responsabilidad->id) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-{{ $responsabilidad->estado ? 'outline-success' : 'danger' }} btn-primary dim">
+                                            <span>{{ $responsabilidad->estado ? 'Activado' : 'Inactivo' }}</span>
+                                        </button>
+                                    </form>
+                                </td>
                                 <td class="oculto"><button class="btn btn-info" type="button" href="#modal-form{{ $responsabilidad->id }}" data-toggle="modal"><i
                                             class="fa fa-paste"></i></button></td>
                                 <div id="modal-form{{ $responsabilidad->id }}" class="modal fade" aria-hidden="true">
@@ -123,9 +121,6 @@
                                                     <div class="col-sm-11 b-r">
                                                         <h3 class="m-t-none m-b">Editar</h3>
 
-                                                        <!--
-                                                            <p>Sign in today for more expirience.</p>
-                                                        -->
 
                                                         <form role="form" method="POST"
                                                             action="{{ route('gestionResponsabilidad.update', $responsabilidad->id) }}">

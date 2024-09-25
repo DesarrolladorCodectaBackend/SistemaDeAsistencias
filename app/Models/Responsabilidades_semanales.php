@@ -9,8 +9,6 @@ class Responsabilidades_semanales extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nombre',
-        'porcentaje_peso'
-    ];
+    protected $fillable = ['nombre', 'porcentaje_peso', 'estado'];
+
 }
