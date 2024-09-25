@@ -11,6 +11,7 @@ use App\Models\Area;
 use App\Models\Semanas;
 use App\Models\Colaboradores_por_Area;
 use App\Models\InformeSemanal;
+use App\Models\RegistroResponsabilidad;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -766,13 +767,50 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         $lastWeek->fecha_lunes = $fechaFinal;
 
         $colaboradoresMes = [];
+        $responsabilidadesMes = [];
         //Recorrer semanas e ir agregando los colaboradores que tienen esten activos esa semana y tengan alguna responsabilidad cumplida en esa semana
         //Se les ira sumando sus semanas cumplidas
         foreach ($semanasMes as $semana) {
+            $semanaResponsabilidades = RegistroResponsabilidad::where('responsabilidad_id', $responsabilidades)->where('fecha')->get();
+            $responsabilidadesActivasId = [];
+            $countResponsabilidades = 0;
             $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
             $colaboradoresAreaId = $colaboradoresArea->pluck('id');
             $colaboradoresActivosId = [];
             $countColabsActivos = 0;
+            foreach($semanaResponsabilidades as $semanaResponsabilidad){
+                $inactividades = RegistroResponsabilidadController::obtenerInactividad($semanaResponsabilidad);
+                $activo = true;
+                foreach($inactividades as $inactividad){
+                    $semanasInactivas = $inactividad['semanas'];
+                    foreach($semanasInactivas as $semanaInactiva){
+                        if($semana->id === $semanaInactiva['id']){
+                            $activo = false;
+                            break 2;
+                        }
+                    }
+                }
+
+                if($activo === true){
+                    $responsabilidadesActivasId[] = $semanaResponsabilidad;
+                    $countResponsabilidades++;
+                }
+            }
+            $responsabilidadesActivasToAdd = RegistroResponsabilidad::whereIn('id', $responsabilidadesActivasId)->get();
+            foreach($responsabilidadesActivasToAdd as $responsabilidadActivaToAdd){
+                $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->where("colaborador_area_id", $responsabilidadActivaToAdd->id)->first();
+                if($semanaCumplida){
+                    $existe = false;
+                    foreach ($responsabilidadesMes as $responsabilidadMes) {
+                        if ($responsabilidadMes['id'] === $responsabilidadActivaToAdd->id) {
+                            $responsabilidadMes['semanasCount']++;
+                            $responsabilidadMes['semanas'][] = $semana->id;
+                            $existe = true;
+                            break;
+                        }
+                }
+            }
+
             foreach($colaboradoresAreaId as $colabAreaId){
                 $inactividades = RegistroActividadController::obtenerInactividad($colabAreaId);
                 $activo = true;
@@ -825,7 +863,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         foreach ($colaboradoresMes as $index => &$colaboradorMes) {
             // Inicializar sumNotes con todas las responsabilidades en 0
             $sumNotes = [];
-            foreach ($responsabilidades as $responsabilidad) {
+            foreach ($semanaResponsabilidades as $responsabilidad) {
                 $nombreResponsabilidad = $responsabilidad->nombre;
                 $sumNotes[$nombreResponsabilidad] = 0;
             }
@@ -837,12 +875,12 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 foreach ($registrosCumplidosSemana as $registro) {
                     $valorCumplio = $registro->cumplio == 1 ? 20 : 0;
 
-                    foreach($responsabilidades as $responsabilidad){
+                    foreach($semanaResponsabilidades as $responsabilidad){
                         if($responsabilidad->id == $registro->responsabilidad_id) {
                             $nombreResponsabilidad = $responsabilidad->nombre;
                             $sumNotes[$nombreResponsabilidad] += $valorCumplio;
                         }
-                    }
+                    }   
                 }
             }
             // Agregar el array $sumNotes al array $colaboradorMes['sumNotas']
@@ -876,6 +914,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             "firstWeek" => $firstWeek,
             "lastWeek" => $lastWeek
         ]);
+        }
     }
 
     public function getMonthsProm(Request $request, $area_id){

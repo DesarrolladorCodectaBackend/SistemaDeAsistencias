@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('registro_responsabilidades', function (Blueprint $table) {
+        Schema::create('registro_responsabilidads', function (Blueprint $table) {
             $table->id();
             $table->boolean('estado');
             $table->date('fecha');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('registro_responsabilidades');
+        Schema::dropIfExists('registro_responsabilidads');
     }
 };

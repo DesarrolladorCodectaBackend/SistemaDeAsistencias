@@ -10,29 +10,42 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
+
 class RegistroResponsabilidadController extends Controller
 {
     public static function crearRegistro($responsabilidad_id, $estado)
-{
-    DB::beginTransaction();
-    try {
-        $today = Carbon::today();
-        $responsabilidad = Responsabilidades_semanales::findOrFail($responsabilidad_id);
+    {
+        DB::beginTransaction();
+        try {
+            $today = Carbon::today();
+            $responsabilidad = Responsabilidades_semanales::findOrFail($responsabilidad_id);
 
-        if ($responsabilidad) {
             RegistroResponsabilidad::create([
                 'responsabilidad_id' => $responsabilidad_id,
-                'estado' => $estado,
+                'estado' => $responsabilidad->estado,
                 'fecha' => $today->toDateString(),
             ]);
             DB::commit();
-            return response()->json(['status' => true, 'message' => 'Registro creado exitosamente']);
+            return true;
+            // return response()->json(['status' => true, 'message' => 'Registro creado exitosamente']);
+            // if ($responsabilidad->estado == 0) {
+            //     $registrosActivos = RegistroResponsabilidad::where('responsabilidad_id', $responsabilidad->id)->where('estado', 1)->get();
+
+            //     foreach ($registrosActivos as $registro) {
+            //         $registro->update(['estado' => 0]);
+            //         RegistroResponsabilidad::create([
+            //             'responsabilidad_id' => $responsabilidad_id,
+            //             'estado' => $estado,
+            //             'fecha' => $today->toDateString(),
+            //         ]);
+            //     }
+            // }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e;
+            // return response()->json(['status' => false, 'message' => $e->getMessage()]);
         }
-    }catch (Exception $e) {
-        DB::rollBack();
-        return response()->json(['status' => false, 'message' => $e->getMessage()]);
     }
-}
 
 
 

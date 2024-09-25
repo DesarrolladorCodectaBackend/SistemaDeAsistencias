@@ -11,9 +11,10 @@ use Illuminate\Support\Carbon;
 
 class ResponsabilidadController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $access = FunctionHelperController::verifyAdminAccess();
-        if(!$access){
+        if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         $responsabilidades = Responsabilidades_semanales::paginate(12);
@@ -21,16 +22,17 @@ class ResponsabilidadController extends Controller
         $pageData = FunctionHelperController::getPageData($responsabilidades);
         $hasPagination = true;
 
-        return view('inspiniaViews.responsabilidades.gestionResponsabilidad',[
+        return view('inspiniaViews.responsabilidades.gestionResponsabilidad', [
             "responsabilidades" => $responsabilidades,
             "pageData" => $pageData,
             "hasPagination" => $hasPagination,
         ]);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $access = FunctionHelperController::verifyAdminAccess();
-        if(!$access){
+        if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         DB::beginTransaction();
@@ -46,30 +48,29 @@ class ResponsabilidadController extends Controller
             ]);
 
             DB::commit();
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('gestionResponsabilidad.index');
             }
-        } catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
-                if($request->currentURL) {
-                    return redirect($request->currentURL);
-                } else {
-                    return redirect()->route('gestionResponsabilidad.index');
-                }
+            if ($request->currentURL) {
+                return redirect($request->currentURL);
+            } else {
+                return redirect()->route('gestionResponsabilidad.index');
+            }
         }
-
-
     }
 
-    public function update(Request $request, $responsabilidades_id){
+    public function update(Request $request, $responsabilidades_id)
+    {
         $access = FunctionHelperController::verifyAdminAccess();
-        if(!$access){
+        if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         DB::beginTransaction();
-        try{
+        try {
             $request->validate([
                 'nombre' => 'required|string|min:1|max:100',
                 'porcentaje_peso' => 'required|integer',
@@ -80,20 +81,19 @@ class ResponsabilidadController extends Controller
             $responsabilidades->update($request->all());
 
             DB::commit();
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('gestionResponsabilidad.index');
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
-            if($request->currentURL) {
+            if ($request->currentURL) {
                 return redirect($request->currentURL);
             } else {
                 return redirect()->route('gestionResponsabilidad.index');
             }
         }
-
     }
 
     public function inactive(Request $request, $responsabilidades_id)
@@ -109,17 +109,21 @@ class ResponsabilidadController extends Controller
             $responsabilidades->estado = !$responsabilidades->estado;
             $responsabilidades->save();
 
-            if ($responsabilidades->estado === 0) {
 
-                $registrosActivos = RegistroResponsabilidad::where('responsabilidad_id', $responsabilidades->id)->where('estado', 1)->get();
-
-                foreach ($registrosActivos as $registro) {
-                    $registro->update(['estado' => 0]);
-                    RegistroResponsabilidadController::crearRegistro($registro->responsabilidad_id, 0);
-                }
+            $created = RegistroResponsabilidadController::crearRegistro($responsabilidades->id, 0);
+            // DB::rollBack();
+            // return $created;
+            if(!$created){
             }
+            if ($responsabilidades->estado == 0) {
+                // return $responsabilidades;
 
+                // $registrosActivos = RegistroResponsabilidad::where('responsabilidad_id', $responsabilidades->id)->where('estado', 1)->get();
 
+                // foreach ($registrosActivos as $registro) {
+                //     $registro->update(['estado' => 0]);
+                // }
+            }
             DB::commit();
             return $request->currentURL
                 ? redirect($request->currentURL)
