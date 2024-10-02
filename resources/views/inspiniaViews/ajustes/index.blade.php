@@ -183,7 +183,6 @@
 
             </div>
         </div>
-        @include('components.inspinia.footer-inspinia')
     </div>
     </div>
 

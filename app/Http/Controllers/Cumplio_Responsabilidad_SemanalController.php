@@ -203,6 +203,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
         $colaboradoresArea = [];
         // Definir semanas cumplidas
+        // definir las responsabilidades
         foreach ($semanasMes as $index => &$semana) {
             // return $semana;
             //Añadir informes semanales de esta semana y area
@@ -238,6 +239,25 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $colaboradoresActivosToAdd = Colaboradores_por_Area::whereIn('id', $colaboradoresActivosId)->get();
             $semana->colaboradores = $colaboradoresActivosToAdd;
             // return $countColabsActivos;
+
+            // Inicializar 'responsabilidades' como un array si no lo está
+            if (!isset($semana->responsabilidades)) {
+                $semana->setAttribute('responsabilidades', []);
+            }
+
+            foreach ($responsabilidades as $responsabilidad) {
+                $registroResponsabilidad = RegistroResponsabilidad::where('responsabilidad_id', $responsabilidad->id)
+                    ->whereDate('fecha', '<=', $semana->fecha_lunes)
+                    ->first();
+
+                if ($registroResponsabilidad) {
+                    // Asignar al array 'responsabilidades' utilizando 'setAttribute'
+                    $responsabilidadesArray = $semana->getAttribute('responsabilidades');
+                    $responsabilidadesArray[$responsabilidad->id] = $registroResponsabilidad->estado == 1;
+                    $semana->setAttribute('responsabilidades', $responsabilidadesArray);
+                }
+            }
+
             $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->whereIn("colaborador_area_id", $colaboradoresActivosId)->first();
             if ($semanaCumplida) {
                 $semana->cumplido = true;
@@ -732,18 +752,21 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
     public function getMonthProm($year, $mes, $area_id)
     {
+        // Verificar si el usuario tiene acceso a esa área
         $access = FunctionHelperController::verifyAreaAccess($area_id);
 
-        if(!$access){
-            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para ver esa area. No lo intente de nuevo o puede ser baneado.');
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tienes permisos para ver esta área.');
         }
-        $area = Area::findOrFail($area_id);
-        $responsabilidades = Responsabilidades_semanales::where('estado',1)->get();
 
+        $area = Area::findOrFail($area_id);
+        $responsabilidad = Responsabilidades_semanales::get();
+
+        // Obtener todos los meses disponibles
         $Meses = FunctionHelperController::getMonths();
 
+        // Encontrar todas las semanas que pertenecen al mes y año seleccionado
         $semanasMes = [];
-
         foreach ($Meses as $Month) {
             if ($Month['nombre'] == $mes) {
                 $semanasTotales = Semanas::get();
@@ -756,157 +779,162 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 }
             }
         }
-        $totalSemanas = count($semanasMes);
 
+        // Si no hay semanas para ese mes y año
+        if (empty($semanasMes)) {
+            return redirect()->route('dashboard')->with('error', 'No se encontraron semanas en el mes y año seleccionado.');
+        }
+
+        // Obtener la primera y última semana del mes
+        $totalSemanas = count($semanasMes);
         $firstWeek = $semanasMes[0];
         $firstWeek->fecha_lunes = date("d/m/Y", strtotime($firstWeek->fecha_lunes));
         $lastWeek = end($semanasMes);
-        $fechaFinal = strtotime($lastWeek->fecha_lunes);
-        $fechaFinal = strtotime('+4 days', $fechaFinal);
-        $fechaFinal = date("d/m/Y", $fechaFinal);
-        $lastWeek->fecha_lunes = $fechaFinal;
+        $fechaFinal = strtotime('+4 days', strtotime($lastWeek->fecha_lunes));
+        $lastWeek->fecha_lunes = date("d/m/Y", $fechaFinal);
 
+        // Arrays para colaboradores y responsabilidades
         $colaboradoresMes = [];
         $responsabilidadesMes = [];
-        //Recorrer semanas e ir agregando los colaboradores que tienen esten activos esa semana y tengan alguna responsabilidad cumplida en esa semana
-        //Se les ira sumando sus semanas cumplidas
+
+        // Recorrer las semanas y encontrar responsabilidades y colaboradores activos
         foreach ($semanasMes as $semana) {
-            $semanaResponsabilidades = RegistroResponsabilidad::where('responsabilidad_id', $responsabilidades)->where('fecha')->get();
+            // Obtener registros de responsabilidades en la semana
+            // $semanaResponsabilidad = RegistroResponsabilidad::where('responsabilidad_id', $responsabilidad->id)
+                // ->where('fecha', $semana->fecha_lunes)
+                // ->get();
+            // $semanaResponsabilidadId = $semanaResponsabilidad->pluck('id');
             $responsabilidadesActivasId = [];
-            $countResponsabilidades = 0;
-            $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
+
+            // Encontrar colaboradores activos en la semana
+            $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)
+                ->where('semana_inicio_id', '<=', $semana->id)
+                ->with('colaborador')
+                ->get();
             $colaboradoresAreaId = $colaboradoresArea->pluck('id');
             $colaboradoresActivosId = [];
-            $countColabsActivos = 0;
-            foreach($semanaResponsabilidades as $semanaResponsabilidad){
-                $inactividades = RegistroResponsabilidadController::obtenerInactividad($semanaResponsabilidad);
+
+            // // Verificar si las responsabilidades están activas en esa semana
+            // foreach ($semanaResponsabilidadId as $semanaRespId) {
+            //     $inactividades = RegistroResponsabilidadController::obtenerInactividad($semanaRespId);
+            //     $activo = true;
+
+            //     foreach ($inactividades as $inactividad) {
+            //         if (in_array($semana->id, $inactividad['semanas'])) {
+            //             $activo = false;
+            //             break;
+            //         }
+            //     }
+            //     if ($activo) {
+            //         $responsabilidadesActivasId[] = $semanaRespId;
+            //     }
+            // }
+
+            // Verificar colaboradores activos en esa semana
+            foreach ($colaboradoresAreaId as $colabAreaId) {
+                $inactividades = RegistroActividadController::obtenerInactividad($colabAreaId);
                 $activo = true;
-                foreach($inactividades as $inactividad){
-                    $semanasInactivas = $inactividad['semanas'];
-                    foreach($semanasInactivas as $semanaInactiva){
-                        if($semana->id === $semanaInactiva['id']){
-                            $activo = false;
-                            break 2;
-                        }
+
+                foreach ($inactividades as $inactividad) {
+                    if (in_array($semana->id, $inactividad['semanas'])) {
+                        $activo = false;
+                        break;
                     }
                 }
 
-                if($activo === true){
-                    $responsabilidadesActivasId[] = $semanaResponsabilidad;
-                    $countResponsabilidades++;
+                if ($activo) {
+                    $colaboradoresActivosId[] = $colabAreaId;
                 }
             }
+
+            // Agregar las responsabilidades activas y colaboradores activos a sus respectivos arrays
             $responsabilidadesActivasToAdd = RegistroResponsabilidad::whereIn('id', $responsabilidadesActivasId)->get();
-            foreach($responsabilidadesActivasToAdd as $responsabilidadActivaToAdd){
-                $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->where("colaborador_area_id", $responsabilidadActivaToAdd->id)->first();
-                if($semanaCumplida){
+            $colaboradoresActivosToAdd = Colaboradores_por_Area::whereIn('id', $colaboradoresActivosId)->get();
+
+            foreach ($responsabilidadesActivasToAdd as $responsabilidadActiva) {
+                $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)
+                    ->where("colaborador_area_id", $responsabilidadActiva->id)
+                    ->first();
+
+                if ($semanaCumplida) {
                     $existe = false;
-                    foreach ($responsabilidadesMes as $responsabilidadMes) {
-                        if ($responsabilidadMes['id'] === $responsabilidadActivaToAdd->id) {
+                    foreach ($responsabilidadesMes as &$responsabilidadMes) {
+                        if ($responsabilidadMes['id'] === $responsabilidadActiva->id) {
                             $responsabilidadMes['semanasCount']++;
                             $responsabilidadMes['semanas'][] = $semana->id;
                             $existe = true;
                             break;
                         }
-                }
-            }
-
-            foreach($colaboradoresAreaId as $colabAreaId){
-                $inactividades = RegistroActividadController::obtenerInactividad($colabAreaId);
-                $activo = true;
-                foreach($inactividades as $inactividad){
-                    $semanasInactivas = $inactividad['semanas'];
-                    foreach($semanasInactivas as $semanaInactiva){
-                        if($semana->id === $semanaInactiva['id']){
-                            $activo = false;
-                            break 2;
-                        }
+                    }
+                    if (!$existe) {
+                        $responsabilidadesMes[] = [
+                            'id' => $responsabilidadActiva->id,
+                            'semanasCount' => 1,
+                            'semanas' => [$semana->id]
+                        ];
                     }
                 }
-                // Si el colaborador está activo, añadirlo al array temporal
-                if ($activo === true) {
-                    $colaboradoresActivosId[] = $colabAreaId;
-                    $countColabsActivos++;
-                }
             }
-            $colaboradoresActivosToAdd = Colaboradores_por_Area::whereIn('id', $colaboradoresActivosId)->get();
 
-            foreach ($colaboradoresActivosToAdd as $colaboradorActivoToAdd) {
-                $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->where("colaborador_area_id", $colaboradorActivoToAdd->id)->first();
-                // Verificar si el colaborador ya está en $colaboradoresMes
-                if($semanaCumplida){
+            foreach ($colaboradoresActivosToAdd as $colaboradorActivo) {
+                $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)
+                    ->where("colaborador_area_id", $colaboradorActivo->id)
+                    ->first();
+
+                if ($semanaCumplida) {
                     $existe = false;
                     foreach ($colaboradoresMes as &$colaboradorMes) {
-                        if ($colaboradorMes['id'] === $colaboradorActivoToAdd->id) {
+                        if ($colaboradorMes['id'] === $colaboradorActivo->id) {
                             $colaboradorMes['semanasCount']++;
                             $colaboradorMes['semanas'][] = $semana->id;
                             $existe = true;
                             break;
                         }
                     }
-
-                    // Si el colaborador no está en $colaboradoresMes, agregarlo
                     if (!$existe) {
-                        $candidato = $colaboradorActivoToAdd->colaborador->candidato;
+                        $candidato = $colaboradorActivo->colaborador->candidato;
                         $colaboradoresMes[] = [
-                            'id' => $colaboradorActivoToAdd->id,
+                            'id' => $colaboradorActivo->id,
                             'semanasCount' => 1,
                             'semanas' => [$semana->id],
-                            'colaborador' => $colaboradorActivoToAdd,
+                            'colaborador' => $colaboradorActivo,
                             'nombre' => $candidato->nombre . ' ' . $candidato->apellido,
                         ];
                     }
                 }
             }
         }
-        // Obtener la suma de sus notas
-        foreach ($colaboradoresMes as $index => &$colaboradorMes) {
-            // Inicializar sumNotes con todas las responsabilidades en 0
-            $sumNotes = [];
-            foreach ($semanaResponsabilidades as $responsabilidad) {
-                $nombreResponsabilidad = $responsabilidad->nombre;
-                $sumNotes[$nombreResponsabilidad] = 0;
-            }
+
+        // Calcular el promedio de notas para cada colaborador
+        foreach ($colaboradoresMes as &$colaboradorMes) {
+            $semanasCount = $colaboradorMes['semanasCount'];
+            $sumNotas = array_fill_keys(array_keys($responsabilidadesMes), 0);
+
             foreach ($colaboradorMes['semanas'] as $semanaId) {
                 $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $semanaId)
                     ->where('colaborador_area_id', $colaboradorMes['id'])
                     ->get();
-
                 foreach ($registrosCumplidosSemana as $registro) {
                     $valorCumplio = $registro->cumplio == 1 ? 20 : 0;
-
-                    foreach($semanaResponsabilidades as $responsabilidad){
-                        if($responsabilidad->id == $registro->responsabilidad_id) {
-                            $nombreResponsabilidad = $responsabilidad->nombre;
-                            $sumNotes[$nombreResponsabilidad] += $valorCumplio;
+                    foreach ($responsabilidadesMes as $responsabilidad) {
+                        if ($responsabilidad['id'] == $registro->responsabilidad_id) {
+                            $sumNotas[$responsabilidad['nombre']] += $valorCumplio;
                         }
-                    }   
+                    }
                 }
             }
-            // Agregar el array $sumNotes al array $colaboradorMes['sumNotas']
-            $colaboradorMes['sumNotas'] = $sumNotes;
-        }
-        unset($colaboradorMes); // Unset the reference
 
-        // return $colaboradoresMes;
-
-        //Dividir la suma maxima de las notas por la cantidad de semanas para obtener el promedio de cada responsabilidad
-        foreach ($colaboradoresMes as $index => $colaboradorMes) {
-            // Inicializar promNotes con todas las responsabilidades en 0
-            $semanasCount = $colaboradoresMes[$index]['semanasCount'];
-            $PromNotas = [];
-            foreach (array_keys($colaboradoresMes[$index]['sumNotas']) as $responsabilidad) {
-                $PromNotas[$responsabilidad] = number_format(($colaboradoresMes[$index]['sumNotas'][$responsabilidad]) / $semanasCount, 1);
+            // Calcular promedios
+            $promNotas = [];
+            foreach ($sumNotas as $responsabilidad => $nota) {
+                $promNotas[$responsabilidad] = $nota / $semanasCount;
             }
-            $colaboradoresMes[$index]['promedio'] = $PromNotas;
-            //Total suma de todas las responsabilidades entre el conteo de estas para obtener el promedio general del colaborador en el mes
-            $colaboradoresMes[$index]['total'] = number_format((array_sum($PromNotas))/$responsabilidades->count(),1);
-
+            $colaboradorMes['promedio'] = $promNotas;
         }
 
         return view('inspiniaViews.responsabilidades.promediomes', [
             "colaboradoresMes" => $colaboradoresMes,
-            "responsabilidades" => $responsabilidades,
+            "responsabilidades" => $responsabilidad,
             "year" => $year,
             "mes" => $mes,
             "area" => $area,
@@ -914,8 +942,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             "firstWeek" => $firstWeek,
             "lastWeek" => $lastWeek
         ]);
-        }
     }
+
 
     public function getMonthsProm(Request $request, $area_id){
         $access = FunctionHelperController::verifyAreaAccess($area_id);
