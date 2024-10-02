@@ -359,7 +359,7 @@
                         <thead>
                             <tr>
                                 <th> Colaboradores / Responsabilidades </th>
-                                @foreach($responsabilidades as $responsabilidad)
+                                @foreach($semana->responsabilidades as $responsabilidad)
                                 <td class="respon">{{$responsabilidad->nombre}}</td>
                                 @endforeach
                             </tr>
@@ -374,7 +374,7 @@
                                         style="display: none">
                                     <input type="number" name="semana_id" value="{{$semana->id}}" style="display: none">
                                 </th>
-                                @foreach($responsabilidades as $responsabilidad)
+                                @foreach($semana->responsabilidades as $responsabilidad)
 
                                 <?php
                                     $registro = $registros->where('colaborador_area_id', $colaboradorArea->id)
@@ -440,7 +440,7 @@
                         <thead>
                             <tr>
                                 <th> Colaboradores / Responsabilidades </th>
-                                @foreach($responsabilidades as $responsabilidad)
+                                @foreach($semana->responsabilidades as $responsabilidad)
                                 <td class="respon">{{$responsabilidad->nombre}}</td>
                                 @endforeach
                             </tr>
@@ -455,7 +455,7 @@
                                         style="display: none">
                                     <input type="number" name="semana_id" value="{{$semana->id}}" style="display: none">
                                 </th>
-                                @foreach($responsabilidades as $responsabilidad)
+                                @foreach($semana->responsabilidades as $responsabilidad)
                                 <input type="number" name="responsabilidad_id[]" value="{{$responsabilidad->id}}"
                                     style="display: none">
                                 <td class="check" onclick="toggleCheck(this)">

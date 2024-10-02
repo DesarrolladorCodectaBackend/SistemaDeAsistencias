@@ -10,6 +10,7 @@ use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
 use App\Http\Controllers\CursosController;
+use App\Http\Controllers\FunctionHelperController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
@@ -61,6 +62,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    //FUNCION HELPER
+    Route::get('/funcionPrueba', [FunctionHelperController::class, 'funcionPruebas']);
 
     //HOME
     Route::get('/dashboard', [HomePageController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');

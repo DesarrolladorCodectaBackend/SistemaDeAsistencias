@@ -65,8 +65,8 @@ class RegistroActividadController extends Controller
                     $desde = $inactividadActual['desde'];
                     $hasta = $inactividadActual['hasta'];
                     //Se obtienen los registros de semana que mas se acerquen segun el día
-                    $semanaDesde = RegistroActividadController::getSemanaByDay($desde);
-                    $semanaHasta = RegistroActividadController::getSemanaByDay($hasta);
+                    $semanaDesde = FunctionHelperController::getSemanaByDay($desde);
+                    $semanaHasta = FunctionHelperController::getSemanaByDay($hasta);
                     //Se inicia array para los Id de las semanas
                     $semanasId = [];
                     //mientras el id de la semana inicial sea menor al id de la semana final, se agrega al array de semanasId
@@ -91,7 +91,7 @@ class RegistroActividadController extends Controller
             //Se guarda la fecha inicial
             $desde = $inactividadActual['desde'];
             //Se obtiene la semana segun el día de la fecha inicial
-            $semanaDesde = RegistroActividadController::getSemanaByDay($desde);
+            $semanaDesde = FunctionHelperController::getSemanaByDay($desde);
             //Se obtienen las semanas que tengan un id mayor al id de la semana inicial
             $semanasInactivas = Semanas::where('id', '>=',$semanaDesde->id)->get();
             //Se guardan las semanas en el array de inactividadActual
@@ -104,26 +104,5 @@ class RegistroActividadController extends Controller
 
     }
 
-    public static function getSemanaByDay($date){
-        //Se convierte la fecha a Carbon para poder manipularla mejor
-        $date = Carbon::parse($date);
-        //Se guarda la fecha en la semanaDate
-        $semanaDate = $date;
-        //Si la fecha es lunes, martes o miercoles
-        if(($date->isMonday()) || ($date->isTuesday()) || ($date->isWednesday())){
-            //la fecha de la semana será igual al inicio de la semana de la fecha
-            $semanaDate = $date->copy()->startOfWeek();
-        } else{
-            //Si es otro día
-            //Mientras la semanaDate no sea lunes
-            while(!$semanaDate->isMonday()){
-                //Se le agregará un dia mas hasta que llegue a ser lunes
-                $semanaDate->addDay();
-            }
-        }
-        //Se busca la semana donde la fecha_lunes sea igual a la fecha de la semanaDate
-        $semana = Semanas::where('fecha_lunes', $semanaDate->toDateString())->first();
-        //Se retorna la semana
-        return $semana;
-    }
+
 }

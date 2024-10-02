@@ -86,7 +86,7 @@ class FunctionHelperController extends Controller
             ]);
         }
     }
-  
+
 
 
     public static function verifyAreaAccess($area_id){
@@ -121,7 +121,7 @@ class FunctionHelperController extends Controller
         }else{
             return false;
         }
-        
+
     }
 
     public static function getAreasJefe($user_id){
@@ -200,7 +200,7 @@ class FunctionHelperController extends Controller
 
     //TIME
 
-    
+
     public static function findThisWeek(){
         $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
         $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
@@ -214,7 +214,7 @@ class FunctionHelperController extends Controller
         //Buscar el siguiente lunes
         while (!$today->isMonday()) {
             $today->addDay();
-            $monday = $today;                    
+            $monday = $today;
         }
         //Buscar semana del siguiente lunes
         $semana = Semanas::where('fecha_lunes', $monday->toDateString())->first();
@@ -222,6 +222,30 @@ class FunctionHelperController extends Controller
             $semana = Semanas::create(['fecha_lunes' => $monday->toDateString()]);
         }
         //Retornar semana
+        return $semana;
+    }
+
+    public static function getSemanaByDay($date){
+        //Se convierte la fecha a Carbon para poder manipularla mejor
+        $date = Carbon::parse($date);
+        //Se guarda la fecha en la semanaDate
+        $semanaDate = $date;
+        //Si la fecha es lunes, martes o miercoles
+        if(($date->isMonday()) || ($date->isTuesday()) || ($date->isWednesday())){
+            //la fecha de la semana será igual al inicio de la semana de la fecha
+            $semanaDate = $date->copy()->startOfWeek();
+        } else{
+            //Si es otro día
+            //Mientras la semanaDate no sea lunes
+            while(!$semanaDate->isMonday()){
+                //Se le agregará un dia mas hasta que llegue a ser lunes
+                $semanaDate->addDay();
+            }
+        }
+        // return $semanaDate->toDateString();
+        //Se busca la semana donde la fecha_lunes sea igual a la fecha de la semanaDate
+        $semana = Semanas::where('fecha_lunes', $semanaDate->toDateString())->first();
+        //Se retorna la semana
         return $semana;
     }
 
@@ -328,13 +352,13 @@ class FunctionHelperController extends Controller
                 $colaboradoresArea = Colaboradores_por_Area::with('colaborador')->where('area_id', $area->id)->where('estado', 1)->get();
                 //Encontrar las maquinas de esta area
                 $maquinasReservadas = Maquina_reservada::whereIn('colaborador_area_id', $colaboradoresArea->pluck('id'))->get();
-                
+
                 //Encontrar los colaboradores de las áreas concurrentes
                 $colaboradoresAreasConcurrentes = Colaboradores_por_Area::with('colaborador')->whereIn('area_id', $areasConcurrentesWithoutThis->pluck('id'))
                     ->where('estado', 1)->get();
                 //Encontrar las máquinas de las áreas concurrentes
                 $maquinasReservadasAreasConcurrentes = Maquina_reservada::whereIn('colaborador_area_id', $colaboradoresAreasConcurrentes->pluck('id'))->get();
-        
+
                 //Recorrer las maquinas de esta area
                 foreach($maquinasReservadas as $maquinaReservada) {
                     //Recorrer las maquinas de las otras areas
@@ -355,6 +379,13 @@ class FunctionHelperController extends Controller
             DB::rollBack();
             return response()->json(["error" => $e->getMessage()]);
         }
+    }
+
+    public function funcionPruebas(){
+        $inactividades = RegistroResponsabilidadController::obtenerInactividad(8);
+        return $inactividades;
+        // $inactividades = RegistroResponsabilidadController::verifyResponsabilidadInactivity(8, 18);
+        // return ["Respuesta" => $inactividades];
     }
 
 }

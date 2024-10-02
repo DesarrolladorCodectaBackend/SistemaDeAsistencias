@@ -41,7 +41,7 @@
                                     <thead>
                                         <tr class="m1">
                                             <th class="hm">Meses:</th>
-                                            <th class="fecha" colspan="5">
+                                            <th class="fecha" colspan="{{ count($responsabilidadesMeses)-2 }}">
                                                 |
                                                 @foreach($selectedMonths as $key => $mes)
                                                 {{strtoupper($mes)}}
@@ -56,14 +56,14 @@
                                     <thead>
                                         <tr class="m1">
                                             <th class="hm">Área:</th>
-                                            <th colspan="8" id="Area">{{$area->especializacion}}</th>
+                                            <th colspan="{{ count($responsabilidadesMeses)+1 }}" id="Area">{{$area->especializacion}}</th>
                                         </tr>
                                     </thead>
                                     <thead>
                                         <tr class="m1">
                                             <th class="hm">Responsabilidades / Colaboradores</th>
-                                            @foreach($responsabilidades as $responsabilidad)
-                                            <th colspan="1" id="colum">{{$responsabilidad->nombre}}</th>
+                                            @foreach($responsabilidadesMeses as $responsabilidad)
+                                            <th colspan="1" id="colum">{{$responsabilidad['nombre']}}</th>
                                             @endforeach
                                             <th colspan="1" id="total">Total:</th>
                                         </tr>

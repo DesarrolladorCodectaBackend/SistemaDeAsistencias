@@ -42,10 +42,12 @@ class ResponsabilidadController extends Controller
                 'porcentaje_peso' => 'required|integer',
             ]);
 
-            Responsabilidades_semanales::create([
+            $responsabilidad = Responsabilidades_semanales::create([
                 'nombre' => $request->nombre,
                 'porcentaje_peso' => $request->porcentaje_peso
             ]);
+
+            RegistroResponsabilidadController::crearRegistro($responsabilidad->id, 1);
 
             DB::commit();
             if ($request->currentURL) {

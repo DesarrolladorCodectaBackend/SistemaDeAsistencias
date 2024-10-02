@@ -68,11 +68,29 @@ class RegistroResponsabilidadController extends Controller
                 if ($inactividadActual !== null) {
                     $inactividadActual['hasta'] = $registro->fecha;
                     $desde = $inactividadActual['desde'];
+                    // return
                     $hasta = $inactividadActual['hasta'];
-                    $semanaDesde = self::getSemanaByDay($desde);
-                    $semanaHasta = self::getSemanaByDay($hasta);
+                    $semanaDesde = FunctionHelperController::getSemanaByDay($desde);
+                    $semanaHasta = FunctionHelperController::getSemanaByDay($hasta);
+                    // return ["hasta" => $semanaHasta];
                     $semanasId = [];
                     for ($i = $semanaDesde->id; $i < $semanaHasta->id; $i++) {
+                        $semanasId[] = $i;
+                    }
+                    $semanasInactivas = Semanas::whereIn('id', $semanasId)->get();
+                    $inactividadActual['semanas'] = $semanasInactivas;
+                    $inactividades[] = $inactividadActual;
+                    $inactividadActual = null;
+                } else{
+                    $primeraSemana = Semanas::find(1);
+                    $inactividadActual = [
+                        'desde' => $primeraSemana->fecha_lunes,
+                        'hasta' => $registro->fecha,
+                        'semanas' => [],
+                    ];
+                    $semanaHasta = FunctionHelperController::getSemanaByDay($registro->fecha);
+                    $semanasId = [];
+                    for ($i = $primeraSemana->id; $i < $semanaHasta->id; $i++) {
                         $semanasId[] = $i;
                     }
                     $semanasInactivas = Semanas::whereIn('id', $semanasId)->get();
@@ -86,13 +104,33 @@ class RegistroResponsabilidadController extends Controller
         if ($inactividadActual !== null) {
             $inactividadActual['hasta'] = null;
             $desde = $inactividadActual['desde'];
-            $semanaDesde = self::getSemanaByDay($desde);
+            $semanaDesde = FunctionHelperController::getSemanaByDay($desde);
             $semanasInactivas = Semanas::where('id', '>=', $semanaDesde->id)->get();
             $inactividadActual['semanas'] = $semanasInactivas;
             $inactividades[] = $inactividadActual;
         }
 
         return $inactividades;
+    }
+
+    public static function verifyResponsabilidadInactivity($responsabilidad_id, $semana_id)
+    {
+        $inactividades = RegistroResponsabilidadController::obtenerInactividad($responsabilidad_id);
+        $estado = true;
+        foreach ($inactividades as $inactividad) {
+            $semanasInactivas = $inactividad['semanas'];
+            foreach ($semanasInactivas as $semanaInactiva) {
+                if ($semana_id === $semanaInactiva['id']) {
+                    // $colaboradoresAreaId->forget($colabKey);
+                    //$colaboradoresOtherAreas->forget($key);
+                    // echo "here" + $colabAreaId;
+                    $estado = false;
+                    break 2; // Salir de ambos bucles si el colaborador está inactivo
+                }
+            }
+        }
+        // Si el colaborador está activo, añadirlo al array temporal
+        return $estado;
     }
 
     public static function getSemanaByDay($date)

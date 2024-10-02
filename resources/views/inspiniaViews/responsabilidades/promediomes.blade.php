@@ -42,7 +42,7 @@
                                     <thead>
                                         <tr class="m1">
                                             <th class="hm">Mes:</th>
-                                            <th class="fecha" colspan="5">{{strtoupper($mes)}}</th>
+                                            <th class="fecha" colspan="{{ count($responsabilidadesMes)-2 }}">{{strtoupper($mes)}}</th>
                                             <th class="hm">Total Semanas: {{$totalSemanas}} </th>
                                             <th class="fecha" colspan="2">Del: {{$firstWeek->fecha_lunes}} Al:
                                                 {{$lastWeek->fecha_lunes}}</th>
@@ -50,15 +50,15 @@
                                     </thead>
                                     <thead>
                                         <tr class="m1">
-                                            <th class="hm">Áreas:</th>
-                                            <th colspan="8" id="Area">{{$area->especializacion}}</th>
+                                            <th class="hm">Área:</th>
+                                            <th colspan="{{ count($responsabilidadesMes)+1 }}" id="Area">{{$area->especializacion}}</th>
                                         </tr>
                                     </thead>
                                     <thead>
                                         <tr class="m1">
                                             <th class="hm">Responsabilidades / Colaboradores</th>
-                                            @foreach($responsabilidades as $responsabilidad)
-                                            <th colspan="1" id="colum">{{$responsabilidad->nombre}}</th>
+                                            @foreach($responsabilidadesMes as $responsabilidad)
+                                            <th colspan="1" id="colum">{{$responsabilidad['nombre']}}</th>
                                             @endforeach
                                             <th colspan="1" id="total">Total:</th>
                                         </tr>
