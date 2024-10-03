@@ -17,10 +17,10 @@
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Horarios Generales</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Horario General</strong>
@@ -103,33 +103,33 @@
 
     <script>
         $(document).ready(function() {
-    
+
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
-    
+
             /* initialize the external events -----------------------------------------------------------------*/
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
                     title: $.trim($(this).text()),
                     stick: true
                 });
-    
+
                 $(this).draggable({
                     zIndex: 1111999,
                     revert: true,
                     revertDuration: 0
                 });
             });
-    
+
             /* initialize the calendar -----------------------------------------------------------------*/
             var date = new Date();
             var d = date.getDate();
             var m = date.getMonth();
             var y = date.getFullYear();
             var horariosAreas = <?php echo json_encode($horarios_presenciales_Asignados); ?>;
-    
+
             console.log(horariosAreas);
             var eventosHorarios = horariosAreas.map(function(horario) {
                 var numeroDia;
@@ -160,8 +160,8 @@
                     editable: false
                 };
             });
-            
-    
+
+
             var eventos = [{
                     title: 'Domingo',
                     start: new Date(2024, 1, 4, 0, 0),
@@ -219,7 +219,7 @@
                     editable: false
                 }
             ].concat(eventosHorarios);
-    
+
             $('#calendar').fullCalendar({
                 locale: 'es',
                 defaultView: 'agendaWeek',

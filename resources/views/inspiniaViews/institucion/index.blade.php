@@ -19,16 +19,16 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Gestión instituciones</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/ajustes">Ajustes</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>Institucion</strong>
+                        <strong>Institución</strong>
                     </li>
                 </ol>
             </div>
@@ -51,7 +51,7 @@
                                             <form role="form" method="POST" action="{{ route('institucion.store') }}">
                                                 @csrf
 
-                                                <div class="form-group"><label>Institucion</label> <input type="text"
+                                                <div class="form-group"><label>Institución</label> <input type="text"
                                                         placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                                 </div>
                                                 <div>
@@ -73,7 +73,7 @@
                 <div class="col-lg-12">
                 <div class="ibox ">
                     <div class="ibox-title">
-                        <h5>Basic Data Tables example with responsive plugin</h5>
+                        <h5>Tabla</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>

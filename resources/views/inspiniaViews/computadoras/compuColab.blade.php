@@ -13,10 +13,10 @@
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Computadora y Programas</h2>
+                <h2>Gestión Programas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/colaboradores">Colaboradores</a>
@@ -75,7 +75,7 @@
                                                                     <div class="col-sm-6">
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
-                                                                                <dt>Codigo de Serie:</dt>
+                                                                                <dt>Código de Serie:</dt>
                                                                                 <input style="padding: 1px 8px;"
                                                                                     type="text" class="form-control"
                                                                                     name="codigo_serie" required />
@@ -94,7 +94,7 @@
                                                                         </dl>
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
-                                                                                <dt>Tarjeta Grafica:</dt>
+                                                                                <dt>Tarjeta Gráfica:</dt>
                                                                                 <input style="padding: 1px 8px;"
                                                                                     type="text" class="form-control"
                                                                                     name="tarjeta_grafica" required />
@@ -102,7 +102,7 @@
                                                                         </dl>
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
-                                                                                <dt>Memoria Grafica:</dt>
+                                                                                <dt>Memoria Gráfica:</dt>
                                                                                 <input style="padding: 1px 8px;"
                                                                                     type="text" class="form-control"
                                                                                     name="memoria_grafica" required />
@@ -204,7 +204,7 @@
                                             <div class="col-sm-12 col-md-6 col-lg-3 b-r">
                                                 <dl class="row mb-3">
                                                     <div class="col-sm-6 text-sm-left">
-                                                        <dt>Codigo de Serie:</dt>
+                                                        <dt>Código de Serie:</dt>
                                                         <dd class="sm-2">{{$computerColab->codigo_serie}}</dd>
                                                     </div>
                                                 </dl>
@@ -216,7 +216,7 @@
                                                 </dl>
                                                 <dl class="row mb-4">
                                                     <div class="col-sm-6 text-sm-left">
-                                                        <dt>Tarjeta Grafica:</dt>
+                                                        <dt>Tarjeta Gráfica:</dt>
                                                         <dd class="sm-2">{{$computerColab->tarjeta_grafica}}</dd>
                                                     </div>
                                                 </dl>
@@ -224,7 +224,7 @@
                                             <div class="col-sm-12 col-md-6 col-lg-3 b-r">
                                                 <dl class="row mb-3">
                                                     <div class="col-sm-6 text-sm-left">
-                                                        <dt>Memoria Grafica:</dt>
+                                                        <dt>Memoria Gráfica:</dt>
                                                         <dd class="sm-2">{{$computerColab->memoria_grafica}}</dd>
                                                     </div>
                                                 </dl>
@@ -244,7 +244,7 @@
                                             <div class="col-sm-12 col-md-6 col-lg-3 b-r">
                                                 <dl class="row mb-3">
                                                     <div class="col-sm-6 text-sm-left">
-                                                        <dt>Ultimo Mantenimiento</dt>
+                                                        <dt>Último Mantenimiento</dt>
                                                         <dd class="sm-2">{{($ultimaIncidencia) ?
                                                             $ultimaIncidencia->fecha : 'No hay
                                                             mantenimientos'}}</dd>
@@ -283,7 +283,7 @@
                                         <div class="ibox">
                                             <div class="ibox-content product-box">
                                                 <a class="product-name text-center">
-                                                    <h1><strong> Incidencias</strong></h1>
+                                                    <h1><strong>Incidencias</strong></h1>
                                                 </a>
                                                 <a data-toggle="modal"
                                                     class="btn btn-primary btn-success fa fa-plus-circle float-right"
@@ -389,7 +389,7 @@
                                                                         <div class="row">
 
                                                                             <div class="col-sm-4 text-sm-left">
-                                                                                <dt>Descripcion:</dt>
+                                                                                <dt>Descripción:</dt>
                                                                             </div>
                                                                             <div class="col-sm-6 text-sm-left">
                                                                                 <input style="padding: 1px 8px;"
@@ -487,7 +487,7 @@
                                                                     <div class="col-sm-6">
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
-                                                                                <dt>Codigo de Serie:</dt>
+                                                                                <dt>Código de Serie:</dt>
                                                                                 <input style="padding: 1px 8px;"
                                                                                     type="text" class="form-control"
                                                                                     name="codigo_serie"
@@ -512,7 +512,7 @@
                                                                         </dl>
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
-                                                                                <dt>Tarjeta Grafica:</dt>
+                                                                                <dt>Tarjeta Gráfica:</dt>
                                                                                 <input style="padding: 1px 8px;"
                                                                                     type="text" class="form-control"
                                                                                     name="tarjeta_grafica"
@@ -522,7 +522,7 @@
                                                                         </dl>
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
-                                                                                <dt>Memoria Grafica:</dt>
+                                                                                <dt>Memoria Gráfica:</dt>
                                                                                 <input style="padding: 1px 8px;"
                                                                                     type="text" class="form-control"
                                                                                     name="memoria_grafica"
@@ -654,7 +654,7 @@
                                                     </dl>
                                                     <dl class="row mb-12">
                                                         <div class="col-sm-12">
-                                                            <h3>Descripcion:</h3>
+                                                            <h3>Descripción:</h3>
                                                             <dd class="sm-2">
                                                                 {{$programaInstalado->programa->descripcion}}</dd>
                                                         </div>

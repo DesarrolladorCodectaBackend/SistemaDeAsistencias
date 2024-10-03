@@ -13,10 +13,10 @@
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Ajustes</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <a href="/ajustes"><strong>Ajustes</strong></a>
@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Carrera</strong></h4>
-                                    <p>Tabla de carreras academicas</p>
+                                    <p>Tabla de carreras académicas</p>
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-success" href="/carreras"><i class="fa fa-cog"></i></a>

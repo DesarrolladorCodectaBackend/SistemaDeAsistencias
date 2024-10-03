@@ -17,7 +17,7 @@
                 <h2>Salones</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Salones</strong>
@@ -46,7 +46,7 @@
                                                         class="form-control" name="nombre"></div>
 
                                                 <div class="form-group" style="text-align: center"><label>
-                                                        <h3 class="m-t-none m-b">Descripcion</h3>
+                                                        <h3 class="m-t-none m-b">Descripción</h3>
                                                     </label><input type="text" placeholder="Ingresa Descripcion"
                                                         class="form-control" name="descripcion"></div>
 
@@ -99,19 +99,19 @@
 
 
                                 <small class="text-muted text-center">
-                                    <h3><strong>Codigo</strong></h3>
+                                    <h3><strong>Código</strong></h3>
                                 </small>
                                 <div class="small m-t-xs text-center">
                                     <h5>{{ $salon->id }}</h5>
                                 </div>
                                 <small class="text-muted text-center">
-                                    <h3><strong>Descripcion</strong></h3>
+                                    <h3><strong>Descripción</strong></h3>
                                 </small>
                                 <div class="small m-t-xs text-center">
                                     <h5>{{ $salon->descripcion }}</h5>
                                 </div>
                                 <small class="text-muted text-center">
-                                    <h3><strong>Cantidad De Maquinas</strong></h3>
+                                    <h3><strong>Cantidad De Máquinas</strong></h3>
                                 </small>
                                 <div class="small m-t-xs text-center">
                                     <h5>{{$salon->cant_maquinas}}</h5>
@@ -188,19 +188,19 @@
                                                                                 </div>
                                                                                 <div class="text-md-left text-sm-center p-2 mb-2">
                                                                                     <div class="text-md-left text-sm-center">
-                                                                                        <dt class="text-md-left text-sm-center">Detalles Tecnicos:</dt>
+                                                                                        <dt class="text-md-left text-sm-center">Detalles Técnicos:</dt>
                                                                                         <dd class="sm-2 text-md-left text-sm-center">{{$maquina->detalles_tecnicos}}</dd>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="text-md-left text-sm-center p-2 mb-2">
                                                                                     <div class="text-md-left text-sm-center">
-                                                                                        <dt class="text-md-left text-sm-center">Numero Identificador:</dt>
+                                                                                        <dt class="text-md-left text-sm-center">Número Identificador:</dt>
                                                                                         <dd class="sm-2 text-md-left text-sm-center">{{$maquina->num_identificador}}</dd>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="text-md-left text-sm-center p-2 mb-2">
                                                                                     <div class="text-md-left text-sm-center">
-                                                                                        <dt class="text-md-left text-sm-center">Salon Asignado:</dt>
+                                                                                        <dt class="text-md-left text-sm-center">Salón Asignado:</dt>
                                                                                         <dd class="sm-2 text-md-left text-sm-center">{{$maquina->nombre}}</dd>
                                                                                     </div>
                                                                                 </div>                                                     
@@ -235,7 +235,7 @@
                                                                     </div>
 
                                                                     <div class="form-group"><label>
-                                                                            <h3 class="m-t-none m-b">Descripcion</h3>
+                                                                            <h3 class="m-t-none m-b">Descripción</h3>
                                                                         </label><input type="text" name="descripcion"
                                                                             class="form-control"
                                                                             value="{{ old('descripcion', $salon->descripcion) }}">
@@ -269,7 +269,7 @@
                     <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
                             <a href="{{ $salones->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
+                                <i class="fa fa-arrow-circle-left"></i> Primero
                             </a>
                         @endif
                         @if($pageData->currentPage > 1)
@@ -286,7 +286,7 @@
                         @endif
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
                             <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
+                                Último <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         @endif
                     </div>

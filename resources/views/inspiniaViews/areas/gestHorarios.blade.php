@@ -9,7 +9,7 @@
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
-    <title>INSPINIA | HORARIO AREA</title>
+    <title>INSPINIA | HORARIO ÁREA</title>
 </head>
 
 <body>
@@ -23,7 +23,7 @@
                         <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/areas">Areas</a>
+                        <a href="/areas">Áreas</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Horario Área</strong>

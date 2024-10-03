@@ -19,10 +19,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Gestión Carreras</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/ajustes">Ajustes</a>
@@ -73,7 +73,7 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Border Table </h5>
+                    <h5>Tabla</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>

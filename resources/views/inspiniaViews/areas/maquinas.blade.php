@@ -17,13 +17,13 @@
                 <h2>Área Máquinas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/areas">Area</a>
+                        <a href="/areas">Área</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>Maquinas</strong>
+                        <strong>Máquinas</strong>
                     </li>
                 </ol>
             </div>
@@ -75,7 +75,7 @@
                                                         <div class="d-flex flex-column gap-20">
                                                             <div>
                                                                 <h1>Asignar Colaborador</h1>
-                                                                <h3>Maquina ID: {{$maquina->id}}</h3>
+                                                                <h3>Máquina ID: {{$maquina->id}}</h3>
                                                             </div>
                                                             <div>
                                                                 <select class="form-control" name="colaborador_id">

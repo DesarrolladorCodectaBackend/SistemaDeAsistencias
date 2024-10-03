@@ -45,7 +45,7 @@
                         <a href="/colaboradores">Colaborador</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/prestamos">Prestamos</a>
+                        <a href="/prestamos">Préstamos</a>
                     </li>
                 </ol>
             </div>
@@ -125,7 +125,7 @@
                                                             </dl>
                                                             <dl class="row mb-3">
                                                                 <div class="col-sm-12 text-sm-left row">
-                                                                    <dt class="col-sm-6">Area:</dt>
+                                                                    <dt class="col-sm-6">Área:</dt>
                                                                     <dd class="col-sm-6" sm-2>
                                                                         @forelse ($areas as $area)
                                                                             <div>{{ $area->especializacion }}</div>
@@ -151,7 +151,7 @@
                                                         <form role="form">
                                                             <dl class="row mb-3">
                                                                 <div class="col-sm-12 text-sm-left row">
-                                                                    <dt class="col-sm-6">Salon:</dt>
+                                                                    <dt class="col-sm-6">Salón:</dt>
                                                                     <dd class="col-sm-6 sm-2">{{ $area->salon->id }}</dd>
                                                                 </div>
                                                             </dl>
@@ -226,7 +226,7 @@
                                                     </div>
 
                                                     <div class="text-center mb-3">
-                                                        <label><h4 class="m-t-none m-b-2 font-bold">Fecha de devolucion:</h4></label>
+                                                        <label><h4 class="m-t-none m-b-2 font-bold">Fecha de devolución:</h4></label>
                                                         <label class="font-bold">{{ $prestamo->fecha_devolucion }}</label>
                                                     </div>
 

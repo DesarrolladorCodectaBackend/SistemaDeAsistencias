@@ -19,10 +19,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Gestión Cursos</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/ajustes">Ajustes</a>
@@ -53,10 +53,10 @@
                                             <div class="form-group"><label>Curso</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
-                                            <div class="form-group"><label>Categoria</label> <input type="text"
+                                            <div class="form-group"><label>Categoría</label> <input type="text"
                                                 placeholder="Ingrese categoria" name="categoria" class="form-control">
                                             </div>
-                                            <div class="form-group"><label>Duracion</label> <input type="text"
+                                            <div class="form-group"><label>Duración</label> <input type="text"
                                                 placeholder="Ingrese duracion" name="duracion" class="form-control">
                                             </div>
                                             <div>
@@ -78,7 +78,7 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Border Table </h5>
+                    <h5>Tabla</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -105,8 +105,8 @@
                                 <tr>
                                     <th class="col-lg-1">ID</th>
                                     <th class="col-lg-3">Curso</th>
-                                    <th class="col-lg-3">Categoria</th>
-                                    <th class="col-lg-1">Duracion</th>
+                                    <th class="col-lg-3">Categoría</th>
+                                    <th class="col-lg-1">Duración</th>
                                     <th class="col-lg-1">Estado</th>
                                     <th class="col-lg-1 oculto">Editar</th>
 
@@ -149,10 +149,10 @@
                                                                         class="form-control" name="nombre" id="nombre"
                                                                         value="{{ old('nombre', $curso->nombre) }}">
                                                                 </div>
-                                                                <div class="form-group"><label>Categoria</label> <input type="text"
+                                                                <div class="form-group"><label>Categoría</label> <input type="text"
                                                                     placeholder="....." name="categoria" value="{{ old('categoria', $curso->categoria) }}" class="form-control">
                                                                 </div>
-                                                                <div class="form-group"><label>Duracion</label> <input type="text"
+                                                                <div class="form-group"><label>Duración</label> <input type="text"
                                                                     placeholder="....." name="duracion" value="{{ old('duracion', $curso->duracion) }}" class="form-control">
                                                                 </div>
                                                                 <div>

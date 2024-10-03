@@ -19,10 +19,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Gestión Programas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/ajustes">Ajustes</a>
@@ -49,13 +49,13 @@
                                             <div class="form-group"><label>Programa</label> <input type="text"
                                                     placeholder="....." class="form-control" name="nombre">
                                             </div>
-                                            <div class="form-group"><label>Descripcion</label> <input type="text"
+                                            <div class="form-group"><label>Descripción</label> <input type="text"
                                                     placeholder="....." class="form-control" name="descripcion">
                                             </div>
 
                                         </div>
                                         <div class="col-sm-6">
-                                            <h4>Subir Icono</h4>
+                                            <h4>Subir Ícono</h4>
                                             <input type="file" class="form-control-file" id="icono" name="icono"
                                                 style="display: none;">
                                             <!-- Icono que simula el clic en el botón de subir archivos -->
@@ -82,7 +82,7 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Border Table </h5>
+                    <h5>Tabla</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -108,7 +108,7 @@
                             <tr>
                                 <th class="col-lg-1">ID</th>
                                 <th class="col-lg-4">Programa</th>
-                                <th class="col-lg-5">Descripcion</th>
+                                <th class="col-lg-5">Descripción</th>
                                 <th class="col-lg-1 child-center">Estado</th>
                                 <th class="col-lg-1 child-center oculto">Imagen</th>
                                 <th class="col-lg-1 child-center oculto">Editar</th>
@@ -154,7 +154,7 @@
                                                                     class="form-control" name="nombre" id="nombre"
                                                                     value="{{ old('nombre', $programa->nombre) }}">
                                                             </div>
-                                                            <div class="form-group"><label>Descripcion</label>
+                                                            <div class="form-group"><label>Descripción</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="descripcion"
                                                                     id="descripcion"
@@ -163,7 +163,7 @@
 
                                                         </div>
                                                         <div class="col-sm-6 b-r">
-                                                            <h4>Subir Icono</h4>
+                                                            <h4>Subir Ícono</h4>
                                                             <input type="file" class="form-control-file"
                                                                 id="icono-{{ $programa->id }}" name="icono"
                                                                 value="{{ old('icono', $programa->icono) }}"

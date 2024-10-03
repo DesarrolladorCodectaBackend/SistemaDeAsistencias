@@ -16,7 +16,7 @@
                 <h2>Reportes</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Reportes</strong>
@@ -70,10 +70,10 @@
                 </div>
             </div>
         </div>
-        
+
         <style>
             .table-scroll {
-                overflow-x: auto; 
+                overflow-x: auto;
                 white-space: nowrap;
             }
 
@@ -141,7 +141,7 @@
                         };
 
                         // Ajustar los márgenes de la página
-                        doc.pageMargins = [20, 20, 20, 20]; 
+                        doc.pageMargins = [20, 20, 20, 20];
 
                         doc.content[1].table.body.forEach(function(row) {
                             row.forEach(function(cell) {

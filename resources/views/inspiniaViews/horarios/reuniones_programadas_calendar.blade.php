@@ -166,7 +166,7 @@
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
-    
+
     <style>
         /* .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
@@ -205,8 +205,8 @@
         $(document).ready(function() {
             $('.multiple_integrantes_select').select2();
         });
-        
-        
+
+
     </script>
 
     <script>
@@ -215,21 +215,21 @@
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
-    
+
             // initialize the external events
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
-                    title: $.trim($(this).text()), 
+                    title: $.trim($(this).text()),
                     stick: true
                 });
-    
+
                 $(this).draggable({
                     zIndex: 1111999,
                     revert: true,
                     revertDuration: 0
                 });
             });
-    
+
             // initialize the calendar
             var date = new Date();
             var d = date.getDate();
@@ -237,7 +237,7 @@
             var y = date.getFullYear();
 
             var reunionesProgramadas = <?php echo json_encode($reunionesProgramadas); ?>;
-    
+
             var eventosHorarios = reunionesProgramadas.map(function(reunion) {
                 let hf = reunion.horario_modificado; //Horario formateado
                 // console.log(hf);
@@ -253,7 +253,7 @@
                     url: hf.url
                 };
             });
-    
+
             $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -261,7 +261,7 @@
                     right: 'agendaWeek,agendaDay'
                 },
                 editable: false,
-                droppable: false, 
+                droppable: false,
                 defaultView: 'agendaWeek', // inicializar en formato semanal
                 timeFormat: 'h:mm A', // formato de tiempo en eventos
                 columnHeaderFormat: 'ddd M/D', // formato para el encabezado de los días
@@ -280,16 +280,16 @@
                     right: 'agendaDay'
                 },
                 editable: false,
-                droppable: false, 
+                droppable: false,
                 defaultView: 'agendaDay', // inicializar en formato semanal
                 timeFormat: 'h:mm A', // formato de tiempo en eventos
                 columnHeaderFormat: 'ddd M/D', // formato para el encabezado de los días
-                
+
                 events: eventosHorarios,
             });
         });
     </script>
-    
+
 
 
 </body>

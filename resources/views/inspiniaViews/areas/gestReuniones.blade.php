@@ -9,7 +9,7 @@
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
-    <title>INSPINIA | AREA REUNIONES</title>
+    <title>INSPINIA | ÁREA REUNIONES</title>
 </head>
 
 <body>
@@ -17,13 +17,13 @@
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Gestión Reunión</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/areas">Areas</a>
+                        <a href="/areas">Áreas</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Reuniones Área</strong>

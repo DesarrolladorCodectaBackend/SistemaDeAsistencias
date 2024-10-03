@@ -14,10 +14,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Formulario Colaborador</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/candidatos">Candidatos</a>
@@ -33,7 +33,7 @@
                 <div class="col-lg-12">
                     <div class="ibox ">
                         <div class="ibox-content">
-                            <h2><strong>Informacion</strong></h2>
+                            <h2><strong>Información</strong></h2>
                             <form role="form" method="POST" action="{{ route('colaboradores.store') }}">
                                 @csrf
                                 <div class="row">
@@ -55,11 +55,11 @@
                                         <div class="form-group"><label>Correo</label> <input type="email"
                                                 placeholder="Ingrese su correo" value="{{ $candidato->correo }}"
                                                 class="form-control" disabled></div>
-                                        <div class="form-group"><label>Telefono</label> <input type="text"
+                                        <div class="form-group"><label>Teléfono</label> <input type="text"
                                                 placeholder="Ingrese su telefono" value="{{ $candidato->celular }}"
                                                 class="form-control" disabled></div>
                                                 <div class="form-group">
-                                                    <label class="col-form-label">Area</label>
+                                                    <label class="col-form-label">Área</label>
                                                     <div>
                                                         <select name="areas_id[]" multiple class="form-control multiple_areas_select">
                                                             @foreach ($areas as $key => $area)
@@ -92,7 +92,7 @@
                                             <table id="tablaHorarios" class="table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Dia</th>
+                                                        <th>Día</th>
                                                         <th>Hora Inicial</th>
                                                         <th>Hora Final</th>
                                                         <th></th>

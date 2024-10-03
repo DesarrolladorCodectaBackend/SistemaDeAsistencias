@@ -19,10 +19,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Gestión Sedes</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/Ajustes">Ajustes</a>
@@ -51,7 +51,7 @@
                                                     class="form-control">
                                             </div>
                                             <div class="form-group">
-                                                <label>Institucion: </label>
+                                                <label>Institución: </label>
                                                 <select class="form-control" name="institucion_id">
                                                     @foreach($instituciones as $institucion)
                                                     <option value="{{$institucion->id}}">{{$institucion->nombre}}
@@ -78,7 +78,7 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Border Table </h5>
+                    <h5>Tabla</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -105,7 +105,7 @@
 
                                 <th class="col-lg-1 text-center">ID</th>
                                 <th class="col-lg-5 text-center">Sede</th>
-                                <th class="col-lg-4 text-center">Institucion</th>
+                                <th class="col-lg-4 text-center">Institución</th>
                                 <th class="col-lg-1 text-center">Estado</th>
                                 <th class="col-lg-1 text-center oculto">Editar</th>
                             </tr>
@@ -140,14 +140,14 @@
                                                             action="{{ route('sedes.update', $sede->id) }}">
                                                             @csrf
                                                             @method('PUT')
-                                                            <label class="col-form-label">Institucion</label>
+                                                            <label class="col-form-label">Institución</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
                                                                     value="{{ old('nombre', $sede->nombre) }}">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label>Institucion: </label>
+                                                                <label>Institución: </label>
                                                                 <select class="form-control" name="institucion_id">
                                                                     @foreach($instituciones as $institucion)
 

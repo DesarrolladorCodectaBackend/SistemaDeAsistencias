@@ -14,10 +14,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Responsabilidades</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Responsabilidades - Áreas</strong>
@@ -37,8 +37,8 @@
                                         class="img-lg">
                                 </div>
                                 <div class="product-desc">
-                                    <button class="btn btn-outline btn-primary dim float-right"
-                                        type="button"><span>ON</span></button>
+                                    {{-- <button class="btn btn-outline btn-primary dim float-right"
+                                        type="button"><span>ON</span></button> --}}
                                     <small class="text-muted">{{ $area->id }}</small>
                                     <a href="#" class="product-name">{{ $area->especializacion }}</a>
                                     <div class="small m-t-xs">
@@ -71,7 +71,7 @@
                     <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
                             <a href="{{ $areas->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
+                                <i class="fa fa-arrow-circle-left"></i> Primero
                             </a>
                         @endif
                         @if($pageData->currentPage > 1)
@@ -88,7 +88,7 @@
                         @endif
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
                             <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
+                                Último <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         @endif
                     </div>

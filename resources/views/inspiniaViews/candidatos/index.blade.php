@@ -14,10 +14,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-3">
-                <h2>Dashboards</h2>
+                <h2>Candidatos</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a>Personal</a>
@@ -294,7 +294,7 @@
                                 <div class="row">
 
                                     <div class="col-sm-6 b-r">
-                                        <h3 class="m-t-none m-b">Informacion Personal </h3>
+                                        <h3 class="m-t-none m-b">Información Personal </h3>
 
 
                                         <form role="form">
@@ -312,11 +312,11 @@
                                                 </label><label for="">{{$candidato->apellido ?? 'Sin apellido'}}</label>
                                             </div>
                                             <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Direccion:</h5>
+                                                    <h5 class="m-t-none m-b">Dirección:</h5>
                                                 </label><label for="">{{$candidato->direccion ?? 'Sin dirección'}}</label>
                                             </div>
                                             <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">Institucion - Sede:</h5>
+                                                    <h5 class="m-t-none m-b">Institución - Sede:</h5>
                                                 </label><label for="">{{$candidato->sede->nombre ?? 'Sin Institucion - Sede'}}</label>
                                             </div>
                                             <div class="form-group"><label>
@@ -558,7 +558,7 @@
 
                                                                 </div>
                                                                 <div class="col-sm-6">
-                                                                    <h4>Subir Icono</h4>
+                                                                    <h4>Subir Ícono</h4>
                                                                     <input type="file" class="form-control-file"
                                                                         id="icono-{{ $candidato->id }}" name="icono"
                                                                         value="{{ old('icono', $candidato->icono) }}"
@@ -576,7 +576,7 @@
                                                                     });
                                                                     </script>
                                                                     <div class="form-group">
-                                                                        <label>Institucion - Sede</label>
+                                                                        <label>Institución - Sede</label>
                                                                         <select class="form-control" name="sede_id">
                                                                             @foreach($sedes as $sede)
                                                                             <option value="{{ $sede->id }}" @if($sede->
@@ -650,7 +650,7 @@
                     <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
                             <a href="{{ $candidatos->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
+                                <i class="fa fa-arrow-circle-left"></i> Primero
                             </a>
                         @endif
                         @if($pageData->currentPage > 1)
@@ -667,7 +667,7 @@
                         @endif
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
                             <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
+                                Último <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         @endif
                     </div>

@@ -17,7 +17,7 @@
                 <h2>Máquinas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Maquinas</strong>
@@ -51,7 +51,7 @@
 
 
                                                 <div class="form-group"><label>
-                                                        <h3 class="m-t-none m-b">Detalles Tecnicos</h3>
+                                                        <h3 class="m-t-none m-b">Detalles Técnicos</h3>
                                                     </label><input type="text" name="detalles_tecnicos"
                                                         placeholder="Descripcion" class="form-control" required></div>
 
@@ -66,14 +66,14 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group"><label>
-                                                        <h3 class="m-t-none m-b">Numero Identificador</h3>
+                                                        <h3 class="m-t-none m-b">Número Identificador</h3>
                                                     </label>
                                                     <input type="number" name="num_identificador"
                                                         placeholder="Ingrese numero" class="form-control" required>
 
                                                 </div>
                                                 <div class="form-group"><label>
-                                                        <h3 class="m-t-none m-b">Salon Asignado</h3>
+                                                        <h3 class="m-t-none m-b">Salón Asignado</h3>
                                                     </label>
                                                     <select class="form-control" name="salon_id" required>
                                                         @foreach ($salones as $salon)
@@ -124,19 +124,19 @@
 
 
                                 <small class="text-muted text-center">
-                                    <h3>Detalles Tecnicos</h3>
+                                    <h3>Detalles Técnicos</h3>
                                 </small>
                                 <div class="small m-t-xs text-center">
                                     <h5>{{ $maquina->detalles_tecnicos }}</h5>
                                 </div>
                                 <small class="text-muted text-center">
-                                    <h3>Numero Identificador</h3>
+                                    <h3>Número Identificador</h3>
                                 </small>
                                 <div class="small m-t-xs text-center">
                                     <h5>{{ $maquina->num_identificador }}</h5>
                                 </div>
                                 <small class="text-muted text-center">
-                                    <h3>Salon Asignado</h3>
+                                    <h3>Salón Asignado</h3>
                                 </small>
                                 <div class="small m-t-xs text-center">
                                     <h5>{{ $maquina->salon->nombre }}</h5>
@@ -165,7 +165,7 @@
                                                                 <div class="col-sm-6 b-r">
                                                                     <div class="form-group">
                                                                         <label>
-                                                                            <h3 class="m-t-none m-b">Maquina</h3>
+                                                                            <h3 class="m-t-none m-b">Máquina</h3>
                                                                         </label>
                                                                         <input type="text" name="nombre"
                                                                             value="{{ old('nombre', $maquina->nombre) }}"
@@ -174,7 +174,7 @@
 
 
                                                                     <div class="form-group"><label>
-                                                                            <h3 class="m-t-none m-b">Detalles Tecnicos
+                                                                            <h3 class="m-t-none m-b">Detalles Técnicos
                                                                             </h3>
                                                                         </label><input type="text"
                                                                             name="detalles_tecnicos"
@@ -192,7 +192,7 @@
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group"><label>
-                                                                            <h3 class="m-t-none m-b">Numero
+                                                                            <h3 class="m-t-none m-b">Número
                                                                                 Identificador</h3>
                                                                         </label>
                                                                         <input type="number" name="num_identificador"
@@ -201,7 +201,7 @@
 
                                                                     </div>
                                                                     <div class="form-group"><label>
-                                                                            <h3 class="m-t-none m-b">Salon Asignado
+                                                                            <h3 class="m-t-none m-b">Salón Asignado
                                                                             </h3>
                                                                         </label>
                                                                         <select class="form-control" name="salon_id">
@@ -232,7 +232,7 @@
                     <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
                             <a href="{{ $maquinas->url(1) }}" class="btn btn-outline-dark rounded-5">
-                                <i class="fa fa-arrow-circle-left"></i> First
+                                <i class="fa fa-arrow-circle-left"></i> Primero
                             </a>
                         @endif
                         @if($pageData->currentPage > 1)
@@ -249,7 +249,7 @@
                         @endif
                         @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
                             <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
-                                Last <i class="fa fa-arrow-circle-right"></i>
+                                Último <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         @endif
                     </div>

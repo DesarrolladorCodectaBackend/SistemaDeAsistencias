@@ -16,7 +16,7 @@
                 <h2>Responsabilidades</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Responsabilidades - Semanas</strong>

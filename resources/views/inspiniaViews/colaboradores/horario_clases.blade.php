@@ -17,10 +17,10 @@
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Tabs</h2>
+                <h2>Horario de Clases</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/colaboradores">Colaboradores</a>
@@ -88,7 +88,7 @@
                                                         <form id="storeHorarios" role="form" method="POST"
                                                             action="{{ route('horarioClase.store') }}">
                                                             @csrf
-                                                            <h2><strong>Informacion</strong></h2>
+                                                            <h2><strong>Información</strong></h2>
                                                             <div class="row">
                                                                 <div class="col-sm-6">
 
@@ -141,7 +141,7 @@
                                                                         <table id="tablaHorarios" class="table">
                                                                             <thead>
                                                                                 <tr>
-                                                                                    <th>Dia</th>
+                                                                                    <th>Día</th>
                                                                                     <th>Hora Inicial</th>
                                                                                     <th>Hora Final</th>
                                                                                     <th></th>

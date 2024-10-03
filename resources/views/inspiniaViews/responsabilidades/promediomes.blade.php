@@ -15,10 +15,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Dashboards</h2>
+                <h2>Promedio Mensual</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="/dashboard">Inicial</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="/responsabilidades">Responsabilidades</a>
