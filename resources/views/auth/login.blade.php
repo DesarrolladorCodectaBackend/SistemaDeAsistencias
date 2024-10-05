@@ -70,10 +70,10 @@
                             </div>
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
-                        
+
 
                         <x-primary-button class="form-group btn btn-primary block full-width m-b">
-                            {{ __('Login') }}
+                            {{ __('Ingresar') }}
                         </x-primary-button>
 
                         @if (Route::has('password.request'))
@@ -103,7 +103,7 @@
     <script>
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
-    
+
         togglePassword.addEventListener('click', function (e) {
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
