@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>INSPINIA | MAQUINAS</title>
+    <title>INSPINIA | MÁQUINAS</title>
 </head>
 
 <body>
@@ -20,7 +20,7 @@
                         <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>Maquinas</strong>
+                        <strong>Máquinas</strong>
                     </li>
                 </ol>
             </div>
@@ -45,7 +45,7 @@
                                                     <label>
                                                         <h3 class="m-t-none m-b">Máquina</h3>
                                                     </label>
-                                                    <input type="text" name="nombre" placeholder="Nombre Maquina..."
+                                                    <input type="text" name="nombre" placeholder="Nombre Máquina..."
                                                         class="form-control" required />
                                                 </div>
 
@@ -53,7 +53,7 @@
                                                 <div class="form-group"><label>
                                                         <h3 class="m-t-none m-b">Detalles Técnicos</h3>
                                                     </label><input type="text" name="detalles_tecnicos"
-                                                        placeholder="Descripcion" class="form-control" required></div>
+                                                        placeholder="Descripción" class="form-control" required></div>
 
                                                 <div
                                                     style="display:flex; justify-content: center; align-items: center; gap: 15px">
@@ -69,7 +69,7 @@
                                                         <h3 class="m-t-none m-b">Número Identificador</h3>
                                                     </label>
                                                     <input type="number" name="num_identificador"
-                                                        placeholder="Ingrese numero" class="form-control" required>
+                                                        placeholder="Ingrese número" class="form-control" required>
 
                                                 </div>
                                                 <div class="form-group"><label>

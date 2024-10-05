@@ -760,7 +760,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     //     return redirect()->route('cumplio_responsabilidad_semanal.index');
     // }
 
-    
+
     public function getMonthProm($year, $mes, $area_id)
     {
         $access = FunctionHelperController::verifyAreaAccess($area_id);
@@ -888,7 +888,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $semanaId)
                     ->where('colaborador_area_id', $colaboradorMes['id'])
                     ->get();
-                    
+
 
                 foreach ($registrosCumplidosSemana as $registro) {
                     $valorCumplio = $registro->cumplio == 1 ? 20 : 0;
@@ -906,7 +906,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         }
         unset($colaboradorMes); // Unset the reference
 
-        
+
 
         //Dividir la suma maxima de las notas por la cantidad de semanas para obtener el promedio de cada responsabilidad
         foreach ($colaboradoresMes as $index => $colaboradorMes) {
@@ -924,7 +924,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $colaboradoresMes[$index]['total'] = number_format((array_sum($PromNotas))/count($responsabilidadesMes),1);
         }
         // return $colaboradoresMes;
-        
+
         // return response()->json([
         //     "colaboradoresMes" => $colaboradoresMes,
         //     "responsabilidades" => $responsabilidades,
@@ -948,7 +948,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             "lastWeek" => $lastWeek
         ]);
     }
-    
+
 
     public function getMonthsProm(Request $request, $area_id)
     {
@@ -1081,7 +1081,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
                 foreach ($registrosCumplidosSemana as $registro) {
                     $valorCumplio = $registro->cumplio == 1 ? 20 : 0;
-                    
+
                     foreach($responsabilidadesMeses as $responsabilidad){
                         if($responsabilidad['id'] == $registro->responsabilidad_id) {
                             $nombreResponsabilidad = $responsabilidad['nombre'];

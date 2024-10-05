@@ -9,7 +9,7 @@
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
-    <title>INSPINIA | REUNIONES AREAS</title>
+    <title>INSPINIA | REUNIONES ÁREAS</title>
 </head>
 
 <body>
@@ -107,7 +107,7 @@
 
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green'
+                radioClass: 'iradio_square-green',
             });
 
             /* initialize the external events -----------------------------------------------------------------*/

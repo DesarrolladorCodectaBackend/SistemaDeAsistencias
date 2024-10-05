@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>INSPINIA | REUNIONES AREAS</title>
+    <title>INSPINIA | REUNIONES ÁREAS</title>
 </head>
 
 <body>
@@ -209,6 +209,12 @@
 
     </script>
 
+
+    {{-- traduccion en español --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale/es.js"></script>
+
     <script>
         $(document).ready(function() {
             $('.i-checks').iCheck({
@@ -255,6 +261,7 @@
             });
 
             $('#calendar').fullCalendar({
+                locale: 'es',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -274,6 +281,7 @@
             });
 
             $('#min-calendar').fullCalendar({
+                locale: 'es',
                 header: {
                     left: 'prev,next today',
                     center: 'title',

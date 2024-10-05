@@ -34,13 +34,13 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Fecha</label> 
+                                            <label>Fecha</label>
                                             <input type="date"
                                                 value="{{ $reunion->fecha }}"
                                                 class="form-control" name="fecha" required>
                                         </div>
                                         <div class="form-group">
-                                            <label>Hora Inicial</label> 
+                                            <label>Hora Inicial</label>
                                             <select name="hora_inicial" class="form-control" required>
                                                 @foreach($horas as $hora)
                                                     <option @if($hora == $reunion->hora_inicial) selected @endif>{{$hora}}</option>
@@ -48,7 +48,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>Hora Final</label> 
+                                            <label>Hora Final</label>
                                             <select name="hora_final" class="form-control" required>
                                                 @foreach($horas as $hora)
                                                     <option @if($hora == $reunion->hora_final) selected @endif>{{$hora}}</option>
@@ -56,7 +56,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>Descripción</label> 
+                                            <label>Descripción</label>
                                             <input type="text" name="descripcion"
                                                 placeholder="(Opcional)"
                                                 value="{{ $reunion->descripcion }}"
@@ -65,28 +65,28 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Disponibilidad</label> 
+                                            <label>Disponibilidad</label>
                                             <select class="form-control" id="selectDisponibilidad" name="disponibilidad" onchange="onDisponibilityChange()" required>
                                                 <option @if($reunion->disponibilidad == 'Virtual') selected @endif >Virtual</option>
                                                 <option @if($reunion->disponibilidad == 'Presencial') selected @endif >Presencial</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>Url</label> 
+                                            <label>Url</label>
                                             <input type="text" name="url" id="inputUrl"
                                                 placeholder="..."
                                                 value="{{ $reunion->url }}"
                                                 class="form-control" @if($reunion->disponibilidad == 'Virtual') required @else disabled @endif >
                                         </div>
                                         <div class="form-group">
-                                            <label>Direccion</label> 
+                                            <label>Direccion</label>
                                             <input type="text" name="direccion" id="inputDireccion"
                                                 placeholder="..."
                                                 value="{{ $reunion->direccion }}"
                                                 class="form-control" @if($reunion->disponibilidad == 'Presencial') required @else disabled @endif >
                                         </div>
                                         <div class="form-group d-flex flex-column">
-                                            <label>Integrantes</label> 
+                                            <label>Integrantes</label>
                                             <select class="form-control w-75 multiple_integrantes_select" multiple name="colaboradores_id[]" required style="display: none">
                                                 @foreach ($colaboradores as $colaborador)
                                                 <option @foreach($integrantes as  $integrante) @if($integrante->colaborador_id == $colaborador->id) selected @endif @endforeach value="{{ $colaborador->id }} ">{{ $colaborador->candidato->nombre }} {{ $colaborador->candidato->apellido }}</option>
@@ -100,7 +100,7 @@
                                 </div>
                             </form>
                         </div>
-                        
+
                         <div class="ibox-content">
                             <div class="table-responsive">
                                 <h2 class="mx-3"><strong class="font-bold">INTEGRANTES REUNIÓN</strong></h2>
@@ -126,7 +126,7 @@
                                     </tbody>
                                 </table>
                             </div>
-    
+
                         </div>
                     </div>
                 </div>
@@ -167,7 +167,7 @@
     $(document).ready(function() {
             $('.multiple_integrantes_select').select2();
         });
-    
+
     let reunion = <?php echo json_encode($reunion); ?>;
 
     const onDisponibilityChange = () => {
@@ -240,7 +240,11 @@
                   },
                   exportOptions: { columns: ':not(.oculto)' }
                 }
-            ]
+            ],
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            }
+
         });
     });
 </script>
