@@ -61,6 +61,8 @@ class StoreColaboradoresRequest extends FormRequest
             'horarios.*.hora_final.after' => 'La hora final debe ser posterior a la hora inicial.',
             'horarios.*.dia.required' => 'El día es obligatorio.',
             'horarios.*.dia.string' => 'El día debe ser un texto válido.',
+            'horarios.*.justificacion.required' => 'La justificacion es obligatoria.',
+            'horarios.*.justificacion.string' => 'La justificacion debe ser un texto válido.',
         ];
     }
 }

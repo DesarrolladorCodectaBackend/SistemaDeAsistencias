@@ -19,82 +19,95 @@ class HorarioDeClasesSeeder extends Seeder
             "colaborador_id" => 1,
             "hora_inicial" => "07:00",
             "hora_final" => "19:00",
-            "dia" => "Lunes"
+            "dia" => "Lunes",
+            "justificacion" => "Clases"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 2,
             "hora_inicial" => "07:00",
             "hora_final" => "12:00",
-            "dia" => "Miércoles"
+            "dia" => "Miércoles",
+            "justificacion" => "Clases"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 2,
             "hora_inicial" => "07:00",
             "hora_final" => "17:00",
-            "dia" => "Viernes"
+            "dia" => "Viernes",
+            "justificacion" => "Trabajo"
         ]);
 
         Horario_de_Clases::create([
             "colaborador_id" => 3,
             "hora_inicial" => "07:00",
             "hora_final" => "19:00",
-            "dia" => "Lunes"
+            "dia" => "Lunes",
+            "justificacion" => "Clases"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 4,
             "hora_inicial" => "07:00",
             "hora_final" => "12:00",
-            "dia" => "Miércoles"
+            "dia" => "Miércoles",
+            "justificacion" => "Clases"
         ]);
 
         Horario_de_Clases::create([
             "colaborador_id" => 5,
             "hora_inicial" => "07:00",
             "hora_final" => "17:00",
-            "dia" => "Viernes"
+            "dia" => "Viernes",
+            "justificacion" => "Trabajo"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 6,
             "hora_inicial" => "07:00",
             "hora_final" => "19:00",
-            "dia" => "Lunes"
+            "dia" => "Lunes",
+            "justificacion" => "Clases"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 7,
             "hora_inicial" => "07:00",
             "hora_final" => "12:00",
-            "dia" => "Miércoles"
+            "dia" => "Miércoles",
+            "justificacion" => "Clases"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 8,
             "hora_inicial" => "07:00",
             "hora_final" => "17:00",
-            "dia" => "Viernes"
+            "dia" => "Viernes",
+            "justificacion" => "Trabajo"
         ]);
 
         Horario_de_Clases::create([
             "colaborador_id" => 9,
             "hora_inicial" => "07:00",
             "hora_final" => "17:00",
-            "dia" => "Viernes"
+            "dia" => "Viernes",
+            "justificacion" => "Clases"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 10,
             "hora_inicial" => "07:00",
             "hora_final" => "19:00",
-            "dia" => "Lunes"
+            "dia" => "Lunes",
+            "justificacion" => "Trabajo"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 11,
             "hora_inicial" => "07:00",
             "hora_final" => "12:00",
-            "dia" => "Miércoles"
+            "dia" => "Miércoles",
+            "justificacion" => "Clases"
         ]);
         Horario_de_Clases::create([
             "colaborador_id" => 12,
             "hora_inicial" => "07:00",
             "hora_final" => "17:00",
-            "dia" => "Viernes"
+            "dia" => "Viernes",
+            "justificacion" => "Clases"
         ]);
     }
 }

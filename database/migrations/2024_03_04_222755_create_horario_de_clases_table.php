@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('hora_inicial');
             $table->string('hora_final');
             $table->string('dia');
+            $table->string('justificacion');
             $table->timestamps();
         });
     }

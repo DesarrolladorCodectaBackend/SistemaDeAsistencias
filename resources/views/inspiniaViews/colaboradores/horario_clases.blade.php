@@ -144,6 +144,7 @@
                                                                                     <th>Día</th>
                                                                                     <th>Hora Inicial</th>
                                                                                     <th>Hora Final</th>
+                                                                                    <th>Justificacion</th>
                                                                                     <th></th>
                                                                                 </tr>
                                                                             </thead>
@@ -185,6 +186,14 @@
                                                                                             <input type="time"
                                                                                                 class="form-control"
                                                                                                 value="{{$horario->hora_final}}"
+                                                                                                disabled>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="input-group">
+                                                                                            <input type="text"
+                                                                                                class="form-control"
+                                                                                                value="{{$horario->justificacion}}"
                                                                                                 disabled>
                                                                                         </div>
                                                                                     </td>
@@ -252,10 +261,6 @@
                                                                                             <span
                                                                                                 class="input-group-addon"><i
                                                                                                     class="fa fa-calendar"></i></span>
-                                                                                            <!--
-                                                                                            <input type="time"
-                                                                                                class="form-control"
-                                                                                                name="horarios[0][hora_final]"> -->
                                                                                             <select class="form-control"
                                                                                                 name="horarios[0][hora_final]"
                                                                                                 id="">
@@ -266,6 +271,15 @@
                                                                                                     {{ $hora }}</option>
 
                                                                                                 @endforeach
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="input-group">
+                                                                                            <select class="form-control"
+                                                                                                name="horarios[0][justificacion]">
+                                                                                                <option>Clases</option>
+                                                                                                <option>Trabajo</option>
                                                                                             </select>
                                                                                         </div>
                                                                                     </td>
@@ -329,48 +343,29 @@
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label>Hora
-                                                                            Inicial</label>
-                                                                        <!--
-                                                                        <input type="time" class="form-control"
-                                                                            name="hora_inicial" id="hora_inicial"
-                                                                            value="{{ old('hora_inicial', $horario->hora_inicial) }}"> -->
-                                                                        <select class="form-control" name="hora_inicial"
-                                                                            id="hora_inicial">
-                                                                            <option style="background: #999"
-                                                                                value="{{ old('hora_inicial', $horario->hora_inicial) }}">
-                                                                                {{$horario->hora_inicial}}</option>
-                                                                            @foreach($horas as $key
-                                                                            => $hora)
-                                                                            <option value="{{ $hora }}">
-                                                                                {{ $hora }}</option>
-
+                                                                        <label>Hora Inicial</label>
+                                                                        <select class="form-control" name="hora_inicial" id="hora_inicial">
+                                                                            @foreach($horas as $key => $hora)
+                                                                            <option @if($horario->hora_inicial == $hora) selected @endif value="{{ $hora }}"> {{ $hora }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label>Hora
-                                                                            Final</label>
-                                                                        <!--
-                                                                        <input type="time" class="form-control"
-                                                                            name="hora_final" id="hora_final"
-                                                                            value="{{ old('hora_final', $horario->hora_final) }}"> -->
-                                                                        <select class="form-control" name="hora_final"
-                                                                            id="hora_final">
-                                                                            <option style="background: #999"
-                                                                                value="{{ old('hora_final', $horario->hora_final) }}">
-                                                                                {{$horario->hora_final}}</option>
-                                                                            @foreach($horas as $key
-                                                                            => $hora)
-                                                                            <option value="{{ $hora }}">
-                                                                                {{ $hora }}</option>
-
+                                                                        <label>Hora Final</label>
+                                                                        <select class="form-control" name="hora_final" id="hora_final">
+                                                                            @foreach($horas as $key => $hora)
+                                                                            <option @if($horario->hora_final == $hora) selected @endif value="{{ $hora }}">{{ $hora }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
+                                                                    <div class="form-group">
+                                                                        <label>Justificacion</label>
+                                                                        <select class="form-control" name="justificacion">
+                                                                            <option @if($horario->justificacion == "Clases") selected @endif >Clases</option>
+                                                                            <option @if($horario->justificacion == "Trabajo") selected @endif>Trabajo</option>
+                                                                        </select>
+                                                                    </div>
                                                                     <div>
-                                                                        <a href="../horarioClases/{{$colaborador->id}}"
-                                                                            class="btn btn-white btn-sm m-t-n-xs float-left">Cancelar</a>
                                                                         <button
                                                                             class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                                             type="submit"><i
@@ -449,17 +444,20 @@
             var celdaDia = nuevaFila.insertCell(0);
             var celdaHoraInicial = nuevaFila.insertCell(1);
             var celdaHoraFinal = nuevaFila.insertCell(2);
-            var celdaBotonEliminar = nuevaFila.insertCell(3);
+            var celdaJustificacion = nuevaFila.insertCell(3);
+            var celdaBotonEliminar = nuevaFila.insertCell(4);
     
             contadorFilas++;
     
             // Construir el select de horas iniciales y finales
             var selectHoraInicial = construirSelectHora('horarios[' + contadorFilas + '][hora_inicial]');
             var selectHoraFinal = construirSelectHora('horarios[' + contadorFilas + '][hora_final]');
+            var selectJustificacion = constuirSelectJustificacion();
     
             celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select></div></div>';
             celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraInicial + '</div>';
             celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
+            celdaJustificacion.innerHTML = '<div class="input-group">' + selectJustificacion + '</div>';
             celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
         }
     
@@ -476,6 +474,12 @@
             var fila = boton.parentNode.parentNode;
             fila.parentNode.removeChild(fila);
         }
+
+        const constuirSelectJustificacion = () => {
+            let select = `<select class="form-control" name="horarios[${contadorFilas}][justificacion]"><option>Clases</option><option>Trabajo</option></select>`;
+            return select;
+        }
+
     </script>
 
 
@@ -531,7 +535,7 @@
                 }
                 console.log(horario.hora_inicial);
                 return {
-                    title: "Clases",
+                    title: horario.justificacion,
                     start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
                     end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
                     allDay: false,

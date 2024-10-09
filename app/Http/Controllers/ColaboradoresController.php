@@ -211,6 +211,7 @@ class ColaboradoresController extends Controller
 
     public function store(StoreColaboradoresRequest $request)
     {
+        // return $request;
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
@@ -244,7 +245,8 @@ class ColaboradoresController extends Controller
                         'colaborador_id' => $colaborador->id,
                         'hora_inicial' => $horario['hora_inicial'],
                         'hora_final' => $horario['hora_final'],
-                        'dia' => $horario['dia']
+                        'dia' => $horario['dia'],
+                        'justificacion' => $horario['justificacion'],
                     ]);
                 }
                 //Se actualiza el estado del candidato a 0, significa que es un colaborador

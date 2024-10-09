@@ -13,7 +13,8 @@ class Horario_de_Clases extends Model
         'colaborador_id',
         'hora_inicial',
         'hora_final',
-        'dia'
+        'dia',
+        'justificacion'
     ];
 
     public function colaborador(){

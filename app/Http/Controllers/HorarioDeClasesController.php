@@ -66,6 +66,7 @@ class HorarioDeClasesController extends Controller
                 'hora_inicial' => $horaInicial,
                 'hora_final' => $horaFinal,
                 'dia' => $horario->dia,
+                'justificacion' => $horario->justificacion,
             ];
         }
 
@@ -87,19 +88,22 @@ class HorarioDeClasesController extends Controller
         }
         DB::beginTransaction();
         try{
+            // return $request;
             $request->validate([
                 'colaborador_id' => 'required|integer',
                 'horarios' => 'required|array',
                 'horarios.*.hora_inicial' => 'required|date_format:H:i',
                 'horarios.*.hora_final' => 'required|date_format:H:i',
-                'horarios.*.dia' => 'required|string'
+                'horarios.*.dia' => 'required|string',
+                'horarios.*.justificacion' => 'required|string',
             ]);
             foreach ($request->horarios as $horario) {
                 Horario_de_Clases::create([
                     'colaborador_id' => $request->colaborador_id,
                     'hora_inicial' => $horario['hora_inicial'],
                     'hora_final' => $horario['hora_final'],
-                    'dia' => $horario['dia']
+                    'dia' => $horario['dia'],
+                    'justificacion' => $horario['justificacion'],
                 ]);
             }
             DB::commit();
@@ -121,18 +125,20 @@ class HorarioDeClasesController extends Controller
         DB::beginTransaction();
         try{
             $horario_de_clases = Horario_de_Clases::find($horario_de_clases_id);
-    
+            // return $request;
             $request->validate([
-                'dia' => 'sometimes|string|min:1|max:100',
-                'hora_inicial' => 'sometimes',
-                'hora_final' => 'sometimes',
+                'dia' => 'required|string|min:1|max:100',
+                'hora_inicial' => 'required',
+                'hora_final' => 'required',
+                'justificacion' => 'required',
             ]);
     
             //$horario_de_clases->update($request->all());
             $horario_de_clases->fill([
                 "hora_inicial" => $request->hora_inicial,
                 "hora_final" => $request->hora_final,
-                "dia" => $request->dia
+                "dia" => $request->dia,
+                "justificacion" => $request->justificacion,
             ])->save();
             DB::commit();
             return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $horario_de_clases->colaborador_id]);
