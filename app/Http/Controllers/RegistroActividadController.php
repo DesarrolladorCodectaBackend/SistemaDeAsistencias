@@ -104,5 +104,17 @@ class RegistroActividadController extends Controller
 
     }
 
+    public static function getColabSemanasInactivas($colaboradorAreaId){
+        $inactividades = RegistroActividadController::obtenerInactividad($colaboradorAreaId);
+        $semanasInactivas = [];
+        foreach($inactividades as $inactividad){
+            $semanas = $inactividad['semanas'];
+            foreach($semanas as $semana){
+                $semanasInactivas[] = $semana;
+            }
+        }
+        return $semanasInactivas;
+    }
+
 
 }

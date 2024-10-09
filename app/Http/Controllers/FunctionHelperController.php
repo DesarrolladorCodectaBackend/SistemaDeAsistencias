@@ -6,8 +6,10 @@ use App\Models\Area;
 use App\Models\Candidatos;
 use App\Models\Colaboradores_por_Area;
 use App\Models\ColaboradoresApoyoAreas;
+use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\Maquina_reservada;
+use App\Models\Responsabilidades_semanales;
 use App\Models\Semanas;
 use App\Models\User;
 use App\Models\UsuarioAdministrador;
@@ -381,11 +383,78 @@ class FunctionHelperController extends Controller
         }
     }
 
+    public static function semanasColaboradorArea($colaborador_area_id) {
+        $colaboradorArea = Colaboradores_por_Area::findOrFail($colaborador_area_id);
+        //obtener sus semanas de inactividad
+        $semanasInactivas = RegistroActividadController::getColabSemanasInactivas($colaborador_area_id);
+        $semanasInactivasId = [];
+        foreach($semanasInactivas as $semanaInactiva){
+            $semanasInactivasId[] = $semanaInactiva['id'];
+        }
+        //obtener las semanas desde la de esta semana actual hasta la de la semana inicio exceptuando las semanas inactivas
+        $semanaActual = FunctionHelperController::findThisWeek();
+        $semanasTotales = Semanas::where('id', '>=', $colaboradorArea->semana_inicio_id)
+            ->where('id', '<', $semanaActual->id)->whereNotIn('id', $semanasInactivasId)->get();
+        
+        //retornar las semanas y conteo
+        return ["semanas" => $semanasTotales, "conteoSemanas" => $semanasTotales->count()];
+    }
+
+    public static function promedioColaboradorArea($colaborador_area_id, $semanas){
+        $promedio = 0;
+        //recorrer sus semanas, por cada semana obtener su evaluacion de cada responsabilidad
+        $notasTotales = [];
+        $responsabilidades = [];
+        // return $responsabilidades;
+        foreach($semanas['semanas'] as $semana){
+            //Obtener registros de evaluación de esa semana
+            $registros = Cumplio_Responsabilidad_Semanal::with('responsabilidad_semanal')->where('colaborador_area_id', $colaborador_area_id)->where('semana_id', $semana->id)->get();
+            // return $registros;
+            foreach($registros as $registro){
+                $valor = $registro->cumplio ? 20 : 0;
+                $responsabilidad = $registro->responsabilidad_semanal;
+                //Agregar a Notas
+                if(isset($notasTotales[$responsabilidad->nombre])){
+                    //Si ya esta en el array se le suma el valor
+                    $notasTotales[$responsabilidad->nombre] += $valor;
+                } else{
+                    //Si no esta en el array se agrega con el valor de la nota
+                    $notasTotales[$responsabilidad->nombre] = $valor;
+                }
+                //Agregar a Responsabilidades
+                if(isset($responsabilidades[$responsabilidad->nombre])){
+                    //Si ya esta en el array se le agrega 1 a su conteo de semanas
+                    $responsabilidades[$responsabilidad->nombre]['conteoSemanas']++;
+                } else{
+                    //Si no esta en el array se agrega con un conteo de 1
+                    $responsabilidades[$responsabilidad->nombre] = [
+                        "id" => $responsabilidad->id,
+                        "nombre" => $responsabilidad->nombre,
+                        "conteoSemanas" => 1,
+                    ];
+                }
+            }
+        }
+        $promedioNotas = [];
+        foreach(array_keys($notasTotales) as $notaTotal){
+            $responsabilidad = $responsabilidades[$notaTotal];
+            $promedioNotas[$notaTotal] = number_format($notasTotales[$notaTotal]/$responsabilidad['conteoSemanas'], 1);
+        }
+        $promedio = number_format(array_sum($promedioNotas)/count($responsabilidades), 1);
+        $data = [
+            "notasTotales" => $notasTotales,
+            "promedioNotas" => $promedioNotas,
+            "promedio" => $promedio,
+            "responsabilidades" => $responsabilidades
+        ];
+        return $data;
+    }
+
     public function funcionPruebas(){
-        $inactividades = RegistroResponsabilidadController::obtenerInactividad(8);
-        return $inactividades;
-        // $inactividades = RegistroResponsabilidadController::verifyResponsabilidadInactivity(8, 18);
-        // return ["Respuesta" => $inactividades];
+        $semanas = FunctionHelperController::semanasColaboradorArea(1);
+        // $resultado = FunctionHelperController::findThisWeek();
+        $resultado = FunctionHelperController::promedioColaboradorArea(1, $semanas);
+        return $resultado;
     }
 
 }
