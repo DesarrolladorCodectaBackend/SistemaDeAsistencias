@@ -284,6 +284,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         // return $semanasMes;
         // return $semanasMes;
         $registros = Cumplio_Responsabilidad_Semanal::get();
+        $comeBackUri = route('responsabilidades.meses', ["year" => $year, "area_id" => $area_id]);
         //return $semanasCumplidas;
         //return $semanasMes;
         //return $registros;
@@ -297,7 +298,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             'responsabilidades' => $responsabilidades,
             'colaboradoresArea' => $colaboradoresArea,
             'semanasMes' => $semanasMes,
-            'informesSemanales' => $informesSemanales
+            'informesSemanales' => $informesSemanales,
+            'comeBackUri' => $comeBackUri,
         ]);
     }
 

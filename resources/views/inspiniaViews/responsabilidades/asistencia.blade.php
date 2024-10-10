@@ -416,8 +416,8 @@
                     <a href="#" id="BtnGuardar{{$index+1}}" class="ladda-button btn btn-primary mr-2 disabled"
                         onclick="document.getElementById('cumplioUpdate{{$index+1}}').submit();" disabled>Guardar
                     </a>
-                    <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
-                        data-style="expand-left">Descartar</button>
+                    <a href="{{$comeBackUri}}" class="ladda-button btn btn-warning text-white"
+                        data-style="expand-left">Regresar</a>
                 </div>
                 <script>
                     function habilitarEdicion(index) {
@@ -474,9 +474,8 @@
                     <a href="#" class="ladda-button btn btn-primary mr-5"
                         onclick="document.getElementById('cumplioStore{{$index+1}}').submit();">Guardar
                     </a>
-                    <button onclick="descartarCambios()" class="ladda-button btn btn-warning"
-                        data-style="expand-left">Descartar
-                    </button>
+                    <a href="{{$comeBackUri}}" class="ladda-button btn btn-warning text-white"
+                        data-style="expand-left">Regresar</a>
                 </div>
                 @endif
 
@@ -600,10 +599,6 @@
                         $(`#semana${currentWeek}`).css("display", "unset");
                         updateNavigationButtons();
                     }
-                }
-
-                function descartarCambios() {
-                    location.reload();
                 }
 
                 function updateNavigationButtons() {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,5 +36,23 @@ class Candidatos extends Model
     public function colaborador(){
         return $this->hasOne(Colaboradores::class, 'candidato_id', 'id');
     }
+
+    public static function searchByName($search = ''){
+        $candidatosPorNombre = Candidatos::with('sede', 'carrera')
+        ->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $search . '%')
+        ->get();
+
+        return $candidatosPorNombre;
+    }
+    
+    public static function searchByDni($search = ''){
+        $candidatosPorDni = Candidatos::with('sede', 'carrera')
+        ->where(DB::raw("dni"), 'like', '%' . $search . '%')
+        ->get();
+
+        return $candidatosPorDni;
+    }
+
+
 
 }

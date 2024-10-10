@@ -493,10 +493,14 @@
                                         </button>
                                     </form>
                                 </span>
+                                <div title="{{$colaborador->status['message']}}" style="position: absolute; font-size: 14px; font-weight: 600; height: 35px; width: 35px; top: -27px; left: 5; border-radius: 100%">
+                                    <button style="border-radius: 100%; background: {{$colaborador->status['color']}}" class="btn w-100 h-100"></button>
+                                </div>
                                 @else
                                 <h3 class="text-danger font-weight-bold">Ex Colaborador</h3>
                                 @endif
 
+                                {{-- <p>{{$colaborador->status['message']}}</p> --}}
 
                                 <div href="#" class="product-name">
                                     <h2 class="overflowing-text" >{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}</h2>
@@ -925,7 +929,7 @@
 
     </style>
     <script src="{{asset('js/inspiniaViewsJS/indexColaboradores.js')}}"></script>
-    {{-- <script>
+    <script>
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');
             if (alertError) {
@@ -1126,7 +1130,7 @@
         $(document).ready(function() {
             $('.multiple_actividades_select').select2();
         });
-    </script> --}}
+    </script>
 </body>
 
 </html>

@@ -36,6 +36,26 @@ use Exception;
 
 class ColaboradoresController extends Controller
 {
+    function getColaboradoresPromedioStatus($colaboradores){
+        foreach($colaboradores as $colaborador){
+            $colaborador->status = ["type" => "Sin Evaluar", "color" => "#888", "message" => "El colaborador no ha sido evaluado aún."];
+            $semanas = FunctionHelperController::semanasColaborador(1);
+            $semanasEvaluadasCount = FunctionHelperController::getConteoMaximoSemanasEvaluadasColaborador($colaborador->id);
+            if($semanasEvaluadasCount > 0){
+                $promedioArray = FunctionHelperController::promedioColaborador($colaborador->id, $semanas);
+                $promedio = $promedioArray['promedio'];
+                $colaborador->promedio = $promedio;
+                if($promedio < 11){ 
+                    $colaborador->status = ["type" => "reprobado", "color" => "#b00", "message" => "El colaborador tiene un promedio general reprobado. Promedio general: ".$promedio];
+                } else if($promedio >= 11 && $promedio < 14) {
+                    $colaborador->status = ["type" => "riesgo", "color" => "#fa0", "message" => "El colaborador tiene un promedio general en riesgo de reprobar. Promedio general: ".$promedio];
+                } else{
+                    $colaborador->status = ["type" => "aprobado", "color" => "#0b0", "message" => "El colaborador tiene un promedio general aprobado. Promedio general: ".$promedio];
+                }
+            }
+        }
+        return $colaboradores;
+    }
     public function index()
     {
         $access = FunctionHelperController::verifyAdminAccess();
@@ -43,7 +63,9 @@ class ColaboradoresController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->paginate(12);
-        // return $colaboradores;
+
+        $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
+
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
@@ -61,9 +83,8 @@ class ColaboradoresController extends Controller
         // return $colaboradores;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
-        // return $pageData;
-        // return $actividades;
 
+        // return $colaboradores;
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
@@ -184,6 +205,7 @@ class ColaboradoresController extends Controller
             }
         }
 
+        $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
         // $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
@@ -596,14 +618,13 @@ class ColaboradoresController extends Controller
                 $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'sede_id', 'carrera_id', 'icono', 'correo', 'celular'); }
         ]);
         //Filtrar por nombre y apellido de candidato
-        $colaboradoresPorDni = $colaboradoresTotales->whereHas('candidato', function ($query) use ($busqueda) {
-            $query->where(DB::raw("dni"), 'like', '%' . $busqueda . '%');
-        })->paginate(12);
 
-        $colaboradoresPorNombre = $colaboradoresTotales->whereHas('candidato', function ($query) use ($busqueda) {
-            $query->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%');
-        })->paginate(12);
-
+        $idCandidatosPorNombre = Candidatos::searchByName($busqueda)->pluck('id');
+        $colaboradoresPorNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->paginate(12);
+        
+        $idCandidatosPorDni = Candidatos::searchByDni($busqueda)->pluck('id');
+        $colaboradoresPorDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->paginate(12);
+        
         //Si existe un registro encontrado por el id
         if ($colaboradoresPorDni->count() > 0) {
             //Se asigna el valor del colaboradorPorId
@@ -623,6 +644,8 @@ class ColaboradoresController extends Controller
         $carreras = $carrerasAll->where('estado', 1);
         $areas = $areasAll->where('estado', 1);
 
+        
+        $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
         $colaboradores->data = $colaboradoresConArea;

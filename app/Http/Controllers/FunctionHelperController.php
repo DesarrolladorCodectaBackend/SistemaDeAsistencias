@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Candidatos;
+use App\Models\Colaboradores;
 use App\Models\Colaboradores_por_Area;
 use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Cumplio_Responsabilidad_Semanal;
@@ -400,8 +401,17 @@ class FunctionHelperController extends Controller
         return ["semanas" => $semanasTotales, "conteoSemanas" => $semanasTotales->count()];
     }
 
+    public static function semanasColaborador($colaborador_id){
+        //obtener primero colaborador Area 
+        $colaboradorArea = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->first();
+        $semanaActual = FunctionHelperController::findThisWeek();
+        $semanasTotales = Semanas::where('id', '>=', $colaboradorArea->semana_inicio_id)
+            ->where('id', '<', $semanaActual->id)->get();
+        
+        return ["semanas" => $semanasTotales, "conteoSemanas" => $semanasTotales->count()];
+    }
+
     public static function promedioColaboradorArea($colaborador_area_id, $semanas){
-        $promedio = 0;
         //recorrer sus semanas, por cada semana obtener su evaluacion de cada responsabilidad
         $notasTotales = [];
         $responsabilidades = [];
@@ -440,7 +450,10 @@ class FunctionHelperController extends Controller
             $responsabilidad = $responsabilidades[$notaTotal];
             $promedioNotas[$notaTotal] = number_format($notasTotales[$notaTotal]/$responsabilidad['conteoSemanas'], 1);
         }
-        $promedio = number_format(array_sum($promedioNotas)/count($responsabilidades), 1);
+        // return count($responsabilidades);
+        $responsabilidadesCount = count($responsabilidades) === 0 ?  1 : count($responsabilidades);
+        // return $responsabilidadesCount;
+        $promedio = number_format(array_sum($promedioNotas)/$responsabilidadesCount, 1);
         $data = [
             "notasTotales" => $notasTotales,
             "promedioNotas" => $promedioNotas,
@@ -450,10 +463,77 @@ class FunctionHelperController extends Controller
         return $data;
     }
 
+    public static function promedioColaborador($colaborador_id, $semanas){
+        // $colaborador = Colaboradores::findOrFail($colaborador_id);
+        $colaboradorAreas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->get();
+        // almacenar data sumando de cada área
+        $notasTotales = [];
+        $promedioNotas = [];
+        $promedio = 0;
+        foreach($colaboradorAreas as $colabArea){
+            //Data de cada colab area
+            $dataColabArea = FunctionHelperController::promedioColaboradorArea($colabArea->id, $semanas);
+            $notasTotalesColabArea = $dataColabArea['notasTotales'];
+            foreach(array_keys($notasTotalesColabArea) as $notaTotal){
+                if(isset($notasTotales[$notaTotal])){
+                    //Si ya esta en el array se le suma el valor
+                    $notasTotales[$notaTotal] += $notasTotalesColabArea[$notaTotal];
+                } else{
+                    //Si no esta en el array se agrega con el valor de la nota
+                    $notasTotales[$notaTotal] = $notasTotalesColabArea[$notaTotal];
+                }
+            }
+
+            $promedioNotasColabArea = $dataColabArea['promedioNotas'];
+            foreach(array_keys($promedioNotasColabArea) as $promedioNota){
+                if(isset($promedioNotas[$promedioNota])){
+                    //Si ya esta en el array se le suma el valor
+                    $promedioNotas[$promedioNota] += $promedioNotasColabArea[$promedioNota];
+                } else{
+                    //Si no esta en el array se agrega con el valor del promedio
+                    $promedioNotas[$promedioNota] = $promedioNotasColabArea[$promedioNota];
+                }
+            }
+
+            //Sumar promedio de cada colab area para obtener el promedio total del colaborador
+            $promedio += $dataColabArea['promedio'];
+            // return $dataColabArea;
+        }
+        //dividir todo entre el numero de colaboradoresArea
+        $colaboradorAreasCount = $colaboradorAreas->count() === 0 ?  1 : $colaboradorAreas->count();
+
+        foreach(array_keys($promedioNotas) as $promedioNota){
+            $promedioNotas[$promedioNota] = number_format($promedioNotas[$promedioNota]/$colaboradorAreasCount, 1);
+        }
+        $promedio = number_format($promedio/$colaboradorAreasCount, 1);
+        
+        $data = [
+            "notasTotales" => $notasTotales,
+            "promedioNotas" => $promedioNotas,
+            "promedio" => $promedio,
+        ];
+        
+        return $data;
+    }
+
+    public static function getConteoMaximoSemanasEvaluadasColaborador($colaborador_id){
+        $conteoSemanas = 0;
+        $colaborador_areas = Colaboradores_por_Area::where("colaborador_id", $colaborador_id)->get();
+        foreach($colaborador_areas as $colaborador_area){
+            $conteoSemanasColabArea = Cumplio_Responsabilidad_Semanal::where("colaborador_area_id",$colaborador_area->id)->get()
+                ->pluck('semana_id')->unique()->count();
+            if($conteoSemanasColabArea > $conteoSemanas) $conteoSemanas = $conteoSemanasColabArea; 
+        }
+        return $conteoSemanas;
+    }
+
     public function funcionPruebas(){
-        $semanas = FunctionHelperController::semanasColaboradorArea(1);
+        $semanas = FunctionHelperController::semanasColaborador(2);
         // $resultado = FunctionHelperController::findThisWeek();
-        $resultado = FunctionHelperController::promedioColaboradorArea(1, $semanas);
+        $resultado = FunctionHelperController::promedioColaborador(2, $semanas);
+        // $resultado = FunctionHelperController::promedioColaboradorArea(13, $semanas);
+        // $resultado = FunctionHelperController::getConteoMaximoSemanasEvaluadasColaborador(1);
+
         return $resultado;
     }
 
