@@ -418,7 +418,8 @@ class FunctionHelperController extends Controller
         // return $responsabilidades;
         foreach($semanas['semanas'] as $semana){
             //Obtener registros de evaluación de esa semana
-            $registros = Cumplio_Responsabilidad_Semanal::with('responsabilidad_semanal')->where('colaborador_area_id', $colaborador_area_id)->where('semana_id', $semana->id)->get();
+            $registros = Cumplio_Responsabilidad_Semanal::with('responsabilidad_semanal')
+                ->where('colaborador_area_id', $colaborador_area_id)->where('semana_id', $semana->id)->get();
             // return $registros;
             foreach($registros as $registro){
                 $valor = $registro->cumplio ? 20 : 0;
@@ -528,9 +529,9 @@ class FunctionHelperController extends Controller
     }
 
     public function funcionPruebas(){
-        $semanas = FunctionHelperController::semanasColaborador(2);
+        $semanas = FunctionHelperController::semanasColaborador(1);
         // $resultado = FunctionHelperController::findThisWeek();
-        $resultado = FunctionHelperController::promedioColaborador(2, $semanas);
+        $resultado = FunctionHelperController::promedioColaborador(1, $semanas);
         // $resultado = FunctionHelperController::promedioColaboradorArea(13, $semanas);
         // $resultado = FunctionHelperController::getConteoMaximoSemanasEvaluadasColaborador(1);
 
