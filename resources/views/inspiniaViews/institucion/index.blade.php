@@ -50,10 +50,13 @@
 
                                             <form role="form" method="POST" action="{{ route('institucion.store') }}">
                                                 @csrf
-
+                                                <input type="hidden" name="form_type" value="create">
                                                 <div class="form-group"><label>Institución</label> <input type="text"
                                                         placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                                 </div>
+                                                @error('nombre')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                                 <div>
                                                     <button class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                         type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
@@ -140,12 +143,17 @@
                                                                         action="{{ route('institucion.update', $insti->id) }}">
                                                                         @csrf
                                                                         @method('PUT')
+                                                                        <input type="hidden" name="institucion_id" value="{{ $insti->id }}">
+                                                                        <input type="hidden" name="form_type" value="edit">
                                                                         {{-- nombre del request "name" --}}
                                                                         <div class="form-group"><label>Nombre</label>
                                                                             <input type="text" placeholder="....."
                                                                                 class="form-control" name="nombre" id="nombre"
-                                                                                value="{{ old('nombre', $insti->nombre) }}">
+                                                                                value="{{ $insti->nombre }}">
                                                                         </div>
+                                                                        @error('nombre'.$insti->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                         <div>
                                                                             <button
                                                                                 class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -170,6 +178,21 @@
             </div>
             </div>
         </div>
+
+        @if ($errors->any())
+            <script>
+                // Reabrir el modal de creación si el error proviene del formulario de creación
+                console.log(@json($errors->all()));
+                @if (old('form_type') == 'create')
+                    $('#modal-form-add').modal('show');
+                @endif
+
+                // Reabrir el modal de edición si el error proviene del formulario de edición
+                @if (old('form_type') == 'edit' && old('institucion_id'))
+                    $('#modal-form' + {{ old('institucion_id') }}).modal('show');
+                @endif
+            </script>
+        @endif
 
 
         @include('components.inspinia.footer-inspinia')

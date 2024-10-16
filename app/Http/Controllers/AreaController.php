@@ -370,11 +370,12 @@ class AreaController extends Controller
             DB::commit();
             //return response()->json(["resp" => "Área creada correctamente"]);
             //Se redirige a la vista index.blade.php de la carpeta areas
-            if ($request->currentURL) {
-                return redirect($request->currentURL);
-            } else {
-                return redirect()->route('areas.index');
-            }
+            // if ($request->currentURL) {
+            //     return redirect($request->currentURL);
+            // } else {
+            //     return redirect()->route('areas.index');
+            // }
+            return redirect()->route('areas.index');
         } catch (Exception $e) {
             //Si ocurre algún error
             //Se revierte la transacción

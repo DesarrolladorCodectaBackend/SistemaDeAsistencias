@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreInstitucionRequest extends FormRequest
+class StoreCursosRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,12 +25,14 @@ class StoreInstitucionRequest extends FormRequest
     {
         return [
             'nombre' => 'required|string|min:1|max:100',
+            'categoria' => 'required|string|min:1|max:100',
+            'duracion' =>  'required|string|min:1|max:15'
         ];
     }
 
     public function messages(){
         return [
-            'required' => "Este campo es obligatorio."
+            'required' => "Este campo es obligatorio"
         ];
     }
 }

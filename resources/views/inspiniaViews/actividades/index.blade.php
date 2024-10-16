@@ -50,9 +50,14 @@
 
                                         <form role="form" method="POST" action="{{ route('actividades.store') }}">
                                             @csrf
+                                            <input type="hidden" name="form_type" value="create">
+
                                             <div class="form-group"><label>Actividad</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
+                                            @error('nombre')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
 
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -109,7 +114,7 @@
                             <tr>
                                 <td>{{ $actividad->id }}</td>
                                 <td>{{ $actividad->nombre }}</td>
-                                <td><form method="POST" action="{{ route('actividad.activarInactivar', $actividad->id) }}">
+                                <td><form method="POST" action="{{ route('actividades.activarInactivar', $actividad->id) }}">
 
                                     @csrf
                                     <button type="submit" class="btn btn-{{ $actividad->estado ? 'outline-success' : 'danger' }} btn-primary dim">
@@ -135,12 +140,17 @@
                                                             @csrf
                                                             @method('PUT')
                                                             {{-- nombre del request "name" --}}
+                                                            <input type="hidden" name="form_type" value="edit">
+                                                            <input type="hidden" name="actividad_id" value="{{ $actividad->id }}">
 
                                                             <label class="col-form-label">Actividad</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $actividad->nombre) }}">
+                                                                    value="{{ $actividad->nombre }}">
+                                                                    @error('nombre'.$actividad->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                             </div>
                                                             <div>
                                                                 <button
@@ -163,7 +173,20 @@
             </div>
 
         </div>
+        @if ($errors->any())
+            <script>
+                // Reabrir el modal de creación si el error proviene del formulario de creación
+                console.log(@json($errors->all()));
+                @if (old('form_type') == 'create')
+                    $('#modal-form-add').modal('show');
+                @endif
 
+                // Reabrir el modal de edición si el error proviene del formulario de edición
+                @if (old('form_type') == 'edit' && old('actividad_id'))
+                    $('#modal-form' + {{ old('actividad_id') }}).modal('show');
+                @endif
+            </script>
+        @endif
 
         @include('components.inspinia.footer-inspinia')
 

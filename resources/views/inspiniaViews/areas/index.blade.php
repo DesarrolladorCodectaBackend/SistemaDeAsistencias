@@ -41,22 +41,27 @@
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
-                                            <div class="form-group"><label>Especializacion</label> <input type="text"
+                                            <div class="form-group"><label>Especialización</label> <input type="text"
                                                     placeholder="....." class="form-control" name="especializacion"
                                                     required>
                                             </div>
-                                            <div class="form-group"><label>Descripcion</label> <input type="text"
+                                            @error('especializacion')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                            <div class="form-group"><label>Descripción</label> <input type="text"
                                                     placeholder="....." class="form-control" name="descripcion"
                                                     required>
                                             </div>
+                                            @error('descripcion')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                             <div class="form-group"><label>Color Hex</label>
                                                 <input type="color" placeholder="....." class="form-control"
                                                     name="color_hex" required>
                                             </div>
-
                                         </div>
                                         <div class="col-sm-6">
-                                            <h4>Subir Icono</h4>
+                                            <h4>Subir Ícono</h4>
                                             <input type="file" class="form-control-file" id="icono" name="icono"
                                                 style="display: none;">
                                             <!-- Icono que simula el clic en el botón de subir archivos -->
@@ -100,12 +105,12 @@
                                         @csrf
                                         @method('put')
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-    
+
                                         <button type="submit" class="btn btn-{{ $area->estado ? 'outline-success' : 'danger' }} btn-primary dim">
                                             <span>{{ $area->estado ? 'ON' : 'OFF' }}</span>
                                         </button>
                                     </form>
-    
+
                                     <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant. Integrantes: {{$area->count_colabs}}</small>
                                     <a href="#"  class="product-name">{{ $area->especializacion }}</a>
                                     <div class="small m-t-xs">
@@ -127,7 +132,7 @@
                                         </form>
                                         <form role="form" method="GET" action="{{route('areas.getMaquinas', $area->id)}}">
                                             <button class="btn btn-secondary fa fa-desktop" style="font-size: 20px;">
-    
+
                                             </button>
                                         </form>
                                         {{-- EDIT --}}
@@ -163,7 +168,7 @@
                                                                             id="color_hex"
                                                                             value="{{ old('color_hex', $area->color_hex) }}">
                                                                     </div>
-    
+
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <h4>Subir Icono</h4>
@@ -319,6 +324,20 @@
 
     </div>
     </div>
+    @if ($errors->any())
+    <script>
+        // Reabrir el modal de creación si el error proviene del formulario de creación
+        console.log(@json($errors->all()));
+        @if (old('form_type') == 'create')
+            $('#modal-form-add').modal('show');
+        @endif
+
+        // Reabrir el modal de edición si el error proviene del formulario de edición
+        @if (old('form_type') == 'edit' && old('area_id'))
+            $('#modal-form' + {{ old('area_id') }}).modal('show');
+        @endif
+    </script>
+@endif
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const area = document.getElementById('areas');
@@ -334,7 +353,7 @@
     <script>
         const onClickArea = (area_id) => {
             const modalId = `#modal-form${area_id}`;
-    
+
             const modalElement = document.querySelector(modalId);
             if (modalElement) {
                 const modal = new bootstrap.Modal(modalElement);

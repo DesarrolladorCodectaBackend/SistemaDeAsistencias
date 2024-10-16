@@ -32,7 +32,7 @@ class CarreraController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StoreCarreraRequest $request)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -40,16 +40,10 @@ class CarreraController extends Controller
         }
         DB::beginTransaction();
         try{
-
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-    
-            ]);
     
             Carrera::create([
                 'nombre' => $request->nombre,
             ]);
-    
     
             DB::commit();
             if($request->currentURL) {
@@ -79,13 +73,17 @@ class CarreraController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-                'estado' => 'sometimes|boolean'
-            ]);
     
             $carrera = Carrera::findOrFail($carrera_id);
-    
+            $errors = [];
+
+            if(!isset($request->nombre)){
+                $errors['nombre'.$carrera_id] = "Este campo es obligatorio.";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('carreras.index')->withErrors($errors)->withInput();
+            }
             $carrera->update($request->all());
     
             DB::commit();

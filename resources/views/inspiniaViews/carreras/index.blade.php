@@ -50,10 +50,13 @@
 
                                         <form role="form" method="POST" action="{{ route('carreras.store') }}">
                                             @csrf
-
+                                            <input type="hidden" name="form_type" value="create">
                                             <div class="form-group"><label>Carrera</label> <input type="text"
-                                                    placeholder="Ingrese un nombre" name="nombre" class="form-control" required>
+                                                    placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
+                                            @error('nombre')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                     type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
@@ -134,12 +137,18 @@
                                                                 action="{{ route('carreras.update', $carrera->id) }}">
                                                                 @csrf
                                                                 @method('PUT')
+                                                                <input type="hidden" name="form_type" value="edit">
+                                                                <input type="hidden" name="carrera_id" value="{{ $carrera->id }}">
+                                                                
                                                                 <label class="col-form-label">Carrera</label>
                                                                 <div class="form-group"><label>Nombre</label>
                                                                     <input type="text" placeholder="....."
                                                                         class="form-control" name="nombre" id="nombre"
-                                                                        value="{{ old('nombre', $carrera->nombre) }}" required>
+                                                                        value="{{ $carrera->nombre }}"/>
                                                                 </div>
+                                                                @error('nombre'.$carrera->id)
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
                                                                 <div>
                                                                     <button
                                                                         class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -162,14 +171,27 @@
             </div>
 
         </div>
-
+        @if ($errors->any())
+        <script>
+            // Reabrir el modal de creación si el error proviene del formulario de creación
+            console.log(@json($errors->all()));
+            @if (old('form_type') == 'create')
+                $('#modal-form-add').modal('show');
+            @endif
+    
+            // Reabrir el modal de edición si el error proviene del formulario de edición
+            @if (old('form_type') == 'edit' && old('carrera_id'))
+                $('#modal-form' + {{ old('carrera_id') }}).modal('show');
+            @endif
+        </script>
+    @endif
         @include('components.inspinia.footer-inspinia')
 
     </div>
     </div>
 
     <script>
-        <!-- Mainly scripts -->
+        
         <script src="js/jquery-3.1.1.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.js"></script>

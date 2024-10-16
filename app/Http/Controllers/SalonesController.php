@@ -49,7 +49,7 @@ class SalonesController extends Controller
     //     return response()->json(["resp" => "Salón creado"]);
     // }
 
-    public function store(Request $request)
+    public function store(StoreSalonesRequest $request)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -57,11 +57,6 @@ class SalonesController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'descripcion' => 'required|string|min:1|max:255',
-            ]);
-    
      
             //Salones::create($request->all());
     
@@ -105,13 +100,16 @@ class SalonesController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'descripcion' => 'required|string|min:1|max:255',
-            ]);
             
             $salon = Salones::findOrFail($salon_id);
-            
+            $errors = [];
+            if(!isset($request->nombre)){
+                $errors['nombre'.$salon_id] = "Este campo es obligatorio";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('salones.index')->withErrors($errors)->withInput();
+            }
             $datosActualizar = $request->all();
     
             $salon->update($datosActualizar);

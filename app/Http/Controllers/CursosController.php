@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCursosRequest;
 use Illuminate\Http\Request;
 use App\Models\Cursos;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,7 @@ class CursosController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StoreCursosRequest $request)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -36,11 +37,6 @@ class CursosController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'categoria' => 'required|string|min:1|max:100',
-                'duracion' =>  'required|string|min:1|max:15'
-            ]);
 
             Cursos::create([
                 'nombre' => $request->nombre,
@@ -73,15 +69,28 @@ class CursosController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-                'categoria' => 'sometimes|string|min:1|max:255',
-                'duracion' =>  'sometimes|string|min:1|max:15'
-            ]);
             
             $curso = Cursos::findOrFail($curso_id);
-    
+            $errors = [];
             
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'.$curso_id] = "Este campo es obligatorio.";
+            }
+
+            // validacion categoria
+            if(!isset($request->categoria)){
+                $errors['categoria'.$curso_id] = "Este campo es obligatorio.";
+            }
+
+            // validacion duracion
+            if(!isset($request->duracion)){
+                $errors['duracion'.$curso_id] = "Este campo es obligatorio.";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('cursos.index')->withErrors($errors)->withInput();
+            }
             $curso->fill([
                 "nombre" => $request->nombre,
                 "categoria" => $request->categoria,

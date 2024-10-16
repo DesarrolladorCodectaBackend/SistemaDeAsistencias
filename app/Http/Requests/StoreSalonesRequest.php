@@ -13,7 +13,7 @@ class StoreSalonesRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class StoreSalonesRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nombre' => 'required|string|min:1|max:100',
+            'descripcion' => 'required|string|min:1|max:255',
+        ];
+    }
+
+    public function messages(){
+        return [
+            'required' => 'Este campo es obligatorio',
+            'max' => 'Este campo sobrepasa el límite de los caracteres.'
         ];
     }
 }

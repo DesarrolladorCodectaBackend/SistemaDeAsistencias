@@ -35,10 +35,27 @@ class ObjetoController extends Controller
         }
         DB::beginTransaction();
         try {
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'descripcion' => 'required|string|min:1|max:300',
-            ]);
+            // $request->validate([
+            //     'nombre' => 'required|string|min:1|max:100',
+            //     'descripcion' => 'required|string|min:1|max:300',
+            // ]);
+
+            $errors = [];
+
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'] = "Este campo es obligatorio.";
+            }
+
+            // validacion descripcion
+            if(!isset($request->descripcion)){
+                $errors['descripcion'] = "Este campo es obligatorio.";
+            }
+
+            // redireccion con errores
+            if(!empty($errors)){
+                return redirect()->route('objeto.index')->withErrors($errors)->withInput();
+            }
 
             Objetos::create([
                 'nombre' => $request->nombre,
@@ -69,14 +86,31 @@ class ObjetoController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-                'descripcion' => 'sometimes|string|min:1|max:300',
-                'estado' => 'sometimes|boolean'
-            ]);
+            // $request->validate([
+            //     'nombre' => 'sometimes|string|min:1|max:100',
+            //     'descripcion' => 'sometimes|string|min:1|max:300',
+            //     'estado' => 'sometimes|boolean'
+            // ]);
 
             $objeto = Objetos::findOrFail($objeto_id);
 
+            $errors = [];
+
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'] = "Este campo es obligatorio.";
+            }
+
+            // validacion descripcion
+            if(!isset($request->descripcion)){
+                $errors['descripcion'] = "Este campo es obligatorio.";
+            }
+
+            // redireccion con errores
+            if(!empty($errors)){
+                return redirect()->route('objeto.index')->withErrors($errors)->withInput();
+            }
+            
             $objeto->update($request->all());
 
             DB::commit();

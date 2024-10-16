@@ -37,10 +37,21 @@ class SedeController extends Controller
         }
         DB::beginTransaction();
         try {
-            $request->validate([
-                'nombre' => 'required|string|max:100',
-                'institucion_id' => 'required|integer|exists:institucions,id',
-            ]);
+            // $request->validate([
+            //     'nombre' => 'required|string|max:100',
+            //     'institucion_id' => 'required|integer|exists:institucions,id',
+            // ]);
+
+            $errors = [];
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'] = "Este campo es obligatorio";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('sedes.index')->withErrors($errors)->withInput();
+            }
+
             $institucion = Institucion::findOrFail($request->institucion_id);
             if($institucion){
                 Sede::create([
@@ -71,11 +82,22 @@ class SedeController extends Controller
         }
         DB::beginTransaction();
         try {
-            $request->validate([
-                'nombre' => 'required|string|max:100',
-                'institucion_id' => 'required|integer|exists:institucions,id',
-            ]);
+            // $request->validate([
+            //     'nombre' => 'required|string|max:100',
+            //     'institucion_id' => 'required|integer|exists:institucions,id',
+            // ]);
+
             $sede = Sede::findOrFail($sede_id);
+            $errors = [];
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'.$sede_id] = "Este campo es obligatorio";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('sedes.index')->withErrors($errors)->withInput();
+            }
+
             if($sede){
                 $institucion = Institucion::findOrFail($request->institucion_id);
                 if($institucion){

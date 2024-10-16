@@ -28,11 +28,12 @@
 
                 <div class="ibox-content">
                     <div class="text-center">
-                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form1"> Agregar </a>
+                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form-add"> Agregar </a>
                     </div>
-                    <div id="modal-form1" class="modal fade" aria-hidden="true">
+                    <div id="modal-form-add" class="modal fade" aria-hidden="true">
                         <form role="form" method="POST" action="{{ route('salones.store') }}">
                             @csrf
+                            <input type="hidden" name="form_type" value="create">
                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -44,12 +45,17 @@
                                                         <h3 class="m-t-none m-b">Nombre</h3>
                                                     </label><input type="text" placeholder="Ingresa nombre"
                                                         class="form-control" name="nombre"></div>
+                                                        @error('nombre')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
 
                                                 <div class="form-group" style="text-align: center"><label>
                                                         <h3 class="m-t-none m-b">Descripción</h3>
                                                     </label><input type="text" placeholder="Ingresa Descripcion"
                                                         class="form-control" name="descripcion"></div>
-
+                                                        @error('descripcion')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                                 <div
                                                     style="display:flex; justify-content: center; align-items: center; gap: 15px">
                                                     <button class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -125,7 +131,7 @@
                                                 style="font-size: 20px;" type="button"
                                                 onclick="confirmDelete({{ $salon->id }})"></button> --}}
                                             <a data-toggle="modal" class="btn btn-primary fa fa-edit"
-                                                style="font-size: 20px;" href="#modal-form-update-{{ $salon->id }}"></a>
+                                                style="font-size: 20px;" href="#modal-form{{ $salon->id }}"></a>
                                             <button type="button" class="btn btn-primary btn-success fa fa-eye"
                                                 data-toggle="modal" data-target="#modal-form-view-{{ $salon->id }}"
                                                 style="font-size: 20px;" data-salon-id="{{ $salon->id }}"></button>
@@ -215,13 +221,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="modal-form-update-{{ $salon->id }}" class="modal fade"
+                                        <div id="modal-form{{ $salon->id }}" class="modal fade"
                                             aria-hidden="true">
                                             <form role="form" method="POST"
                                                 action="{{ route('salones.update', $salon->id) }}">
                                                 @method('PUT')
                                                 @csrf
+                                                <input type="hidden" name="form_type" value="edit">
                                                 <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                                <input type="hidden" name="salon_id" value="{{ $salon->id }}">
+
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-body">
@@ -231,14 +240,20 @@
                                                                             <h3 class="m-t-none m-b">Nombre</h3>
                                                                         </label><input type="text" name="nombre"
                                                                             class="form-control"
-                                                                            value="{{ old('nombre', $salon->nombre) }}">
+                                                                            value="{{ $salon->nombre }}">
+                                                                            @error('nombre'.$salon->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
 
                                                                     <div class="form-group"><label>
                                                                             <h3 class="m-t-none m-b">Descripción</h3>
                                                                         </label><input type="text" name="descripcion"
                                                                             class="form-control"
-                                                                            value="{{ old('descripcion', $salon->descripcion) }}">
+                                                                            value="{{ $salon->descripcion }}">
+                                                                            @error('descripcion'.$salon->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
 
                                                                     <div>
@@ -300,7 +315,20 @@
 
 
 
-
+        @if ($errors->any())
+            <script>
+                // Reabrir el modal de creación si el error proviene del formulario de creación
+                console.log(@json($errors->all()));
+                @if (old('form_type') == 'create')
+                    $('#modal-form-add').modal('show');
+                @endif
+        
+                // Reabrir el modal de edición si el error proviene del formulario de edición
+                @if (old('form_type') == 'edit' && old('salon_id'))
+                    $('#modal-form' + {{ old('salon_id') }}).modal('show');
+                @endif
+            </script>
+        @endif
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProgramasRequest;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Programas;
@@ -27,21 +28,7 @@ class ProgramasController extends Controller
         ]);
     }
 
-    /*
-    public function create(Request $request)
-    {
-        Programas::create([
-            "nombre" => $request->nombre,
-            "descripcion" => $request->descripcion,
-            "memoria_grafica" => $request->memoria_grafica,
-            "ram" => $request->ram
-        ]);
-
-        return response()->json(["resp" => "Programa creado"]);
-    }
-    */
-
-    public function store(Request $request)
+    public function store(StoreProgramasRequest $request)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -49,12 +36,6 @@ class ProgramasController extends Controller
         }
         DB::beginTransaction();
         try{
-
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'descripcion' => 'required|string|min:1|max:255',
-                'icono' => 'image'
-            ]);
     
             if ($request->hasFile('icono')) {
                 $icono = $request->file('icono');
@@ -109,14 +90,38 @@ class ProgramasController extends Controller
         DB::beginTransaction();
         try{
 
-            $request->validate([
-                "nombre" => "required|string|min:1|max:255",
-                "descripcion" => "sometimes|string|min:1|max:500",
-                "icono" => "image"
-            ]);
+            // $request->validate([
+            //     "nombre" => "required|string|min:1|max:255",
+            //     "descripcion" => "sometimes|string|min:1|max:500",
+            //     "icono" => "image"
+            // ]);
     
             $programa = Programas::findOrFail($programa_id);
-    
+            $errors = [];
+
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'.$programa_id] = "Este campo es obligatorio";
+            }
+
+            // validacion descripcion
+            if(!isset($request->descripcion)){
+                $errors['descripcion'.$programa_id] = "Este campo es obligatorio.";
+            }
+
+            // validacion icono
+            if ($request->hasFile('icono')) {
+                $extension = 'img';
+                $extensionVal = $request->file('icono')->getClientOriginalExtension();
+                if ($extensionVal !== $extension) {
+                    $errors['icono' . $programa_id] = 'El icono debe ser un archivo de tipo: ' . $extension;
+                }
+            }
+            
+            if(!empty($errors)){
+                return redirect()->route('programas.index')->withErrors($errors)->withInput();
+            }
+
             $datosActualizar = $request->except(['icono']);
     
             if ($request->hasFile('icono')) {

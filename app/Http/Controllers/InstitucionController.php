@@ -105,7 +105,7 @@ public function activarInactivarJSON(Request $request,$institucion_id)
     }
 
 
-    public function store(Request $request)
+    public function store(StoreInstitucionRequest $request)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -113,10 +113,7 @@ public function activarInactivarJSON(Request $request,$institucion_id)
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                        'nombre' => 'required|string|min:1|max:100',
-                    ]);
-
+        
             institucion::create([
                 'nombre' => $request->nombre,
             ]);
@@ -145,12 +142,18 @@ public function activarInactivarJSON(Request $request,$institucion_id)
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-            ]);
 
             $institucion = Institucion::findOrFail($institucion_id);
 
+            $errors = [];
+
+            if(!isset($request->nombre)){
+                $errors['nombre'.$institucion_id] = "Este campo es obligatorio";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('institucion.index')->withErrors($errors)->withInput();
+            }
             $institucion->update($request->all());
 
             DB::commit();
