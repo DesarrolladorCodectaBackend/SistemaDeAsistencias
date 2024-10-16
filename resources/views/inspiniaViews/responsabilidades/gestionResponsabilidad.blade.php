@@ -40,11 +40,19 @@
 
                                         <form role="form" method="POST" action="{{ route('gestionResponsabilidad.store') }}">
                                             @csrf
+                                            <input type="hidden" name="form_type" value="create">
+
                                             <div class="form-group"><label>Responsabilidad</label> <input type="text"
                                                     placeholder="Ingrese una responsabilidad" name="nombre" class="form-control">
+                                                    @error('nombre')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><input type="text"
                                                 placeholder="Ingrese un porcentaje" name="porcentaje_peso" class="form-control">
+                                                @error('porcentaje_peso')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                         </div>
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -126,18 +134,27 @@
                                                             action="{{ route('gestionResponsabilidad.update', $responsabilidad->id) }}">
                                                             @csrf
                                                             @method('PUT')
+                                                            <input type="hidden" name="form_type" value="edit">
+                                                            <input type="hidden" name="responsabilidad_id" value="{{ $responsabilidad->id }}">
+
                                                             {{-- nombre del request "name" --}}
 
                                                             <label class="col-form-label">Responsabilidad</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $responsabilidad->nombre) }}">
+                                                                    value="{{ $responsabilidad->nombre }}">
+                                                                    @error('nombre'.$responsabilidad->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                     @enderror
                                                             </div>
                                                             <div class="form-group"><label>Peso</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="porcentaje_peso" id="porcentaje_peso"
-                                                                    value="{{ old('porcentaje_peso', $responsabilidad->porcentaje_peso) }}">
+                                                                    value="{{ $responsabilidad->porcentaje_peso }}">
+                                                                    @error('porcentaje_peso'.$responsabilidad->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                             </div>
                                                             <div>
                                                                 <button
@@ -161,6 +178,20 @@
 
         </div>
 
+        @if ($errors->any())
+            <script>
+                // Reabrir el modal de creación si el error proviene del formulario de creación
+                console.log(@json($errors->all()));
+                @if (old('form_type') == 'create')
+                    $('#modal-form-add').modal('show');
+                @endif
+
+                // Reabrir el modal de edición si el error proviene del formulario de edición
+                @if (old('form_type') == 'edit' && old('responsabilidad_id'))
+                    $('#modal-form' + {{ old('responsabilidad_id') }}).modal('show');
+                @endif
+            </script>
+        @endif
 
         @include('components.inspinia.footer-inspinia')
 

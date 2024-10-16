@@ -37,11 +37,25 @@ class ResponsabilidadController extends Controller
         }
         DB::beginTransaction();
         try {
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'porcentaje_peso' => 'required|integer',
-            ]);
+            // $request->validate([
+            //     'nombre' => 'required|string|min:1|max:100',
+            //     'porcentaje_peso' => 'required|integer',
+            // ]);
 
+            $errors = [];
+             // validacion nombre
+             if(!isset($request->nombre)){
+                $errors['nombre'] = "Este campo es obligatorio.";
+            }
+
+            // validacion porcenta_peso
+            if(!isset($request->porcentaje_peso)){
+                $errors['porcentaje_peso'] = "Este campo es obligatorio.";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('gestionResponsabilidad.index')->withErrors($errors)->withInput();
+            }
             $responsabilidad = Responsabilidades_semanales::create([
                 'nombre' => $request->nombre,
                 'porcentaje_peso' => $request->porcentaje_peso
@@ -73,12 +87,29 @@ class ResponsabilidadController extends Controller
         }
         DB::beginTransaction();
         try {
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'porcentaje_peso' => 'required|integer',
-            ]);
+            // $request->validate([
+            //     'nombre' => 'required|string|min:1|max:100',
+            //     'porcentaje_peso' => 'required|integer',
+            // ]);
+
+
 
             $responsabilidades = Responsabilidades_semanales::findOrFail($responsabilidades_id);
+            $errors = [];
+
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'.$responsabilidades_id] = "Este campo es obligatorio.";
+            }
+
+            // validacion porcenta_peso
+            if(!isset($request->porcentaje_peso)){
+                $errors['porcentaje_peso'.$responsabilidades_id] = "Este campo es obligatorio.";
+            }
+
+            if(!empty($error)){
+                return redirect()->route('gestionResponsabilidad.index')->withErrors($errors)->withInput();
+            }
 
             $responsabilidades->update($request->all());
 
