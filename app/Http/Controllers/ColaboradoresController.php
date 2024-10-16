@@ -42,7 +42,7 @@ class ColaboradoresController extends Controller
             $semanas = FunctionHelperController::semanasColaborador(1);
             $semanasEvaluadasCount = FunctionHelperController::getConteoMaximoSemanasEvaluadasColaborador($colaborador->id);
             if($semanasEvaluadasCount > 0){
-                $promedioArray = FunctionHelperController::promedioColaborador($colaborador->id, $semanas);
+                $promedioArray = FunctionHelperController::promedioColaborador($colaborador->id, $semanas['semanas']);
                 $promedio = $promedioArray['promedio'];
                 $colaborador->promedio = $promedio;
                 if($promedio < 11){ 

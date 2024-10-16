@@ -228,6 +228,26 @@ class FunctionHelperController extends Controller
         return $semana;
     }
 
+    public static function getWeekFromToDisponible($semana_id){
+        $disponible = true;
+        $semana = Semanas::where('id', $semana_id)->first();
+        $thisWeek = FunctionHelperController::findThisWeek();
+        if($semana->id >= $thisWeek->id) $disponible = false;
+
+        $desde = Carbon::parse($semana->fecha_lunes)->format('d/m/Y');
+        $hasta = Carbon::parse($semana->fecha_lunes);
+        while(!$hasta->isFriday()){
+            $hasta->addDay();
+        }
+
+        return [
+            "desde" => $desde,
+            "hasta" => $hasta->format('d/m/Y'),
+            "disponible" => $disponible
+        ];
+
+    }
+
     public static function getSemanaByDay($date){
         //Se convierte la fecha a Carbon para poder manipularla mejor
         $date = Carbon::parse($date);
@@ -416,7 +436,7 @@ class FunctionHelperController extends Controller
         $notasTotales = [];
         $responsabilidades = [];
         // return $responsabilidades;
-        foreach($semanas['semanas'] as $semana){
+        foreach($semanas as $semana){
             //Obtener registros de evaluación de esa semana
             $registros = Cumplio_Responsabilidad_Semanal::with('responsabilidad_semanal')
                 ->where('colaborador_area_id', $colaborador_area_id)->where('semana_id', $semana->id)->get();
@@ -452,9 +472,13 @@ class FunctionHelperController extends Controller
             $promedioNotas[$notaTotal] = number_format($notasTotales[$notaTotal]/$responsabilidad['conteoSemanas'], 1);
         }
         // return count($responsabilidades);
-        $responsabilidadesCount = count($responsabilidades) === 0 ?  1 : count($responsabilidades);
+        $responsabilidadesCount = count($responsabilidades) === 0 ?  false : count($responsabilidades);
         // return $responsabilidadesCount;
-        $promedio = number_format(array_sum($promedioNotas)/$responsabilidadesCount, 1);
+        if(!$responsabilidadesCount){
+            $promedio = null;           
+        } else{
+            $promedio = number_format(array_sum($promedioNotas)/$responsabilidadesCount, 1);
+        }
         $data = [
             "notasTotales" => $notasTotales,
             "promedioNotas" => $promedioNotas,
@@ -475,31 +499,39 @@ class FunctionHelperController extends Controller
             //Data de cada colab area
             $dataColabArea = FunctionHelperController::promedioColaboradorArea($colabArea->id, $semanas);
             $notasTotalesColabArea = $dataColabArea['notasTotales'];
-            foreach(array_keys($notasTotalesColabArea) as $notaTotal){
-                if(isset($notasTotales[$notaTotal])){
-                    //Si ya esta en el array se le suma el valor
-                    $notasTotales[$notaTotal] += $notasTotalesColabArea[$notaTotal];
-                } else{
-                    //Si no esta en el array se agrega con el valor de la nota
-                    $notasTotales[$notaTotal] = $notasTotalesColabArea[$notaTotal];
+            if($dataColabArea['promedio'] == null){
+                //Si su promedio es null, significa que aun no fue evaluado
+                //Retirar este colaborador del arreglo para no agregar ni dividir
+                $colaboradorAreas = $colaboradorAreas->where('id', '!=', $colabArea->id);
+            } else{
+                foreach(array_keys($notasTotalesColabArea) as $notaTotal){
+                    if(isset($notasTotales[$notaTotal])){
+                        //Si ya esta en el array se le suma el valor
+                        $notasTotales[$notaTotal] += $notasTotalesColabArea[$notaTotal];
+                    } else{
+                        //Si no esta en el array se agrega con el valor de la nota
+                        $notasTotales[$notaTotal] = $notasTotalesColabArea[$notaTotal];
+                    }
                 }
-            }
-
-            $promedioNotasColabArea = $dataColabArea['promedioNotas'];
-            foreach(array_keys($promedioNotasColabArea) as $promedioNota){
-                if(isset($promedioNotas[$promedioNota])){
-                    //Si ya esta en el array se le suma el valor
-                    $promedioNotas[$promedioNota] += $promedioNotasColabArea[$promedioNota];
-                } else{
-                    //Si no esta en el array se agrega con el valor del promedio
-                    $promedioNotas[$promedioNota] = $promedioNotasColabArea[$promedioNota];
+    
+                $promedioNotasColabArea = $dataColabArea['promedioNotas'];
+                foreach(array_keys($promedioNotasColabArea) as $promedioNota){
+                    if(isset($promedioNotas[$promedioNota])){
+                        //Si ya esta en el array se le suma el valor
+                        $promedioNotas[$promedioNota] += $promedioNotasColabArea[$promedioNota];
+                    } else{
+                        //Si no esta en el array se agrega con el valor del promedio
+                        $promedioNotas[$promedioNota] = $promedioNotasColabArea[$promedioNota];
+                    }
                 }
+    
+                //Sumar promedio de cada colab area para obtener el promedio total del colaborador
+                $promedio += $dataColabArea['promedio'];
+                // return $dataColabArea;
             }
-
-            //Sumar promedio de cada colab area para obtener el promedio total del colaborador
-            $promedio += $dataColabArea['promedio'];
-            // return $dataColabArea;
         }
+        // return $colaboradorAreas;
+        
         //dividir todo entre el numero de colaboradoresArea
         $colaboradorAreasCount = $colaboradorAreas->count() === 0 ?  1 : $colaboradorAreas->count();
 
@@ -531,11 +563,12 @@ class FunctionHelperController extends Controller
     public function funcionPruebas(){
         $semanas = FunctionHelperController::semanasColaborador(1);
         // $resultado = FunctionHelperController::findThisWeek();
-        $resultado = FunctionHelperController::promedioColaborador(1, $semanas);
-        // $resultado = FunctionHelperController::promedioColaboradorArea(13, $semanas);
-        // $resultado = FunctionHelperController::getConteoMaximoSemanasEvaluadasColaborador(1);
-
-        return $resultado;
+        $resultado = FunctionHelperController::promedioColaborador(1, $semanas['semanas']);
+        $colab1 = FunctionHelperController::promedioColaboradorArea(1, $semanas['semanas']);
+        $colab2 = FunctionHelperController::promedioColaboradorArea(14, $semanas['semanas']);
+        
+        return $semanas;
+        // return [$colab1, $colab2];
     }
 
 }
