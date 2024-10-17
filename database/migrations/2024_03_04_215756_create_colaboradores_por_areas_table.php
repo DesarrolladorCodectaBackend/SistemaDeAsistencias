@@ -35,4 +35,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('colaboradores_por__areas');
     }
+
+    
 };

@@ -17,15 +17,11 @@ class SalonesSeeder extends Seeder
     {
         Salones::create([
             "nombre" => "Salon N°1",
-            "descripcion" => "Descripcion N°1"
+            "descripcion" => "Máquinas"
         ]);
         Salones::create([
             "nombre" => "Salon N°2",
-            "descripcion" => "Descripcion N°2"
-        ]);
-        Salones::create([
-            "nombre" => "Salon N°3",
-            "descripcion" => "Descripcion N°3"
+            "descripcion" => "Oficina"
         ]);
     }
 }
