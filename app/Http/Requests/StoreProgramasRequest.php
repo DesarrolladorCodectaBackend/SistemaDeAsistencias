@@ -32,8 +32,10 @@ class StoreProgramasRequest extends FormRequest
 
     public function messages(){
         return [
+            'nombre.max' => "Exceden los 100 caracteres",
             'required' => "Este campo es obligatorio.",
-            'image' => "Error. Debe contener formato imagen."
+            'image' => "Error. Debe contener formato imagen.",
+            'descripcion.max' => "Exceden los 100 caracteres"
         ];
     }
 }

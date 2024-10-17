@@ -25,7 +25,7 @@ class CarreraController extends Controller
 
         return view('inspiniaViews.carreras.index', [
             'carreras' => $carreras,
-            'pageData' => $pageData, 
+            'pageData' => $pageData,
             'hasPagination' => $hasPagination,
         ]);
 
@@ -40,11 +40,11 @@ class CarreraController extends Controller
         }
         DB::beginTransaction();
         try{
-    
+
             Carrera::create([
                 'nombre' => $request->nombre,
             ]);
-    
+
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
@@ -62,9 +62,6 @@ class CarreraController extends Controller
 
 
     }
-
-
-
     public function update(Request $request, $carrera_id)
     {
         $access = FunctionHelperController::verifyAdminAccess();
@@ -73,19 +70,25 @@ class CarreraController extends Controller
         }
         DB::beginTransaction();
         try{
-    
+
             $carrera = Carrera::findOrFail($carrera_id);
             $errors = [];
 
+
+            //validacion de nombre
             if(!isset($request->nombre)){
                 $errors['nombre'.$carrera_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre) > 100){
+                    $errors['nombre'.$carrera_id] = "Exceden los 100 caracteres";
+                }
             }
 
             if(!empty($errors)){
                 return redirect()->route('carreras.index')->withErrors($errors)->withInput();
             }
             $carrera->update($request->all());
-    
+
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
@@ -146,7 +149,7 @@ class CarreraController extends Controller
                 return redirect()->route('carreras.index');
             }
         }
-        
+
     }
 
 }

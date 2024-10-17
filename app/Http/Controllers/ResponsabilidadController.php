@@ -46,6 +46,10 @@ class ResponsabilidadController extends Controller
              // validacion nombre
              if(!isset($request->nombre)){
                 $errors['nombre'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre) > 100){
+                    $errors['nombre'] = "Excede los 100 caracteres";
+                }
             }
 
             // validacion porcenta_peso
@@ -99,7 +103,11 @@ class ResponsabilidadController extends Controller
 
             // validacion nombre
             if(!isset($request->nombre)){
-                $errors['nombre'.$responsabilidades_id] = "Este campo es obligatorio.";
+                $errors['nombre'.$responsabilidades_id] = "Este campo es obligatorio";
+            }else{
+                if(strlen($request->nombre.$responsabilidades_id) > 100){
+                    $errors['nombre'.$responsabilidades_id] = "Excede los 100 caracteres";
+                }
             }
 
             // validacion porcenta_peso

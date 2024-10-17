@@ -37,12 +37,36 @@ class CursosController extends Controller
         }
         DB::beginTransaction();
         try{
+            /*
+            Cursos::create([
+                'nombre' => $request->nombre,
+                'categoria' => $request->categoria,
+                'duracion' => $request->duracion
+            ]);
+            */
+
+            //pruebas
+            $errors = [];
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre) > 100){
+                    $errors['nombre'] = "El curso no se puede exceder de los 100 caracteres";
+                }
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('gestionResponsabilidad.index')->withErrors($errors)->withInput();
+            }
+
 
             Cursos::create([
                 'nombre' => $request->nombre,
                 'categoria' => $request->categoria,
                 'duracion' => $request->duracion
             ]);
+            //
 
             DB::commit();
             if($request->currentURL) {
@@ -58,8 +82,8 @@ class CursosController extends Controller
                 return redirect()->route('cursos.index');
             }
         }
-        
-        
+
+
     }
     public function update(Request $request, $curso_id)
     {
@@ -69,13 +93,17 @@ class CursosController extends Controller
         }
         DB::beginTransaction();
         try{
-            
+
             $curso = Cursos::findOrFail($curso_id);
             $errors = [];
-            
+
             // validacion nombre
             if(!isset($request->nombre)){
                 $errors['nombre'.$curso_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre.$curso_id) > 100){
+                    $errors['nombre'.$curso_id] = "Exceden de los 100 caracteres";
+                }
             }
 
             // validacion categoria
@@ -96,7 +124,7 @@ class CursosController extends Controller
                 "categoria" => $request->categoria,
                 "duracion" => $request->duracion
             ])->save();
-    
+
             DB::commit();
 
             if($request->currentURL) {
@@ -135,11 +163,11 @@ class CursosController extends Controller
         DB::beginTransaction();
         try{
             $curso = Cursos::findOrFail($curso_id);
-    
+
             $curso->estado = !$curso->estado;
-    
+
             $curso->save();
-    
+
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);

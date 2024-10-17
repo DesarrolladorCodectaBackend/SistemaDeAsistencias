@@ -45,11 +45,19 @@ class ObjetoController extends Controller
             // validacion nombre
             if(!isset($request->nombre)){
                 $errors['nombre'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre) > 100) {
+                    $errors['nombre'] = "Excede los 100 caracteres";
+                }
             }
 
             // validacion descripcion
             if(!isset($request->descripcion)){
                 $errors['descripcion'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->descripcion) > 100){
+                    $errors['descripcion'] = "Exceder los 100 caracteres";
+                }
             }
 
             // redireccion con errores
@@ -99,18 +107,26 @@ class ObjetoController extends Controller
             // validacion nombre
             if(!isset($request->nombre)){
                 $errors['nombre'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre) > 100) {
+                    $errors['nombre'] = "Excede los 100 caracteres";
+                }
             }
 
             // validacion descripcion
             if(!isset($request->descripcion)){
                 $errors['descripcion'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->descripcion) > 100){
+                    $errors['descripcion'] = "Excede los 100 caracteres";
+                }
             }
 
             // redireccion con errores
             if(!empty($errors)){
                 return redirect()->route('objeto.index')->withErrors($errors)->withInput();
             }
-            
+
             $objeto->update($request->all());
 
             DB::commit();
@@ -141,7 +157,7 @@ class ObjetoController extends Controller
 
         return redirect()->route('objeto.index');
     }
-    
+
     public function activarInactivar(Request $request, $objeto_id){
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
