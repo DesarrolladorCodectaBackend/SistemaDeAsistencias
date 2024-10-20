@@ -103,9 +103,25 @@ class SalonesController extends Controller
             
             $salon = Salones::findOrFail($salon_id);
             $errors = [];
+
+            // validcaion nombre
             if(!isset($request->nombre)){
                 $errors['nombre'.$salon_id] = "Este campo es obligatorio";
+            }else{
+                if(strlen($request->nombre) > 100){
+                    $errors['nombre'.$salon_id] = "Excede los 100 caracteres.";
+                }
             }
+
+            // validcaion descripcion
+            if(!isset($request->descripcion)){
+                $errors['descripcion'.$salon_id] = "Este campo es obligatorio";
+            }else{
+                if(strlen($request->descripcion) > 255){
+                    $errors['descripcion'.$salon_id] = "Excede los 255 caracteres.";
+                }
+            }
+
 
             if(!empty($errors)){
                 return redirect()->route('salones.index')->withErrors($errors)->withInput();

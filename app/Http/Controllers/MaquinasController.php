@@ -84,11 +84,19 @@ class MaquinasController extends Controller
             // validacion nombre
             if(!isset($request->nombre)){
                 $errors['nombre'.$maquina_id] = "Este campo es obligatorio";
+            }else{
+                if(strlen($request->nombre) > 100){
+                    $errors['nombre'.$maquina_id] = "Excede los 100 caracteres.";
+                }
             }
 
             // validacion detalles_tecnicos
             if(!isset($request->detalles_tecnicos)){
                 $errors['detalles_tecnicos'.$maquina_id] = "Este campo es obligatorio";
+            }else{
+                if(strlen($request->detalles_tecnicos) > 255){
+                    $errors['detalles_tecnicos'.$maquina_id] = "Excede los 255 caracteres.";
+                }
             }
 
             // validaciones num_identificador

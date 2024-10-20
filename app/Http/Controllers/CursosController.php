@@ -56,8 +56,9 @@ class CursosController extends Controller
                 }
             }
 
+
             if(!empty($errors)){
-                return redirect()->route('gestionResponsabilidad.index')->withErrors($errors)->withInput();
+                return redirect()->route('cursos.index')->withErrors($errors)->withInput();
             }
 
 
@@ -101,7 +102,7 @@ class CursosController extends Controller
             if(!isset($request->nombre)){
                 $errors['nombre'.$curso_id] = "Este campo es obligatorio.";
             }else{
-                if(strlen($request->nombre.$curso_id) > 100){
+                if(strlen($request->nombre) > 100){
                     $errors['nombre'.$curso_id] = "Exceden de los 100 caracteres";
                 }
             }
@@ -109,11 +110,19 @@ class CursosController extends Controller
             // validacion categoria
             if(!isset($request->categoria)){
                 $errors['categoria'.$curso_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre) > 100){
+                    $errors['categoria'.$curso_id] = "Excede los 100 caracteres";
+                }
             }
 
             // validacion duracion
             if(!isset($request->duracion)){
                 $errors['duracion'.$curso_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->duracion > 15)){
+                    $errors['duracion'.$curso_id] = "Excede los 15 caracteres";
+                }
             }
 
             if(!empty($errors)){

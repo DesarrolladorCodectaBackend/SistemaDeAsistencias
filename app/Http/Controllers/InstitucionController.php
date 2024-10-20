@@ -150,7 +150,7 @@ public function activarInactivarJSON(Request $request,$institucion_id)
             if(!isset($request->nombre)){
                 $errors['nombre'.$institucion_id] = "Este campo es obligatorio";
             }else{
-                if(strlen($request->nombre.$institucion_id) > 100){
+                if(strlen($request->nombre) > 100){
                     $errors['nombre'.$institucion_id] = "Exceden los 100 caracteres";
                 }
             }

@@ -106,19 +106,19 @@ class ObjetoController extends Controller
 
             // validacion nombre
             if(!isset($request->nombre)){
-                $errors['nombre'] = "Este campo es obligatorio.";
+                $errors['nombre'.$objeto_id] = "Este campo es obligatorio.";
             }else{
                 if(strlen($request->nombre) > 100) {
-                    $errors['nombre'] = "Excede los 100 caracteres";
+                    $errors['nombre'.$objeto_id] = "Excede los 100 caracteres";
                 }
             }
 
             // validacion descripcion
             if(!isset($request->descripcion)){
-                $errors['descripcion'] = "Este campo es obligatorio.";
+                $errors['descripcion'.$objeto_id] = "Este campo es obligatorio.";
             }else{
                 if(strlen($request->descripcion) > 100){
-                    $errors['descripcion'] = "Excede los 100 caracteres";
+                    $errors['descripcion'.$objeto_id] = "Excede los 100 caracteres";
                 }
             }
 

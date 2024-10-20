@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateResponsabilidadesRequest;
 use App\Models\RegistroResponsabilidad;
 use App\Models\Responsabilidades_semanales;
 use Illuminate\Http\Request;
@@ -55,6 +56,10 @@ class ResponsabilidadController extends Controller
             // validacion porcenta_peso
             if(!isset($request->porcentaje_peso)){
                 $errors['porcentaje_peso'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->porcentaje_peso) != 2){
+                    $errors['porcentaje_peso'] = "Excede los 2 dígitos.";
+                }
             }
 
             if(!empty($errors)){
@@ -113,9 +118,13 @@ class ResponsabilidadController extends Controller
             // validacion porcenta_peso
             if(!isset($request->porcentaje_peso)){
                 $errors['porcentaje_peso'.$responsabilidades_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->porcentaje_peso) != 2){
+                    $errors['porcentaje_peso'.$responsabilidades_id] = "Excede los 2 dígitos.";
+                }
             }
 
-            if(!empty($error)){
+            if(!empty($errors)){
                 return redirect()->route('gestionResponsabilidad.index')->withErrors($errors)->withInput();
             }
 

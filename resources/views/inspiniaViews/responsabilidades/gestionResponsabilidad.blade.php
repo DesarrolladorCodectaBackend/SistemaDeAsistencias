@@ -135,7 +135,7 @@
                                                             @csrf
                                                             @method('PUT')
                                                             <input type="hidden" name="form_type" value="edit">
-                                                            <input type="hidden" name="responsabilidad_id" value="{{ $responsabilidad->id }}">
+                                                            <input type="hidden" name="responsabilidades_id" value="{{ $responsabilidad->id }}">
 
                                                             {{-- nombre del request "name" --}}
 
@@ -187,8 +187,8 @@
                 @endif
 
                 // Reabrir el modal de edición si el error proviene del formulario de edición
-                @if (old('form_type') == 'edit' && old('responsabilidad_id'))
-                    $('#modal-form' + {{ old('responsabilidad_id') }}).modal('show');
+                @if (old('form_type') == 'edit' && old('responsabilidades_id'))
+                    $('#modal-form' + {{ old('responsabilidades_id') }}).modal('show');
                 @endif
             </script>
         @endif
