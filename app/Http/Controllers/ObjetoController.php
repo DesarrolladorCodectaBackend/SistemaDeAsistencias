@@ -35,10 +35,35 @@ class ObjetoController extends Controller
         }
         DB::beginTransaction();
         try {
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-                'descripcion' => 'required|string|min:1|max:300',
-            ]);
+            // $request->validate([
+            //     'nombre' => 'required|string|min:1|max:100',
+            //     'descripcion' => 'required|string|min:1|max:300',
+            // ]);
+
+            $errors = [];
+
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre) > 100) {
+                    $errors['nombre'] = "Excede los 100 caracteres";
+                }
+            }
+
+            // validacion descripcion
+            if(!isset($request->descripcion)){
+                $errors['descripcion'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->descripcion) > 100){
+                    $errors['descripcion'] = "Exceder los 100 caracteres";
+                }
+            }
+
+            // redireccion con errores
+            if(!empty($errors)){
+                return redirect()->route('objeto.index')->withErrors($errors)->withInput();
+            }
 
             Objetos::create([
                 'nombre' => $request->nombre,
@@ -69,13 +94,38 @@ class ObjetoController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-                'descripcion' => 'sometimes|string|min:1|max:300',
-                'estado' => 'sometimes|boolean'
-            ]);
+            // $request->validate([
+            //     'nombre' => 'sometimes|string|min:1|max:100',
+            //     'descripcion' => 'sometimes|string|min:1|max:300',
+            //     'estado' => 'sometimes|boolean'
+            // ]);
 
             $objeto = Objetos::findOrFail($objeto_id);
+
+            $errors = [];
+
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'.$objeto_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre) > 100) {
+                    $errors['nombre'.$objeto_id] = "Excede los 100 caracteres";
+                }
+            }
+
+            // validacion descripcion
+            if(!isset($request->descripcion)){
+                $errors['descripcion'.$objeto_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->descripcion) > 100){
+                    $errors['descripcion'.$objeto_id] = "Excede los 100 caracteres";
+                }
+            }
+
+            // redireccion con errores
+            if(!empty($errors)){
+                return redirect()->route('objeto.index')->withErrors($errors)->withInput();
+            }
 
             $objeto->update($request->all());
 
@@ -107,7 +157,7 @@ class ObjetoController extends Controller
 
         return redirect()->route('objeto.index');
     }
-    
+
     public function activarInactivar(Request $request, $objeto_id){
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){

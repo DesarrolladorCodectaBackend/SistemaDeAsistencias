@@ -34,7 +34,22 @@
 
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
+            @if ($errors->any())
+                    <div id="alert-error" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Errores:</strong>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
             <div class="row">
+                
+
                 <div class="col-lg-12">
                     <div class="tabs-container">
                         <ul class="nav nav-tabs" role="tablist">
@@ -215,10 +230,12 @@
                                                                                                 <option
                                                                                                     value="{{ $hora }}">
                                                                                                     {{ $hora }}</option>
-
                                                                                                 @endforeach
                                                                                             </select>
                                                                                         </div>
+                                                                                        @error('horarios.0.hora_inicial')
+                                                                                            <div class="text-danger mt-2">{{ $message }}</div>
+                                                                                        @enderror
                                                                                     </td>
                                                                                     <td>
                                                                                         <div class="input-group date">
@@ -236,6 +253,9 @@
                                                                                                 @endforeach
                                                                                             </select>
                                                                                         </div>
+                                                                                        @error('reuniones.0.hora_final')
+                                                                                            <div class="text-danger mt-2">{{ $message }}</div>
+                                                                                        @enderror
                                                                                     </td>
                                                                                     <td>
                                                                                         <div class="form-group row">
@@ -357,9 +377,10 @@
                     </div>
                 </div>
             </div>
+
         </div>
         @include('components.inspinia.footer-inspinia')
-        
+
     </div>
     </div>
     <style>
@@ -424,7 +445,7 @@
             select += '<option value="' + dias[i] + '">' + dias[i] + '</option>';
         }
 
-        select += '</select>';            
+        select += '</select>';
         return select
     }
 
@@ -434,7 +455,7 @@
             select += '<option value="' + disponibilidades[i] + '">' + disponibilidades[i] + '</option>';
         }
 
-        select += '</select>';            
+        select += '</select>';
         return select
     }
 
@@ -457,26 +478,26 @@
 
     <script>
         $(document).ready(function() {
-    
+
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
-    
+
             /* initialize the external events -----------------------------------------------------------------*/
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
                     title: $.trim($(this).text()),
                     stick: true
                 });
-    
+
                 $(this).draggable({
                     zIndex: 1111999,
                     revert: true,
                     revertDuration: 0
                 });
             });
-    
+
             /* initialize the calendar -----------------------------------------------------------------*/
             var date = new Date();
             var d = date.getDate();
@@ -484,7 +505,7 @@
             var y = date.getFullYear();
             var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
             const area = <?php echo json_encode($area); ?>;
-            
+
             var eventosHorarios = horariosFormateados.map(function(horario) {
                 var numeroDia;
                 if(horario.dia == "Lunes"){
@@ -513,8 +534,8 @@
                     editable: false
                 };
             });
-            
-    
+
+
             var eventos = [{
                     title: 'Domingo',
                     start: new Date(2024, 1, 4, 0, 0),
@@ -572,7 +593,7 @@
                     editable: false
                 }
             ].concat(eventosHorarios);
-    
+
             $('#calendar').fullCalendar({
                 locale: 'es',
                 defaultView: 'agendaWeek',

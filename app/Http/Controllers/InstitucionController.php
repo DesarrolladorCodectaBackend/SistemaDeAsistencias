@@ -33,7 +33,7 @@ class InstitucionController extends Controller
     }
     public function getAll()
     {
-        
+
         $instituciones = Institucion::get();
 
         return response()->json(['data' => $instituciones]);
@@ -51,7 +51,7 @@ public function storeJSON(Request $request)
             institucion::create([
                 'nombre' => $request->nombre,
             ]);
-            
+
             DB::commit();
             return response()->json(["resp" => "Registro creado exitosamente"]);
         } catch(Exception $e) {
@@ -105,7 +105,7 @@ public function activarInactivarJSON(Request $request,$institucion_id)
     }
 
 
-    public function store(Request $request)
+    public function store(StoreInstitucionRequest $request)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -113,14 +113,11 @@ public function activarInactivarJSON(Request $request,$institucion_id)
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                        'nombre' => 'required|string|min:1|max:100',
-                    ]);
 
             institucion::create([
                 'nombre' => $request->nombre,
             ]);
-            
+
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
@@ -145,12 +142,22 @@ public function activarInactivarJSON(Request $request,$institucion_id)
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-            ]);
 
             $institucion = Institucion::findOrFail($institucion_id);
 
+            $errors = [];
+
+            if(!isset($request->nombre)){
+                $errors['nombre'.$institucion_id] = "Este campo es obligatorio";
+            }else{
+                if(strlen($request->nombre) > 100){
+                    $errors['nombre'.$institucion_id] = "Exceden los 100 caracteres";
+                }
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('institucion.index')->withErrors($errors)->withInput();
+            }
             $institucion->update($request->all());
 
             DB::commit();
@@ -210,5 +217,5 @@ public function activarInactivarJSON(Request $request,$institucion_id)
             }
         }
     }
-    
+
 }

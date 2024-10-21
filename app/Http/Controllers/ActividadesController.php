@@ -27,9 +27,23 @@ class ActividadesController extends Controller
         }
         DB::beginTransaction();
         try {
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:100',
-            ]);
+            // $request->validate([
+            //     'nombre' => 'required|string|min:1|max:100',
+            // ]);
+
+            $errors = [];
+
+            if(!isset($request->nombre)){
+                $errors['nombre'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre)>100){
+                    $errors['nombre'] = "Exceden los 100 caracteres";
+                }
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('actividades.index')->withErrors($errors)->withInput();
+            }
 
             Actividades::create([
                 'nombre' => $request->nombre,
@@ -52,11 +66,25 @@ class ActividadesController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:100',
-            ]);
+            // $request->validate([
+            //     'nombre' => 'sometimes|string|min:1|max:100',
+            // ]);
 
             $actividad = Actividades::findOrFail($actividad_id);
+
+            $errors = [];
+
+            if(!isset($request->nombre)){
+                $errors['nombre'.$actividad_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre.$actividad_id) >100){
+                    $errors['nombre'.$actividad_id] = "Exceden los 100 caracteres";
+                }
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('actividades.index')->withErrors($errors)->withInput();
+            }
 
             $actividad->update($request->all());
 

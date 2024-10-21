@@ -28,13 +28,14 @@
 
                 <div class="ibox-content">
                     <div class="text-center">
-                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form1"> Agregar </a>
+                        <a data-toggle="modal" class="btn btn-primary " href="#modal-form-add"> Agregar </a>
                     </div>
-                    <div id="modal-form1" class="modal fade" aria-hidden="true">
+                    <div id="modal-form-add" class="modal fade" aria-hidden="true">
                         <form role="form" method="POST" action="{{ route('maquinas.store') }}"
                             enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                            <input type="hidden" name="form_type" value="create">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-body">
@@ -46,14 +47,20 @@
                                                         <h3 class="m-t-none m-b">Máquina</h3>
                                                     </label>
                                                     <input type="text" name="nombre" placeholder="Nombre Máquina..."
-                                                        class="form-control" required />
+                                                        class="form-control"  />
+                                                        @error('nombre')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
                                                 </div>
 
 
                                                 <div class="form-group"><label>
                                                         <h3 class="m-t-none m-b">Detalles Técnicos</h3>
                                                     </label><input type="text" name="detalles_tecnicos"
-                                                        placeholder="Descripción" class="form-control" required></div>
+                                                        placeholder="Descripción" class="form-control"></div>
+                                                        @error('detalles_tecnicos')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
 
                                                 <div
                                                     style="display:flex; justify-content: center; align-items: center; gap: 15px">
@@ -69,8 +76,10 @@
                                                         <h3 class="m-t-none m-b">Número Identificador</h3>
                                                     </label>
                                                     <input type="number" name="num_identificador"
-                                                        placeholder="Ingrese número" class="form-control" required>
-
+                                                        placeholder="Ingrese número" class="form-control">
+                                                        @error('num_identificador')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
                                                 </div>
                                                 <div class="form-group"><label>
                                                         <h3 class="m-t-none m-b">Salón Asignado</h3>
@@ -148,15 +157,18 @@
                                         <div class="text-right">
                                             <a data-toggle="modal" class="btn btn-primary fa fa-edit"
                                                 style="font-size: 20px;"
-                                                href="#modal-form-update-{{ $maquina->id }}"></a>
+                                                href="#modal-form{{ $maquina->id }}"></a>
                                         </div>
-                                        <div id="modal-form-update-{{ $maquina->id }}" class="modal fade"
+                                        <div id="modal-form{{ $maquina->id }}" class="modal fade"
                                             aria-hidden="true">
                                             <form role="form" method="POST"
                                                 action="{{ route('maquinas.update', $maquina->id) }}">
                                                 @method('PUT')
                                                 @csrf
                                                 <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                                <input type="hidden" name="form_type" value="edit">
+                                                <input type="hidden" name="maquina_id" value="{{ $maquina->id }}">
+
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-body">
@@ -168,8 +180,11 @@
                                                                             <h3 class="m-t-none m-b">Máquina</h3>
                                                                         </label>
                                                                         <input type="text" name="nombre"
-                                                                            value="{{ old('nombre', $maquina->nombre) }}"
+                                                                            value="{{ $maquina->nombre }}"
                                                                             class="form-control" />
+                                                                            @error('nombre'.$maquina->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
 
 
@@ -178,9 +193,11 @@
                                                                             </h3>
                                                                         </label><input type="text"
                                                                             name="detalles_tecnicos"
-                                                                            value="{{ old('detalles_tecnicos', $maquina->detalles_tecnicos) }}"
+                                                                            value="{{ $maquina->detalles_tecnicos }}"
                                                                             class="form-control"></div>
-
+                                                                            @error('detalles_tecnicos'.$maquina->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     <div
                                                                         style="display:flex; justify-content: center; align-items: center; gap: 15px">
                                                                         <button
@@ -196,9 +213,11 @@
                                                                                 Identificador</h3>
                                                                         </label>
                                                                         <input type="number" name="num_identificador"
-                                                                            value="{{ old('num_identificador', $maquina->num_identificador) }}"
+                                                                            value="{{ $maquina->num_identificador }}"
                                                                             class="form-control">
-
+                                                                            @error('num_identificador'.$maquina->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                     </div>
                                                                     <div class="form-group"><label>
                                                                             <h3 class="m-t-none m-b">Salón Asignado
@@ -262,12 +281,25 @@
 
 
 
+        @if ($errors->any())
+            <script>
+                // Reabrir el modal de creación si el error proviene del formulario de creación
+                console.log(@json($errors->all()));
+                @if (old('form_type') == 'create')
+                    $('#modal-form-add').modal('show');
+                @endif
 
-
+                // Reabrir el modal de edición si el error proviene del formulario de edición
+                @if (old('form_type') == 'edit' && old('maquina_id'))
+                    $('#modal-form' + {{ old('maquina_id') }}).modal('show');
+                @endif
+            </script>
+        @endif
 
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const maquina = document.getElementById('maquinas');

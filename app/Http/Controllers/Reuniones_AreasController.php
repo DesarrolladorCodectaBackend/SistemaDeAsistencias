@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReunionesAreasRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Reuniones_Areas;
@@ -100,20 +101,12 @@ class Reuniones_AreasController extends Controller
 
     }
 
-    public function store(Request $request)
+    public function store(StoreReunionesAreasRequest $request)
     {
 
         DB::beginTransaction();
         try {
             // return $request;
-            $request->validate([
-                'area_id' => 'required',
-                'reuniones' => 'required|array',
-                'reuniones.*.dia' => 'required',
-                'reuniones.*.hora_inicial' => 'required',
-                'reuniones.*.hora_final' => 'required',
-                'reuniones.*.disponibilidad' => 'required',
-            ]);
 
             $access = FunctionHelperController::verifyAreaAccess($request->area_id);
             if (!$access) {
@@ -139,13 +132,13 @@ class Reuniones_AreasController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             // return response()->json(["error" => $e->getMessage()]);
-            return redirect()->route('areas.getReuniones', $request->area_id);
+            return redirect()->route('areas.getReuniones', $request->area_id)->with('ReunionError', [$e->getMessage()]);
         }
     }
 
     public function update(Request $request, $id)
     {
-        
+
         DB::beginTransaction();
         try {
             // return $request;

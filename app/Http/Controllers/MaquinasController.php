@@ -36,7 +36,7 @@ class MaquinasController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreMaquinasRequest $request)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -44,12 +44,7 @@ class MaquinasController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'required|string|min:1|max:255',
-                'detalles_tecnicos' => 'required|string|min:1|max:100',
-                'num_identificador' => 'required|integer|min:1|max:255',
-                'salon_id' => 'required|integer|min:1|max:15'
-            ]);
+
 
             Maquinas::create([
                 "nombre" => $request->nombre,
@@ -82,15 +77,36 @@ class MaquinasController extends Controller
         }
         DB::beginTransaction();
         try{
-            $request->validate([
-                'nombre' => 'sometimes|string|min:1|max:255',
-                'detalles_tecnicos' => 'sometimes|string|min:1|max:100',
-                'num_identificador' => 'sometimes|string|min:1|max:255',
-                'salon_id' => 'sometimes|integer|min:1|max:15'
-            ]);
 
+            
             $maquina = Maquinas::find($maquina_id);
+            $errors = [];
+            // validacion nombre
+            if(!isset($request->nombre)){
+                $errors['nombre'.$maquina_id] = "Este campo es obligatorio";
+            }else{
+                if(strlen($request->nombre) > 100){
+                    $errors['nombre'.$maquina_id] = "Excede los 100 caracteres.";
+                }
+            }
 
+            // validacion detalles_tecnicos
+            if(!isset($request->detalles_tecnicos)){
+                $errors['detalles_tecnicos'.$maquina_id] = "Este campo es obligatorio";
+            }else{
+                if(strlen($request->detalles_tecnicos) > 255){
+                    $errors['detalles_tecnicos'.$maquina_id] = "Excede los 255 caracteres.";
+                }
+            }
+
+            // validaciones num_identificador
+            if(!isset($request->num_identificador)){
+                $errors['num_identificador'.$maquina_id] = "Este campo es obligatorio";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('maquinas.index')->withErrors($errors)->withInput();
+            }
             $maquina->update($request->all());
 
             DB::commit();

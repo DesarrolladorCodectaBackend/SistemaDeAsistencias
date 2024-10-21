@@ -50,11 +50,20 @@
 
                                         <form role="form" method="POST" action="{{ route('objeto.store') }}">
                                             @csrf
+                                            <input type="hidden" name="form_type" value="create">
+
                                             <div class="form-group"><label>Objeto</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
+                                            @error('nombre')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+
                                             <div class="form-group"><input type="text"
                                                 placeholder="Ingrese una descripción" name="descripcion" class="form-control">
+                                            @error('descripcion')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -138,18 +147,27 @@
                                                             action="{{ route('objeto.update', $obj->id) }}">
                                                             @csrf
                                                             @method('PUT')
+                                                            <input type="hidden" name="form_type" value="edit">
+                                                            <input type="hidden" name="objeto_id" value="{{ $obj->id }}">
+
                                                             {{-- nombre del request "name" --}}
 
                                                             <label class="col-form-label">Objeto</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $obj->nombre) }}">
+                                                                    value="{{ $obj->nombre }}">
+                                                                    @error('nombre'.$obj->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                             </div>
                                                             <div class="form-group"><label>Descripción</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="descripcion" id="descripcion"
-                                                                    value="{{ old('descripcion', $obj->descripcion) }}">
+                                                                    value="{{ $obj->descripcion }}">
+                                                                    @error('descripcion'.$obj->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                             </div>
                                                             <div>
                                                                 <button
@@ -170,6 +188,21 @@
                     </table>
                 </div>
             </div>
+            @if ($errors->any())
+                <script>
+                    // Reabrir el modal de creación si el error proviene del formulario de creación
+                    console.log(@json($errors->all()));
+                    @if (old('form_type') == 'create')
+                        $('#modal-form-add').modal('show');
+                    @endif
+
+                    // Reabrir el modal de edición si el error proviene del formulario de edición
+                    @if (old('form_type') == 'edit' && old('objeto_id'))
+                        $('#modal-form' + {{ old('objeto_id') }}).modal('show');
+                    @endif
+                </script>
+            @endif
+
 
         </div>
 
