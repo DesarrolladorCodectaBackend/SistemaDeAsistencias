@@ -36,6 +36,14 @@ class AuthenticatedSessionController extends Controller
         //         'email' => trans('auth.failed'),
         //     ]);
         // }
+
+        $remember = $request->has('remember');
+
+        if(!Auth::attempt($request->only('email', 'password'), $remember)){
+            return back()->withErrors([
+                'email' => trans('auth.failed'),
+            ]);
+        }
         $request->authenticate();
 
         $request->session()->regenerate();
@@ -57,7 +65,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
-        
+
         return response()->json([
             'AccessToken' => $token,
             'TokenType' => 'Bearer',
