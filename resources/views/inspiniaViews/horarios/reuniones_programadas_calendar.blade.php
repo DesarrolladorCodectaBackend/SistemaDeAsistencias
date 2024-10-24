@@ -23,6 +23,15 @@
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
+
+            @if(session('error'))
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Error:</strong> {{ session('error') }}
+                </div>
+                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+            </div>
+            @endif
             <div class="row">
                 <div class="col-lg-12">
                     <div class="tabs-container">
@@ -216,6 +225,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale/es.js"></script>
 
     <script>
+         const deleteAlertError = () => {
+            let alertError = document.getElementById('alert-error');
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error("Elemento con ID 'alert-error' no encontrado.");
+            }
+        }
+
+        
         $(document).ready(function() {
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',

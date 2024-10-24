@@ -32,7 +32,8 @@ class StoreSalonesRequest extends FormRequest
     public function messages(){
         return [
             'required' => 'Este campo es obligatorio',
-            'max' => 'Este campo sobrepasa el límite de los caracteres.'
+            'max' => 'Excede los 100 caracteres.',
+            'descripcion.max' => "Excede los 255 caracteres.",
         ];
     }
 }

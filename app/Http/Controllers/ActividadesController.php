@@ -35,6 +35,10 @@ class ActividadesController extends Controller
 
             if(!isset($request->nombre)){
                 $errors['nombre'] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre)>100){
+                    $errors['nombre'] = "Exceden los 100 caracteres";
+                }
             }
 
             if(!empty($errors)){
@@ -72,6 +76,10 @@ class ActividadesController extends Controller
 
             if(!isset($request->nombre)){
                 $errors['nombre'.$actividad_id] = "Este campo es obligatorio.";
+            }else{
+                if(strlen($request->nombre.$actividad_id) >100){
+                    $errors['nombre'.$actividad_id] = "Exceden los 100 caracteres";
+                }
             }
 
             if(!empty($errors)){

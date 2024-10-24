@@ -31,6 +31,7 @@ class StoreCarreraRequest extends FormRequest
     public function messages(){
         return [
             'nombre' => "Este campo es obligatorio",
+            'nombre.max' => "Exceden los 100 caracteres"
         ];
     }
 }

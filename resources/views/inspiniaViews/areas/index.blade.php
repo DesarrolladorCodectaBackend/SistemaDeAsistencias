@@ -38,26 +38,27 @@
                                     enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                    <input type="hidden" name="form_type" value="create">
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Especialización</label> <input type="text"
                                                     placeholder="....." class="form-control" name="especializacion"
-                                                    required>
+                                                    >
                                             </div>
                                             @error('especializacion')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                             <div class="form-group"><label>Descripción</label> <input type="text"
                                                     placeholder="....." class="form-control" name="descripcion"
-                                                    required>
+                                                    >
                                             </div>
                                             @error('descripcion')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                             <div class="form-group"><label>Color Hex</label>
                                                 <input type="color" placeholder="....." class="form-control"
-                                                    name="color_hex" required>
+                                                    name="color_hex" >
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -224,6 +225,8 @@
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                    <input type="hidden" name="form_type" value="edit">
+                                    <input type="hidden" name="area_id" value="{{ $area->id }}">
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -232,19 +235,26 @@
                                                 <input type="text" placeholder="....."
                                                     class="form-control" name="especializacion"
                                                     id="especializacion"
-                                                    value="{{ old('especializacion', $area->especializacion) }}">
+                                                    value="{{ $area->especializacion }}">
+                                                    @error('especializacion'.$area->id)
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Descripción</label>
                                                 <input type="text" placeholder="....."
                                                     class="form-control" name="descripcion"
                                                     id="descripcion"
-                                                    value="{{ old('descripcion', $area->descripcion) }}">
+                                                    value="{{ $area->descripcion }}">
+                                                    @error('descripcion'.$area->id)
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Color Hex</label>
                                                 <input type="color" placeholder="....."
                                                     class="form-control" name="color_hex"
                                                     id="color_hex"
-                                                    value="{{ old('color_hex', $area->color_hex) }}">
+                                                    value="{{ $area->color_hex }}">
+
                                             </div>
 
                                         </div>
@@ -325,19 +335,19 @@
     </div>
     </div>
     @if ($errors->any())
-    <script>
-        // Reabrir el modal de creación si el error proviene del formulario de creación
-        console.log(@json($errors->all()));
-        @if (old('form_type') == 'create')
-            $('#modal-form-add').modal('show');
-        @endif
+        <script>
+            // Reabrir el modal de creación si el error proviene del formulario de creación
+            console.log(@json($errors->all()));
+            @if (old('form_type') == 'create')
+                $('#modal-form-add').modal('show');
+            @endif
 
-        // Reabrir el modal de edición si el error proviene del formulario de edición
-        @if (old('form_type') == 'edit' && old('area_id'))
-            $('#modal-form' + {{ old('area_id') }}).modal('show');
-        @endif
-    </script>
-@endif
+            // Reabrir el modal de edición si el error proviene del formulario de edición
+            @if (old('form_type') == 'edit' && old('area_id'))
+                $('#modal-form' + {{ old('area_id') }}).modal('show');
+            @endif
+        </script>
+    @endif
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const area = document.getElementById('areas');
