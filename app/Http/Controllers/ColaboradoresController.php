@@ -45,7 +45,7 @@ class ColaboradoresController extends Controller
                 $promedioArray = FunctionHelperController::promedioColaborador($colaborador->id, $semanas);
                 $promedio = $promedioArray['promedio'];
                 $colaborador->promedio = $promedio;
-                if($promedio < 11){ 
+                if($promedio < 11){
                     $colaborador->status = ["type" => "reprobado", "color" => "#b00", "message" => "El colaborador tiene un promedio general reprobado. Promedio general: ".$promedio];
                 } else if($promedio >= 11 && $promedio < 14) {
                     $colaborador->status = ["type" => "riesgo", "color" => "#fa0", "message" => "El colaborador tiene un promedio general en riesgo de reprobar. Promedio general: ".$promedio];
@@ -621,10 +621,10 @@ class ColaboradoresController extends Controller
 
         $idCandidatosPorNombre = Candidatos::searchByName($busqueda)->pluck('id');
         $colaboradoresPorNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->paginate(12);
-        
+
         $idCandidatosPorDni = Candidatos::searchByDni($busqueda)->pluck('id');
         $colaboradoresPorDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->paginate(12);
-        
+
         //Si existe un registro encontrado por el id
         if ($colaboradoresPorDni->count() > 0) {
             //Se asigna el valor del colaboradorPorId
@@ -644,7 +644,7 @@ class ColaboradoresController extends Controller
         $carreras = $carrerasAll->where('estado', 1);
         $areas = $areasAll->where('estado', 1);
 
-        
+
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
