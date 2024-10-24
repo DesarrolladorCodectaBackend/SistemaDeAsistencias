@@ -44,21 +44,31 @@
                                     <div class="col-sm-11">
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
 
-                                        <!--
-                                                                <p>Sign in today for more expirience.</p>
-                                                            -->
-
                                         <form role="form" method="POST" action="{{ route('cursos.store') }}">
                                             @csrf
+                                            <input type="hidden" name="form_type" value="create">
+
                                             <div class="form-group"><label>Curso</label> <input type="text"
                                                     placeholder="Ingrese un nombre" name="nombre" class="form-control">
                                             </div>
+                                            @error('nombre')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                            
                                             <div class="form-group"><label>Categoría</label> <input type="text"
                                                 placeholder="Ingrese categoria" name="categoria" class="form-control">
                                             </div>
+                                            @error('categoria')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+
                                             <div class="form-group"><label>Duración</label> <input type="text"
                                                 placeholder="Ingrese duracion" name="duracion" class="form-control">
                                             </div>
+                                            @error('duracion')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+
                                             <div>
                                                 <button class="btn btn-primary btn-sm m-t-n-xs float-right"
                                                     type="submit"><i class="fa fa-check"></i>&nbsp;Confirmar</button>
@@ -143,18 +153,33 @@
                                                                 action="{{ route('cursos.update', $curso->id) }}">
                                                                 @csrf
                                                                 @method('PUT')
+                                                                <input type="hidden" name="form_type" value="edit">
+                                                                <input type="hidden" name="curso_id" value="{{ $curso->id }}">
+
                                                                 <label class="col-form-label">Cursos</label>
                                                                 <div class="form-group"><label>Nombre</label>
                                                                     <input type="text" placeholder="....."
                                                                         class="form-control" name="nombre" id="nombre"
-                                                                        value="{{ old('nombre', $curso->nombre) }}">
+                                                                        value="{{ $curso->nombre }}">
                                                                 </div>
+                                                                @error('nombre'.$curso->id)
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
+
                                                                 <div class="form-group"><label>Categoría</label> <input type="text"
-                                                                    placeholder="....." name="categoria" value="{{ old('categoria', $curso->categoria) }}" class="form-control">
+                                                                    placeholder="....." name="categoria" value="{{ $curso->categoria }}" class="form-control">
                                                                 </div>
+                                                                @error('categoria'.$curso->id)
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
+
                                                                 <div class="form-group"><label>Duración</label> <input type="text"
-                                                                    placeholder="....." name="duracion" value="{{ old('duracion', $curso->duracion) }}" class="form-control">
+                                                                    placeholder="....." name="duracion" value="{{ $curso->duracion }}" class="form-control">
                                                                 </div>
+                                                                @error('duracion'.$curso->id)
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
+
                                                                 <div>
                                                                     <button
                                                                         class="btn btn-primary btn-sm m-t-n-xs float-right"
@@ -176,6 +201,20 @@
                     </div>
                 </div>
             </div>
+            @if ($errors->any())
+                <script>
+                    // Reabrir el modal de creación si el error proviene del formulario de creación
+                    console.log(@json($errors->all()));
+                    @if (old('form_type') == 'create')
+                        $('#modal-form-add').modal('show');
+                    @endif
+
+                    // Reabrir el modal de edición si el error proviene del formulario de edición
+                    @if (old('form_type') == 'edit' && old('curso_id'))
+                        $('#modal-form' + {{ old('curso_id') }}).modal('show');
+                    @endif
+                </script>
+            @endif
 
         </div>
         @include('components.inspinia.footer-inspinia')

@@ -35,8 +35,8 @@ class ReunionModificadaMailable extends Mailable
     public function envelope()
     {
         return new Envelope(
-            from:New Address('jypperifericossac@gmail.com', 'J&P PERIFERICOS'),
-            subject: 'Actualización de Reunión',
+            // from:New Address('cristopher.delacruz.1555@gmail.com', 'Cristopher De la Cruz'),
+            // subject: 'Actualización de Reunión',
         );
     }
 

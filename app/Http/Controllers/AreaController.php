@@ -332,13 +332,42 @@ class AreaController extends Controller
         DB::beginTransaction();
         try {
             //Solicitar los datos requeridos
-            $request->validate([
-                'especializacion' => 'required|string|min:1|max:100',
-                'descripcion' => 'required|string|min:1|max:255',
-                'color_hex' => 'required|string|min:1|max:7',
-                'salon_id' => 'required|integer',
-                'icono' => 'image'
-            ]);
+            // $request->validate([
+            //     'especializacion' => 'required|string|min:1|max:100',
+            //     'descripcion' => 'required|string|min:1|max:255',
+            //     'color_hex' => 'required|string|min:1|max:7',
+            //     'salon_id' => 'required|integer',
+            //     'icono' => 'image'
+            // ]);
+
+            $errors = [];
+
+            // validacion especializacion
+            if(!isset($request->especializacion)){
+                $errors['especializacion'] = "Este campo es obligatorio.";
+            }else {
+                if(strlen($request->especializacion) > 100){
+                    $errors['especializacion'] = "Excede los 100 caracteres.";
+                }
+            }
+
+            // validacion descripcion
+            if(!isset($request->descripcion)){
+                $errors['descripcion'] = "Este campo es obligatorio.";
+            }else {
+                if(strlen($request->descripcion) > 250){
+                    $errors['descripcion'] = "Excede los 250 caracteres.";
+                }
+            }
+
+            // validacion descripcion
+            if(!isset($request->color_hex)){
+                $errors['color_hex'] = "Este campo es obligatorio.";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('areas.index')->withErrors($errors)->withInput();
+            }
             //Validar que los datos no esten vacios
             // if(!$request->especializacion) return response()->json(["message" => "Debe ingresar la especialización"]);
             // if(!$request->descripcion) return response()->json(["message" => "Debe ingresar la descripcion"]);
@@ -370,11 +399,12 @@ class AreaController extends Controller
             DB::commit();
             //return response()->json(["resp" => "Área creada correctamente"]);
             //Se redirige a la vista index.blade.php de la carpeta areas
-            if ($request->currentURL) {
-                return redirect($request->currentURL);
-            } else {
-                return redirect()->route('areas.index');
-            }
+            // if ($request->currentURL) {
+            //     return redirect($request->currentURL);
+            // } else {
+            //     return redirect()->route('areas.index');
+            // }
+            return redirect()->route('areas.index');
         } catch (Exception $e) {
             //Si ocurre algún error
             //Se revierte la transacción
@@ -415,16 +445,44 @@ class AreaController extends Controller
         DB::beginTransaction();
         try {
             //Se raliza la validación de los datos ingresados por el usuario
-            $request->validate([
-                'especializacion' => 'sometimes|string|min:1|max:100',
-                'descripcion' => 'sometimes|string|min:1|max:255',
-                'color_hex' => 'sometimes|string|min:1|max:7',
-                'salon_id' => 'sometimes|integer',
-                'icono' => 'sometimes|image',
-            ]);
+            // $request->validate([
+            //     'especializacion' => 'sometimes|string|min:1|max:100',
+            //     'descripcion' => 'sometimes|string|min:1|max:255',
+            //     'color_hex' => 'sometimes|string|min:1|max:7',
+            //     'salon_id' => 'sometimes|integer',
+            //     'icono' => 'sometimes|image',
+            // ]);
 
             // return $request;
 
+            $errors = [];
+
+            // validacion especializacion
+            if(!isset($request->especializacion)){
+                $errors['especializacion'.$area_id] = "Este campo es obligatorio.";
+            }else {
+                if(strlen($request->especializacion) > 100){
+                    $errors['especializacion'.$area_id] = "Excede los 100 caracteres.";
+                }
+            }
+
+            // validacion descripcion
+            if(!isset($request->descripcion)){
+                $errors['descripcion'.$area_id] = "Este campo es obligatorio.";
+            }else {
+                if(strlen($request->descripcion) > 250){
+                    $errors['descripcion'.$area_id] = "Excede los 250 caracteres.";
+                }
+            }
+
+            // validacion descripcion
+            if(!isset($request->color_hex)){
+                $errors['color_hex'.$area_id] = "Este campo es obligatorio.";
+            }
+
+            if(!empty($errors)){
+                return redirect()->route('areas.index')->withErrors($errors)->withInput();
+            }
             //Se busca el área por el id ingresado como parámetro
             $area = Area::findOrFail($area_id);
             //Se asignan los valores ingresados por el usuario a las variables correspondientes, si no se ingresó nada se asigna el valor actual de la base de datos

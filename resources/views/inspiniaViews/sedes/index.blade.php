@@ -25,7 +25,7 @@
                         <a href="/dashboard">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/Ajustes">Ajustes</a>
+                        <a href="/ajustes">Ajustes</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Sedes</strong>
@@ -45,10 +45,15 @@
                                         <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                         <form role="form" method="POST" action="{{ route('sedes.store') }}">
                                             @csrf
+                                            <input type="hidden" name="form_type" value="create">
+
                                             <div class="form-group">
                                                 <label>Nombre: </label>
                                                 <input type="text" placeholder="Ingrese un nombre" name="nombre" autocomplete="off"
                                                     class="form-control">
+                                                @error('nombre')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                             <div class="form-group">
                                                 <label>Institución: </label>
@@ -140,11 +145,17 @@
                                                             action="{{ route('sedes.update', $sede->id) }}">
                                                             @csrf
                                                             @method('PUT')
+                                                            <input type="hidden" name="form_type" value="edit">
+                                                            <input type="hidden" name="sede_id" value="{{ $sede->id }}">
+
                                                             <label class="col-form-label">Institución</label>
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $sede->nombre) }}">
+                                                                    value="{{ $sede->nombre }}">
+                                                                    @error('nombre'.$sede->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Institución: </label>
@@ -181,7 +192,20 @@
             </div>
 
         </div>
+        @if ($errors->any())
+            <script>
+                // Reabrir el modal de creación si el error proviene del formulario de creación
+                console.log(@json($errors->all()));
+                @if (old('form_type') == 'create')
+                    $('#modal-form-add').modal('show');
+                @endif
 
+                // Reabrir el modal de edición si el error proviene del formulario de edición
+                @if (old('form_type') == 'edit' && old('sede_id'))
+                    $('#modal-form' + {{ old('sede_id') }}).modal('show');
+                @endif
+            </script>
+        @endif
         @include('components.inspinia.footer-inspinia')
 
     </div>

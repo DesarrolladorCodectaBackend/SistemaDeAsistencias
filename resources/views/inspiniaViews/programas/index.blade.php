@@ -43,14 +43,21 @@
                                 <form role="form" method="POST" action="{{ route('programas.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="form_type" value="create">
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Programa</label> <input type="text"
                                                     placeholder="....." class="form-control" name="nombre">
+                                                    @error('nombre')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
                                             <div class="form-group"><label>Descripción</label> <input type="text"
                                                     placeholder="....." class="form-control" name="descripcion">
+                                                    @error('descripcion')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                             </div>
 
                                         </div>
@@ -58,6 +65,9 @@
                                             <h4>Subir Ícono</h4>
                                             <input type="file" class="form-control-file" id="icono" name="icono"
                                                 style="display: none;">
+                                                @error('icono')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             <!-- Icono que simula el clic en el botón de subir archivos -->
                                             <button type="button" class="btn btn-link" id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
@@ -145,6 +155,8 @@
                                                     enctype="multipart/form-data">
                                                     @csrf
                                                     @method('PUT')
+                                                    <input type="hidden" name="form_type" value="edit">
+                                                    <input type="hidden" name="programa_id" value="{{ $programa->id }}">
                                                     <div class="row">
                                                         <div class="col-sm-6 b-r">
                                                             <h3 class="m-t-none m-b">Editar</h3>
@@ -152,13 +164,19 @@
                                                             <div class="form-group"><label>Nombre</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="nombre" id="nombre"
-                                                                    value="{{ old('nombre', $programa->nombre) }}">
+                                                                    value="{{ $programa->nombre }}">
+                                                                    @error('nombre'.$programa->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                             </div>
                                                             <div class="form-group"><label>Descripción</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="descripcion"
                                                                     id="descripcion"
-                                                                    value="{{ old('descripcion', $programa->descripcion) }}">
+                                                                    value="{{ $programa->descripcion }}">
+                                                                    @error('descripcion'.$programa->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                             </div>
 
                                                         </div>
@@ -166,8 +184,11 @@
                                                             <h4>Subir Ícono</h4>
                                                             <input type="file" class="form-control-file"
                                                                 id="icono-{{ $programa->id }}" name="icono"
-                                                                value="{{ old('icono', $programa->icono) }}"
+                                                                value="{{ $programa->icono }}"
                                                                 style="display: none;">
+                                                                @error('icono'.$programa->id)
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             <button type="button" class="btn btn-link"
                                                                 id="icon-upload-{{ $programa->id }}">
                                                                 <i class="fa fa-cloud-download big-icon"></i>
@@ -195,7 +216,20 @@
                     </table>
                 </div>
             </div>
-
+            @if ($errors->any())
+            <script>
+                // Reabrir el modal de creación si el error proviene del formulario de creación
+                console.log(@json($errors->all()));
+                @if (old('form_type') == 'create')
+                    $('#modal-form-add').modal('show');
+                @endif
+        
+                // Reabrir el modal de edición si el error proviene del formulario de edición
+                @if (old('form_type') == 'edit' && old('programa_id'))
+                    $('#modal-form' + {{ old('programa_id') }}).modal('show');
+                @endif
+            </script>
+        @endif
         </div>
 
         @include('components.inspinia.footer-inspinia')

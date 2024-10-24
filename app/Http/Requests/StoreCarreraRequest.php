@@ -13,7 +13,7 @@ class StoreCarreraRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,14 @@ class StoreCarreraRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nombre' => 'required|string|min:1|max:100',
+        ];
+    }
+
+    public function messages(){
+        return [
+            'nombre' => "Este campo es obligatorio",
+            'nombre.max' => "Exceden los 100 caracteres"
         ];
     }
 }

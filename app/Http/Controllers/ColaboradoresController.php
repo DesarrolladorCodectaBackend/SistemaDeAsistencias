@@ -351,7 +351,7 @@ class ColaboradoresController extends Controller
                     // Verificar si el DNI ya está en uso
                     $candidatos = Candidatos::where('dni', $request->dni)->get();
                     foreach ($candidatos as $cand) {
-                        if ($cand->id != $colaborador_id) {
+                        if ($cand->id != $colaborador->candidato_id) {
                             $errors['dni'.$colaborador_id] = 'El DNI ya está en uso.';
                             break;
                         }
@@ -376,7 +376,7 @@ class ColaboradoresController extends Controller
             } else if (isset($request->celular)) {
                 $candidatos = Candidatos::where('celular', $request->celular)->get();
                 foreach ($candidatos as $cand) {
-                    if ($cand->id != $colaborador_id) {
+                    if ($cand->id != $colaborador->candidato_id) {
                         $errors['celular'.$colaborador_id] = 'El celular ya está en uso.';
                         break;
                     }
