@@ -38,7 +38,19 @@
 
 
         <div class="wrapper wrapper-content animated fadeIn">
-
+            @if ($errors->any())
+                    <div id="alert-error" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Errores:</strong>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
             <div class="row">
                 <div class="col-lg-12">
                     <div class="tabs-container">

@@ -335,19 +335,19 @@
     </div>
     </div>
     @if ($errors->any())
-    <script>
-        // Reabrir el modal de creación si el error proviene del formulario de creación
-        console.log(@json($errors->all()));
-        @if (old('form_type') == 'create')
-            $('#modal-form-add').modal('show');
-        @endif
+        <script>
+            // Reabrir el modal de creación si el error proviene del formulario de creación
+            console.log(@json($errors->all()));
+            @if (old('form_type') == 'create')
+                $('#modal-form-add').modal('show');
+            @endif
 
-        // Reabrir el modal de edición si el error proviene del formulario de edición
-        @if (old('form_type') == 'edit' && old('area_id'))
-            $('#modal-form' + {{ old('area_id') }}).modal('show');
-        @endif
-    </script>
-@endif
+            // Reabrir el modal de edición si el error proviene del formulario de edición
+            @if (old('form_type') == 'edit' && old('area_id'))
+                $('#modal-form' + {{ old('area_id') }}).modal('show');
+            @endif
+        </script>
+    @endif
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const area = document.getElementById('areas');

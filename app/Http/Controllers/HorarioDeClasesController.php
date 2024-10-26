@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreHorario_de_ClasesRequest;
 use App\Models\Horario_de_Clases;
 use App\Models\Colaboradores;
 use Exception;
@@ -80,7 +81,7 @@ class HorarioDeClasesController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StoreHorario_de_ClasesRequest $request)
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -89,14 +90,14 @@ class HorarioDeClasesController extends Controller
         DB::beginTransaction();
         try{
             // return $request;
-            $request->validate([
-                'colaborador_id' => 'required|integer',
-                'horarios' => 'required|array',
-                'horarios.*.hora_inicial' => 'required|date_format:H:i',
-                'horarios.*.hora_final' => 'required|date_format:H:i',
-                'horarios.*.dia' => 'required|string',
-                'horarios.*.justificacion' => 'required|string',
-            ]);
+            // $request->validate([
+            //     'colaborador_id' => 'required|integer',
+            //     'horarios' => 'required|array',
+            //     'horarios.*.hora_inicial' => 'required|date_format:H:i',
+            //     'horarios.*.hora_final' => 'required|date_format:H:i',
+            //     'horarios.*.dia' => 'required|string',
+            //     'horarios.*.justificacion' => 'required|string',
+            // ]);
             foreach ($request->horarios as $horario) {
                 Horario_de_Clases::create([
                     'colaborador_id' => $request->colaborador_id,
@@ -110,7 +111,8 @@ class HorarioDeClasesController extends Controller
             return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $request->colaborador_id]);
         } catch(Exception $e) {
             DB::rollBack();
-            return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $request->colaborador_id]);
+            return redirect()->route('colaboradores.horarioClase')->with('error', 'Ocurrió un error al crear una reunión, intente de nuevo. Si este error persiste, contacte a su equipo de soporte.');
+            // return redirect()->route('colaboradores.horarioClase', ['colaborador_id' => $request->colaborador_id]);
 
         }
     }

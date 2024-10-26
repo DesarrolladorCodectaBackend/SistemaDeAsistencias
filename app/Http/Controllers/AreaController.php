@@ -360,7 +360,7 @@ class AreaController extends Controller
                 }
             }
 
-            // validacion descripcion
+            // validacion color_hex
             if(!isset($request->color_hex)){
                 $errors['color_hex'] = "Este campo es obligatorio.";
             }
