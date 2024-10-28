@@ -56,7 +56,7 @@ function confirmDelete(id, currentURL) {
 
             form.method = 'POST';
             form.action = `/colaboradores/${id}`;
-            form.innerHTML = '@csrf @method(DELETE)';
+            form.innerHTML = `@csrf @method('DELETE')`;
 
             if (currentURL != null) {
                 let inputHidden = document.createElement('input');
@@ -75,16 +75,16 @@ function confirmDelete(id, currentURL) {
 }
 
 function prepareSearchActionURL(event) {
-    
+
     // event.preventDefault();
-    
+
     let busqueda = document.getElementById('searchInput').value;
     let searchRoute = document.getElementById('searchRoute').value;
     // console.log(searchRoute);
     // return true;
     if (busqueda.trim().length > 0) {
         console.log(busqueda);
-        
+
         const actionUrl = `${searchRoute}/${busqueda}`
         // let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
         console.log(actionUrl);

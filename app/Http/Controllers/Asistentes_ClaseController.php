@@ -12,15 +12,23 @@ class Asistentes_ClaseController extends Controller
     //NOT USING YET
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $asistente_clase = Asistentes_Clase::all();
 
         return view('inspiniaViews.asistente_clase.index', compact('asistente_clase'));
 
     }
 
-    
+
     public function create(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             if(!$request->colaborador_id){
@@ -62,6 +70,10 @@ class Asistentes_ClaseController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $request->validate([
             'colaborador_id' => 'required|integer|min:1|max:100',
             'clase_id' => 'required|integer|min:1|max:255',
@@ -78,9 +90,13 @@ class Asistentes_ClaseController extends Controller
 
     }
 
-    
+
     public function show($asistente_clase_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         try{
             $asistente_clase = Asistentes_Clase::with('colaboradores')->find($asistente_clase_id);
 
@@ -95,9 +111,13 @@ class Asistentes_ClaseController extends Controller
 
     }
 
-    
+
     public function update(Request $request, $asistente_clase_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $request->validate([
             'colaborador_id' => 'required|integer|min:1|max:100',
             'clase_id' => 'required|integer|min:1|max:255',
@@ -112,13 +132,25 @@ class Asistentes_ClaseController extends Controller
 
     }
 
-    
+
     public function destroy($asistente_clase_id)
     {
-        $asistente_clase = Asistentes_Clase::findOrFail($asistente_clase_id);
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+        try{
+            $asistente_clase = Asistentes_Clase::findOrFail($asistente_clase_id);
 
-        $asistente_clase->delete();
+            $asistente_clase->delete();
 
-        return redirect()->route('asistente_clase.index');
+            DB::beginTransaction();
+            return redirect()->route('asistente_clase.index');
+        }catch(Exception $e){
+            return redirect()->route('asistente_clase.index');
+        }
+
+
+
     }
 }

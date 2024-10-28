@@ -39,7 +39,7 @@ class ColaboradoresController extends Controller
     function getColaboradoresPromedioStatus($colaboradores){
         foreach($colaboradores as $colaborador){
             $colaborador->status = ["type" => "Sin Evaluar", "color" => "#888", "message" => "El colaborador no ha sido evaluado aún."];
-            $semanas = FunctionHelperController::semanasColaborador(1);
+            $semanas = FunctionHelperController::semanasColaborador($colaborador->id);
             $semanasEvaluadasCount = FunctionHelperController::getConteoMaximoSemanasEvaluadasColaborador($colaborador->id);
             if($semanasEvaluadasCount > 0){
                 $promedioArray = FunctionHelperController::promedioColaborador($colaborador->id, $semanas);
@@ -781,6 +781,11 @@ class ColaboradoresController extends Controller
                     $prestamos_objetos = Prestamos_objetos_por_colaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
                     //finalmente todas las asistencias de clases (Aun no implementada pero puesta de igual manera para evitar errores)
                     $asistencias_clases = Asistentes_Clase::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    // areas_recreativas asociadas al colaborador
+                    $colaborador_actividades = AreaRecreativa::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    // areas_apoyo
+                    $colaborador_apoyo_areas = ColaboradoresApoyoAreas::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+
 
                     //ELIMINACIÓN EN CASCADA
                     //ahora procedemos a eliminarlos de los ultimos a los primeros
@@ -820,6 +825,15 @@ class ColaboradoresController extends Controller
                     foreach($horarios_de_clases as $horario_de_clase) {
                         $horario_de_clase->delete();
                     }
+                    // areas_recreativa
+                    foreach($colaborador_actividades as $activ){
+                        $activ->delete();
+                    }
+                    // apoyo_areas
+                    foreach($colaborador_apoyo_areas as $apo){
+                        $apo->delete();
+                    }
+
                     //colaboradores_por_area
                     foreach($colaboradores_por_area as $colaborador_por_area) {
                         $colaborador_por_area->delete();
@@ -828,6 +842,7 @@ class ColaboradoresController extends Controller
                     foreach($colaboradores as $colab) {
                         $colab->delete();
                     }
+
                     //candidato
                     $candidato->delete();
                 }

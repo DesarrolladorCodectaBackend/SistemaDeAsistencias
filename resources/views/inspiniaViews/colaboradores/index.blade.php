@@ -320,7 +320,7 @@
                                                 <li class="overflowing-skipt" style='font-size: 0.9rem;'>{{$area['nombre']}} @if($area['tipo'] === 1)(Apoyo) @endif</li>
                                             @endforeach
                                             </ol>
-                                            
+
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Actividades favoritas:</p>
@@ -401,7 +401,7 @@
                         flex-direction: column;
                         height: 100%;
                     }
-                
+
                     .product-name h2 {
                         font-size: 1.5rem;
                         margin: 0;
@@ -409,7 +409,7 @@
                         text-overflow: ellipsis;
                         white-space: nowrap;
                     }
-                
+
                     .product-desc h5 {
                         font-size: 1rem;
                         margin: 0;
@@ -440,33 +440,33 @@
                         margin: 0; /* Elimina el margen de los elementos <li> */
                         padding-left: 0; /* Opcional: Agrega un poco de espacio a la izquierda para el número, si es necesario */
                     }
-                
+
                     /* .text-center {
                         text-align: center;
                     }
-                
+
                     .text-left {
                         text-align: left;
                     }
-                
+
                     .small {
                         font-size: 0.875rem;
                     }
-                
+
                     .product-desc {
                         flex: 1;
                     }
-                
+
                     .product-box img {
                         max-width: 100%;
                         height: auto;
                     }
-                
+
                     .ibox-content {
                         padding: 1rem;
                         box-sizing: border-box;
                     }
-                
+
                     .btn {
                         margin: 0.5rem;
                     } */
@@ -830,9 +830,11 @@
                                                     Re Contratar
                                                 </button>
                                             </form>
-                                            <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
-                                                Eliminar
-                                            </button>
+
+                                            {{-- delete --}}
+                                                <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
+                                                    Eliminar
+                                                </button>
                                         </div>
                                         @endif
 
@@ -889,16 +891,16 @@
 
 
     </div>
-<!-- Script para manejar los errores globalmente -->
-<script>
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            console.error("Error: {{ $error }}");
-        @endforeach
-    @endif
-</script>
+    <!-- Script para manejar los errores globalmente -->
+    <script>
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                console.error("Error: {{ $error }}");
+            @endforeach
+        @endif
+    </script>
 
- {{-- MODAL SCRIPT --}}
+    {{-- MODAL SCRIPT --}}
     @if ($errors->any())
         <script>
             console.log(@json($errors->all())); // Muestra todos los errores en la consola
@@ -928,8 +930,33 @@
 
 
     </style>
-    <script src="{{asset('js/inspiniaViewsJS/indexColaboradores.js')}}"></script>
+    {{-- <script src="{{ asset('js/InspiniaViewsJS/indexColaboradores.js') }}"></script> --}}
+
     <script>
+        function confirmDelete(id, currentURL) {
+            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
+                if (e) {
+                    let form = document.createElement('form')
+
+                    form.method = 'POST';
+                    form.action = `/colaboradores/${id}`;
+                    form.innerHTML = `@csrf @method('DELETE')`;
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden)
+                    }
+
+                    document.body.appendChild(form)
+                    form.submit()
+                } else {
+                    return false
+                }
+            });
+        }
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');
             if (alertError) {
@@ -983,7 +1010,7 @@
             showModal('modal-form-update' + id);
         }
 
-      
+
 
         function prepareSearchActionURL(event) {
             // preventDefault();

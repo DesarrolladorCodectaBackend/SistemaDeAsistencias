@@ -180,6 +180,10 @@ public function activarInactivarJSON(Request $request,$institucion_id)
 
     public function destroy($institucion_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $institucion = Institucion::findOrFail($institucion_id);
 
         $institucion->delete();
