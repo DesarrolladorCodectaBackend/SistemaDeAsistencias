@@ -39,7 +39,7 @@ class ColaboradoresController extends Controller
     function getColaboradoresPromedioStatus($colaboradores){
         foreach($colaboradores as $colaborador){
             $colaborador->status = ["type" => "Sin Evaluar", "color" => "#888", "message" => "El colaborador no ha sido evaluado aún."];
-            $semanas = FunctionHelperController::semanasColaborador(1);
+            $semanas = FunctionHelperController::semanasColaborador($colaborador->id);
             $semanasEvaluadasCount = FunctionHelperController::getConteoMaximoSemanasEvaluadasColaborador($colaborador->id);
             if($semanasEvaluadasCount > 0){
                 $promedioArray = FunctionHelperController::promedioColaborador($colaborador->id, $semanas['semanas']);
@@ -63,7 +63,6 @@ class ColaboradoresController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->paginate(12);
-
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
