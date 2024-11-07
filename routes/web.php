@@ -17,6 +17,7 @@ use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObjetoController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\PrestamoObjetoColaboradorController;
@@ -57,6 +58,7 @@ Route::get('/dashboard-prueba', function () {
     return view('dashboard-prueba');
 });
 
+Route::get('regenerateSession/{email}/{password}', [NotificationController::class, 'regenerateSession'])->name('regenerateSession');
 
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -8,15 +8,15 @@ use App\Models\Horarios_Presenciales;
 use App\Models\ReunionesProgramadas;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Providers\RouteServiceProvider;
+
 
 class NotificationController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+
     public function index(){
         $notifications = [];
 
@@ -115,17 +115,73 @@ class NotificationController extends Controller
 
     // public function login(Request $request)
     // {
-    //     if (! Auth::attempt($request->only('email', 'password'))) {
-    //         return response()->json(["message" => "Unauthorized"], 401);
-    //     }
+    //     try{
 
-    //     $user = User::where('email', $request->email)->firstOrFail();
-    //     $token = $user->createToken('auth_token')->plainTextToken;
-        
-    //     return response()->json([
-    //         'AccessToken' => $token,
-    //         'TokenType' => 'Bearer',
-    //         'user' => $user
-    //     ], 200);
+    //         if (! Auth::attempt($request->only('email', 'password'))) {
+    //             return response()->json(["message" => "Unauthorized"]);
+    //         }
+    
+    //         $user = User::where('email', $request->email)->firstOrFail();
+    //         // $token = $user->createToken('auth_token')->plainTextToken;
+    //         $url = route('dashboard');
+    
+    //         $request->session()->regenerate();
+    //         return response()->json([
+    //             // 'AccessToken' => $token,
+    //             // 'TokenType' => 'Bearer',
+    //             'status' => 200,
+    //             'message' => 'Inicio de sesion exitoso.',
+    //             'user' => $user,
+    //             'url' => $url
+    //         ], 200);
+    //     } catch(Exception $e){
+    //         return response()->json(["status" => "500", "message" => "ha ocurrido un error", "error" => $e, "errorMessage" => $e->getMessage()]);
+    //     }
     // }
+
+    public function login(Request $request)
+    {
+        try {
+            if (! Auth::attempt($request->only('email', 'password'))) {
+                return response()->json(["message" => "Unauthorized"], 401);
+            }
+            $url = route('regenerateSession', ["email" => $request->email, "password" => $request->password]);
+
+            $user = User::where('email', $request->email)->firstOrFail();
+            
+            return response()->json([
+                'status' => 200,
+                'message' => 'Inicio de sesión exitoso.',
+                'user' => $user,
+                'url' => $url
+            ], 200);
+        } catch(Exception $e) {
+            return response()->json([
+                "status" => "500",
+                "message" => "Ha ocurrido un error",
+                "error" => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function regenerateSession(Request $request, $email, $password){
+
+        // Crear una copia de $request y agregar los datos de email y password
+        $newRequest = $request->duplicate(); // Clona el objeto Request original
+        $newRequest->merge([
+            'email' => $email,
+            'password' => $password
+        ]);
+        // $request->email = $email;
+        // $request->password = $password;
+        // return $newRequest;
+        if (! Auth::attempt($newRequest->only('email', 'password'))) {
+            return response()->json(["message" => "Unauthorized"], 401);
+        }
+
+        $newRequest->session()->regenerate();
+        return redirect()->intended(RouteServiceProvider::HOME);
+
+    }
+
 }
