@@ -15,12 +15,14 @@ use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Computadora_colaborador;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
+use App\Models\Horarios_Presenciales;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Maquina_reservada;
 use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
 use App\Http\Requests\UpdateColaboradoresRequest;
+use App\Models\Horario_Presencial_Asignado;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
 use App\Models\RegistroActividad;
@@ -84,6 +86,7 @@ class ColaboradoresController extends Controller
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
 
+        $horasTotales = $this->getHoursColab();
         // return $colaboradores;
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
@@ -99,7 +102,24 @@ class ColaboradoresController extends Controller
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
+            'horasTotales' => $horasTotales,
         ]);
+
+        // return response()->json([
+        //     'colaboradores' => $colaboradores,
+        //     'hasPagination' => $hasPagination,
+        //     'pageData' => $pageData,
+        //     'sedes' => $sedes,
+        //     'instituciones' => $instituciones,
+        //     'carreras' => $carreras,
+        //     'areas' => $areas,
+        //     'sedesAll' => $sedesAll,
+        //     'institucionesAll' => $institucionesAll,
+        //     'carrerasAll' => $carrerasAll,
+        //     'areasAll' => $areasAll,
+        //     'Allactividades' => $Allactividades,
+        //     'horasTotales' => $horasTotales,
+        // ]);
     }
 
     public function getComputadoraColaborador($colaborador_id){
@@ -865,4 +885,40 @@ class ColaboradoresController extends Controller
         }
 
     }
+
+
+    public function getHoursColab() {
+        $horasAsignadas = Horario_Presencial_Asignado::with('horario_presencial', 'area')->get();
+        $colaboradores_area = Colaboradores_por_Area::with('colaborador', 'area')->get();
+        $colaboradoresHoras = [];
+
+        foreach ($colaboradores_area as $asignacion) {
+            $colaboradorId = $asignacion->colaborador_id;
+
+            if (!isset($colaboradoresHoras[$colaboradorId])) {
+                $colaboradoresHoras[$colaboradorId] = [
+                    'colaborador_id' => $colaboradorId,
+                    'horasPracticas' => 0
+                ];
+            }
+
+            foreach ($horasAsignadas as $horas) {
+                if ($asignacion->area_id == $horas->area_id) {
+                    // Calculamos la diferencia de horas entre la hora inicial y la hora final
+                    $horaInicial = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_inicial);
+                    $horaFinal = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_final);
+                    $diferenciaHoras = $horaFinal->diffInHours($horaInicial);
+
+                    // Sumamos las horas correspondientes al colaborador
+                    $colaboradoresHoras[$colaboradorId]['horasPracticas'] += $diferenciaHoras;
+                }
+            }
+        }
+
+       return $colaboradoresHoras;
+    }
+
+
+
+
 }

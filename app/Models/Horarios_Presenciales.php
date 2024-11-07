@@ -15,7 +15,9 @@ class Horarios_Presenciales extends Model
         'dia'
     ];
 
-
+    public function horario_presencial_asignado(){
+        return $this->belongsTo(Horario_Presencial_Asignado::class, 'horario_presencial_id');
+    }
 }
 
 

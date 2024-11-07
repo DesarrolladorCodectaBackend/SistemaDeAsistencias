@@ -260,6 +260,10 @@
             @endif
             <div class="row">
                 @foreach($colaboradores->data as $index => $colaborador)
+                    @php
+                        // Buscar las horas totales del colaborador
+                        $horas = $horasTotales[$colaborador->id] ?? null;  // Usamos null por si no existe el colaborador
+                    @endphp
                 <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -313,6 +317,13 @@
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Celular:</p>
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->celular ?? 'Sin celular'}}</p>
                                         </div>
+
+                                        <p class="overflowing-skipt" style="font-size: 0.9rem;">
+                                            Horas asignadas: {{ $horas['horas'] ?? 'No asignadas' }} horas
+                                        </p>
+
+
+
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Área(s):</p>
                                             <ol class="custom-list">
