@@ -315,14 +315,14 @@
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->celular ?? 'Sin celular'}}</p>
                                         </div>
 
+
+                                        {{-- horas colab --}}
                                         <div class="form-group">
                                             <p style="font-weight: bold; font-size: 1rem; margin: 0px;">Horas Prácticas:</p>
                                             <p class="overflowing-skipt" style="font-size: 0.9rem;">
                                                 {{ $colaborador->horasPracticas }} horas
                                             </p>
                                         </div>
-
-
 
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Área(s):</p>

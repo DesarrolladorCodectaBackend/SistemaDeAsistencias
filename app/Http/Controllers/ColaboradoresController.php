@@ -58,6 +58,36 @@ class ColaboradoresController extends Controller
         }
         return $colaboradores;
     }
+
+    public function getHoursColab() {
+        $horasAsignadas = Horario_Presencial_Asignado::with('horario_presencial', 'area')->get();
+        $colaboradores_area = Colaboradores_por_Area::with('colaborador', 'area')->get();
+        $colaboradoresHoras = [];
+
+        foreach ($colaboradores_area as $asignacion) {
+            $colaboradorId = $asignacion->colaborador_id;
+
+            if (!isset($colaboradoresHoras[$colaboradorId])) {
+                $colaboradoresHoras[$colaboradorId] = [
+                    'colaborador_id' => $colaboradorId,
+                    'horasPracticas' => 0
+                ];
+            }
+
+            foreach ($horasAsignadas as $horas) {
+                if ($asignacion->area_id == $horas->area_id) {
+                    $horaInicial = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_inicial);
+                    $horaFinal = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_final);
+                    $diferenciaHoras = $horaFinal->diffInHours($horaInicial);
+                
+                    $colaboradoresHoras[$colaboradorId]['horasPracticas'] += $diferenciaHoras;
+                }
+            }
+        }
+        
+        return $colaboradoresHoras;
+    }
+
     public function index()
     {
         $access = FunctionHelperController::verifyAdminAccess();
@@ -892,44 +922,4 @@ class ColaboradoresController extends Controller
         }
 
     }
-
-
-    public function getHoursColab() {
-        // Obtenemos todos los horarios asignados y las asignaciones de colaboradores a áreas
-        $horasAsignadas = Horario_Presencial_Asignado::with('horario_presencial', 'area')->get();
-        $colaboradores_area = Colaboradores_por_Area::with('colaborador', 'area')->get();
-
-        $colaboradoresHoras = [];
-
-        // Recorremos las asignaciones de los colaboradores a las áreas
-        foreach ($colaboradores_area as $asignacion) {
-            $colaboradorId = $asignacion->colaborador_id;
-
-            if (!isset($colaboradoresHoras[$colaboradorId])) {
-                // Inicializamos el array para cada colaborador
-                $colaboradoresHoras[$colaboradorId] = [
-                    'colaborador_id' => $colaboradorId,
-                    'horasPracticas' => 0
-                ];
-            }
-
-            // Recorremos las horas asignadas para sumar las horas
-            foreach ($horasAsignadas as $horas) {
-                if ($asignacion->area_id == $horas->area_id) {
-                    // Calculamos la diferencia de horas entre la hora inicial y la hora final
-                    $horaInicial = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_inicial);
-                    $horaFinal = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_final);
-                    $diferenciaHoras = $horaFinal->diffInHours($horaInicial);
-
-                    // Sumamos las horas correspondientes al colaborador
-                    $colaboradoresHoras[$colaboradorId]['horasPracticas'] += $diferenciaHoras;
-                }
-            }
-        }
-
-        // Devolvemos las horas de cada colaborador
-        return $colaboradoresHoras;
-    }
-
-
 }
