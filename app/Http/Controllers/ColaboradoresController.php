@@ -86,7 +86,14 @@ class ColaboradoresController extends Controller
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
 
+        // horas practicadas de cada colaborador
         $horasTotales = $this->getHoursColab();
+        foreach ($colaboradores->data as &$colaborador) {
+            $horasPracticas = collect($horasTotales)
+                ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+            $colaborador->horasPracticas = $horasPracticas;
+        }
+
         // return $colaboradores;
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
@@ -888,20 +895,25 @@ class ColaboradoresController extends Controller
 
 
     public function getHoursColab() {
+        // Obtenemos todos los horarios asignados y las asignaciones de colaboradores a áreas
         $horasAsignadas = Horario_Presencial_Asignado::with('horario_presencial', 'area')->get();
         $colaboradores_area = Colaboradores_por_Area::with('colaborador', 'area')->get();
+
         $colaboradoresHoras = [];
 
+        // Recorremos las asignaciones de los colaboradores a las áreas
         foreach ($colaboradores_area as $asignacion) {
             $colaboradorId = $asignacion->colaborador_id;
 
             if (!isset($colaboradoresHoras[$colaboradorId])) {
+                // Inicializamos el array para cada colaborador
                 $colaboradoresHoras[$colaboradorId] = [
                     'colaborador_id' => $colaboradorId,
                     'horasPracticas' => 0
                 ];
             }
 
+            // Recorremos las horas asignadas para sumar las horas
             foreach ($horasAsignadas as $horas) {
                 if ($asignacion->area_id == $horas->area_id) {
                     // Calculamos la diferencia de horas entre la hora inicial y la hora final
@@ -915,10 +927,9 @@ class ColaboradoresController extends Controller
             }
         }
 
-       return $colaboradoresHoras;
+        // Devolvemos las horas de cada colaborador
+        return $colaboradoresHoras;
     }
-
-
 
 
 }
