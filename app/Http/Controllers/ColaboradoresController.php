@@ -66,6 +66,15 @@ class ColaboradoresController extends Controller
 
         foreach ($colaboradores_area as $asignacion) {
             $colaboradorId = $asignacion->colaborador_id;
+            $colaborador = $asignacion->colaborador;
+
+            if ($colaborador->estado == 0) {
+                $colaboradoresHoras[$colaboradorId] = [
+                    'colaborador_id' => $colaboradorId,
+                    'horasPracticas' => 0
+                ];
+                continue;
+            }
 
             if (!isset($colaboradoresHoras[$colaboradorId])) {
                 $colaboradoresHoras[$colaboradorId] = [
@@ -79,14 +88,14 @@ class ColaboradoresController extends Controller
                     $horaInicial = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_inicial);
                     $horaFinal = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_final);
                     $diferenciaHoras = $horaFinal->diffInHours($horaInicial);
-                
                     $colaboradoresHoras[$colaboradorId]['horasPracticas'] += $diferenciaHoras;
                 }
             }
         }
-        
+
         return $colaboradoresHoras;
     }
+
 
     public function index()
     {
