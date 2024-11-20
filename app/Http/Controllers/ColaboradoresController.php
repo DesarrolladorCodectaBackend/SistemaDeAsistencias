@@ -602,7 +602,7 @@ class ColaboradoresController extends Controller
             //Realizar la asignación y actualización del icono si se envía uno nuevo en la solicitud
             if ($request->hasFile('icono')) {
                 $rutaPublica = public_path('storage/candidatos');
-                if ($candidato->icono && $candidato->icono != 'Default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
+                if ($candidato->icono && $candidato->icono != 'default.png' && file_exists($rutaPublica . '/' . $candidato->icono)) {
                     unlink($rutaPublica . '/' . $candidato->icono);
                 }
 

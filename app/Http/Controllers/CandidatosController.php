@@ -102,7 +102,7 @@ class CandidatosController extends Controller
                 $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
                 $icono->move(public_path('storage/candidatos'), $nombreIcono);
             } else {
-                $nombreIcono = 'Default.png';
+                $nombreIcono = 'default.png';
             }
 
             Candidatos::create([
