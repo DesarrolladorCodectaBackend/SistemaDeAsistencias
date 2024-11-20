@@ -154,6 +154,9 @@
 
         </nav>
     </div>
+    @if($userData['isAdmin'])
+        @include('components.chatbot.chatbot')
+    @endif
     @if($user['estado'] == 0)
         <script>
             console.log('baneado');
