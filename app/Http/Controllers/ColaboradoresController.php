@@ -245,6 +245,10 @@ class ColaboradoresController extends Controller
         $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
         $requestAreas = empty($areas) ? $areasAll->pluck('id')->toArray() : $areas;
 
+
+
+
+
         // Obtenemos a los colaboradores filtrados por áreas
         $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
             ->whereIn('area_id', $requestAreas)
@@ -280,6 +284,13 @@ class ColaboradoresController extends Controller
         $hasPagination = true;
         $Allactividades = Actividades::where('estado', 1)->get();
 
+          // horas practicadas de cada colaborador
+          $horasTotales = $this->getHoursColab();
+          foreach ($colaboradores->data as &$colaborador) {
+              $horasPracticas = collect($horasTotales)
+                  ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+              $colaborador->horasPracticas = $horasPracticas;
+          }
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
             'hasPagination' => $hasPagination,
@@ -293,7 +304,7 @@ class ColaboradoresController extends Controller
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
-
+            'horasTotales' => $horasTotales,
         ]);
     }
 
@@ -717,7 +728,13 @@ class ColaboradoresController extends Controller
         $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
-
+          // horas practicadas de cada colaborador
+          $horasTotales = $this->getHoursColab();
+          foreach ($colaboradores->data as &$colaborador) {
+              $horasPracticas = collect($horasTotales)
+                  ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+              $colaborador->horasPracticas = $horasPracticas;
+          }
         //return $colaboradoresConArea;
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
@@ -733,6 +750,7 @@ class ColaboradoresController extends Controller
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
+            'horasTotales' =>  $horasTotales
         ]);
 
     }
