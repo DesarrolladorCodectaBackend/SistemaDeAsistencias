@@ -103,15 +103,15 @@ class Reuniones_AreasController extends Controller
 
     public function store(StoreReunionesAreasRequest $request)
     {
-
+        $access = FunctionHelperController::verifyAreaAccess($request->area_id);
+            if (!$access) {
+                return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para modificar esa area. No lo intente denuevo o puede ser baneado.');
+            }
         DB::beginTransaction();
         try {
             // return $request;
 
-            $access = FunctionHelperController::verifyAreaAccess($request->area_id);
-            if (!$access) {
-                return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para modificar esa area. No lo intente denuevo o puede ser baneado.');
-            }
+
 
             foreach ($request->reuniones as $reunion) {
                 Reuniones_Areas::create([

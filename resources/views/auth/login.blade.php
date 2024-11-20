@@ -10,107 +10,92 @@
     <title>INSPINIA | Login</title>
 
     <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{asset('font-awesome/css/font-awesome.css')}}">
+    {{-- <link rel="stylesheet" href="{{asset('font-awesome/css/font-awesome.css')}}"> --}}
 
-    <link rel="stylesheet" href="{{asset('css/animate.css')}}">
+    {{-- <link rel="stylesheet" href="{{asset('css/animate.css')}}"> --}}
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
-    <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
-    <link href="{{asset('css/inspinia.css')}}" rel="stylesheet">
+    {{-- <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}"> --}}
+    {{-- <link href="{{asset('css/inspinia.css')}}" rel="stylesheet"> --}}
     <link rel="stylesheet" href="{{asset('css/inspinia.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 </head>
 
-<body class="gray-bg">
-    <div
-        style="background: #000; height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
+<body>
+    <div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
+        <div class="row w-75 h-75 shadow rounded-5 overflow-hidden gray-cont">
 
-        <div class="row" style="height: 98%; width: 98%">
-            <div class="col-md-6 side-image d-flex justify-content-center align-items-center">
-                <img src="{{asset('img/logotipo.png')}}" alt="#" class="img-lg-inspinia">
-                <style>
-                    .side-image {
-                        background-color: #1ab394;
-                    }
-
-                    .row {
-                        width: 900px;
-                        height: 600px;
-                    }
-                </style>
+            <div class="col-6 p-0">
+                <img src="http://jypsac.dyndns.org:190/facturacion_20545122520/public/archivos/imagenes/leonosofts.jpg"  class="img-fluid h-100 w-100 img-background">
             </div>
 
-            <div class="col-md-6 right-form flex-centered white-text" style="background-color: #293846;">
-                <div style="width: 80%; max-width: 400px;">
-                    <div style="margin: 40px">
-                        <h2 class="text-centered"><b>Ingresar a la cuenta</b></h3>
-                    </div>
-                    <form class="m-t" method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <!-- Email Address -->
-                        <div class="input-field">
-                            <label for="text">Nombre de Usuario</label>
-                            <x-text-input id="email"
-                                class="input focus-lil-rounded focus-linear-black-to-gray white-text"
-                                style="transition: 0.5s" type="email" name="email" :value="old('email')" required
-                                autofocus autocomplete="username" />
-                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <div class="col-6 d-flex p-0 justify-content-center align-items-center">
+                <form action="{{ route('login') }}" method="POST" id="form">
+                    @csrf
+                    <div id="form-body">
+                        <div id="welcome-lines">
+                            <h1 id="welcome-line-1" style="font-size: 4em">J&P SAC</h1>
+                            <div id="welcome-line-2">Sistema de Asistencia</div>
                         </div>
-                        <!-- Password -->
-                        <div class="input-field">
-                            <label for="password">Contraseña</label>
-                            <div class="input-group">
-                                <x-text-input id="password" class="input focus-lil-rounded focus-linear-black-to-gray white-text"
-                                    style="transition: 0.5s" type="password" name="password" required autocomplete="current-password" />
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" style="border: none; color:white; padding: 2px 5px; border-radius: 50%">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                </div>
+
+                        <div class="d-flex flex-column justify-content-center align-items-center" id="input-area">
+
+                            <div id="form-control">
+                                <input type="value" class="text-white" required="" name="email">
+                                <label>
+                                    <span style="transition-delay:0ms">C</span>
+                                    <span style="transition-delay:50ms">O</span>
+                                    <span style="transition-delay:100ms">R</span>
+                                    <span style="transition-delay:150ms">R</span>
+                                    <span style="transition-delay:200ms">E</span>
+                                    <span style="transition-delay:250ms">0</span>
+
+                                </label>
                             </div>
-                            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+
+                            <div id="form-control">
+                                <input type="password" class="text-white" required="" name="password">
+                                <label>
+                                    <span style="transition-delay:0ms">C</span>
+                                    <span style="transition-delay:50ms">O</span>
+                                    <span style="transition-delay:100ms">N</span>
+                                    <span style="transition-delay:150ms">T</span>
+                                    <span style="transition-delay:200ms">R</span>
+                                    <span style="transition-delay:250ms">A</span>
+                                    <span style="transition-delay:300ms">S</span>
+                                    <span style="transition-delay:350ms">E</span>
+                                    <span style="transition-delay:400ms">Ñ</span>
+                                    <span style="transition-delay:450ms">A</span>
+                                </label>
+                            </div>
+
                         </div>
 
-
-                        <x-primary-button class="form-group btn btn-primary block full-width m-b">
-                            {{ __('Ingresar') }}
-                        </x-primary-button>
-
-                        @if (Route::has('password.request'))
-                        <div class="text-center">
-                            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                href="{{ route('password.request') }}"><small>
-                                    {{ __('¿Has olvidado tu contraseña?') }}</small>
-                            </a>
+                        <div class="d-flex justify-content-center gap-4 align-items-center mb-2">
+                            <span class="text-white">Recuérdame</span>
+                            <label class="switch">
+                                <input class="toggle" type="checkbox" checked="" name="remember">
+                                <span class="slider"></span>
+                                <span class="card-side"></span>
+                            </label>
                         </div>
-                        <p class="text-muted text-center"><small>No tienes una cuenta</small></p>
-                        @endif
 
+                        <div class="d-flex justify-content-center" id="submit-button-cvr ">
+                            <button class="button">
+                                <p>Ingresar</p>
+                              </button>
+                        </div>
 
-                        <a class="btn btn-primary block full-width m-b" href="{{ route('register') }}">
-                            {{ __('Crear Cuenta') }}
-                        </a>
-                    </form>
-
-
-
-
-                </div>
+                    </div>
+                </form>
             </div>
+
+
         </div>
     </div>
 
-    <script>
-        const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#password');
-
-        togglePassword.addEventListener('click', function (e) {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.querySelector('i').classList.toggle('fa-eye-slash');
-        });
-    </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

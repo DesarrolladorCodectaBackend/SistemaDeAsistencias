@@ -15,12 +15,14 @@ use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Computadora_colaborador;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
+use App\Models\Horarios_Presenciales;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Maquina_reservada;
 use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
 use App\Http\Requests\UpdateColaboradoresRequest;
+use App\Models\Horario_Presencial_Asignado;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
 use App\Models\RegistroActividad;
@@ -39,13 +41,13 @@ class ColaboradoresController extends Controller
     function getColaboradoresPromedioStatus($colaboradores){
         foreach($colaboradores as $colaborador){
             $colaborador->status = ["type" => "Sin Evaluar", "color" => "#888", "message" => "El colaborador no ha sido evaluado aún."];
-            $semanas = FunctionHelperController::semanasColaborador(1);
+            $semanas = FunctionHelperController::semanasColaborador($colaborador->id);
             $semanasEvaluadasCount = FunctionHelperController::getConteoMaximoSemanasEvaluadasColaborador($colaborador->id);
             if($semanasEvaluadasCount > 0){
                 $promedioArray = FunctionHelperController::promedioColaborador($colaborador->id, $semanas['semanas']);
                 $promedio = $promedioArray['promedio'];
                 $colaborador->promedio = $promedio;
-                if($promedio < 11){ 
+                if($promedio < 11){
                     $colaborador->status = ["type" => "reprobado", "color" => "#b00", "message" => "El colaborador tiene un promedio general reprobado. Promedio general: ".$promedio];
                 } else if($promedio >= 11 && $promedio < 14) {
                     $colaborador->status = ["type" => "riesgo", "color" => "#fa0", "message" => "El colaborador tiene un promedio general en riesgo de reprobar. Promedio general: ".$promedio];
@@ -56,6 +58,45 @@ class ColaboradoresController extends Controller
         }
         return $colaboradores;
     }
+
+    public function getHoursColab() {
+        $horasAsignadas = Horario_Presencial_Asignado::with('horario_presencial', 'area')->get();
+        $colaboradores_area = Colaboradores_por_Area::with('colaborador', 'area')->get();
+        $colaboradoresHoras = [];
+
+        foreach ($colaboradores_area as $asignacion) {
+            $colaboradorId = $asignacion->colaborador_id;
+            $colaborador = $asignacion->colaborador;
+
+            if ($colaborador->estado == 0) {
+                $colaboradoresHoras[$colaboradorId] = [
+                    'colaborador_id' => $colaboradorId,
+                    'horasPracticas' => 0
+                ];
+                continue;
+            }
+
+            if (!isset($colaboradoresHoras[$colaboradorId])) {
+                $colaboradoresHoras[$colaboradorId] = [
+                    'colaborador_id' => $colaboradorId,
+                    'horasPracticas' => 0
+                ];
+            }
+
+            foreach ($horasAsignadas as $horas) {
+                if ($asignacion->area_id == $horas->area_id) {
+                    $horaInicial = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_inicial);
+                    $horaFinal = Carbon::createFromFormat('H:i', $horas->horario_presencial->hora_final);
+                    $diferenciaHoras = $horaFinal->diffInHours($horaInicial);
+                    $colaboradoresHoras[$colaboradorId]['horasPracticas'] += $diferenciaHoras;
+                }
+            }
+        }
+
+        return $colaboradoresHoras;
+    }
+
+
     public function index()
     {
         $access = FunctionHelperController::verifyAdminAccess();
@@ -84,6 +125,14 @@ class ColaboradoresController extends Controller
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
 
+        // horas practicadas de cada colaborador
+        $horasTotales = $this->getHoursColab();
+        foreach ($colaboradores->data as &$colaborador) {
+            $horasPracticas = collect($horasTotales)
+                ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+            $colaborador->horasPracticas = $horasPracticas;
+        }
+
         // return $colaboradores;
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
@@ -99,7 +148,24 @@ class ColaboradoresController extends Controller
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
+            'horasTotales' => $horasTotales,
         ]);
+
+        // return response()->json([
+        //     'colaboradores' => $colaboradores,
+        //     'hasPagination' => $hasPagination,
+        //     'pageData' => $pageData,
+        //     'sedes' => $sedes,
+        //     'instituciones' => $instituciones,
+        //     'carreras' => $carreras,
+        //     'areas' => $areas,
+        //     'sedesAll' => $sedesAll,
+        //     'institucionesAll' => $institucionesAll,
+        //     'carrerasAll' => $carrerasAll,
+        //     'areasAll' => $areasAll,
+        //     'Allactividades' => $Allactividades,
+        //     'horasTotales' => $horasTotales,
+        // ]);
     }
 
     public function getComputadoraColaborador($colaborador_id){
@@ -179,6 +245,10 @@ class ColaboradoresController extends Controller
         $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
         $requestAreas = empty($areas) ? $areasAll->pluck('id')->toArray() : $areas;
 
+
+
+
+
         // Obtenemos a los colaboradores filtrados por áreas
         $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
             ->whereIn('area_id', $requestAreas)
@@ -214,6 +284,13 @@ class ColaboradoresController extends Controller
         $hasPagination = true;
         $Allactividades = Actividades::where('estado', 1)->get();
 
+          // horas practicadas de cada colaborador
+          $horasTotales = $this->getHoursColab();
+          foreach ($colaboradores->data as &$colaborador) {
+              $horasPracticas = collect($horasTotales)
+                  ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+              $colaborador->horasPracticas = $horasPracticas;
+          }
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
             'hasPagination' => $hasPagination,
@@ -227,7 +304,7 @@ class ColaboradoresController extends Controller
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
-
+            'horasTotales' => $horasTotales,
         ]);
     }
 
@@ -621,10 +698,10 @@ class ColaboradoresController extends Controller
 
         $idCandidatosPorNombre = Candidatos::searchByName($busqueda)->pluck('id');
         $colaboradoresPorNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->paginate(12);
-        
+
         $idCandidatosPorDni = Candidatos::searchByDni($busqueda)->pluck('id');
         $colaboradoresPorDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->paginate(12);
-        
+
         //Si existe un registro encontrado por el id
         if ($colaboradoresPorDni->count() > 0) {
             //Se asigna el valor del colaboradorPorId
@@ -644,14 +721,20 @@ class ColaboradoresController extends Controller
         $carreras = $carrerasAll->where('estado', 1);
         $areas = $areasAll->where('estado', 1);
 
-        
+
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
         $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
-
+          // horas practicadas de cada colaborador
+          $horasTotales = $this->getHoursColab();
+          foreach ($colaboradores->data as &$colaborador) {
+              $horasPracticas = collect($horasTotales)
+                  ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+              $colaborador->horasPracticas = $horasPracticas;
+          }
         //return $colaboradoresConArea;
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
@@ -667,6 +750,7 @@ class ColaboradoresController extends Controller
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
+            'horasTotales' =>  $horasTotales
         ]);
 
     }
@@ -781,6 +865,11 @@ class ColaboradoresController extends Controller
                     $prestamos_objetos = Prestamos_objetos_por_colaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
                     //finalmente todas las asistencias de clases (Aun no implementada pero puesta de igual manera para evitar errores)
                     $asistencias_clases = Asistentes_Clase::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    // areas_recreativas asociadas al colaborador
+                    $colaborador_actividades = AreaRecreativa::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    // areas_apoyo
+                    $colaborador_apoyo_areas = ColaboradoresApoyoAreas::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+
 
                     //ELIMINACIÓN EN CASCADA
                     //ahora procedemos a eliminarlos de los ultimos a los primeros
@@ -820,6 +909,15 @@ class ColaboradoresController extends Controller
                     foreach($horarios_de_clases as $horario_de_clase) {
                         $horario_de_clase->delete();
                     }
+                    // areas_recreativa
+                    foreach($colaborador_actividades as $activ){
+                        $activ->delete();
+                    }
+                    // apoyo_areas
+                    foreach($colaborador_apoyo_areas as $apo){
+                        $apo->delete();
+                    }
+
                     //colaboradores_por_area
                     foreach($colaboradores_por_area as $colaborador_por_area) {
                         $colaborador_por_area->delete();
@@ -828,6 +926,7 @@ class ColaboradoresController extends Controller
                     foreach($colaboradores as $colab) {
                         $colab->delete();
                     }
+
                     //candidato
                     $candidato->delete();
                 }

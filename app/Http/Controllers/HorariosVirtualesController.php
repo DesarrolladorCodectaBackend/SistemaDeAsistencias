@@ -14,6 +14,11 @@ class HorariosVirtualesController extends Controller
     //NOT USING YET
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
         $horarios_virtuales = Horarios_Virtuales::all();
 
         return view('horarios_Virtuales.index', compact('horarios_virtuales'));
@@ -22,6 +27,11 @@ class HorariosVirtualesController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
         $request->validate([
             'hora_inicial' => 'required|string|min:1|max:100',
             'hora_final' => 'required|string|min:1|max:255',
@@ -34,14 +44,19 @@ class HorariosVirtualesController extends Controller
             'dia' => $request->dia
         ]);
 
-        
+
         return redirect()->route('horarios_Virtuales.index');
 
     }
 
-    
+
     public function create(Request $request)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
         DB::beginTransaction();
         try {
             //Existencia
@@ -80,9 +95,13 @@ class HorariosVirtualesController extends Controller
         }
     }
 
-    
+
     public function show($horario_virtual_id)
-    {
+    {$access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
         try {
             $horario = Horarios_Virtuales::find($horario_virtual_id);
 
@@ -96,9 +115,14 @@ class HorariosVirtualesController extends Controller
         }
     }
 
-    
+
     public function update(Request $request, $horario_virtual_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
         $request->validate([
             'hora_inicial' => 'required|string|min:1|max:100',
             'hora_final' => 'required|string|min:1|max:255',
@@ -106,15 +130,20 @@ class HorariosVirtualesController extends Controller
         ]);
 
         $horarios_virtuales = Horarios_Virtuales::findOrFail($horario_virtual_id);
-        
+
         $horarios_virtuales->update($request->all());
 
         return redirect()->route('horarios_virtuales.index');
     }
 
-    
+
     public function destroy($horario_virtual_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
         $horarios_virtuales = Horarios_Virtuales::findOrFail($horario_virtual_id);
 
         $horarios_virtuales->delete();

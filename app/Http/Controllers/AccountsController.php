@@ -311,7 +311,7 @@ class AccountsController extends Controller
                 //Ver si es un administrador o si es un Jefe
                 $userData = FunctionHelperController::getUserRolById($user_id);
                 if($userData['isBoss']){
-                    // $newData = 
+                    // $newData =
                     //Buscar el colaborador asociado por el email
                     FunctionHelperController::modifyColabByUser($user, $request);
                     //Modificar Areas

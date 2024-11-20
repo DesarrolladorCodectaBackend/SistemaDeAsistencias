@@ -20,9 +20,10 @@ class Computadora_colaboradorController extends Controller
         return view('computadora_colaborador.index', compact('computadora_colaborador'));
     }
 
-    
+
     public function create(Request $request)
     {
+        
         Computadora_colaborador::create([
             "colaborador_id" => $request->colaborador_id,
             "procesador" => $request->procesador,
@@ -57,7 +58,7 @@ class Computadora_colaboradorController extends Controller
                 'almacenamiento' =>  'required|string|min:1|max:255',
             ]);
 
-            
+
             Computadora_colaborador::create([
                 "colaborador_id" => $request->colaborador_id,
                 "procesador" => $request->procesador,
@@ -68,7 +69,7 @@ class Computadora_colaboradorController extends Controller
                 "es_laptop" => $request->es_laptop,
                 "codigo_serie" => $request->codigo_serie
             ]);
-    
+
             DB::commit();
             return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
 
@@ -76,21 +77,21 @@ class Computadora_colaboradorController extends Controller
             DB::rollBack();
             return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
         }
-        
-        
+
+
     }
 
 
-    
+
     public function show($computadora_colaborador_id)
     {
         $computadora_colaborador = Computadora_colaborador::with([
             'colaboradores' => function($query) {$query->select('id', 'candidato_id');}])->find($computadora_colaborador_id);
-        
+
         return response()->json(["data" => $computadora_colaborador]);
     }
 
-    
+
     public function update(Request $request, $computadora_colaborador_id)
     {
         $access = FunctionHelperController::verifyAdminAccess();
@@ -117,9 +118,9 @@ class Computadora_colaboradorController extends Controller
             } else{
                 $estado = false;
             }
-    
+
             $computadora_colaborador = Computadora_colaborador::findOrFail($computadora_colaborador_id);
-            
+
             if($computadora_colaborador){
                 $computadora_colaborador->update([
                     "procesador" => $request->procesador,
@@ -132,7 +133,7 @@ class Computadora_colaboradorController extends Controller
                     "estado" => $estado
                 ]);
             }
-            
+
             DB::commit();
             return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
         } catch(Exception $e) {
@@ -140,10 +141,10 @@ class Computadora_colaboradorController extends Controller
             // return response()->json(["error" => $e->getMessage()]);
             return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
         }
-        
+
     }
 
-    
+
     public function destroy($computadora_colaborador_id)
     {
         $computadora_colaborador = Computadora_colaborador::findOrFail($computadora_colaborador_id);
@@ -162,7 +163,7 @@ class Computadora_colaboradorController extends Controller
         DB::beginTransaction();
         try{
             $registro = Computadora_colaborador::findOrFail($computadora_id);
-            
+
             if($registro){
                 $registro->update(["estado" => !$registro->estado]);
             }
