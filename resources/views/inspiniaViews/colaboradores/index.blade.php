@@ -357,11 +357,13 @@
                                             </p></div>
                                         <div>
                                             {{-- editar colaborador--}}
-                                            <a data-toggle="modal" id="editButton{{ $colaborador->id }}"
-                                                class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
-                                                onclick="abrirModalEdicion({{$colaborador->id}});"
-                                                style="font-size: 20px; width: 60px;"
-                                                href="#modal-form-update{{$colaborador->id}}"></a>
+                                            <x-uiverse.tooltip nameTool="Editar">
+                                                <a data-toggle="modal" id="editButton{{ $colaborador->id }}"
+                                                    class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
+                                                    onclick="abrirModalEdicion({{$colaborador->id}});"
+                                                    style="font-size: 20px; width: 60px;"
+                                                    href="#modal-form-update{{$colaborador->id}}"></a>
+                                            </x-uiverse.tooltip>
                                         </div>
                                     </div>
                                     <div class="col-sm-6 text-center text-danger">
@@ -555,16 +557,20 @@
                                     </form>
                                     <div class="ibox-content">
                                         @if($colaborador->estado != 2)
-                                        <div class="text-center">
+                                        <div class="text-center d-flex justify-content-center align-items-center" style="gap:3em;">
                                             {{-- Botón calendario colaborador --}}
-                                            <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
-                                                style="font-size: 20px;"
-                                                onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
+                                            <x-uiverse.tooltip nameTool="Horario">
+                                                <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
+                                                    style="font-size: 20px;"
+                                                    onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
+                                            </x-uiverse.tooltip>
 
                                             {{-- Botón ver colaborador --}}
-                                            <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
-                                                style="font-size: 20px;"
-                                                href="#modal-form-view{{$colaborador->id}}"></button>
+                                            <x-uiverse.tooltip nameTool="Ver">
+                                                <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
+                                                    style="font-size: 20px;"
+                                                    href="#modal-form-view{{$colaborador->id}}"></button>
+                                            </x-uiverse.tooltip>
                                         </div>
                                         {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"

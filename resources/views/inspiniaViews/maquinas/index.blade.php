@@ -64,6 +64,7 @@
 
                                                 <div
                                                     style="display:flex; justify-content: center; align-items: center; gap: 15px">
+
                                                     <button
                                                         class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-check"
                                                         type="submit"
@@ -155,9 +156,11 @@
                                     <a href="#" data-toggle="model"> <i></i> </a>
                                     <div class="ibox-content">
                                         <div class="text-right">
-                                            <a data-toggle="modal" class="btn btn-primary fa fa-edit"
-                                                style="font-size: 20px;"
-                                                href="#modal-form{{ $maquina->id }}"></a>
+                                            <x-uiverse.tooltip nameTool="Editar">
+                                                <a data-toggle="modal" class="btn btn-primary fa fa-edit"
+                                                    style="font-size: 20px;"
+                                                    href="#modal-form{{ $maquina->id }}"></a>
+                                            </x-uiverse.tooltip>
                                         </div>
                                         <div id="modal-form{{ $maquina->id }}" class="modal fade"
                                             aria-hidden="true">

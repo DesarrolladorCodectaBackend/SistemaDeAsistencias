@@ -461,19 +461,24 @@
                                             <dd class="sm-2">{{$candidato->celular ?? 'Sin celular'}}</dd>
                                         </div>
                                     </dl>
-                                    <div>
-                                        <div class="mb-4">
-                                            {{-- botón ver colaborador --}}
-                                            <button class="btn btn-success float-right mx-2" type="button"
-                                                href="#modal-form-view{{$candidato->id}}" data-toggle="modal"><i
-                                                    style="font-size: 20px" class="fa fa-eye"></i></button>
 
+                                    <div>
+                                        <div class="d-flex justify-content-center align-items-center" style="display: flex; gap: 2px">
+                                            {{-- botón ver colaborador --}}
+                                            <x-uiverse.tooltip nameTool="Ver">
+                                                <button class="btn btn-success float-right mx-2" type="button"
+                                                    href="#modal-form-view{{$candidato->id}}" data-toggle="modal"><i
+                                                        style="font-size: 20px" class="fa fa-eye"></i></button>
+                                            </x-uiverse.tooltip>
 
                                             {{-- botón editar colaborador --}}
-                                            <button id="editButton{{ $candidato->id }}" class="btn btn-info float-right mx-2" type="button"
+                                            <x-uiverse.tooltip nameTool="Editar">
+                                                <button id="editButton{{ $candidato->id }}" class="btn btn-info float-right mx-2" type="button"
                                                 href="#modal-form{{$candidato->id}}" data-toggle="modal"><i
                                                     style="font-size: 20px" class="fa fa-paste"></i></button>
+                                            </x-uiverse.tooltip>
                                         </div>
+
                                         {{-- MODAL UPDATE --}}
                                         <div id="modal-form{{$candidato->id}}" class="modal fade" aria-hidden="true">
                                             <div class="modal-dialog">

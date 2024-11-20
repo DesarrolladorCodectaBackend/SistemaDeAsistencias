@@ -123,16 +123,20 @@
                                 <td>{{ $sede->institucion->nombre }}</td>
                                 <td class="text-center">
                                     <form method="POST" action="{{ route('sedes.activarInactivar', $sede->id) }}">
-                                        @csrf
-                                        <button type="submit"
-                                            class="btn btn-{{ $sede->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                            <span>{{ $sede->estado ? 'Activado' : 'Inactivo' }}</span>
-                                        </button>
+                                        @csrf                                    
+                                            <button type="submit"
+                                                class="btn btn-{{ $sede->estado ? 'outline-success' : 'danger' }} btn-primary dim">
+                                                <span>{{ $sede->estado ? 'Activado' : 'Inactivo' }}</span>
+                                            </button>              
                                     </form>
                                 </td>
-                                <td class="text-center oculto"><button class="btn btn-info" type="button"
-                                        href="#modal-form{{ $sede->id }}" data-toggle="modal"><i
-                                            class="fa fa-paste"></i></button></td>
+                                <td class="text-center oculto">
+                                    
+                                        <button class="btn btn-info" type="button"
+                                            href="#modal-form{{ $sede->id }}" data-toggle="modal"><i
+                                                class="fa fa-paste"></i></button>
+                                    
+                                </td>
                                 <div id="modal-form{{ $sede->id }}" class="modal fade" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
