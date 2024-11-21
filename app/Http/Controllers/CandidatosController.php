@@ -102,7 +102,7 @@ class CandidatosController extends Controller
                 $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
                 $icono->move(public_path('storage/candidatos'), $nombreIcono);
             } else {
-                $nombreIcono = 'Default.png';
+                $nombreIcono = 'default.png';
             }
 
             Candidatos::create([
@@ -138,6 +138,7 @@ class CandidatosController extends Controller
 
     public function update(Request $request, $candidato_id)
     {
+        // return $request;
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
