@@ -15,6 +15,11 @@ class HorariosPresencialesController extends Controller
 
     public function index()
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
         $Horarios_Presenciales = Horarios_Presenciales::all();
 
         return view('Horarios_Presenciales.index', compact('Horarios_Presenciales'));
@@ -35,7 +40,7 @@ class HorariosPresencialesController extends Controller
                 "hora_final" => $request->hora_final,
                 "dia" => $request->dia
         ]);
- 
+
     }
 
 
@@ -57,26 +62,52 @@ class HorariosPresencialesController extends Controller
 
     public function update(Request $request, $horario_presencial_id)
     {
-        $request->validate([
-            'hora_inicial' => 'required|string|min:1|max:100',
-            'hora_final' => 'required|string|min:1|max:255',
-            'dia' =>  'required|string|min:1|max:7',
-        ]);
-        
-        $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+        try{
+            $request->validate([
+                'hora_inicial' => 'required|string|min:1|max:100',
+                'hora_final' => 'required|string|min:1|max:255',
+                'dia' =>  'required|string|min:1|max:7',
+            ]);
 
-        $horarios_presenciales->update($request->all());
+            $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
 
-        return redirect()->route('horarios_presenciales.index');
+            $horarios_presenciales->update($request->all());
+
+            DB::beginTransaction();
+            return redirect()->route('horarios_presenciales.index');
+        }catch(Exception $e)
+        {
+            return redirect()->route('horarios_presenciales.index');
+        }
+
+
+
     }
 
 
     public function destroy($horario_presencial_id)
     {
-        $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
 
-        $horarios_presenciales->delete();
+        DB::beginTransaction();
+        try{
+            $horarios_presenciales = horarios_presenciales::findOrFail($horario_presencial_id);
 
-        return redirect()->route('horarios_presenciales.index');
+            $horarios_presenciales->delete();
+
+            DB::commit();
+            return redirect()->route('horarios_presenciales.index');
+        }catch(Exception $e){
+            DB::rollBack();
+            return redirect()->route('horarios_presenciales.index');
+        }
+
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\User;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use Hash;
 use Illuminate\Http\Request;
@@ -121,7 +121,7 @@ class PerfilController extends Controller
             $errors = [];
             //Old password (Required, igual a la contraseña actual)
             if(!isset($request->old_password)){
-                $errors['old_password'] = 'La contraseña actual es requerida.'; 
+                $errors['old_password'] = 'La contraseña actual es requerida.';
             }else{
                 if (!Hash::check($request->old_password, $user->password)) {
                     $errors['old_password'] = 'La contraseña actual no coincide.';

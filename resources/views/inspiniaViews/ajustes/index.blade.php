@@ -39,7 +39,9 @@
                                     <p>Tabla de instituciones</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/institucion"><i class="fa fa-cog"></i></a>
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="/institucion"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +60,9 @@
                                     <p>Tabla de carreras académicas</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/carreras"><i class="fa fa-cog"></i></a>
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="/carreras"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +84,9 @@
                                     <p>Tabla de cursos</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/cursos"><i class="fa fa-cog"></i></a>
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="/cursos"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +105,9 @@
                                     <p>Tabla de programas</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/programas"><i class="fa fa-cog"></i></a>
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="/programas"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>
@@ -117,7 +125,9 @@
                                     <p>Tabla de sedes</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/sedes"><i class="fa fa-cog"></i></a>
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="/sedes"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>
@@ -136,7 +146,9 @@
                                     <p>Tabla de objetos de la empresa</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/objeto"><i class="fa fa-cog"></i></a>
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="/objeto"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>
@@ -155,7 +167,9 @@
                                     <p>Tabla de Actividades Recreativas</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/actividades"><i class="fa fa-cog"></i></a>
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="/actividades"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>
@@ -174,7 +188,9 @@
                                     <p>Tabla de Responsabilidades</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-success" href="/gestionResponsabilidad"><i class="fa fa-cog"></i></a>
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="/gestionResponsabilidad"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>

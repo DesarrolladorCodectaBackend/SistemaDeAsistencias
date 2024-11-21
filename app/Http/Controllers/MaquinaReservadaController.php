@@ -38,6 +38,10 @@ class MaquinaReservadaController extends Controller
     }
 
     public function asignarColaboradorOld(Request $request, $area_id, $maquina_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try{
             $request->validate([
@@ -347,12 +351,12 @@ class MaquinaReservadaController extends Controller
             }
             //Realizar commit
             DB::commit();
-            //Redirigir a la vista de máquinas del área    
+            //Redirigir a la vista de máquinas del área
             return redirect()->route('areas.getMaquinas', ['area_id' => $area_id]);
         } catch(Exception $e){
             //Si ocurre algún error se hace rollback
             DB::rollBack();
-            //Redirigir a la vista de máquinas del área            
+            //Redirigir a la vista de máquinas del área
             return redirect()->route('areas.getMaquinas', ['area_id' => $area_id]);
         }
     }

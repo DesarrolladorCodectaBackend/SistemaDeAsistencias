@@ -125,18 +125,23 @@
                                 <div class="m-t text-righ">
 
                                     <a href="#" data-toggle="model"> <i></i> </a>
-                                    <div class="ibox-content">
-                                        <div class="text-right">
+                                    <div class="ibox-content d-flex justify-content-center">
+                                        <div class="text-right d-flex justify-content-center align-items-center" style="gap:2em;">
                                             {{-- <button class="btn btn-primary btn-danger fa fa-trash"
                                                 style="font-size: 20px;" type="button"
                                                 onclick="confirmDelete({{ $salon->id }})"></button> --}}
-                                            <a data-toggle="modal" class="btn btn-primary fa fa-edit"
-                                                style="font-size: 20px;" href="#modal-form{{ $salon->id }}"></a>
-                                            <button type="button" class="btn btn-primary btn-success fa fa-eye"
-                                                data-toggle="modal" data-target="#modal-form-view-{{ $salon->id }}"
-                                                style="font-size: 20px;" data-salon-id="{{ $salon->id }}"></button>
+                                            <x-uiverse.tooltip nameTool="Editar">
+                                                <a data-toggle="modal" class="btn btn-primary fa fa-edit"
+                                                    style="font-size: 20px;" href="#modal-form{{ $salon->id }}"></a>
+                                            </x-uiverse.tooltip>
 
+                                            <x-uiverse.tooltip nameTool="Ver">
+                                                <button type="button" class="btn btn-primary btn-success fa fa-eye"
+                                                    data-toggle="modal" data-target="#modal-form-view-{{ $salon->id }}"
+                                                    style="font-size: 20px;" data-salon-id="{{ $salon->id }}"></button>
+                                            </x-uiverse.tooltip>
                                         </div>
+
                                         <style>
                                             .modal-custom {
                                                 max-width: 80%;
@@ -209,9 +214,9 @@
                                                                                         <dt class="text-md-left text-sm-center">Salón Asignado:</dt>
                                                                                         <dd class="sm-2 text-md-left text-sm-center">{{$maquina->nombre}}</dd>
                                                                                     </div>
-                                                                                </div>                                                     
+                                                                                </div>
                                                                             </div>
-                                                                        </div>    
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -322,7 +327,7 @@
                 @if (old('form_type') == 'create')
                     $('#modal-form-add').modal('show');
                 @endif
-        
+
                 // Reabrir el modal de edición si el error proviene del formulario de edición
                 @if (old('form_type') == 'edit' && old('salon_id'))
                     $('#modal-form' + {{ old('salon_id') }}).modal('show');

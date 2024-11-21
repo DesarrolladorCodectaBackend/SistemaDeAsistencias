@@ -18,6 +18,11 @@ class InformesSemanalesController extends Controller
 
     public function store(Request $request)
     {
+        $access = FunctionHelperController::verifyAreaAccess($request->area_id);
+
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+        }
         DB::beginTransaction();
         try {
             // obtiene el año, mes, area_id, semana_id
@@ -101,6 +106,12 @@ class InformesSemanalesController extends Controller
 
     public function update(Request $request, $InformeSemanal)
     {
+        $access = FunctionHelperController::verifyAreaAccess($request->area_id);
+
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+        }
+
         DB::beginTransaction();
         try {
             $year = $request->year;
@@ -169,8 +180,14 @@ class InformesSemanalesController extends Controller
     }
 
 
-    public function show($InformeSemanal)
+    public function show(Request $request, $InformeSemanal)
     {
+        $access = FunctionHelperController::verifyAreaAccess($request->area_id);
+
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+        }
+
         // Obtener el informe con el ID proporcionado
         $informe = InformeSemanal::findOrFail($InformeSemanal);
 
@@ -185,6 +202,12 @@ class InformesSemanalesController extends Controller
 
     public function destroy(Request $request, $InformeSemanal)
     {
+        $access = FunctionHelperController::verifyAreaAccess($request->area_id);
+
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar esa area. No lo intente denuevo o puede ser baneado.');
+        }
+
         DB::beginTransaction();
         $area_id = $request->area_id;
         $year = $request->year;

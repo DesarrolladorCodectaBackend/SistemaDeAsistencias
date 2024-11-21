@@ -23,8 +23,8 @@
 </head>
 
 <body>
-    <div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
-        <div class="row w-75 w-md-80 h-75 shadow rounded-5 overflow-hidden gray-cont">
+    <div class="container-fluid vh-100 d-flex justify-content-center align-items-center p-0">
+        <div class="row w-100 h-100 shadow  overflow-hidden gray-cont">
 
             <div class="col-6 p-0">
                 <img src="http://jypsac.dyndns.org:190/facturacion_20545122520/public/archivos/imagenes/leonosofts.jpg"  class="img-fluid h-100 w-100 img-background">
@@ -35,7 +35,7 @@
                     @csrf
                     <div id="form-body">
                         <div id="welcome-lines">
-                            <h2 id="welcome-line-1">J&P SAC</h2>
+                            <h1 id="welcome-line-1" style="font-size: 4em; color: white;">J&P SAC</h1>
                             <div id="welcome-line-2">Sistema de Asistencia</div>
                         </div>
 

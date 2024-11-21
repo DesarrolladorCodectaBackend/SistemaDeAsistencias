@@ -123,18 +123,29 @@
                                         --}}
                                         {{-- <button class="btn btn-info" type="button" href="#modal-form{{ $area->id }}"
                                             data-toggle="modal"><i class="fa fa-paste"></i> Edit</button> --}}
+
+                                            {{-- botones --}}
                                         <form role="form" method="GET" action="{{ route('areas.getHorario', $area->id) }}">
-                                            <button class="btn btn-primary fa fa-clock-o" style="font-size: 20px;"></button>
+                                            <x-uiverse.tooltip nameTool="Horarios">
+                                                <button class="btn btn-primary fa fa-clock-o" style="font-size: 20px;"></button>
+                                            </x-uiverse.tooltip>
                                         </form>
                                         <form role="form" method="GET"
                                             action="{{ route('areas.getReuniones', $area->id) }}">
-                                            <button class="btn btn-success fa fa-video-camera"
+
+                                            <x-uiverse.tooltip nameTool="Reuniones">
+                                                <button class="btn btn-success fa fa-video-camera"
                                                 style="font-size: 20px;"></button>
+                                            </x-uiverse.tooltip>
+
                                         </form>
                                         <form role="form" method="GET" action="{{route('areas.getMaquinas', $area->id)}}">
-                                            <button class="btn btn-secondary fa fa-desktop" style="font-size: 20px;">
 
-                                            </button>
+                                            <x-uiverse.tooltip nameTool="Máquinas">
+                                                <button class="btn btn-secondary fa fa-desktop" style="font-size: 20px;">
+                                                </button>
+                                            </x-uiverse.tooltip>
+
                                         </form>
                                         {{-- EDIT --}}
                                         {{-- <div id="modal-form{{ $area->id }}" class="modal fade" aria-hidden="true">
