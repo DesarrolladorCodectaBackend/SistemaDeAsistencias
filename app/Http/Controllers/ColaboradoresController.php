@@ -59,6 +59,12 @@ class ColaboradoresController extends Controller
         return $colaboradores;
     }
 
+    public function getColorCiclo($colaboradores){
+        foreach($colaboradores as $colaborador){
+            // $colaborador->status = ["type" => "Sin Ciclo", "color" => "000cff", "message" => "El colaborador no pertenece a un ciclo."];
+            $colaborador = Candidatos::where('ciclo_de_estudiante', 6)->get();
+        }
+    }
     public function getHoursColab() {
         $horasAsignadas = Horario_Presencial_Asignado::with('horario_presencial', 'area')->get();
         $colaboradores_area = Colaboradores_por_Area::with('colaborador', 'area')->get();
@@ -96,7 +102,7 @@ class ColaboradoresController extends Controller
         return $colaboradoresHoras;
     }
 
-
+    
     public function index()
     {
         $access = FunctionHelperController::verifyAdminAccess();
@@ -132,6 +138,8 @@ class ColaboradoresController extends Controller
                 ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
             $colaborador->horasPracticas = $horasPracticas;
         }
+
+        // llamar cicloColor
 
         // return $colaboradores;
         $Allactividades = Actividades::where('estado', 1)->get();

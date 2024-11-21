@@ -484,7 +484,9 @@
                         margin: 0.5rem;
                     } */
                 </style>
+                {{-- mostrar colaboradores --}}
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 ">
+                    
                     <div style="" class="ibox">
                         <div class="ibox-content product-box">
                             <div class="text-center rounded-circle">
