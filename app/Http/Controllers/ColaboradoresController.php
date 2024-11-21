@@ -251,6 +251,7 @@ class ColaboradoresController extends Controller
         // Obtenemos a los colaboradores filtrados por áreas
         $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
             ->whereIn('area_id', $requestAreas)
+            ->where('estado', 1)
             ->get()
             ->pluck('colaborador');
 
