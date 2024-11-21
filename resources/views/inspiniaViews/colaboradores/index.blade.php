@@ -572,6 +572,18 @@
                                                     href="#modal-form-view{{$colaborador->id}}"></button>
                                             </x-uiverse.tooltip>
                                         </div>
+                                        <style>
+                                            /* Quitar los controles de incremento y decremento en los navegadores */
+                                            input[type="number"]::-webkit-outer-spin-button,
+                                            input[type="number"]::-webkit-inner-spin-button {
+                                                -webkit-appearance: none;
+                                                margin: 0;
+                                            }
+
+                                            input[type="number"] {
+                                                -moz-appearance: textfield; /* Para Firefox */
+                                            }
+                                        </style>
                                         {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
                                             aria-hidden="true">
@@ -698,24 +710,41 @@
                                                                             id="fecha_nacimiento"
                                                                             value="{{ $colaborador->candidato->fecha_nacimiento }}">
                                                                     </div>
-                                                                    <div class="form-group"><label>
+                                                                    <div class="form-group">
+
+                                                                        <label>
                                                                             <h5 class="m-t-none">DNI:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control" name="dni" id="dni"
-                                                                            value="{{$colaborador->candidato->dni}}"></input>
-                                                                            @error('dni'.$colaborador->id)
-                                                                            <span class="text-danger">{{ $message }}</span>
-                                                                            @enderror
+                                                                        </label>
+
+                                                                       <div class="position-relative">
+
+                                                                        <input type="number" placeholder="....."
+                                                                        class="form-control" name="dni" id="dni-update-{{ $colaborador->id }}" 
+                                                                        value="{{$colaborador->candidato->dni}}" oninput="limitDNI(this)"></input>
+                                                                        <span id="dni-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
+                                                                        @error('dni'.$colaborador->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                       </div>
                                                                     </div>
-                                                                    <div class="form-group"><label>
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
                                                                             <h5 class="m-t-none">Celular:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control" name="celular"
-                                                                            id="celular"
-                                                                            value="{{ $colaborador->candidato->celular }}">
-                                                                            @error('celular'.$colaborador->id)
-                                                                            <span class="text-danger">{{ $message }}</span>
-                                                                            @enderror
+                                                                        </label>
+
+                                                                       <div class="position-relative">
+
+                                                                        <input type="number" placeholder="....."
+                                                                        class="form-control" name="celular"
+                                                                        id="cel-update-{{ $colaborador->id }}"
+                                                                        value="{{ $colaborador->candidato->celular }}" oninput="limitCel(this)"></input>
+                                                                        <span id="cel-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/9</span>
+                                                                        @error('celular'.$colaborador->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                       </div>
                                                                     </div>
 
                                                                     <div class="form-group">
@@ -949,6 +978,162 @@
     </style>
     {{-- <script src="{{ asset('js/InspiniaViewsJS/indexColaboradores.js') }}"></script> --}}
 
+
+    <script>
+        // limiteCel
+        function limitCel(input) {
+           // Asegura que solo se permitan 8 caracteres
+           if (input.value.length > 9) {
+               input.value = input.value.slice(0, 9); // Limita a 8 caracteres
+           }
+
+           // Obtener el ID del candidato para el contador correspondiente
+           let counterId;
+           if (input.id.includes('store')) {
+               counterId = 'cel-counter-store'; // Para el campo de creación
+           } else {
+               const colaboradorId = input.id.split('-')[2]; // Para los campos de actualización
+               counterId = `cel-counter-update-${colaboradorId}`;
+           }
+
+           const counter = document.getElementById(counterId);
+
+           // Actualiza el contador de caracteres
+           counter.textContent = `${input.value.length}/9`;
+
+           // Cambia el color del borde según el número de caracteres
+           if (input.value.length >= 1 && input.value.length < 9) {
+               input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
+           } else if (input.value.length === 9) {
+               input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
+           } else {
+               input.style.borderColor = ''; // Restablece el borde si no está en el rango
+           }
+       }
+
+       // Inicializa el contador y el borde al cargar la página
+       document.addEventListener("DOMContentLoaded", function() {
+           // Para Store (Crear)
+           const inputStore = document.getElementById('cel-store');
+           const counterStore = document.getElementById('cel-counter-store');
+           if (inputStore) {
+               const initialValueStore = inputStore.value || '';
+               counterStore.textContent = `${initialValueStore.length}/9`;
+
+               if (initialValueStore.length >= 1 && initialValueStore.length < 9) {
+                   inputStore.style.borderColor = 'red';
+               } else if (initialValueStore.length === 9) {
+                   inputStore.style.borderColor = 'green';
+               }
+
+               inputStore.addEventListener('input', function() {
+                   limitCel(inputStore);
+               });
+           }
+
+           // Para Update (Actualizar)
+           const inputsUpdate = document.querySelectorAll('[id^="cel-update-"]');
+
+           inputsUpdate.forEach(inputUpdate => {
+               const colaboradorId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
+               const counterUpdate = document.getElementById(`cel-counter-update-${colaboradorId}`);
+
+               // Inicializa el contador y el borde según el valor inicial
+               const initialValueUpdate = inputUpdate.value || '';
+               counterUpdate.textContent = `${initialValueUpdate.length}/9`;
+
+               if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 9) {
+                   inputUpdate.style.borderColor = 'red';
+               } else if (initialValueUpdate.length === 9) {
+                   inputUpdate.style.borderColor = 'green';
+               }
+
+               // Agregar event listener al input
+               inputUpdate.addEventListener('input', function() {
+                   limitCel(inputUpdate);
+               });
+           });
+       });
+
+
+
+       // limiteDNI 
+       function limitDNI(input) {
+           // Asegura que solo se permitan 8 caracteres
+           if (input.value.length > 8) {
+               input.value = input.value.slice(0, 8); // Limita a 8 caracteres
+           }
+
+           // Obtener el ID del candidato para el contador correspondiente
+           let counterId;
+           if (input.id.includes('store')) {
+               counterId = 'dni-counter-store'; // Para el campo de creación
+           } else {
+               const colaboradorId = input.id.split('-')[2]; // Para los campos de actualización
+               counterId = `dni-counter-update-${colaboradorId}`;
+           }
+
+           const counter = document.getElementById(counterId);
+
+           // Actualiza el contador de caracteres
+           counter.textContent = `${input.value.length}/8`;
+
+           // Cambia el color del borde según el número de caracteres
+           if (input.value.length >= 1 && input.value.length < 8) {
+               input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
+           } else if (input.value.length === 8) {
+               input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
+           } else {
+               input.style.borderColor = ''; // Restablece el borde si no está en el rango
+           }
+           console.log(input.value);
+       }
+
+       // Inicializa el contador y el borde al cargar la página
+       document.addEventListener("DOMContentLoaded", function() {
+           // Para Store (Crear)
+           const inputStore = document.getElementById('dni-store');
+           const counterStore = document.getElementById('dni-counter-store');
+           if (inputStore) {
+               const initialValueStore = inputStore.value || '';
+               counterStore.textContent = `${initialValueStore.length}/8`;
+
+               if (initialValueStore.length >= 1 && initialValueStore.length < 8) {
+                   inputStore.style.borderColor = 'red';
+               } else if (initialValueStore.length === 8) {
+                   inputStore.style.borderColor = 'green';
+               }
+
+               inputStore.addEventListener('input', function() {
+                   limitDNI(inputStore);
+               });
+           }
+
+           // Para Update (Actualizar)
+           const inputsUpdate = document.querySelectorAll('[id^="dni-update-"]');
+
+           inputsUpdate.forEach(inputUpdate => {
+               const colaboradorId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
+               const counterUpdate = document.getElementById(`dni-counter-update-${colaboradorId}`);
+
+               // Inicializa el contador y el borde según el valor inicial
+               const initialValueUpdate = inputUpdate.value || '';
+               counterUpdate.textContent = `${initialValueUpdate.length}/8`;
+
+               if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 8) {
+                   inputUpdate.style.borderColor = 'red';
+               } else if (initialValueUpdate.length === 8) {
+                   inputUpdate.style.borderColor = 'green';
+               }
+
+               // Agregar event listener al input
+               inputUpdate.addEventListener('input', function() {
+                   limitDNI(inputUpdate);
+               });
+           });
+       });
+   </script>
+
     <script>
         function confirmDelete(id, currentURL) {
             alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
@@ -1151,13 +1336,6 @@
                 updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
             });
         });
-
-
-
-
-
-
-
 
 
     </script>
