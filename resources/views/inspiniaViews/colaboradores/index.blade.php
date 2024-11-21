@@ -211,6 +211,33 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Ciclos
+                                            <div class="card">
+                                                <div class="card-header" id="headingCiclos">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseCiclos" aria-expanded="false" aria-controls="collapseCiclos">
+                                                            Ciclos
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseCiclos" class="collapse" aria-labelledby="headingCiclos" data-parent="#accordionExample">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @foreach([4, 5, 6, 7] as $ciclo)
+                                                            <div class="form-check">
+                                                                <input type="checkbox" class="form-check-input ciclo-checkbox" value="{{ $ciclo }}" id="checkbox-ciclo-{{ $ciclo }}">
+                                                                <label for="checkbox-ciclo-{{ $ciclo }}">{{ $ciclo }}to Ciclo</label>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            -->
+
+
                                             <!-- Instituciones -->
                                             <div class="card">
                                                 <div class="card-header" id="headingInstituciones">
@@ -296,7 +323,8 @@
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Ciclo:</p>
-                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->ciclo_de_estudiante ?? 'Sin ciclo'}}°</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>
+                                                {{$colaborador->candidato->ciclo_de_estudiante ?? 'Sin ciclo'}}°</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Correo:</p>
@@ -379,16 +407,20 @@
                                             <form id="getComputadoraColab{{$colaborador->id}}"
                                                 action="{{route('colaboradores.getComputadora', $colaborador->id)}}">
                                             </form>
+                                            <x-uiverse.tooltip nameTool="Maquinas">
                                             <a href="#" class="btn btn-primary btn-success fa fa-desktop"
                                                 style="width: 100px; font-size: 18px;"
                                                 onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
                                             </a>
+                                            </x-uiverse.tooltip>
 
                                             {{-- Redirección a préstamo --}}
                                             <form id="getPrestamoColab{{$colaborador->id}}" action="{{route('colaboradores.getPrestamo', $colaborador->id)}}">
                                             </form>
+                                            <x-uiverse.tooltip nameTool="Prestamos">
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
                                                 style="width: 100px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                            </x-uiverse.tooltip>
                                         </div>
 
                                         <div class="mt-2">
@@ -485,7 +517,11 @@
                     } */
                 </style>
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 ">
-                    <div style="" class="ibox">
+                    <div class="ibox" style='
+                        @if($colaborador->candidato->ciclo_de_estudiante == 6)
+                            border: 2px solid #1ab394;
+                            background-color: #d4edda;
+                        @endif'>
                         <div class="ibox-content product-box">
                             <div class="text-center rounded-circle">
                                 <img src="{{asset('storage/candidatos/'.$colaborador->candidato->icono)}}"
@@ -518,8 +554,6 @@
                                 <div href="#" class="product-name">
                                     <h2 class="overflowing-text" >{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}</h2>
                                 </div>
-
-
 
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark" >Área(s):</h3>
@@ -813,15 +847,20 @@
                                                                         </script>
                                                                     </div>
                                                                     <div style="display: flex; gap:2px">
-                                                                        <a href="#"
+                                                                        <x-uiverse.tooltip nameTool="Maquinas">
+                                                                            <a href="#"
                                                                             class="btn btn-primary btn-success fa fa-desktop"
                                                                             style="width: 100px; font-size: 18px;"
                                                                             onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
-                                                                        </a>
-                                                                        <a data-toggle="modal"
+                                                                            </a>
+                                                                        </x-uiverse.tooltip>
+
+                                                                        <x-uiverse.tooltip nameTool="Prestamos">
+                                                                            <a data-toggle="modal"
                                                                             class="btn btn-primary btn-success fa fa-dropbox"
                                                                             style="width: 100px; font-size: 18px;"
                                                                             href="" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                                                        </x-uiverse.tooltip>
                                                                     </div>
 
                                                                 </div>
@@ -1054,11 +1093,14 @@
             let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+            //PRUEBA
+            let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
 
             estados = estados.length ? estados.join(',') : '0,1,2';
             areas = areas.length ? areas.join(',') : '';
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
+            ciclos = ciclos.length ? ciclos.join(',') : '';
 
             if(estados != null && areas != null && carreras != null && instituciones != null){
                 let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
@@ -1087,6 +1129,11 @@
         document.getElementById('select-all-instituciones').addEventListener('change', function() {
             let checkboxes = document.querySelectorAll('.institucion-checkbox');
             checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        document.getElementById('select-all-ciclos').addEventListener('change', function() {
+        let checkboxes = document.querySelectorAll('.ciclo-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
 
@@ -1121,6 +1168,13 @@
             }
         });
 
+        document.getElementById('select-all-ciclos').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-ciclos-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
         document.getElementById('select-all-instituciones').addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('input[id^="checkbox-institucion-"]');
             for (var checkbox of checkboxes) {
@@ -1143,6 +1197,12 @@
         document.querySelectorAll('input[id^="checkbox-carreras-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-carreras-"]', 'select-all-carreras');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-ciclos-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-ciclos-"]', 'select-all-ciclos');
             });
         });
 
