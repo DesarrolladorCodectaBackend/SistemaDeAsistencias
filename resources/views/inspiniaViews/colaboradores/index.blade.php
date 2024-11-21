@@ -947,33 +947,33 @@
 
 
     </style>
-    {{-- <script src="{{ asset('js/InspiniaViewsJS/indexColaboradores.js') }}"></script> --}}
-
+    {{-- <script src="{{asset('js/inspiniaViewsJS/indexColaboradores.js')}}"></script> --}}
+    
     <script>
         function confirmDelete(id, currentURL) {
             alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
-                if (e) {
-                    let form = document.createElement('form')
+            if (e) {
+                let form = document.createElement('form')
 
-                    form.method = 'POST';
-                    form.action = `/colaboradores/${id}`;
-                    form.innerHTML = `@csrf @method('DELETE')`;
+                form.method = 'POST';
+                form.action = `/colaboradores/${id}`;
+                form.innerHTML = `@csrf @method('DELETE')`;
 
-                    if (currentURL != null) {
-                        let inputHidden = document.createElement('input');
-                        inputHidden.type = 'hidden';
-                        inputHidden.name = 'currentURL';
-                        inputHidden.value = currentURL;
-                        form.appendChild(inputHidden)
-                    }
-
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
+                if (currentURL != null) {
+                    let inputHidden = document.createElement('input');
+                    inputHidden.type = 'hidden';
+                    inputHidden.name = 'currentURL';
+                    inputHidden.value = currentURL;
+                    form.appendChild(inputHidden)
                 }
-            });
-        }
+
+                document.body.appendChild(form)
+                form.submit()
+            } else {
+                return false
+            }
+        });
+}
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');
             if (alertError) {

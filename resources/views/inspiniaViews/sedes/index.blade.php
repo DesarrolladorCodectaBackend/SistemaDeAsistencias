@@ -49,7 +49,7 @@
 
                                             <div class="form-group">
                                                 <label>Nombre: </label>
-                                                <input type="text" placeholder="Ingrese un nombre" name="nombre"
+                                                <input type="text" placeholder="Ingrese un nombre" name="nombre" autocomplete="off"
                                                     class="form-control">
                                                 @error('nombre')
                                                     <span class="text-danger">{{ $message }}</span>
