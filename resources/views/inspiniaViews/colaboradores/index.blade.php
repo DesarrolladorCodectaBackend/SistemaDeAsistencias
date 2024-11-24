@@ -211,32 +211,33 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Ciclos
+                                            <!-- Ciclos -->
                                             <div class="card">
-                                                <div class="card-header" id="headingCiclos">
+                                                <div class="card-header" id="headingCiclosCandidatos">
                                                     <h5 class="mb-0">
-                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseCiclos" aria-expanded="false" aria-controls="collapseCiclos">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseCiclosCandidatos" aria-expanded="false" aria-controls="collapseCiclosCandidatos">
                                                             Ciclos
                                                         </button>
                                                     </h5>
                                                 </div>
-                                                <div id="collapseCiclos" class="collapse" aria-labelledby="headingCiclos" data-parent="#accordionExample">
+                                                <div id="collapseCiclosCandidatos" class="collapse" aria-labelledby="headingCiclosCandidatos" data-parent="#accordionExampleCandidatos">
                                                     <div class="card-body">
                                                         <div class="form-group">
                                                             <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
                                                         </div>
-                                                        @foreach([4, 5, 6, 7] as $ciclo)
-                                                            <div class="form-check">
-                                                                <input type="checkbox" class="form-check-input ciclo-checkbox" value="{{ $ciclo }}" id="checkbox-ciclo-{{ $ciclo }}">
-                                                                <label for="checkbox-ciclo-{{ $ciclo }}">{{ $ciclo }}to Ciclo</label>
-                                                            </div>
-                                                        @endforeach
+                                                        @if(isset($ciclosAll) && $ciclosAll->isNotEmpty())
+                                                @foreach($ciclosAll as $index => $ciclo)
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input ciclo-checkbox" id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
+                                                        <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <p>No hay ciclos disponibles.</p>
+                                            @endif
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            -->
-
 
                                             <!-- Instituciones -->
                                             <div class="card">
@@ -566,6 +567,14 @@
                                     </h5>
                                 </div>
                                 <small class="text-muted text-left">
+                                    <h3 class="text-dark">Ciclo:</h3>
+                                </small>
+                                <div class="small m-t-xs text-left">
+                                    <h5 class="overflowing-text">
+                                        {{$colaborador->candidato->ciclo_de_estudiante ?? 'Sin ciclo'}}°
+                                    </h5>
+                                </div>
+                                <small class="text-muted text-left">
                                     <h3 class="text-dark">DNI:</h3>
                                 </small>
                                 <div class="small m-t-xs text-left">
@@ -583,6 +592,7 @@
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">{{$colaborador->candidato->celular ?? 'Sin celular'}}</h5>
                                 </div>
+
                                 <div class="m-t text-righ">
 
                                     <a href="#" data-toggle="model"> <i></i> </a>
@@ -1093,7 +1103,6 @@
             let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
-            //PRUEBA
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
 
             estados = estados.length ? estados.join(',') : '0,1,2';
@@ -1102,8 +1111,8 @@
             instituciones = instituciones.length ? instituciones.join(',') : '';
             ciclos = ciclos.length ? ciclos.join(',') : '';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos !=null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
@@ -1131,7 +1140,7 @@
             checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
-        document.getElementById('select-all-ciclos').addEventListener('change', function() {
+        document.getElementById('select-all-ciclos').addEventListener('change', function () {
         let checkboxes = document.querySelectorAll('.ciclo-checkbox');
         checkboxes.forEach(cb => cb.checked = this.checked);
         });

@@ -109,6 +109,36 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- Ciclos -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingCiclosCandidatos">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                                        data-target="#collapseCiclosCandidatos" aria-expanded="false" aria-controls="collapseCiclosCandidatos">
+                                                            Ciclos
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseCiclosCandidatos" class="collapse" aria-labelledby="headingCiclosCandidatos"
+                                                    data-parent="#accordionExampleCandidatos">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @if(isset($ciclosAll) && $ciclosAll->isNotEmpty())
+                                                @foreach($ciclosAll as $index => $ciclo)
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input ciclo-checkbox"
+                                                        id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
+                                                        <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <p>No hay ciclos disponibles.</p>
+                                            @endif
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                         <!-- Instituciones -->
                                         <div class="card">
@@ -871,12 +901,15 @@ function abrirModalCreacion(index) {
             let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+            let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
 
             estados = estados.length ? estados.join(',') : '0,1,2,3';
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
-            if(estados != null && carreras != null && instituciones != null) {
-                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+            ciclos = ciclos.length ? ciclos.join(',') : '';
+
+            if(estados != null && carreras != null && instituciones != null && ciclos !=null) {
+                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarCandidatos').action = actionUrl;
 
@@ -896,6 +929,11 @@ function abrirModalCreacion(index) {
 
     document.getElementById('select-all-instituciones').addEventListener('change', function() {
         let checkboxes = document.querySelectorAll('.institucion-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    document.getElementById('select-all-ciclos').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.ciclo-checkbox');
         checkboxes.forEach(cb => cb.checked = this.checked);
     });
     </script>
