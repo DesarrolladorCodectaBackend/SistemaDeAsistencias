@@ -29,6 +29,7 @@ use App\Models\RegistroActividad;
 use App\Models\Sede;
 use App\Models\Semanas;
 use App\Models\User;
+use App\Models\UsuarioJefeArea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -59,12 +60,27 @@ class ColaboradoresController extends Controller
         return $colaboradores;
     }
 
-    public function getColorCiclo($colaboradores){
-        foreach($colaboradores as $colaborador){
-            // $colaborador->status = ["type" => "Sin Ciclo", "color" => "000cff", "message" => "El colaborador no pertenece a un ciclo."];
-            $colaborador = Candidatos::where('ciclo_de_estudiante', 6)->get();
+    public function asignarColorJefesArea($colaboradores)
+    {
+        $colaboradoresConColor = [];
+        $correosJefesAreaActivos = UsuarioJefeArea::where('estado', 1)->with('user') ->get()->pluck('user.email')->toArray();
+
+        foreach ($colaboradores as $colaborador) {
+            $correoColaborador = $colaborador->candidato->correo;
+
+            if (in_array($correoColaborador, $correosJefesAreaActivos)) {
+                $colaborador->estadoJefe = [
+                    'color' => 'red', 
+                    'message' => 'Jefe de Área'
+                ];
+
+                $colaboradoresConColor[] = $colaborador;
+            }
         }
+        return $colaboradoresConColor; 
     }
+
+
     public function getHoursColab() {
         $horasAsignadas = Horario_Presencial_Asignado::with('horario_presencial', 'area')->get();
         $colaboradores_area = Colaboradores_por_Area::with('colaborador', 'area')->get();
@@ -102,7 +118,7 @@ class ColaboradoresController extends Controller
         return $colaboradoresHoras;
     }
 
-    
+
     public function index()
     {
         $access = FunctionHelperController::verifyAdminAccess();
@@ -110,9 +126,12 @@ class ColaboradoresController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->paginate(12);
+        
+        $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
 
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
-
+        
+        
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
@@ -139,7 +158,6 @@ class ColaboradoresController extends Controller
             $colaborador->horasPracticas = $horasPracticas;
         }
 
-        // llamar cicloColor
 
         // return $colaboradores;
         $Allactividades = Actividades::where('estado', 1)->get();
@@ -157,6 +175,7 @@ class ColaboradoresController extends Controller
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
             'horasTotales' => $horasTotales,
+            'colaboradoresCol' => $colaboradoresCol
         ]);
 
         // return response()->json([

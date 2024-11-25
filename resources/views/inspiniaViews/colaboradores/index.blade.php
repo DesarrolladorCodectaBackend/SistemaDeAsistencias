@@ -485,9 +485,9 @@
                     } */
                 </style>
                 {{-- mostrar colaboradores --}}
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 ">
-                    
-                    <div style="" class="ibox">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+
+                    <div  @if(isset($colaborador->estadoJefe)) style="border: 3px solid {{ $colaborador->estadoJefe['color'] }};" @endif class="ibox">
                         <div class="ibox-content product-box">
                             <div class="text-center rounded-circle">
                                 <img src="{{asset('storage/candidatos/'.$colaborador->candidato->icono)}}"
@@ -506,6 +506,7 @@
                                             class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
                                             <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
                                         </button>
+
                                     </form>
                                 </span>
                                 <div title="{{$colaborador->status['message']}}" style="position: absolute; font-size: 14px; font-weight: 600; height: 35px; width: 35px; top: -27px; left: 5; border-radius: 100%">
@@ -721,7 +722,7 @@
                                                                        <div class="position-relative">
 
                                                                         <input type="number" placeholder="....."
-                                                                        class="form-control" name="dni" id="dni-update-{{ $colaborador->id }}" 
+                                                                        class="form-control" name="dni" id="dni-update-{{ $colaborador->id }}"
                                                                         value="{{$colaborador->candidato->dni}}" oninput="limitDNI(this)"></input>
                                                                         <span id="dni-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
                                                                         @error('dni'.$colaborador->id)
@@ -1059,7 +1060,7 @@
 
 
 
-       // limiteDNI 
+       // limiteDNI
        function limitDNI(input) {
            // Asegura que solo se permitan 8 caracteres
            if (input.value.length > 8) {
