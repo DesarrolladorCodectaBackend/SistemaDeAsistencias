@@ -246,13 +246,14 @@ class ColaboradoresController extends Controller
 
     //FUNCTION getObjetoColabodaor
 
-    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '')
+    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '')
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         // Validamos los request de los filtros que queremos aplicar
+        $ciclos = $ciclos ? explode(',', $ciclos): [];
         $estados = explode(',', $estados);
         $areas = $areas ? explode(',', $areas) : [];
         $carreras = $carreras ? explode(',', $carreras) : [];
@@ -262,6 +263,7 @@ class ColaboradoresController extends Controller
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
         $areasAll = Area::orderBy('especializacion', 'asc')->get();
+        $ciclosAll = Candidatos::select('ciclo_de_estudiante')->distinct()->orderBy('ciclo_de_estudiante', 'asc')->pluck('ciclo_de_estudiante');
 
         $sedesFiltradas = $sedesAll->where('estado', 1);
         $institucionesFiltradas = $institucionesAll->where('estado', 1);
@@ -290,6 +292,9 @@ class ColaboradoresController extends Controller
         $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
             ->whereIn('carrera_id', $requestCarreras) //filtrar por la carrera
             ->whereIn('sede_id', $sedesInstitucionesId) //filtrar por la sede
+            ->when(!empty($ciclos), function ($query) use ($ciclos) {
+                $query->whereIn('ciclo_de_estudiante', $ciclos);
+            })
             ->pluck('id');
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
@@ -332,6 +337,7 @@ class ColaboradoresController extends Controller
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
             'horasTotales' => $horasTotales,
+            'ciclosAll' => $ciclosAll,
         ]);
     }
 
