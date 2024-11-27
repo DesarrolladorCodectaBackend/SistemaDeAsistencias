@@ -70,14 +70,14 @@ class ColaboradoresController extends Controller
 
             if (in_array($correoColaborador, $correosJefesAreaActivos)) {
                 $colaborador->estadoJefe = [
-                    'color' => 'red', 
+                    'color' => '#264b90',
                     'message' => 'Jefe de Área'
                 ];
 
                 $colaboradoresConColor[] = $colaborador;
             }
         }
-        return $colaboradoresConColor; 
+        return $colaboradoresConColor;
     }
 
 
@@ -126,12 +126,12 @@ class ColaboradoresController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->paginate(12);
-        
+
         $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
 
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
-        
-        
+
+
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
