@@ -48,7 +48,7 @@
                         @endif
                         <li class="dropdown-divider"></li>
                         <li><a class="dropdown-item"
-                                onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a></li>
+                            href="javascript:void(0);" onclick="confirmLogout();">Cerrar Sesión</a></li>
                     </ul>
                 </div>
                 <div class="logo-element">
@@ -113,7 +113,7 @@
                     @csrf
                 </form>
 
-                <a onclick="document.getElementById('logoutForm').submit();">
+                <a href="javascript:void(0);" onclick="confirmLogout();">
                     <i class="fa fa-sign-out"></i>
                     <span class="nav-label">Cerrar Sesión</span>
                 </a>
@@ -145,7 +145,7 @@
 
                 <li>
 
-                    <a onclick="document.getElementById('logoutForm').submit();">
+                    <a href="javascript:void(0);" onclick="confirmLogout();">
                         <i class="fa fa-sign-out"></i>Cerrar Sesión
                     </a>
 
@@ -167,6 +167,17 @@
         }
     </style>
 
+<script>
+    function confirmLogout() {
+        alertify.confirm("¿Estás seguro de que deseas cerrar sesión?", function (e) {
+            if (e) {
+                document.getElementById('logoutForm').submit();
+            } else {
+                return false;
+            }
+        });
+    }
+</script>
 
     <!-- Mainly scripts -->
     <script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
