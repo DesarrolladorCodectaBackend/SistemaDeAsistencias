@@ -225,16 +225,16 @@
                                                         <div class="form-group">
                                                             <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
                                                         </div>
-                                                        @if(isset($ciclosAll) && $ciclosAll->isNotEmpty())
-                                                @foreach($ciclosAll as $index => $ciclo)
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input ciclo-checkbox" id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
-                                                        <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
-                                                    </div>
-                                                @endforeach
-                                            @else
-                                                <p>No hay ciclos disponibles.</p>
-                                            @endif
+                                                        {{-- @if(isset($ciclosAll) && $ciclosAll->isNotEmpty()) --}}
+                                                        @foreach($ciclosAll as $index => $ciclo)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input ciclo-checkbox" id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
+                                                            <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
+                                                        </div>
+                                                        @endforeach
+                                            {{-- @else --}}
+                                                {{-- <p>No hay ciclos disponibles.</p> --}}
+                                            {{-- @endif --}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -1318,10 +1318,10 @@
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
 
             estados = estados.length ? estados.join(',') : '0,1,2';
-            areas = areas.length ? areas.join(',') : '';
-            carreras = carreras.length ? carreras.join(',') : '';
-            instituciones = instituciones.length ? instituciones.join(',') : '';
-            ciclos = ciclos.length ? ciclos.join(',') : '';
+            areas = areas.length ? areas.join(',') : '0';
+            carreras = carreras.length ? carreras.join(',') : '0';
+            instituciones = instituciones.length ? instituciones.join(',') : '0';
+            ciclos = ciclos.length ? ciclos.join(',') : '0';
 
             if(estados != null && areas != null && carreras != null && instituciones != null && ciclos !=null){
                 let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;

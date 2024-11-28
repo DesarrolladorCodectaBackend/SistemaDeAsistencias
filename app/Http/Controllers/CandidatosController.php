@@ -29,6 +29,8 @@ class CandidatosController extends Controller
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+        $ciclosAll = [4,5,6,7,8,9,10];
+
 
         $sedes = $sedesAll->where('estado', 1);
         $instituciones = $institucionesAll->where('estado', 1);
@@ -44,6 +46,7 @@ class CandidatosController extends Controller
             'sedes' => $sedes,
             'instituciones' => $instituciones,
             'carreras' => $carreras,
+            'ciclosAll' => $ciclosAll,
             'sedesAll' => $sedesAll,
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
@@ -342,8 +345,8 @@ class CandidatosController extends Controller
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
-        $ciclosAll = Candidatos::select('ciclo_de_estudiante')->distinct()
-            ->orderBy('ciclo_de_estudiante', 'asc')->pluck('ciclo_de_estudiante');
+        $ciclosAll = [4,5,6,7,8,9,10];
+
 
         $sedes = $sedesAll->where('estado', 1);
         $institucionesFiltradas = $institucionesAll->where('estado', 1);
@@ -351,15 +354,14 @@ class CandidatosController extends Controller
 
         $requestCarreras = empty($carreras) ? $carrerasAll->pluck('id')->toArray() : $carreras;
         $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
+        $requestCiclos = empty($ciclos) ? $ciclosAll : $ciclos;
 
         $sedesId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
 
         $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)
             ->whereIn('sede_id', $sedesId)
             ->whereIn('estado', $estados)
-            ->when(!empty($ciclos), function ($query) use ($ciclos) {
-                $query->whereIn('ciclo_de_estudiante', $ciclos);
-            })
+            ->whereIn('ciclo_de_estudiante', $requestCiclos)
             ->paginate(6);
 
         $pageData = FunctionHelperController::getPageData($candidatos);
@@ -407,6 +409,7 @@ class CandidatosController extends Controller
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+        $ciclosAll = [4,5,6,7,8,9,10];
 
         $sedes = $sedesAll->where('estado', 1);
         $instituciones = $institucionesAll->where('estado', 1);
@@ -424,6 +427,7 @@ class CandidatosController extends Controller
             'sedes' => $sedes,
             'instituciones' => $instituciones,
             'carreras' => $carreras,
+            'ciclosAll' => $ciclosAll,
             'sedesAll' => $sedesAll,
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,

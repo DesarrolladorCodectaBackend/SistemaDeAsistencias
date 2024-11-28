@@ -159,7 +159,7 @@ Route::middleware('auth')->group(function () {
     Route::put('colaboradores/update/{colaborador_id}', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
     Route::delete('colaboradores/{colaborador_id}', [ColaboradoresController::class, 'destroy'])->name('colaboradores.destroy');
     Route::post('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
-    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}', [ColaboradoresController::class, 'filtrarColaboradores'])
+    Route::get('colaboradores/filtrar/estados={estados}/areas={areas}/carreras={carreras}/instituciones={instituciones}/ciclos={ciclos}', [ColaboradoresController::class, 'filtrarColaboradores'])
     ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*'])->name('colaboradores.filtrar');
     Route::get('colaboradores/search/{busqueda}', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
     Route::put('colaboradores/despedirColaborador/{colaborador_id}', [ColaboradoresController::class, 'despedirColaborador'])->name('colaboradores.despedirColaborador');
