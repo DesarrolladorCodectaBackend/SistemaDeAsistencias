@@ -54,9 +54,9 @@ Route::get('/', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard-prueba', function () {
-    return view('dashboard-prueba');
-});
+// Route::get('/dashboard-prueba', function () {
+//     return view('dashboard-prueba');
+// });
 
 Route::get('regenerateSession/{email}/{password}', [NotificationController::class, 'regenerateSession'])->name('regenerateSession');
 
