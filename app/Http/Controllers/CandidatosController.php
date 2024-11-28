@@ -328,12 +328,13 @@ class CandidatosController extends Controller
     }
 
 
-    public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '')
+    public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '', string $ciclos = '')
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
+        $ciclos = $ciclos ? explode(',', $ciclos): [];
         $estados = explode(',', $estados);
         $carreras = $carreras ? explode(',', $carreras) : [];
         $instituciones = $instituciones ? explode(',', $instituciones) : [];
@@ -341,6 +342,8 @@ class CandidatosController extends Controller
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+        $ciclosAll = Candidatos::select('ciclo_de_estudiante')->distinct()
+            ->orderBy('ciclo_de_estudiante', 'asc')->pluck('ciclo_de_estudiante');
 
         $sedes = $sedesAll->where('estado', 1);
         $institucionesFiltradas = $institucionesAll->where('estado', 1);
@@ -354,6 +357,9 @@ class CandidatosController extends Controller
         $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)
             ->whereIn('sede_id', $sedesId)
             ->whereIn('estado', $estados)
+            ->when(!empty($ciclos), function ($query) use ($ciclos) {
+                $query->whereIn('ciclo_de_estudiante', $ciclos);
+            })
             ->paginate(6);
 
         $pageData = FunctionHelperController::getPageData($candidatos);
@@ -369,6 +375,7 @@ class CandidatosController extends Controller
             'sedesAll' => $sedesAll,
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
+            'ciclosAll' => $ciclosAll,
         ]);
     }
 
