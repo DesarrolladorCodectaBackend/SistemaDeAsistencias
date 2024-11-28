@@ -1,3 +1,24 @@
+/* Aplica un ancho más delgado al scrollbar */
+::-webkit-scrollbar {
+    width: 10px;  /* O cualquier valor menor para hacerlo más delgado */
+    height: auto; /* Para los scrolls horizontales */
+}
+
+/* Personaliza la parte que se mueve (el thumb) */
+::-webkit-scrollbar-thumb {
+    background-color: rgba(93, 94, 93, 0.8);  /* Color del thumb */
+    border-radius: 10px;  /* Bordes redondeados */
+}
+
+/* Personaliza el fondo del scrollbar */
+::-webkit-scrollbar-track {
+    background-color: #f1f1f1;  /* Color del fondo */
+    border-radius: 10px;  /* Bordes redondeados del track */
+}
+
+/* Opcional: Cambiar cuando el thumb es hover (cuando se pasa el mouse sobre el thumb) */
+
+
 .max-min-h-200 {
     max-height: 200px;
     min-height: 200px;

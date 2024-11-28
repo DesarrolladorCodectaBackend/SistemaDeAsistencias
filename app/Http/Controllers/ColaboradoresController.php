@@ -63,14 +63,14 @@ class ColaboradoresController extends Controller
     public function asignarColorJefesArea($colaboradores)
     {
         $colaboradoresConColor = [];
-        $correosJefesAreaActivos = UsuarioJefeArea::where('estado', 1)->with('user') ->get()->pluck('user.email')->toArray();
+        $correosJefesAreaActivos = UsuarioJefeArea::where('estado', 1)->with('user')->get()->pluck('user.email')->toArray();
 
         foreach ($colaboradores as $colaborador) {
             $correoColaborador = $colaborador->candidato->correo;
 
             if (in_array($correoColaborador, $correosJefesAreaActivos)) {
                 $colaborador->estadoJefe = [
-                    'color' => 'red',
+                    'color' => '#264b90',
                     'message' => 'Jefe de Área'
                 ];
 

@@ -520,8 +520,26 @@
                 {{-- mostrar colaboradores --}}
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
 
-                    <div  @if(isset($colaborador->estadoJefe)) style="border: 3px solid {{ $colaborador->estadoJefe['color'] }};" @endif class="ibox">
-                        <div class="ibox-content product-box">
+                    <div
+                         class="ibox"
+
+
+
+
+
+                       >
+                        <div class="ibox-content product-box"
+                        @if($colaborador->estadoJefe)
+                            style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
+                        @endif
+
+                        @if($colaborador->candidato->ciclo_de_estudiante == 6)
+                            style="box-shadow: 3px 5px 20px rgba(3, 125, 36);"
+                        @endif
+
+                        @if ($colaborador->estadoJefe && $colaborador->candidato->ciclo_de_estudiante == 6)
+                        style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
+                        @endif>
                             <div class="text-center rounded-circle">
                                 <img src="{{asset('storage/candidatos/'.$colaborador->candidato->icono)}}"
                                     class="rounded-circle max-min-h-w-200 p-a-10 img-cover">
@@ -552,7 +570,16 @@
                                 {{-- <p>{{$colaborador->status['message']}}</p> --}}
 
                                 <div href="#" class="product-name">
-                                    <h2 class="overflowing-text" >{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}</h2>
+                                    <h2 class="overflowing-text" @if($colaborador->estadoJefe)
+                                        style="color: {{ $colaborador->estadoJefe['color'] }};
+                                        font-weight: bold;"
+                                    @endif>{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}
+                                    @if($colaborador->estadoJefe)
+                                    <span style="font-weight: normal; font-size: 0.7em; color: {{ $colaborador->estadoJefe['color'] }}; margin-left: 5px; background-color: #f0f0f0; padding: 2px 6px; border-radius: 5px;">
+                                        ({{ $colaborador->estadoJefe['message'] }})
+                                    </span>
+                                @endif</h2>
+
                                 </div>
 
                                 <small class="text-muted text-left">
@@ -561,6 +588,7 @@
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">
                                     @foreach($colaborador->areas as $index => $area)
+
                                     @if($index > 0) | @endif {{$area['nombre']}} @if($area['tipo'] === 1) <span style="color: #007">(Apoyo)</span>@endif
                                     @endforeach
                                     </h5>
@@ -1185,28 +1213,28 @@
     <script>
         function confirmDelete(id, currentURL) {
             alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
-            if (e) {
-                let form = document.createElement('form')
+                if (e) {
+                    let form = document.createElement('form')
 
-                form.method = 'POST';
-                form.action = `/colaboradores/${id}`;
-                form.innerHTML = `@csrf @method('DELETE')`;
+                    form.method = 'POST';
+                    form.action = `/colaboradores/${id}`;
+                    form.innerHTML = `@csrf @method('DELETE')`;
 
-                if (currentURL != null) {
-                    let inputHidden = document.createElement('input');
-                    inputHidden.type = 'hidden';
-                    inputHidden.name = 'currentURL';
-                    inputHidden.value = currentURL;
-                    form.appendChild(inputHidden)
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden)
+                    }
+
+                    document.body.appendChild(form)
+                    form.submit()
+                } else {
+                    return false
                 }
-
-                document.body.appendChild(form)
-                form.submit()
-            } else {
-                return false
-            }
-        });
-}
+            });
+        }
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');
             if (alertError) {
