@@ -125,6 +125,7 @@ class ColaboradoresController extends Controller
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
+        $countColaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->get()->count();
         $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->paginate(12);
 
         $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
@@ -164,6 +165,7 @@ class ColaboradoresController extends Controller
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
+            'countColaboradores' => $countColaboradores,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
             'sedes' => $sedes,
@@ -311,6 +313,8 @@ class ColaboradoresController extends Controller
         // return $colaboradoresArea;
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
+        $countColaboradores = Colaboradores::whereIn('candidato_id', $candidatosFiltradosId)->get()->count();
+
         // return $estados;
         foreach($estados as $estado) {
             if(count($estados) === 1){
@@ -338,6 +342,7 @@ class ColaboradoresController extends Controller
           }
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
+            'countColaboradores' => $countColaboradores,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
             'sedes' => $sedesFiltradas,
@@ -744,17 +749,21 @@ class ColaboradoresController extends Controller
 
         $idCandidatosPorNombre = Candidatos::searchByName($busqueda)->pluck('id');
         $colaboradoresPorNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->paginate(12);
+        $countColaboradoresNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->get()->count();
 
         $idCandidatosPorDni = Candidatos::searchByDni($busqueda)->pluck('id');
         $colaboradoresPorDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->paginate(12);
+        $countColaboradoresDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->get()->count();
 
         //Si existe un registro encontrado por el id
         if ($colaboradoresPorDni->count() > 0) {
             //Se asigna el valor del colaboradorPorId
             $colaboradores = $colaboradoresPorDni;
+            $countColaboradores = $countColaboradoresDni;
         } else { //Si no existe
             //Se asigna el valor de los colaboradoresPorNombre
             $colaboradores = $colaboradoresPorNombre;
+            $countColaboradores = $countColaboradoresNombre;
         }
 
         $ciclosAll = [4,5,6,7,8,9,10];
@@ -786,6 +795,7 @@ class ColaboradoresController extends Controller
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
+            'countColaboradores' => $countColaboradores,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
             'sedes' => $sedes,

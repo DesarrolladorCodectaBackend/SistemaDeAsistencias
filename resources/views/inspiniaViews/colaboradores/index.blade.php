@@ -13,7 +13,7 @@
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-3">
-                <h2>Colaboradores</h2>
+                <h2>Colaboradores ({{$countColaboradores}})</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="/dashboard">Inicio</a>
