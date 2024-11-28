@@ -381,37 +381,33 @@
                 // Crear un formulario dinámicamente
                 let form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/areas/activarInactivar/${areaId}`; // Ruta con el id del área
+                form.action = `/areas/activarInactivar/${areaId}`; 
 
-                // Añadir el token CSRF de manera dinámica
-                let csrfToken = '{{ csrf_token() }}'; // Asegúrate de que esto se genera correctamente en el contexto
+               
+                let csrfToken = '{{ csrf_token() }}';
                 let inputCSRF = document.createElement('input');
                 inputCSRF.type = 'hidden';
                 inputCSRF.name = '_token';
                 inputCSRF.value = csrfToken;
                 form.appendChild(inputCSRF);
 
-                // Añadir el método PUT de forma dinámica
                 let inputMethod = document.createElement('input');
                 inputMethod.type = 'hidden';
                 inputMethod.name = '_method';
                 inputMethod.value = 'PUT';
                 form.appendChild(inputMethod);
 
-                // Añadir el valor del currentURL si es necesario
                 let inputCurrentURL = document.createElement('input');
                 inputCurrentURL.type = 'hidden';
                 inputCurrentURL.name = 'currentURL';
-                inputCurrentURL.value = '{{ $pageData->currentURL }}';  // Aquí se pasa el valor de currentURL
+                inputCurrentURL.value = '{{ $pageData->currentURL }}'; 
                 form.appendChild(inputCurrentURL);
 
-                // Añadir el formulario al cuerpo del documento
                 document.body.appendChild(form);
 
-                // Enviar el formulario
                 form.submit();
             } else {
-                return false;  // Cancelar la acción
+                return false;
             }
         });
     }
