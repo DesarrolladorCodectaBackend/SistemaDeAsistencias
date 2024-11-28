@@ -520,14 +520,7 @@
                 {{-- mostrar colaboradores --}}
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
 
-                    <div
-                         class="ibox"
-
-
-
-
-
-                       >
+                    <div class="ibox">
                         <div class="ibox-content product-box"
                         @if($colaborador->estadoJefe)
                             style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
