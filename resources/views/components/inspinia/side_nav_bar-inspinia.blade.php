@@ -113,7 +113,7 @@
                     @csrf
                 </form>
 
-                <a href="#" onclick="document.getElementById('logoutForm').submit();">
+                <a onclick="document.getElementById('logoutForm').submit();">
                     <i class="fa fa-sign-out"></i>
                     <span class="nav-label">Cerrar Sesión</span>
                 </a>
@@ -145,7 +145,7 @@
 
                 <li>
 
-                    <a href="#" onclick="document.getElementById('logoutForm').submit();">
+                    <a onclick="document.getElementById('logoutForm').submit();">
                         <i class="fa fa-sign-out"></i>Cerrar Sesión
                     </a>
 

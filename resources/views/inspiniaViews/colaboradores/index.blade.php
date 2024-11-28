@@ -211,6 +211,34 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Ciclos -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingCiclosCandidatos">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseCiclosCandidatos" aria-expanded="false" aria-controls="collapseCiclosCandidatos">
+                                                            Ciclos
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseCiclosCandidatos" class="collapse" aria-labelledby="headingCiclosCandidatos" data-parent="#accordionExampleCandidatos">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        {{-- @if(isset($ciclosAll) && $ciclosAll->isNotEmpty()) --}}
+                                                        @foreach($ciclosAll as $index => $ciclo)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input ciclo-checkbox" id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
+                                                            <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
+                                                        </div>
+                                                        @endforeach
+                                            {{-- @else --}}
+                                                {{-- <p>No hay ciclos disponibles.</p> --}}
+                                            {{-- @endif --}}
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <!-- Instituciones -->
                                             <div class="card">
                                                 <div class="card-header" id="headingInstituciones">
@@ -296,7 +324,8 @@
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Ciclo:</p>
-                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->ciclo_de_estudiante ?? 'Sin ciclo'}}°</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>
+                                                {{$colaborador->candidato->ciclo_de_estudiante ?? 'Sin ciclo'}}°</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Correo:</p>
@@ -379,16 +408,20 @@
                                             <form id="getComputadoraColab{{$colaborador->id}}"
                                                 action="{{route('colaboradores.getComputadora', $colaborador->id)}}">
                                             </form>
+                                            <x-uiverse.tooltip nameTool="Maquinas">
                                             <a href="#" class="btn btn-primary btn-success fa fa-desktop"
                                                 style="width: 100px; font-size: 18px;"
                                                 onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
                                             </a>
+                                            </x-uiverse.tooltip>
 
                                             {{-- Redirección a préstamo --}}
                                             <form id="getPrestamoColab{{$colaborador->id}}" action="{{route('colaboradores.getPrestamo', $colaborador->id)}}">
                                             </form>
+                                            <x-uiverse.tooltip nameTool="Prestamos">
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
                                                 style="width: 100px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                            </x-uiverse.tooltip>
                                         </div>
 
                                         <div class="mt-2">
@@ -484,9 +517,29 @@
                         margin: 0.5rem;
                     } */
                 </style>
-                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 ">
-                    <div style="" class="ibox">
-                        <div class="ibox-content product-box">
+                {{-- mostrar colaboradores --}}
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+
+                    <div
+                         class="ibox" 
+                    
+
+                    
+
+                    
+                       >
+                        <div class="ibox-content product-box"
+                        @if($colaborador->estadoJefe)
+                            style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"               
+                        @endif
+
+                        @if($colaborador->candidato->ciclo_de_estudiante == 6)
+                            style="box-shadow: 3px 5px 20px rgba(3, 125, 36);"
+                        @endif
+                    
+                        @if ($colaborador->estadoJefe && $colaborador->candidato->ciclo_de_estudiante == 6)
+                        style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
+                        @endif>
                             <div class="text-center rounded-circle">
                                 <img src="{{asset('storage/candidatos/'.$colaborador->candidato->icono)}}"
                                     class="rounded-circle max-min-h-w-200 p-a-10 img-cover">
@@ -504,6 +557,7 @@
                                             class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
                                             <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
                                         </button>
+
                                     </form>
                                 </span>
                                 <div title="{{$colaborador->status['message']}}" style="position: absolute; font-size: 14px; font-weight: 600; height: 35px; width: 35px; top: -27px; left: 5; border-radius: 100%">
@@ -516,10 +570,17 @@
                                 {{-- <p>{{$colaborador->status['message']}}</p> --}}
 
                                 <div href="#" class="product-name">
-                                    <h2 class="overflowing-text" >{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}</h2>
+                                    <h2 class="overflowing-text" @if($colaborador->estadoJefe)
+                                        style="color: {{ $colaborador->estadoJefe['color'] }};
+                                        font-weight: bold;"      
+                                    @endif>{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}
+                                    @if($colaborador->estadoJefe)
+                                    <span style="font-weight: normal; font-size: 0.7em; color: {{ $colaborador->estadoJefe['color'] }}; margin-left: 5px; background-color: #f0f0f0; padding: 2px 6px; border-radius: 5px;">
+                                        ({{ $colaborador->estadoJefe['message'] }})
+                                    </span>
+                                @endif</h2>
+                                    
                                 </div>
-
-
 
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark" >Área(s):</h3>
@@ -527,8 +588,17 @@
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">
                                     @foreach($colaborador->areas as $index => $area)
+                                    
                                     @if($index > 0) | @endif {{$area['nombre']}} @if($area['tipo'] === 1) <span style="color: #007">(Apoyo)</span>@endif
                                     @endforeach
+                                    </h5>
+                                </div>
+                                <small class="text-muted text-left">
+                                    <h3 class="text-dark">Ciclo:</h3>
+                                </small>
+                                <div class="small m-t-xs text-left">
+                                    <h5 class="overflowing-text">
+                                        {{$colaborador->candidato->ciclo_de_estudiante ?? 'Sin ciclo'}}°
                                     </h5>
                                 </div>
                                 <small class="text-muted text-left">
@@ -549,6 +619,7 @@
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">{{$colaborador->candidato->celular ?? 'Sin celular'}}</h5>
                                 </div>
+
                                 <div class="m-t text-righ">
 
                                     <a href="#" data-toggle="model"> <i></i> </a>
@@ -572,6 +643,18 @@
                                                     href="#modal-form-view{{$colaborador->id}}"></button>
                                             </x-uiverse.tooltip>
                                         </div>
+                                        <style>
+                                            /* Quitar los controles de incremento y decremento en los navegadores */
+                                            input[type="number"]::-webkit-outer-spin-button,
+                                            input[type="number"]::-webkit-inner-spin-button {
+                                                -webkit-appearance: none;
+                                                margin: 0;
+                                            }
+
+                                            input[type="number"] {
+                                                -moz-appearance: textfield; /* Para Firefox */
+                                            }
+                                        </style>
                                         {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
                                             aria-hidden="true">
@@ -698,24 +781,41 @@
                                                                             id="fecha_nacimiento"
                                                                             value="{{ $colaborador->candidato->fecha_nacimiento }}">
                                                                     </div>
-                                                                    <div class="form-group"><label>
+                                                                    <div class="form-group">
+
+                                                                        <label>
                                                                             <h5 class="m-t-none">DNI:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control" name="dni" id="dni"
-                                                                            value="{{$colaborador->candidato->dni}}"></input>
-                                                                            @error('dni'.$colaborador->id)
-                                                                            <span class="text-danger">{{ $message }}</span>
-                                                                            @enderror
+                                                                        </label>
+
+                                                                       <div class="position-relative">
+
+                                                                        <input type="number" placeholder="....."
+                                                                        class="form-control" name="dni" id="dni-update-{{ $colaborador->id }}"
+                                                                        value="{{$colaborador->candidato->dni}}" oninput="limitDNI(this)"></input>
+                                                                        <span id="dni-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
+                                                                        @error('dni'.$colaborador->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                       </div>
                                                                     </div>
-                                                                    <div class="form-group"><label>
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
                                                                             <h5 class="m-t-none">Celular:</h5>
-                                                                        </label><input type="text" placeholder="....."
-                                                                            class="form-control" name="celular"
-                                                                            id="celular"
-                                                                            value="{{ $colaborador->candidato->celular }}">
-                                                                            @error('celular'.$colaborador->id)
-                                                                            <span class="text-danger">{{ $message }}</span>
-                                                                            @enderror
+                                                                        </label>
+
+                                                                       <div class="position-relative">
+
+                                                                        <input type="number" placeholder="....."
+                                                                        class="form-control" name="celular"
+                                                                        id="cel-update-{{ $colaborador->id }}"
+                                                                        value="{{ $colaborador->candidato->celular }}" oninput="limitCel(this)"></input>
+                                                                        <span id="cel-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/9</span>
+                                                                        @error('celular'.$colaborador->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                       </div>
                                                                     </div>
 
                                                                     <div class="form-group">
@@ -813,15 +913,20 @@
                                                                         </script>
                                                                     </div>
                                                                     <div style="display: flex; gap:2px">
-                                                                        <a href="#"
+                                                                        <x-uiverse.tooltip nameTool="Maquinas">
+                                                                            <a href="#"
                                                                             class="btn btn-primary btn-success fa fa-desktop"
                                                                             style="width: 100px; font-size: 18px;"
                                                                             onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
-                                                                        </a>
-                                                                        <a data-toggle="modal"
+                                                                            </a>
+                                                                        </x-uiverse.tooltip>
+
+                                                                        <x-uiverse.tooltip nameTool="Prestamos">
+                                                                            <a data-toggle="modal"
                                                                             class="btn btn-primary btn-success fa fa-dropbox"
                                                                             style="width: 100px; font-size: 18px;"
                                                                             href="" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                                                        </x-uiverse.tooltip>
                                                                     </div>
 
                                                                 </div>
@@ -947,8 +1052,164 @@
 
 
     </style>
-    {{-- <script src="{{asset('js/inspiniaViewsJS/indexColaboradores.js')}}"></script> --}}
-    
+    {{-- <script src="{{ asset('js/InspiniaViewsJS/indexColaboradores.js') }}"></script> --}}
+
+
+    <script>
+        // limiteCel
+        function limitCel(input) {
+           // Asegura que solo se permitan 8 caracteres
+           if (input.value.length > 9) {
+               input.value = input.value.slice(0, 9); // Limita a 8 caracteres
+           }
+
+           // Obtener el ID del candidato para el contador correspondiente
+           let counterId;
+           if (input.id.includes('store')) {
+               counterId = 'cel-counter-store'; // Para el campo de creación
+           } else {
+               const colaboradorId = input.id.split('-')[2]; // Para los campos de actualización
+               counterId = `cel-counter-update-${colaboradorId}`;
+           }
+
+           const counter = document.getElementById(counterId);
+
+           // Actualiza el contador de caracteres
+           counter.textContent = `${input.value.length}/9`;
+
+           // Cambia el color del borde según el número de caracteres
+           if (input.value.length >= 1 && input.value.length < 9) {
+               input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
+           } else if (input.value.length === 9) {
+               input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
+           } else {
+               input.style.borderColor = ''; // Restablece el borde si no está en el rango
+           }
+       }
+
+       // Inicializa el contador y el borde al cargar la página
+       document.addEventListener("DOMContentLoaded", function() {
+           // Para Store (Crear)
+           const inputStore = document.getElementById('cel-store');
+           const counterStore = document.getElementById('cel-counter-store');
+           if (inputStore) {
+               const initialValueStore = inputStore.value || '';
+               counterStore.textContent = `${initialValueStore.length}/9`;
+
+               if (initialValueStore.length >= 1 && initialValueStore.length < 9) {
+                   inputStore.style.borderColor = 'red';
+               } else if (initialValueStore.length === 9) {
+                   inputStore.style.borderColor = 'green';
+               }
+
+               inputStore.addEventListener('input', function() {
+                   limitCel(inputStore);
+               });
+           }
+
+           // Para Update (Actualizar)
+           const inputsUpdate = document.querySelectorAll('[id^="cel-update-"]');
+
+           inputsUpdate.forEach(inputUpdate => {
+               const colaboradorId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
+               const counterUpdate = document.getElementById(`cel-counter-update-${colaboradorId}`);
+
+               // Inicializa el contador y el borde según el valor inicial
+               const initialValueUpdate = inputUpdate.value || '';
+               counterUpdate.textContent = `${initialValueUpdate.length}/9`;
+
+               if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 9) {
+                   inputUpdate.style.borderColor = 'red';
+               } else if (initialValueUpdate.length === 9) {
+                   inputUpdate.style.borderColor = 'green';
+               }
+
+               // Agregar event listener al input
+               inputUpdate.addEventListener('input', function() {
+                   limitCel(inputUpdate);
+               });
+           });
+       });
+
+
+
+       // limiteDNI
+       function limitDNI(input) {
+           // Asegura que solo se permitan 8 caracteres
+           if (input.value.length > 8) {
+               input.value = input.value.slice(0, 8); // Limita a 8 caracteres
+           }
+
+           // Obtener el ID del candidato para el contador correspondiente
+           let counterId;
+           if (input.id.includes('store')) {
+               counterId = 'dni-counter-store'; // Para el campo de creación
+           } else {
+               const colaboradorId = input.id.split('-')[2]; // Para los campos de actualización
+               counterId = `dni-counter-update-${colaboradorId}`;
+           }
+
+           const counter = document.getElementById(counterId);
+
+           // Actualiza el contador de caracteres
+           counter.textContent = `${input.value.length}/8`;
+
+           // Cambia el color del borde según el número de caracteres
+           if (input.value.length >= 1 && input.value.length < 8) {
+               input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
+           } else if (input.value.length === 8) {
+               input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
+           } else {
+               input.style.borderColor = ''; // Restablece el borde si no está en el rango
+           }
+           console.log(input.value);
+       }
+
+       // Inicializa el contador y el borde al cargar la página
+       document.addEventListener("DOMContentLoaded", function() {
+           // Para Store (Crear)
+           const inputStore = document.getElementById('dni-store');
+           const counterStore = document.getElementById('dni-counter-store');
+           if (inputStore) {
+               const initialValueStore = inputStore.value || '';
+               counterStore.textContent = `${initialValueStore.length}/8`;
+
+               if (initialValueStore.length >= 1 && initialValueStore.length < 8) {
+                   inputStore.style.borderColor = 'red';
+               } else if (initialValueStore.length === 8) {
+                   inputStore.style.borderColor = 'green';
+               }
+
+               inputStore.addEventListener('input', function() {
+                   limitDNI(inputStore);
+               });
+           }
+
+           // Para Update (Actualizar)
+           const inputsUpdate = document.querySelectorAll('[id^="dni-update-"]');
+
+           inputsUpdate.forEach(inputUpdate => {
+               const colaboradorId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
+               const counterUpdate = document.getElementById(`dni-counter-update-${colaboradorId}`);
+
+               // Inicializa el contador y el borde según el valor inicial
+               const initialValueUpdate = inputUpdate.value || '';
+               counterUpdate.textContent = `${initialValueUpdate.length}/8`;
+
+               if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 8) {
+                   inputUpdate.style.borderColor = 'red';
+               } else if (initialValueUpdate.length === 8) {
+                   inputUpdate.style.borderColor = 'green';
+               }
+
+               // Agregar event listener al input
+               inputUpdate.addEventListener('input', function() {
+                   limitDNI(inputUpdate);
+               });
+           });
+       });
+   </script>
+
     <script>
         function confirmDelete(id, currentURL) {
             alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
@@ -1054,14 +1315,16 @@
             let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+            let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
 
             estados = estados.length ? estados.join(',') : '0,1,2';
-            areas = areas.length ? areas.join(',') : '';
-            carreras = carreras.length ? carreras.join(',') : '';
-            instituciones = instituciones.length ? instituciones.join(',') : '';
+            areas = areas.length ? areas.join(',') : '0';
+            carreras = carreras.length ? carreras.join(',') : '0';
+            instituciones = instituciones.length ? instituciones.join(',') : '0';
+            ciclos = ciclos.length ? ciclos.join(',') : '0';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}') }}`;
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos !=null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
@@ -1087,6 +1350,11 @@
         document.getElementById('select-all-instituciones').addEventListener('change', function() {
             let checkboxes = document.querySelectorAll('.institucion-checkbox');
             checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        document.getElementById('select-all-ciclos').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.ciclo-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
 
@@ -1121,6 +1389,13 @@
             }
         });
 
+        document.getElementById('select-all-ciclos').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-ciclos-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
         document.getElementById('select-all-instituciones').addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('input[id^="checkbox-institucion-"]');
             for (var checkbox of checkboxes) {
@@ -1146,18 +1421,17 @@
             });
         });
 
+        document.querySelectorAll('input[id^="checkbox-ciclos-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-ciclos-"]', 'select-all-ciclos');
+            });
+        });
+
         document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
             });
         });
-
-
-
-
-
-
-
 
 
     </script>
