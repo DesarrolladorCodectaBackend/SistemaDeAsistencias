@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>INSPINIA| Áreas</title>
 </head>
 
@@ -93,11 +94,11 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 @foreach ($areas as $index => $area)
-                <div onclick="onClickArea('{{ $area->id }}')" class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                <div  class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                     {{-- <button class="ibox" type="button" data-toggle="modal" href="#modal-form{{ $area->id }}"> --}}
                         <div class="ibox">
                             <div class="ibox-content product-box">
-                                <div class="product-imitation">
+                                <div class="product-imitation" onclick="onClickArea('{{ $area->id }}')">
                                     <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
                                 </div>
                                 <div class="product-desc">
@@ -107,11 +108,14 @@
                                         @method('put')
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
 
-                                        <button type="submit" class="btn btn-{{ $area->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                            <span>{{ $area->estado ? 'ON' : 'OFF' }}</span>
-                                        </button>
                                     </form>
 
+                                    <div>
+                                        {{-- btn cambiar estado JS --}}
+                                        <button type="button" class="btn btn-{{ $area->estado ? 'outline-success' : 'danger' }} btn-primary dim" onclick="confirmState({{ $area->id }})">
+                                            <span>{{ $area->estado ? 'ON' : 'OFF' }}</span>
+                                        </button>
+                                    </div>
                                     <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant. Integrantes: {{$area->count_colabs}}</small>
                                     <a href="#"  class="product-name">{{ $area->especializacion }}</a>
                                     <div class="small m-t-xs">
@@ -370,7 +374,48 @@
         });
     </script>
 
+    <script>
+        function confirmState(areaId) {
+        alertify.confirm("¿Deseas cambiar el estado de esta área?", function (e) {
+            if (e) {
+                // Crear un formulario dinámicamente
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/areas/activarInactivar/${areaId}`; // Ruta con el id del área
 
+                // Añadir el token CSRF de manera dinámica
+                let csrfToken = '{{ csrf_token() }}'; // Asegúrate de que esto se genera correctamente en el contexto
+                let inputCSRF = document.createElement('input');
+                inputCSRF.type = 'hidden';
+                inputCSRF.name = '_token';
+                inputCSRF.value = csrfToken;
+                form.appendChild(inputCSRF);
+
+                // Añadir el método PUT de forma dinámica
+                let inputMethod = document.createElement('input');
+                inputMethod.type = 'hidden';
+                inputMethod.name = '_method';
+                inputMethod.value = 'PUT';
+                form.appendChild(inputMethod);
+
+                // Añadir el valor del currentURL si es necesario
+                let inputCurrentURL = document.createElement('input');
+                inputCurrentURL.type = 'hidden';
+                inputCurrentURL.name = 'currentURL';
+                inputCurrentURL.value = '{{ $pageData->currentURL }}';  // Aquí se pasa el valor de currentURL
+                form.appendChild(inputCurrentURL);
+
+                // Añadir el formulario al cuerpo del documento
+                document.body.appendChild(form);
+
+                // Enviar el formulario
+                form.submit();
+            } else {
+                return false;  // Cancelar la acción
+            }
+        });
+    }
+    </script>
     <script>
         const onClickArea = (area_id) => {
             const modalId = `#modal-form${area_id}`;
@@ -389,22 +434,7 @@
         });
     </script>
 
-    <script>
-        // function confirmDelete(id) {
-        //     alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-        //         if (e) {
-        //             let form = document.createElement('form')
-        //             form.method = 'POST'
-        //             form.action = `/areas/${id}`
-        //             form.innerHTML = '@csrf @method('DELETE')'
-        //             document.body.appendChild(form)
-        //             form.submit()
-        //         } else {
-        //             return false
-        //         }
-        //     });
-        // }
-    </script>
+
 
 
 </body>
