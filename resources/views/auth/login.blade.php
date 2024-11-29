@@ -35,7 +35,7 @@
                     @csrf
                     <div id="form-body">
                         <div id="welcome-lines">
-                            <h1 id="welcome-line-1" style="font-size: 4em; color: #fff">J&P SAC</h1>
+                            <h1 id="welcome-line-1" style="font-size: 4em; color: #fff;">J&P SAC</h1>
                             <div id="welcome-line-2">Sistema de Asistencia</div>
                         </div>
 

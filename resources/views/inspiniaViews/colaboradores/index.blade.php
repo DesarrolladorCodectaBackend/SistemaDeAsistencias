@@ -520,7 +520,14 @@
                 {{-- mostrar colaboradores --}}
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
 
-                    <div class="ibox">
+                    <div
+                         class="ibox"
+
+
+
+
+
+                       >
                         <div class="ibox-content product-box"
                         @if($colaborador->estadoJefe)
                             style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
@@ -1243,28 +1250,28 @@
     <script>
         function confirmDelete(id, currentURL) {
             alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
-            if (e) {
-                let form = document.createElement('form')
+                if (e) {
+                    let form = document.createElement('form')
 
-                form.method = 'POST';
-                form.action = `/colaboradores/${id}`;
-                form.innerHTML = `@csrf @method('DELETE')`;
+                    form.method = 'POST';
+                    form.action = `/colaboradores/${id}`;
+                    form.innerHTML = `@csrf @method('DELETE')`;
 
-                if (currentURL != null) {
-                    let inputHidden = document.createElement('input');
-                    inputHidden.type = 'hidden';
-                    inputHidden.name = 'currentURL';
-                    inputHidden.value = currentURL;
-                    form.appendChild(inputHidden)
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden)
+                    }
+
+                    document.body.appendChild(form)
+                    form.submit()
+                } else {
+                    return false
                 }
-
-                document.body.appendChild(form)
-                form.submit()
-            } else {
-                return false
-            }
-        });
-}
+            });
+        }
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');
             if (alertError) {
