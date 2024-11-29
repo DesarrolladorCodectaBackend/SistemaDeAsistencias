@@ -16,7 +16,7 @@
                 <h2>Colaboradores ({{$countColaboradores}})</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a>Personal</a>
@@ -42,7 +42,7 @@
 
                 <div class="ibox-content">
                     <div class="text-center flex-centered gap-20">
-                        <a class="btn btn-primary" href="/candidatos">
+                        <a class="btn btn-primary" href="{{route('candidatos.index')}}">
                             <i class="fa fa-long-arrow-left"></i> Agregar
                         </a>
                         <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar </a>
@@ -521,13 +521,7 @@
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
 
                     <div
-                         class="ibox"
-
-
-
-
-
-                       >
+                         class="ibox">
                         <div class="ibox-content product-box"
                         @if($colaborador->estadoJefe)
                             style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"

@@ -18,10 +18,10 @@
                 <h2>Promedio Mensual</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicial</a>
+                        <a href="{{route('dashboard')}}">Inicial</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/responsabilidades">Responsabilidades</a>
+                        <a href="{{route('responsabilidades.index')}}">Responsabilidades</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Terminado</strong>

@@ -17,10 +17,10 @@
                 <h2>Años</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/responsabilidades">Responsabilidades</a>
+                        <a href="{{route('responsabilidades.index')}}">Responsabilidades</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Años</strong>

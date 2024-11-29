@@ -21,9 +21,9 @@ use App\Http\Controllers\InstitucionController;
 ------------------------------
 */
 //INSTITUCIONES 
-Route::get('institucion/show/{institucion_id}', [InstitucionController::class, 'show']);
+// Route::get('institucion/show/{institucion_id}', [InstitucionController::class, 'show']);
 
-Route::post('apiLogin', [NotificationController::class, 'login']);
+// Route::post('apiLogin', [NotificationController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         // Route::get('instituciones/getall', [InstitucionController::class, 'getAll']);
         // Route::post('instituciones/storeJson', [InstitucionController::class, 'storeJSON']);
@@ -36,5 +36,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Route::post('login', [NotificationController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function (){
-        Route::get('notificaciones', [NotificationController::class, 'index']);
+        Route::get('notificaciones', [NotificationController::class, 'index'])->name('notificaciones');
 });

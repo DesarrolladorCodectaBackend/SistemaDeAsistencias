@@ -221,7 +221,7 @@ Route::middleware('auth')->group(function () {
     Route::put('ReunionProgramada/update/{reunion_id}', [ReunionesProgramadasController::class, 'update'])->name('reunionesProgramadas.update');
 
     //REPORTES
-    Route::get('Reportes', [ReporteController::class, 'index']);
+    Route::get('Reportes', [ReporteController::class, 'index'])->name('reportes.index');
 
     // INFORMESSEMANALES
    Route::resource('/InformeSemanal', InformesSemanalesController::class);
