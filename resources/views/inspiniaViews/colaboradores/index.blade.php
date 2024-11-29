@@ -520,23 +520,16 @@
                 {{-- mostrar colaboradores --}}
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
 
-                    <div
-                         class="ibox" 
-                    
-
-                    
-
-                    
-                       >
+                    <div class="ibox">
                         <div class="ibox-content product-box"
                         @if($colaborador->estadoJefe)
-                            style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"               
+                            style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
                         @endif
 
                         @if($colaborador->candidato->ciclo_de_estudiante == 6)
                             style="box-shadow: 3px 5px 20px rgba(3, 125, 36);"
                         @endif
-                    
+
                         @if ($colaborador->estadoJefe && $colaborador->candidato->ciclo_de_estudiante == 6)
                         style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
                         @endif>
@@ -553,12 +546,11 @@
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         @endisset
 
-                                        <button type="submit"
-                                            class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
-                                            <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
-                                        </button>
-
+                                
                                     </form>
+                                    <button type="button" class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs" onclick="confirmState({{ $colaborador->id }})">
+                                        <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
+                                    </button>
                                 </span>
                                 <div title="{{$colaborador->status['message']}}" style="position: absolute; font-size: 14px; font-weight: 600; height: 35px; width: 35px; top: -27px; left: 5; border-radius: 100%">
                                     <button style="border-radius: 100%; background: {{$colaborador->status['color']}}" class="btn w-100 h-100"></button>
@@ -572,14 +564,14 @@
                                 <div href="#" class="product-name">
                                     <h2 class="overflowing-text" @if($colaborador->estadoJefe)
                                         style="color: {{ $colaborador->estadoJefe['color'] }};
-                                        font-weight: bold;"      
+                                        font-weight: bold;"
                                     @endif>{{$colaborador->candidato->nombre." ".$colaborador->candidato->apellido}}
                                     @if($colaborador->estadoJefe)
                                     <span style="font-weight: normal; font-size: 0.7em; color: {{ $colaborador->estadoJefe['color'] }}; margin-left: 5px; background-color: #f0f0f0; padding: 2px 6px; border-radius: 5px;">
                                         ({{ $colaborador->estadoJefe['message'] }})
                                     </span>
                                 @endif</h2>
-                                    
+
                                 </div>
 
                                 <small class="text-muted text-left">
@@ -588,7 +580,7 @@
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">
                                     @foreach($colaborador->areas as $index => $area)
-                                    
+
                                     @if($index > 0) | @endif {{$area['nombre']}} @if($area['tipo'] === 1) <span style="color: #007">(Apoyo)</span>@endif
                                     @endforeach
                                     </h5>
@@ -1054,6 +1046,44 @@
     </style>
     {{-- <script src="{{ asset('js/InspiniaViewsJS/indexColaboradores.js') }}"></script> --}}
 
+    <script>
+      function confirmState(id) {
+        alertify.confirm("¿Deseas cambiar el estado del colaborador?", function (e) {
+            if (e) {
+                // Crear un formulario dinámicamente
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/colaboradores/activar-inactivar/${id}`; 
+
+               
+                let csrfToken = '{{ csrf_token() }}';
+                let inputCSRF = document.createElement('input');
+                inputCSRF.type = 'hidden';
+                inputCSRF.name = '_token';
+                inputCSRF.value = csrfToken;
+                form.appendChild(inputCSRF);
+
+                let inputMethod = document.createElement('input');
+                inputMethod.type = 'hidden';
+                inputMethod.name = '_method';
+                inputMethod.value = 'PUT';
+                form.appendChild(inputMethod);
+
+                let inputCurrentURL = document.createElement('input');
+                inputCurrentURL.type = 'hidden';
+                inputCurrentURL.name = 'currentURL';
+                inputCurrentURL.value = '{{ $pageData->currentURL }}'; 
+                form.appendChild(inputCurrentURL);
+
+                document.body.appendChild(form);
+
+                form.submit();
+            } else {
+                return false;
+            }
+        });
+    }
+    </script>
 
     <script>
         // limiteCel

@@ -127,6 +127,10 @@ class MaquinasController extends Controller
 
     public function destroy($maquina_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $maquina = Maquinas::findOrFail($maquina_id);
 
         $maquina->delete();

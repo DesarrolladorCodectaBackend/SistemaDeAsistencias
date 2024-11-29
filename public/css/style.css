@@ -850,8 +850,10 @@ h5 {
   margin-top: 5px;
   font-weight: 600;
 }
+
+
 .nav > li > a {
-  color: #a7b1c2;
+  color: #a7b1c2 !important;
   font-weight: 600;
   padding: 14px 20px 14px 25px;
   display: block;
@@ -869,12 +871,12 @@ h5 {
   color: #999c9e;
 }
 .nav > li.active > a {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 .navbar-default .nav > li > a:hover,
 .navbar-default .nav > li > a:focus {
   background-color: #293846;
-  color: white;
+  color: white !important;
 }
 .nav .open > a,
 .nav .open > a:hover,
