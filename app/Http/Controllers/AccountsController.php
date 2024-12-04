@@ -12,6 +12,8 @@ use Exception;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UsuarioCreadoMailable;
 
 class AccountsController extends Controller
 {
@@ -190,6 +192,7 @@ class AccountsController extends Controller
                     ]);
                 }
             }
+            Mail::to($request->email)->send(new UsuarioCreadoMailable($request->email, $request->password, $request->name." ".$request->apellido, $request->type));
 
             DB::commit();
             return redirect()->route('accounts.index')->with('success', 'Usuario creado exitosamente.');
