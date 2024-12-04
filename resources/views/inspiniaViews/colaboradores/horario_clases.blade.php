@@ -20,10 +20,10 @@
                 <h2>Horario de Clases</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/colaboradores">Colaboradores</a>
+                        <a href="{{route('colaboradores.index')}}">Colaboradores</a>
                     </li>
                     <li class="breadcrumb-item">
                         <strong>Horario de Clases</strong>
@@ -320,7 +320,7 @@
                                                                 onclick="document.getElementById('storeHorarios').submit();"
                                                                 data-style="expand-left">Guardar</button>
                                                             <a class="ladda-button btn btn-primary"
-                                                                data-style="expand-left" href="/candidatos">Cancelar</a>
+                                                                data-style="expand-left" href="{{route('colaboradores.index')}}">Cancelar</a>
                                                         </div>
 
 

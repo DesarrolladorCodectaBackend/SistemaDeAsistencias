@@ -39,13 +39,13 @@
                 <h2>Préstamos</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Home</a>
+                        <a href="{{route('dashboard')}}">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/colaboradores">Colaborador</a>
+                        <a href="{{route('colaboradores.index')}}">Colaborador</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/prestamos">Préstamos</a>
+                        <strong>Préstamos</strong>
                     </li>
                 </ol>
             </div>

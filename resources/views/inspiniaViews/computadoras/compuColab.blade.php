@@ -16,10 +16,10 @@
                 <h2>Gestión Programas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/colaboradores">Colaboradores</a>
+                        <a href="{{route('colaboradores.index')}}">Colaboradores</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Computadora y Programas</strong>
