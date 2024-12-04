@@ -105,7 +105,10 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Contraseña</label>
-                                        <input onchange="verifyCorrectInputs()" id="password" name="password" type="password" class="form-control" required />
+                                        <div class="input-container">
+                                            <input class="form-control input-password" onchange="verifyCorrectInputs()" id="password" name="password" type="password" required />
+                                            <button class="toggle-button" onclick="toogleInput('password', 'password-icon')" type="button"><i class="fa fa-eye" id="password-icon"></i></button>
+                                        </div>
                                         @error('password')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -135,8 +138,10 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Confirmar Contraseña</label>
-                                        <input onchange="verifySamePassword()" name="confirm_password" type="password" id="confirm_password"
-                                            class="form-control" required />
+                                        <div class="input-container">
+                                            <input class="form-control input-password" onchange="verifySamePassword()" id="confirm_password" name="confirm_password" type="password" required />
+                                            <button class="toggle-button" onclick="toogleInput('confirm_password', 'confirm_password-icon')" type="button"><i id="confirm_password-icon" class="fa fa-eye"></i></button>
+                                        </div>
                                         @error('confirm_password')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -179,7 +184,39 @@
     </div>
 
 </body>
+<style>
+    .input-container {
+    position: relative;
+    }
+
+    .input-password {
+    padding-right: 30px;
+    }
+
+    .toggle-button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    }
+</style>
 <script>
+    const toogleInput = (inputId, iconId) => {
+        let input = document.getElementById(inputId);
+        let icon = document.getElementById(iconId);
+
+        if(input.type == "password"){
+            input.type = "text";
+            icon.className = 'fa fa-eye-slash'
+        } else {
+            input.type = "password";
+            icon.className = 'fa fa-eye'
+        }
+    }
     const deleteAlert = (id) => {
             let alertError = document.getElementById(id);
             if (alertError) {
