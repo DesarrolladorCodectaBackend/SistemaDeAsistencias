@@ -36,8 +36,8 @@ class ReunionProgramadaMailable extends Mailable
     public function envelope()
     {
         return new Envelope(
-            from:New Address('cristopher.delacruz.1555@gmail.com', 'Cristopher De la Cruz'),
-            subject: 'Notificación de Reunión',
+            // from:New Address('cristopher.delacruz.1555@gmail.com', 'Cristopher De la Cruz'),
+            // subject: 'Notificación de Reunión',
         );
     }
 

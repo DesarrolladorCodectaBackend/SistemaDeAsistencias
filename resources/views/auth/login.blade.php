@@ -35,21 +35,21 @@
                     @csrf
                     <div id="form-body">
                         <div id="welcome-lines">
-                            <h1 id="welcome-line-1" style="font-size: 4em; color: white;">J&P SAC</h1>
+                            <h1 id="welcome-line-1" style="font-size: 4em; color: #fff;">J&P SAC</h1>
                             <div id="welcome-line-2">Sistema de Asistencia</div>
                         </div>
 
                         <div class="d-flex flex-column justify-content-center align-items-center" id="input-area">
 
                             <div id="form-control">
-                                <input type="value" class="text-white" required="" name="email">
+                                <input type="value" class="text-white" required="" name="email" autocomplete="off">
                                 <label>
                                     <span style="transition-delay:0ms">C</span>
                                     <span style="transition-delay:50ms">O</span>
                                     <span style="transition-delay:100ms">R</span>
                                     <span style="transition-delay:150ms">R</span>
                                     <span style="transition-delay:200ms">E</span>
-                                    <span style="transition-delay:250ms">0</span>
+                                    <span style="transition-delay:250ms">O</span>
 
                                 </label>
                             </div>

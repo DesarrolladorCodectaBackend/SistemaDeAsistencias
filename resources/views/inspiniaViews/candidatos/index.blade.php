@@ -17,7 +17,7 @@
                 <h2>Candidatos</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a>Personal</a>
@@ -110,29 +110,7 @@
                                             </div>
                                         </div>
 
-                                        {{-- sedes --}}
-                                        <div class="card">
-                                            <div class="card-header" id="headingSedes">
-                                                <h5 class="mb-0">
-                                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedes" aria-expanded="false" aria-controls="collapseSedes">
-                                                        Sedes
-                                                    </button>
-                                                </h5>
-                                            </div>
-                                            <div id="collapseSedes" class="collapse" aria-labelledby="headingSedes" data-parent="#accordionExample">
-                                                <div class="card-body">
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
-                                                    </div>
-                                                    @foreach($sedesAll as $index => $sede)
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input sede-checkbox" value="{{ $sede->id }}">
-                                                        <span for="checkbox-sedes-{{$index}}">{{ $sede->nombre }}</span>
-                                                    </div>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        </div>
+                                    
                                         
                                         <!-- Ciclos -->
                                             <div class="card">
@@ -150,17 +128,13 @@
                                                         <div class="form-group">
                                                             <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
                                                         </div>
-                                                        @if(isset($ciclosAll) && $ciclosAll->isNotEmpty())
-                                                @foreach($ciclosAll as $index => $ciclo)
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input ciclo-checkbox"
-                                                        id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
-                                                        <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
-                                                    </div>
-                                                @endforeach
-                                            @else
-                                                <p>No hay ciclos disponibles.</p>
-                                            @endif
+                                                        @foreach($ciclosAll as $index => $ciclo)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input ciclo-checkbox"
+                                                            id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
+                                                            <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
+                                                        </div>
+                                                        @endforeach
                                                     </div>
                                                 </div>
                                             </div>
@@ -188,6 +162,32 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {{-- sedes --}}
+                                        <div class="card">
+                                            <div class="card-header" id="headingSedesCandidatos">
+                                                <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedesCandidatos" aria-expanded="false" aria-controls="collapseSedesCandidatos">
+                                                        Sedes
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseSedesCandidatos" class="collapse" aria-labelledby="headingSedesCandidatos" data-parent="#accordionExampleCandidatos">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
+                                                    </div>
+                                                    @foreach($sedesAll as $index => $sede)
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input sede-checkbox" id="checkbox-sede-candidatos-{{ $sede->id }}" value="{{ $sede->id }}">
+                                                        <span for="checkbox-sede-candidatos-{{ $sede->id }}">{{ $sede->nombre }}</span>
+                                                    </div>
+                                                    @endforeach
+                             
+                                                </div>
+                                            </div>
+                                        </div>
+
 
                                         <!-- Submit Button -->
                                         <div class="text-center mt-4">
@@ -1082,6 +1082,16 @@ function abrirModalCreacion(index) {
             }
         });
 
+        // sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+
+
         document.querySelectorAll('input[id^="checkbox-estados-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-estados-"]', 'select-all-estados');
@@ -1100,6 +1110,13 @@ function abrirModalCreacion(index) {
             });
         });
 
+        
+        // sedes
+        document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
+            });
+        })
 
 
     </script>
@@ -1125,14 +1142,17 @@ function abrirModalCreacion(index) {
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
             let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
-            
-            estados = estados.length ? estados.join(',') : '0,1,2,3';
-            carreras = carreras.length ? carreras.join(',') : '';
-            instituciones = instituciones.length ? instituciones.join(',') : '';
-            ciclos = ciclos.length ? ciclos.join(',') : '';
 
-            if(estados != null && carreras != null && instituciones != null && ciclos !=null) {
-                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
+            estados = estados.length ? estados.join(',') : '0,1,2,3';
+            carreras = carreras.length ? carreras.join(',') : '0';
+            instituciones = instituciones.length ? instituciones.join(',') : '0';
+            ciclos = ciclos.length ? ciclos.join(',') : '0';
+            sedes = sedes.length ? sedes.join(',') : '0';
+
+
+
+            if(estados != null && carreras != null && instituciones != null && ciclos != null, sedes != null) {
+                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarCandidatos').action = actionUrl;
 
@@ -1159,6 +1179,13 @@ function abrirModalCreacion(index) {
         let checkboxes = document.querySelectorAll('.ciclo-checkbox');
         checkboxes.forEach(cb => cb.checked = this.checked);
     });
+
+    //sedes
+    document.getElementById('select-all-sedes').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.sede-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
     </script>
 
 </body>

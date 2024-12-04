@@ -17,22 +17,22 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            CarreraSeeder::class,
-            InstitucionSeeder::class,
+            // CarreraSeeder::class, //Reemplazar con los de sql
+            // InstitucionSeeder::class, // Reemplazar con los de sql
             SalonesSeeder::class,
-            AreaSeeder::class,
-            MaquinasSeeder::class,
-            HorariosPresencialesSeeder::class,
-            CursoSeeder::class,
-            ProgramaSeeder::class,
-            SemanaSeeder::class,
-            ResponsabilidadSemanalSeeder::class,
-            SedeSeeder::class,
-            CandidatosSeeder::class,
-            HorarioPresencialAsignadoSeeder::class,
-            ColaboradoresSeeder::class,
-            ColaboradoresPorAreaSeeder::class,
-            HorarioDeClasesSeeder::class,
+            AreaSeeder::class, // Reemplazar con los de sql
+            // MaquinasSeeder::class, // Reemplazar con los de sql
+            // HorariosPresencialesSeeder::class, // Reemplazar con los de sql
+            // CursoSeeder::class,
+            // ProgramaSeeder::class,
+            // SemanaSeeder::class,
+            ResponsabilidadSemanalSeeder::class, // Reemplazar con los de sql
+            // SedeSeeder::class,
+            // CandidatosSeeder::class, // Reemplazar con los de sql
+            // HorarioPresencialAsignadoSeeder::class, // Reemplazar con los de sql
+            // ColaboradoresSeeder::class, // Reemplazar con los de sql
+            // ColaboradoresPorAreaSeeder::class, // Reemplazar con los de sql
+            // HorarioDeClasesSeeder::class, // Reemplazar con los de sql
             UsuarioAdministradorSeeder::class,
             UsuarioJefeAreaSeeder::class,
         ]);

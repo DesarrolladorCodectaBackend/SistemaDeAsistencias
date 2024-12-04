@@ -56,60 +56,60 @@
                 </div>
             </li>
             <li>
-                <a href="/dashboard"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span></a>
+                <a href="{{route('dashboard')}}"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span></a>
             </li>
             @if($userData['isAdmin'])
             <li>
-                <a href="/horarioGeneral"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
+                <a href="#"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
                         Generales</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="/horarioGeneral">Presencial</a></li>
-                    <li><a href="/ReunionesAreas">Reuniones Áreas</a></li>
+                    <li><a href="{{route('horarios.getHorarioGeneral')}}">Presencial</a></li>
+                    <li><a href="{{route('reuniones.getAll')}}">Reuniones Áreas</a></li>
                 </ul>
             </li>
             <li>
-                <a href="/ReunionesProgramadas"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu.
+                <a href="{{route('reunionesProgramadas.allReu')}}"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu.
                         Programadas</span></a>
             </li>
             <li>
-                <a href="/Reportes"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
+                <a href="{{route('reportes.index')}}"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
             </li>
             <li id="personalCont">
-                <a href=""><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
+                <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse">
                     <li id="candidatos">
-                        <a href="/candidatos">Candidatos</a>
+                        <a href="{{route('candidatos.index')}}">Candidatos</a>
                     </li>
                     <li id="colaboradores">
-                        <a href="/colaboradores">Colaboradores</a>
+                        <a href="{{route('colaboradores.index')}}">Colaboradores</a>
                     </li>
                 </ul>
 
             </li>
             <li id="areas">
-                <a href="/areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
+                <a href="{{route('areas.index')}}"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
             </li>
             @endif
             @if($userData['isAdmin'] || $userData['isBoss'])
             <li>
-                <a href="/responsabilidades"><i class="fa fa-list-alt"></i> <span
+                <a href="{{route('responsabilidades.index')}}"><i class="fa fa-list-alt"></i> <span
                         class="nav-label">Responsabilidades</span></a>
             </li>
             @endif
             @if($userData['isAdmin'])
             <li id="maquinas">
-                <a href="/maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
+                <a href="{{route('maquinas.index')}}"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
             </li>
             <li id="salones">
-                <a href="/salones"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
+                <a href="{{route('salones.index')}}"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
             </li>
             <li id="ajustes">
-                <a href="/ajustes"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
+                <a href="{{route('ajustes.index')}}"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
             </li>
             @endif
             <li>
-                <form id="logoutForm" method="POST" action="http://127.0.0.1:8000/logout">
+                <form id="logoutForm" method="POST" action="{{route('logout')}}">
                     @csrf
                 </form>
 
@@ -154,12 +154,17 @@
 
         </nav>
     </div>
+    @if($userData['isAdmin'])
+        @include('components.chatbot.chatbot')
+    @endif
     @if($user['estado'] == 0)
         <script>
             console.log('baneado');
             document.getElementById('logoutForm').submit();
         </script>
     @endif
+    <label id="notificationRoute" hidden>{{route('notificaciones')}}</label>
+    <label id="userToken" hidden>{{json_encode(session('api_token'))}}</label>
     <style>
         .max-height-scrollable {
             max-height: 300px;
@@ -242,53 +247,4 @@
     <script class="Sparkline demo data" src="{{ asset('js/demo/sparkline-demo.js') }}"></script>
     -->
 
-    <script>
-        let notificationsContainer = document.getElementById('notificationsContainer');
-        let notificationsCountContainer = document.getElementById('notificationsCountContainer');
-
-        const UserToken = <?php echo json_encode(session('api_token')); ?>;
-        const notificationCard = (icon, message, url) => {
-            let card = `<li>
-                            <a href="${url}" class="dropdown-item">
-                                <div class="text-wrap">
-                                    <i class="${icon}"></i> ${message}
-                                </div>
-                            </a>
-                        </li>`;
-            notificationsContainer.innerHTML += card;
-        };
-        const nothingCard = () => {
-            let card = `<li>
-                            <div class="dropdown-item">
-                                <div class="text-wrap">
-                                    <i class="fa fa-question-circle"></i> No hay notificaciones pendientes para hoy.
-                                </div>
-                            </div>
-                        </li>`;
-            notificationsContainer.innerHTML += card;
-        };
-
-        let data = null;
-        fetch('http://127.0.0.1:8000/api/notificaciones', {
-            headers: {
-                'Authorization': 'Bearer '+UserToken
-            }
-        })
-            .then(response => response.json())
-            .then(responseData => {
-                data = responseData;
-                // console.log(data);
-
-                data.notifications.map(notification => {
-                    notificationCard(notification.icon, notification.message, notification.url);
-                });
-                if (data.notifications.length === 0) {
-                nothingCard()
-                }
-                notificationsCountContainer.removeAttribute('hidden');
-                notificationsCountContainer.innerText = data.notifications.length;
-            })
-            .catch(error => console.error('Error:', error));
-
-
-    </script>
+    <script src="{{asset('js/InspiniaViewsJS/notifications.js')}}"></script>

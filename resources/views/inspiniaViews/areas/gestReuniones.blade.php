@@ -20,10 +20,10 @@
                 <h2>Gestión Reunión</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/areas">Áreas</a>
+                        <a href="{{route('areas.index')}}">Áreas</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Reuniones Área</strong>

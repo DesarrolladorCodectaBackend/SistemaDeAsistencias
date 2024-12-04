@@ -116,5 +116,25 @@ class RegistroActividadController extends Controller
         return $semanasInactivas;
     }
 
+    public static function verifyColaboradorInactivity($colabAreaId, $semana_id)
+    {
+        $inactividades = RegistroActividadController::obtenerInactividad($colabAreaId);
+        $estado = true;
+        foreach ($inactividades as $inactividad) {
+            $semanasInactivas = $inactividad['semanas'];
+            foreach ($semanasInactivas as $semanaInactiva) {
+                if ($semana_id === $semanaInactiva['id']) {
+                    // $colaboradoresAreaId->forget($colabKey);
+                    //$colaboradoresOtherAreas->forget($key);
+                    // echo "here" + $colabAreaId;
+                    $estado = false;
+                    break 2; // Salir de ambos bucles si el colaborador está inactivo
+                }
+            }
+        }
+        // Si el colaborador está activo, añadirlo al array temporal
+        return $estado;
+    }
+
 
 }

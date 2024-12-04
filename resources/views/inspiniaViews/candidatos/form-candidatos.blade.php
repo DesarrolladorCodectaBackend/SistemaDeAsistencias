@@ -17,10 +17,10 @@
                 <h2>Formulario Colaborador</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/candidatos">Candidatos</a>
+                        <a href="{{route('candidatos.index')}}">Candidatos</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Colaboradores</strong>
@@ -177,7 +177,7 @@
                                                 <button class="ladda-button btn btn-primary mr-5" type="submit"
                                                     data-style="expand-left">Guardar</button>
                                                 <a class="ladda-button btn btn-primary" data-style="expand-left"
-                                                    href="/candidatos">Cancelar</a>
+                                                    href="{{route('candidatos.index')}}">Cancelar</a>
                                             </div>
                             </form>
 

@@ -13,10 +13,10 @@
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-3">
-                <h2>Colaboradores</h2>
+                <h2>Colaboradores ({{$countColaboradores}})</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a>Personal</a>
@@ -42,7 +42,7 @@
 
                 <div class="ibox-content">
                     <div class="text-center flex-centered gap-20">
-                        <a class="btn btn-primary" href="/candidatos">
+                        <a class="btn btn-primary" href="{{route('candidatos.index')}}">
                             <i class="fa fa-long-arrow-left"></i> Agregar
                         </a>
                         <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar </a>
@@ -51,7 +51,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                
+
                                     <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                         <h2 class="m-t-none m-b font-bold text-center">Filtrar Colaboradores</h2>
                                         <div class="accordion" id="accordionExample">
@@ -134,30 +134,6 @@
                                                 </div>
                                             </div>
 
-                                            {{-- sedes --}}
-                                            <div class="card">
-                                                <div class="card-header" id="headingSedes">
-                                                    <h5 class="mb-0">
-                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedes" aria-expanded="false" aria-controls="collapseSedes">
-                                                            Sedes
-                                                        </button>
-                                                    </h5>
-                                                </div>
-                                                <div id="collapseSedes" class="collapse" aria-labelledby="headingSedes" data-parent="#accordionExample">
-                                                    <div class="card-body">
-                                                        <div class="form-group">
-                                                            <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
-                                                        </div>
-                                                        @foreach($sedesAll as $index => $sede)
-                                                        <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input sede-checkbox" value="{{ $sede->id }}">
-                                                            <span for="checkbox-sedes-{{$index}}">{{ $sede->nombre }}</span>
-                                                        </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            </div>
-
 
                                             <!-- Ciclos -->
                                             <div class="card">
@@ -173,22 +149,22 @@
                                                         <div class="form-group">
                                                             <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
                                                         </div>
-                                                        @if(isset($ciclosAll) && $ciclosAll->isNotEmpty())
-                                                @foreach($ciclosAll as $index => $ciclo)
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input ciclo-checkbox" id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
-                                                        <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
-                                                    </div>
-                                                @endforeach
-                                            @else
-                                                <p>No hay ciclos disponibles.</p>
-                                            @endif
+                                                        {{-- @if(isset($ciclosAll) && $ciclosAll->isNotEmpty()) --}}
+                                                        @foreach($ciclosAll as $index => $ciclo)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input ciclo-checkbox" id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
+                                                            <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
+                                                        </div>
+                                                        @endforeach
+                                            {{-- @else --}}
+                                                {{-- <p>No hay ciclos disponibles.</p> --}}
+                                            {{-- @endif --}}
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <!-- Instituciones -->
-                                            {{-- <div class="card">
+                                            <div class="card">
                                                 <div class="card-header" id="headingInstituciones">
                                                     <h5 class="mb-0">
                                                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseInstituciones" aria-expanded="false" aria-controls="collapseInstituciones">
@@ -209,8 +185,32 @@
                                                         @endforeach
                                                     </div>
                                                 </div>
-                                            </div> --}}
+                                            </div>
 
+                                            <!-- Sedes -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingSedesCandidatos">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedesCandidatos" aria-expanded="false" aria-controls="collapseSedesCandidatos">
+                                                            Sedes
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseSedesCandidatos" class="collapse" aria-labelledby="headingSedesCandidatos" data-parent="#accordionExampleCandidatos">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @foreach($sedesAll as $index => $sede)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input sede-checkbox" id="checkbox-sede-candidatos-{{ $sede->id }}" value="{{ $sede->id }}">
+                                                            <span for="checkbox-sede-candidatos-{{ $sede->id }}">{{ $sede->nombre }}</span>
+                                                        </div>
+                                                        @endforeach
+                                 
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <!-- Submit Button -->
                                             <div class="text-center mt-4">
                                                 <button type="submit" class="btn btn-primary px-5">Filtrar</button>
@@ -468,7 +468,8 @@
                 {{-- mostrar colaboradores --}}
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
 
-                    <div class="ibox">
+                    <div
+                         class="ibox">
                         <div class="ibox-content product-box"
                         @if($colaborador->estadoJefe)
                             style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
@@ -1268,6 +1269,7 @@
 
 
 
+
         function prepareSearchActionURL(event) {
             // preventDefault();
 
@@ -1292,21 +1294,19 @@
             let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
             let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
-            // let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+            let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
             let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
 
-
-
             estados = estados.length ? estados.join(',') : '0,1,2';
-            areas = areas.length ? areas.join(',') : '';
-            carreras = carreras.length ? carreras.join(',') : '';
-            // instituciones = instituciones.length ? instituciones.join(',') : '';
-            ciclos = ciclos.length ? ciclos.join(',') : '';
-            sedes = sedes.length ? sedes.join(',') : '';
+            areas = areas.length ? areas.join(',') : '0';
+            carreras = carreras.length ? carreras.join(',') : '0';
+            instituciones = instituciones.length ? instituciones.join(',') : '0';
+            ciclos = ciclos.length ? ciclos.join(',') : '0';
+            sedes = sedes.length ? sedes.join(',') : '0';
 
-            if(estados != null && areas != null && carreras != null && ciclos != null && sedes != null){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/ciclos=${ciclos}/sedes=${sedes}') }}`;
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
@@ -1329,24 +1329,21 @@
             checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
-        // document.getElementById('select-all-instituciones').addEventListener('change', function() {
-        //     let checkboxes = document.querySelectorAll('.institucion-checkbox');
-        //     checkboxes.forEach(cb => cb.checked = this.checked);
-        // });
+        document.getElementById('select-all-instituciones').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.institucion-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
 
         document.getElementById('select-all-ciclos').addEventListener('change', function () {
         let checkboxes = document.querySelectorAll('.ciclo-checkbox');
         checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
-        document.getElementById('select-all-sedes').addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('.sede-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
+        //sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.sede-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
         });
-
-
-
-
 
 
 
@@ -1391,6 +1388,7 @@
             }
         });
 
+        // sedes
         document.getElementById('select-all-sedes').addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
             for (var checkbox of checkboxes) {
@@ -1422,19 +1420,18 @@
             });
         });
 
-        // document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
-        //     checkbox.addEventListener('change', function() {
-        //         updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
-        //     });
-        // });
+        document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
+            });
+        });
 
+        // sedes
         document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
             });
-        });
-
-        
+        })
 
     </script>
 

@@ -22,10 +22,10 @@
                 <h2>Gestión Sedes</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/ajustes">Ajustes</a>
+                        <a href="{{route('ajustes.index')}}">Ajustes</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Sedes</strong>
@@ -49,7 +49,7 @@
 
                                             <div class="form-group">
                                                 <label>Nombre: </label>
-                                                <input type="text" placeholder="Ingrese un nombre" name="nombre"
+                                                <input type="text" placeholder="Ingrese un nombre" name="nombre" autocomplete="off"
                                                     class="form-control">
                                                 @error('nombre')
                                                     <span class="text-danger">{{ $message }}</span>

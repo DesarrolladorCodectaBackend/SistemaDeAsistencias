@@ -16,10 +16,10 @@
                 <h2>Gestión Programas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/colaboradores">Colaboradores</a>
+                        <a href="{{route('colaboradores.index')}}">Colaboradores</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Computadora y Programas</strong>
@@ -84,12 +84,9 @@
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
                                                                                 <dt>Procesador:</dt>
-                                                                                <select class="form-control m-b"
-                                                                                    name="procesador" required>
-                                                                                    @foreach($procesadores as $procesador)
-                                                                                    <option> {{$procesador}}</option>
-                                                                                    @endforeach
-                                                                                </select>
+                                                                                <input style="padding: 1px 8px;"
+                                                                                    type="text" class="form-control"
+                                                                                    name="procesador" required />
                                                                             </div>
                                                                         </dl>
                                                                         <dl class="row mb-0">
@@ -119,12 +116,9 @@
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
                                                                                 <dt>Almacenamiento:</dt>
-                                                                                <select class="form-control m-b"
-                                                                                    name="almacenamiento" required>
-                                                                                    @foreach($almacenamientos as $almacenamiento)
-                                                                                    <option>{{$almacenamiento}}</option>
-                                                                                    @endforeach
-                                                                                </select>
+                                                                                <input style="padding: 1px 8px;"
+                                                                                    type="text" class="form-control"
+                                                                                    name="almacenamiento" required />
                                                                             </div>
                                                                         </dl>
 
@@ -261,8 +255,8 @@
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <a data-toggle="modal" class="btn btn-primary btn-danger fa fa-trash"
-                                                style="font-size: 20px;" href=""></a>
+                                            {{-- <a data-toggle="modal" class="btn btn-primary btn-danger fa fa-trash"
+                                                style="font-size: 20px;" href=""></a> --}}
 
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-edit"
                                                 style="font-size: 20px;" href="#modalComputerUpdate"></a>
@@ -498,16 +492,11 @@
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
                                                                                 <dt>Procesador:</dt>
-                                                                                <select class="form-control m-b"
-                                                                                    name="procesador" required>
-                                                                                    @foreach($procesadores as $procesador)
-                                                                                    <option @if($computerColab->
-                                                                                        procesador == $procesador)
-                                                                                        selected
-                                                                                        @endif > {{$procesador}}
-                                                                                    </option>
-                                                                                    @endforeach
-                                                                                </select>
+                                                                                <input style="padding: 1px 8px;"
+                                                                                    type="text" class="form-control"
+                                                                                    name="procesador"
+                                                                                    value="{{$computerColab->procesador}}"
+                                                                                    required></input>
                                                                             </div>
                                                                         </dl>
                                                                         <dl class="row mb-0">
@@ -542,15 +531,11 @@
                                                                         <dl class="row mb-0">
                                                                             <div class="col-sm-12 text-sm-left">
                                                                                 <dt>Almacenamiento:</dt>
-                                                                                <select class="form-control m-b"
-                                                                                    name="almacenamiento">
-                                                                                    @foreach($almacenamientos as $almacenamiento)
-                                                                                    <option @if($computerColab->
-                                                                                        almacenamiento ===
-                                                                                        $almacenamiento) selected @endif
-                                                                                        >{{$almacenamiento}}</option>
-                                                                                    @endforeach
-                                                                                </select>
+                                                                                <input style="padding: 1px 8px;"
+                                                                                    type="text" class="form-control"
+                                                                                    name="almacenamiento"
+                                                                                    value="{{$computerColab->almacenamiento}}"
+                                                                                    required></input>
                                                                             </div>
                                                                         </dl>
 

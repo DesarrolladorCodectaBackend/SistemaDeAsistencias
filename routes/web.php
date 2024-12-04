@@ -17,6 +17,7 @@ use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\MaquinasController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObjetoController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\PrestamoObjetoColaboradorController;
@@ -53,16 +54,16 @@ Route::get('/', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard-prueba', function () {
-    return view('dashboard-prueba');
-});
+// Route::get('/dashboard-prueba', function () {
+//     return view('dashboard-prueba');
+// });
 
-Route::get('/testCola', [ColaboradoresController::class, 'getHoursColab']);
+Route::get('regenerateSession/{email}/{password}', [NotificationController::class, 'regenerateSession'])->name('regenerateSession');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
     //FUNCION HELPER
@@ -145,8 +146,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     Route::post('candidato/rechazarCandidato/{candidato_id}', [CandidatosController::class, 'rechazarCandidato'])->name('candidatos.rechazarCandidato');
     Route::post('candidato/reconsiderarCandidato/{candidato_id}', [CandidatosController::class, 'reActivate'])->name('candidatos.reconsiderarCandidato');
-    Route::get('candidatos/filtrar/estados={estados}/carreras={carreras?}/ciclos={ciclos?}/sedes={sedes?}', [CandidatosController::class, 'filtrarCandidatos'])
-        ->where(['estados' => '[0-9,]+','carreras' => '[0-9,]*','ciclos' => '[0-9,]*','sedes' => '[0-9,]*'])->name('candidatos.filtrar');
+    Route::get('candidatos/filtrar/estados={estados}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}/sedes={sedes?}', [CandidatosController::class, 'filtrarCandidatos'])
+    ->where(['estados' => '[0-9,]+','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*','sedes' => '[0-9,]*'])->name('candidatos.filtrar');
     Route::get('candidatos/search/{busqueda}', [CandidatosController::class, 'search'])->name('candidatos.search');
 
 
@@ -158,9 +159,8 @@ Route::middleware('auth')->group(function () {
     Route::put('colaboradores/update/{colaborador_id}', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
     Route::delete('colaboradores/{colaborador_id}', [ColaboradoresController::class, 'destroy'])->name('colaboradores.destroy');
     Route::put('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
-    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/ciclos={ciclos?}/sedes={sedes?}', [ColaboradoresController::class, 'filtrarColaboradores'])
-    ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','ciclos' => '[0-9,]*','sedes' => '[0-9,]*'])
-    ->name('colaboradores.filtrar');
+    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}/sedes={sedes?}', [ColaboradoresController::class, 'filtrarColaboradores'])
+    ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*','sedes' => '[0-9,]*'])->name('colaboradores.filtrar');
 
     Route::get('colaboradores/search/{busqueda}', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
     Route::put('colaboradores/despedirColaborador/{colaborador_id}', [ColaboradoresController::class, 'despedirColaborador'])->name('colaboradores.despedirColaborador');
@@ -222,7 +222,7 @@ Route::middleware('auth')->group(function () {
     Route::put('ReunionProgramada/update/{reunion_id}', [ReunionesProgramadasController::class, 'update'])->name('reunionesProgramadas.update');
 
     //REPORTES
-    Route::get('Reportes', [ReporteController::class, 'index']);
+    Route::get('Reportes', [ReporteController::class, 'index'])->name('reportes.index');
 
     // INFORMESSEMANALES
    Route::resource('/InformeSemanal', InformesSemanalesController::class);
