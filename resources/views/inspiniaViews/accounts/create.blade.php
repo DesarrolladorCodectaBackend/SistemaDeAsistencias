@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Incluir la librería Choices.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
     <title>Crear Cuenta</title>
 </head>
 
@@ -150,25 +154,28 @@
                         </form>
                     </div>
                 </div>
+
                 <div class="modal fade" id="modalColaboradores" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="modalColaboradoresLabel">Selecciona a tu colaborador</h4>
+                                <h4 class="modal-title" id="modalColaboradoresLabel">Selecciona a un colaborador</h4>
                             </div>
                             <div class="modal-body d-flex flex-column gap-20">
                                 <select class="form-control" id="colaboradorSelectedId">
+                                    <option value="" disabled selected>Busca un colaborador</option>
                                     @foreach($colaboradores as $colaborador)
-                                    <option value="{{$colaborador}}">{{$colaborador->candidato->nombre}}
-                                        {{$colaborador->candidato->apellido}}</option>
+                                        <option value="{{$colaborador->id}}">{{$colaborador->candidato->nombre}} {{$colaborador->candidato->apellido}}</option>
                                     @endforeach
                                 </select>
-
                                 <button onclick="handleColabSelect()" class="btn btn-info">Seleccionar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                
+                
 
             </div>
         </div>
@@ -180,6 +187,8 @@
 
 </body>
 <script>
+    
+
     const deleteAlert = (id) => {
             let alertError = document.getElementById(id);
             if (alertError) {
@@ -194,33 +203,48 @@
     let cacheApellido = ''
     let cacheColabId = null;
 
-    const handleColabSelect = () => {
-        const selectType = document.getElementById('selectUserType').value;
-
-        if (selectType == 2) {
-
-            const selectedColaborador = document.getElementById('colaboradorSelectedId').value;
+   // Inicializar Choices.js para permitir escribir en el select
+document.addEventListener('DOMContentLoaded', function() {
+    const selectElement = document.getElementById('colaboradorSelectedId');
     
-            const colaborador = JSON.parse(selectedColaborador);
-    
-            let email = document.getElementById('email');
-            let name = document.getElementById('name');
-            let apellido = document.getElementById('apellido');
-    
-            email.value = colaborador.candidato.correo;
-            name.value = colaborador.candidato.nombre;
-            apellido.value = colaborador.candidato.apellido;
-    
-            cacheEmail = email.value;
-            cacheNombre = name.value;
-            cacheApellido = apellido.value;
-            cacheColabId = colaborador.id;
+    // Crear un nuevo objeto Choices para hacer el select escribible y filtrable
+    const choices = new Choices(selectElement, {
+        searchEnabled: true,  
+        itemSelectText: '',  
+        noResultsText: 'No se encontraron colaboradores',  
+    });
+});
 
-            renderColabInput(cacheColabId);
 
-            verifyCorrectInputs()
-        }
+const handleColabSelect = () => {
+    const selectedColabId = document.getElementById('colaboradorSelectedId').value;
+
+    if (selectedColabId) {
+        // Aquí obtienes los datos del colaborador según su ID
+        const colaborador = @json($colaboradores->keyBy('id')); // Suponiendo que `$colaboradores` es un array de objetos en tu backend
+
+        const selectedColab = colaborador[selectedColabId];
+        
+        // Asigna los valores a los campos correspondientes
+        let email = document.getElementById('email');
+        let name = document.getElementById('name');
+        let apellido = document.getElementById('apellido');
+
+        email.value = selectedColab.candidato.correo;
+        name.value = selectedColab.candidato.nombre;
+        apellido.value = selectedColab.candidato.apellido;
+
+        // Almacena en caché los valores para el formulario
+        cacheEmail = email.value;
+        cacheNombre = name.value;
+        cacheApellido = apellido.value;
+        cacheColabId = selectedColab.id;
+
+        renderColabInput(cacheColabId);
+        verifyCorrectInputs();
     }
+};
+
 
     const renderColabInput = (colaborador_id) => {
         const colabInputCont = document.getElementById('colabInputCont');
