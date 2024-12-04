@@ -51,84 +51,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <!--
-                                    <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
-                                        <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
-                                        <div class="row">
-                                            <div class="col-sm-12 col-md-6 b-r">
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Areas:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="select-all-areas"><span>Seleccionar
-                                                            todos</span>
-                                                    </div>
-                                                    @foreach($areasAll as $index => $area)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="checkbox-areas-{{$index}}" class="area-checkbox" value="{{ $area->id }}"><span>{{$area->especializacion}}</span>
-                                                    </div>
-                                                    @endforeach
-
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Estados:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="select-all-estados"><span>Seleccionar
-                                                            todos</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-1"
-                                                            value="1"><span>activo</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-0"
-                                                            value="0"><span>inactivo</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-0"
-                                                            value="2"><span>Ex colaborador</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 col-md-6 b-r">
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Carreras:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox"
-                                                            id="select-all-carreras"><span>Seleccionar todos</span>
-                                                    </div>
-                                                    @foreach($carrerasAll as $index => $carrera)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="carrera-checkbox" value="{{ $carrera->id }}"><span>{{ $carrera->nombre }}</span>
-                                                    </div>
-                                                    @endforeach
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Instituciones:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox"
-                                                            id="select-all-instituciones"><span>Seleccionar todos</span>
-                                                    </div>
-                                                    @foreach($institucionesAll as $index => $institucion)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="institucion-checkbox" value="{{ $institucion->id }}"><span>{{ $institucion->nombre }}</span>
-                                                    </div>
-                                                    @endforeach
-                                                </div>
-                                                <div class="form-group mt-3 text-center">
-                                                    <button type="submit" class="btn btn-primary px-5">Filtrar</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    -->
+                                
                                     <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                         <h2 class="m-t-none m-b font-bold text-center">Filtrar Colaboradores</h2>
                                         <div class="accordion" id="accordionExample">
@@ -211,6 +134,31 @@
                                                 </div>
                                             </div>
 
+                                            {{-- sedes --}}
+                                            <div class="card">
+                                                <div class="card-header" id="headingSedes">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedes" aria-expanded="false" aria-controls="collapseSedes">
+                                                            Sedes
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseSedes" class="collapse" aria-labelledby="headingSedes" data-parent="#accordionExample">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @foreach($sedesAll as $index => $sede)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input sede-checkbox" value="{{ $sede->id }}">
+                                                            <span for="checkbox-sedes-{{$index}}">{{ $sede->nombre }}</span>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
                                             <!-- Ciclos -->
                                             <div class="card">
                                                 <div class="card-header" id="headingCiclosCandidatos">
@@ -240,7 +188,7 @@
                                             </div>
 
                                             <!-- Instituciones -->
-                                            <div class="card">
+                                            {{-- <div class="card">
                                                 <div class="card-header" id="headingInstituciones">
                                                     <h5 class="mb-0">
                                                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseInstituciones" aria-expanded="false" aria-controls="collapseInstituciones">
@@ -261,7 +209,7 @@
                                                         @endforeach
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <!-- Submit Button -->
                                             <div class="text-center mt-4">
@@ -546,7 +494,7 @@
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         @endisset
 
-                                
+
                                     </form>
                                     <button type="button" class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs" onclick="confirmState({{ $colaborador->id }})">
                                         <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -1053,9 +1001,9 @@
                 // Crear un formulario dinámicamente
                 let form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/colaboradores/activar-inactivar/${id}`; 
+                form.action = `/colaboradores/activar-inactivar/${id}`;
 
-               
+
                 let csrfToken = '{{ csrf_token() }}';
                 let inputCSRF = document.createElement('input');
                 inputCSRF.type = 'hidden';
@@ -1072,7 +1020,7 @@
                 let inputCurrentURL = document.createElement('input');
                 inputCurrentURL.type = 'hidden';
                 inputCurrentURL.name = 'currentURL';
-                inputCurrentURL.value = '{{ $pageData->currentURL }}'; 
+                inputCurrentURL.value = '{{ $pageData->currentURL }}';
                 form.appendChild(inputCurrentURL);
 
                 document.body.appendChild(form);
@@ -1344,17 +1292,21 @@
             let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
             let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
-            let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+            // let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
+            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
+
+
 
             estados = estados.length ? estados.join(',') : '0,1,2';
             areas = areas.length ? areas.join(',') : '';
             carreras = carreras.length ? carreras.join(',') : '';
-            instituciones = instituciones.length ? instituciones.join(',') : '';
+            // instituciones = instituciones.length ? instituciones.join(',') : '';
             ciclos = ciclos.length ? ciclos.join(',') : '';
+            sedes = sedes.length ? sedes.join(',') : '';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos !=null){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
+            if(estados != null && areas != null && carreras != null && ciclos != null && sedes != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/ciclos=${ciclos}/sedes=${sedes}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
@@ -1377,15 +1329,21 @@
             checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
-        document.getElementById('select-all-instituciones').addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('.institucion-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+        // document.getElementById('select-all-instituciones').addEventListener('change', function() {
+        //     let checkboxes = document.querySelectorAll('.institucion-checkbox');
+        //     checkboxes.forEach(cb => cb.checked = this.checked);
+        // });
 
         document.getElementById('select-all-ciclos').addEventListener('change', function () {
         let checkboxes = document.querySelectorAll('.ciclo-checkbox');
         checkboxes.forEach(cb => cb.checked = this.checked);
         });
+
+        document.getElementById('select-all-sedes').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.sede-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
 
 
 
@@ -1433,6 +1391,13 @@
             }
         });
 
+        document.getElementById('select-all-sedes').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
         document.querySelectorAll('input[id^="checkbox-areas-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-areas-"]', 'select-all-areas');
@@ -1457,12 +1422,19 @@
             });
         });
 
-        document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
+        // document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
+        //     checkbox.addEventListener('change', function() {
+        //         updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
+        //     });
+        // });
+
+        document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
+                updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
             });
         });
 
+        
 
     </script>
 

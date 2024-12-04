@@ -328,7 +328,7 @@ class CandidatosController extends Controller
     }
 
 
-    public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '', string $ciclos = '')
+    public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '')
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -338,6 +338,7 @@ class CandidatosController extends Controller
         $estados = explode(',', $estados);
         $carreras = $carreras ? explode(',', $carreras) : [];
         $instituciones = $instituciones ? explode(',', $instituciones) : [];
+        $sedes = $sedes ? explode(',', $sedes) : [];
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
@@ -348,12 +349,12 @@ class CandidatosController extends Controller
         $sedes = $sedesAll->where('estado', 1);
         $institucionesFiltradas = $institucionesAll->where('estado', 1);
         $carrerasFiltradas = $carrerasAll->where('estado', 1);
-
+        $sedesFiltradas = $sedesAll->where('estado', 1);
         $requestCarreras = empty($carreras) ? $carrerasAll->pluck('id')->toArray() : $carreras;
         $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
 
         $sedesId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
-
+        $requestSedes = empty($sedes) ? $sedesAll->pluck('id')->toArray() : $sedes;
         $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)
             ->whereIn('sede_id', $sedesId)
             ->whereIn('estado', $estados)
@@ -369,7 +370,7 @@ class CandidatosController extends Controller
             'candidatos' => $candidatos,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
-            'sedes' => $sedes,
+            'sedes' => $sedesFiltradas,
             'instituciones' => $institucionesFiltradas,
             'carreras' => $carrerasFiltradas,
             'sedesAll' => $sedesAll,

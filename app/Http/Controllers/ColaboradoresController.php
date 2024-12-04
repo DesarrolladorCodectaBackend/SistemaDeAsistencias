@@ -246,37 +246,39 @@ class ColaboradoresController extends Controller
 
     //FUNCTION getObjetoColabodaor
 
-    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '')
+    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '',  string $ciclos = '', string $sedes  = '')
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
+        
         // Validamos los request de los filtros que queremos aplicar
         $ciclos = $ciclos ? explode(',', $ciclos): [];
         $estados = explode(',', $estados);
         $areas = $areas ? explode(',', $areas) : [];
         $carreras = $carreras ? explode(',', $carreras) : [];
-        $instituciones = $instituciones ? explode(',', $instituciones) : [];
+        // $instituciones = $instituciones ? explode(',', $instituciones) : [];
+        $sedes  = $sedes  ? explode(',', $sedes ) : [];
 
-        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
-        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+        $sedesAll = Sede::orderBy('nombre', 'asc')->get();
+        // $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
         $areasAll = Area::orderBy('especializacion', 'asc')->get();
         $ciclosAll = Candidatos::select('ciclo_de_estudiante')->distinct()->orderBy('ciclo_de_estudiante', 'asc')->pluck('ciclo_de_estudiante');
 
         $sedesFiltradas = $sedesAll->where('estado', 1);
-        $institucionesFiltradas = $institucionesAll->where('estado', 1);
+        // $institucionesFiltradas = $institucionesAll->where('estado', 1);
         $carrerasFiltradas = $carrerasAll->where('estado', 1);
         $areasFiltradas = $areasAll->where('estado', 1);
-
+        
         $requestCarreras = empty($carreras) ? $carrerasAll->pluck('id')->toArray() : $carreras;
-        $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
+        // $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
         $requestAreas = empty($areas) ? $areasAll->pluck('id')->toArray() : $areas;
+        $requestSedes = empty($sedes) ? $sedesAll->pluck('id')->toArray() : $sedes;
 
 
-
-
+        
 
         // Obtenemos a los colaboradores filtrados por áreas
         $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
@@ -287,15 +289,19 @@ class ColaboradoresController extends Controller
         //filtramos por los estados
         $colaboradoresCandidatoId = $colaboradoresArea->whereIn('estado', $estados)->pluck('candidato_id');
 
-        //filtrar los candidatos por la carrera y la sede - institucion
-        $sedesInstitucionesId = Sede::whereIn('institucion_id', $requestInstituciones)->pluck('id');
+        // //filtrar los candidatos por la carrera y la sede - institucion
+        // $sedesInstitucionesId = Sede::whereIn('institucion_id', $requestInstituciones)->pluck('id');
+
         $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
             ->whereIn('carrera_id', $requestCarreras) //filtrar por la carrera
-            ->whereIn('sede_id', $sedesInstitucionesId) //filtrar por la sede
+            ->when(!empty($sedes), function ($query) use ($sedes) {
+                $query->whereIn('sede_id', $sedes); // Filtrar por sede_id
+            })
             ->when(!empty($ciclos), function ($query) use ($ciclos) {
                 $query->whereIn('ciclo_de_estudiante', $ciclos);
             })
             ->pluck('id');
+        
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
         // return $estados;
@@ -323,16 +329,17 @@ class ColaboradoresController extends Controller
                   ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
               $colaborador->horasPracticas = $horasPracticas;
           }
+        //   dd($filteredSedes);
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
             'sedes' => $sedesFiltradas,
-            'instituciones' => $institucionesFiltradas,
+            // 'instituciones' => $institucionesFiltradas,
             'carreras' => $carrerasFiltradas,
             'areas' => $areasFiltradas,
             'sedesAll' => $sedesAll,
-            'institucionesAll' => $institucionesAll,
+            // 'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,

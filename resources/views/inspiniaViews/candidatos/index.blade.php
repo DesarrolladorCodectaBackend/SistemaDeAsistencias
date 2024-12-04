@@ -109,6 +109,31 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {{-- sedes --}}
+                                        <div class="card">
+                                            <div class="card-header" id="headingSedes">
+                                                <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedes" aria-expanded="false" aria-controls="collapseSedes">
+                                                        Sedes
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseSedes" class="collapse" aria-labelledby="headingSedes" data-parent="#accordionExample">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
+                                                    </div>
+                                                    @foreach($sedesAll as $index => $sede)
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input sede-checkbox" value="{{ $sede->id }}">
+                                                        <span for="checkbox-sedes-{{$index}}">{{ $sede->nombre }}</span>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <!-- Ciclos -->
                                             <div class="card">
                                                 <div class="card-header" id="headingCiclosCandidatos">
@@ -1099,7 +1124,8 @@ function abrirModalCreacion(index) {
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
-
+            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
+            
             estados = estados.length ? estados.join(',') : '0,1,2,3';
             carreras = carreras.length ? carreras.join(',') : '';
             instituciones = instituciones.length ? instituciones.join(',') : '';
