@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-10 offset-sm-2">
-                                        <button id="btnUpdatePassword" type="submit" class="btn btn-primary" disabled>Actualizar Contraseña</button>
+                                        <button id="btnUpdatePassword" type="submit" class="btn btn-primary">Actualizar Contraseña</button>
                                     </div>
                                 </div>
                             </form>

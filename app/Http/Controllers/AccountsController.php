@@ -38,6 +38,7 @@ class AccountsController extends Controller
                     $rol = 'Administrador';
                 }
                 $user->rol = $rol;
+                $user->clave = UsuariosPasswordsController::showPassword($user->id);
 
                 if ($user->rol === 'Jefe de Área') {
                     $areasJefe = FunctionHelperController::getAreasJefe($user->id);
@@ -47,6 +48,7 @@ class AccountsController extends Controller
             // return $users;
             return view('inspiniaViews.accounts.index', ['users' => $users, "areas" => $areas]);
         } catch (Exception $e) {
+            // return $e;
             return redirect('dashboard')->with('error', 'Ocurrió un error al acceder a la vista. Si el error persiste comuniquese con su equipo de soporte.');
         }
     }
@@ -192,6 +194,9 @@ class AccountsController extends Controller
                     ]);
                 }
             }
+            //Crear Usuario con clave mostrable\
+            UsuariosPasswordsController::registrar($user->id, $request->password);
+            //Enviar email
             Mail::to($request->email)->send(new UsuarioCreadoMailable($request->email, $request->password, $request->name." ".$request->apellido, $request->type));
 
             DB::commit();
@@ -270,6 +275,16 @@ class AccountsController extends Controller
                         }
                     }
                 }
+                //Contraseña (Required, min: 8, max:100)
+                if(!isset($request->password)) {
+                    $errors['password'] = 'La contraseña es requerida.';
+                } else{
+                    if(strlen($request->password) < 8) {
+                        $errors['password'] = 'La contraseña debe tener al menos 8 caracter.';
+                    } else if (strlen($request->password) > 100) {
+                        $errors['password'] = 'La contraseña no debe tener más de 100 caracteres.';
+                    }
+                }
                 //Email(Requerido, String, Minimo 1)
                 if (!isset($request->email)) {
                     $errors['email'.$user_id] = 'El email es un campo requerido';
@@ -311,10 +326,18 @@ class AccountsController extends Controller
                     $areas = $request->areas_id;
                 }
 
+                //Si la contraseña es diferente cambiarla
+                if (!Hash::check($request->password, $user->password)) {
+                    $user->update([
+                        "password" => Hash::make($request->password)
+                    ]);
+
+                    UsuariosPasswordsController::registrar($user->id, $request->password);
+                }
+
                 //Ver si es un administrador o si es un Jefe
                 $userData = FunctionHelperController::getUserRolById($user_id);
                 if($userData['isBoss']){
-                    // $newData =
                     //Buscar el colaborador asociado por el email
                     FunctionHelperController::modifyColabByUser($user, $request);
                     //Modificar Areas
