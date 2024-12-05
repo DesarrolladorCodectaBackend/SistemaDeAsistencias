@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA | Colaboradores</title>
 </head>
@@ -381,8 +383,9 @@
                                                 @endisset
                                                 <button class="btn btn-danger">Despedir</button>
                                             </form>
+                                            
                                         </div>
-
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -883,17 +886,17 @@
                                         </div>
                                         @else
                                         <div class="text-center d-flex justify-content-center gap-10">
-                                            <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
+                                            {{-- <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
                                                 @csrf
                                                 @method('PUT')
                                                 @isset($pageData->currentURL)
                                                 <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                 @endisset
-                                                <button class="btn btn-success" type="submit">
-                                                    Re Contratar
-                                                </button>
-                                            </form>
-
+                                                
+                                            </form> --}}
+                                            <button class="btn btn-success" type="submit" onclick="confirmRecontratar({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
+                                                Re Contratar
+                                            </button>
                                             {{-- delete --}}
                                                 <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
                                                     Eliminar
@@ -1190,29 +1193,151 @@
    </script>
 
     <script>
-        function confirmDelete(id, currentURL) {
-            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
-                if (e) {
-                    let form = document.createElement('form')
+        
+        // function confirmDespedir(id, currentURL){
+        //     Swal.fire({
+        //             title: "¿Deseas despedir a este colaborador?",
+        //             showCancelButton: true,
+        //             confirmButtonText: "Despedir",
+        //             cancelButtonText: "Cancelar",
+        //             zIndex: 9999999999
+        //         }).then((result) => {
+        //             if (result.isConfirmed) {
+                  
+        //             let form = document.createElement('form');
+        //             form.method = 'POST';
+        //             form.action = `/colaboradores/despedirColaborador/${id}`; 
 
+        //             form.innerHTML = '@csrf @method("PUT")';
+
+        //             if (currentURL != null) {
+        //                 let inputHidden = document.createElement('input');
+        //                 inputHidden.type = 'hidden';
+        //                 inputHidden.name = 'currentURL';
+        //                 inputHidden.value = currentURL;
+        //                 form.appendChild(inputHidden);
+        //             }
+    
+        //             document.body.appendChild(form);
+        //             form.submit(); 
+        //             } else {
+                        
+        //                 Swal.fire({
+        //                     title: "Acción cancelada",
+        //                     text: "El colaborador no fue despedido",
+        //                     icon: "info",
+        //                     customClass: {
+        //                         content: 'swal-content'  
+        //                     }
+        //                 });
+        
+        //                 const style = document.createElement('style');
+        //                 style.innerHTML = `
+        //                     .swal2-html-container{
+        //                         color: #FFFFFF;  
+        //                     }
+        //                 `;
+        //                 document.head.appendChild(style);
+        //             }
+        //             });
+                
+        // }
+
+        function  confirmRecontratar(id, currentURL){
+            Swal.fire({
+                    title: "¿Deseas re contratar a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Re contratar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                  
+                    let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/colaboradores/${id}`;
-                    form.innerHTML = `@csrf @method('DELETE')`;
+                    form.action = `/colaboradores/recontratarColaborador/${id}`; 
+
+                    form.innerHTML = '@csrf @method("PUT")';
 
                     if (currentURL != null) {
                         let inputHidden = document.createElement('input');
                         inputHidden.type = 'hidden';
                         inputHidden.name = 'currentURL';
                         inputHidden.value = currentURL;
-                        form.appendChild(inputHidden)
+                        form.appendChild(inputHidden);
                     }
+    
+                    document.body.appendChild(form);
+                    form.submit(); 
+                    } else {
+                        
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'  
+                            }
+                        });
+        
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+        }
 
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
+
+        function confirmDelete(id, currentURL) {
+            Swal.fire({
+                    title: "¿Deseas eliminar este registro? Se eliminará todo lo relacionado a este colaborador",
+                    showCancelButton: true,
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                  
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/colaboradores/${id}`; 
+
+                    form.innerHTML = '@csrf @method("DELETE")';
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+    
+                    document.body.appendChild(form);
+                    form.submit(); 
+                    } else {
+                        
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'  
+                            }
+                        });
+        
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+
+        
         }
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');
