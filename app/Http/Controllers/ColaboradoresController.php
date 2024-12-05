@@ -23,10 +23,12 @@ use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
 use App\Http\Requests\UpdateColaboradoresRequest;
 use App\Models\Horario_Presencial_Asignado;
+use App\Models\IntegrantesReuniones;
 use App\Models\Programas_instalados;
 use App\Models\Registro_Mantenimiento;
 use App\Models\RegistroActividad;
 use App\Models\Sede;
+use App\Models\ReunionesProgramadas;
 use App\Models\Semanas;
 use App\Models\User;
 use App\Models\UsuarioJefeArea;
@@ -286,7 +288,7 @@ class ColaboradoresController extends Controller
         // return $requestSedes;
         // return $requestEstados;
 
-        
+
         // Obtenemos a los colaboradores filtrados por áreas
         $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
             ->whereIn('area_id', $requestAreas)
@@ -319,7 +321,7 @@ class ColaboradoresController extends Controller
             ->whereIn('sede_id', $sedesInstitucionesId) //filtrar por la sede
             ->whereIn('sede_id', $sedesId)
             ->whereIn('ciclo_de_estudiante', $requestCiclos)->pluck('id');
-        
+
         // return $colaboradoresArea;
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
@@ -360,7 +362,7 @@ class ColaboradoresController extends Controller
             'instituciones' => $institucionesFiltradas,
             'carreras' => $carrerasFiltradas,
             'areas' => $areasFiltradas,
-            
+
             'sedesAll' => $sedesAll,
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
@@ -939,7 +941,10 @@ class ColaboradoresController extends Controller
                     $colaborador_actividades = AreaRecreativa::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
                     // areas_apoyo
                     $colaborador_apoyo_areas = ColaboradoresApoyoAreas::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
-
+                    //integrantes_reuniones
+                    $integrantes_reuniones = IntegrantesReuniones::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //reuniones_programadas
+                    $reuniones_programadas = ReunionesProgramadas::whereIn('id', $colaboradores->pluck('id'))->get();
 
                     //ELIMINACIÓN EN CASCADA
                     //ahora procedemos a eliminarlos de los ultimos a los primeros
@@ -987,7 +992,14 @@ class ColaboradoresController extends Controller
                     foreach($colaborador_apoyo_areas as $apo){
                         $apo->delete();
                     }
-
+                    //integrantes_reuniones
+                    foreach($integrantes_reuniones as $inte){
+                        $inte->delete();
+                    }
+                    //reuniones_programadas
+                    foreach($reuniones_programadas as $reu){
+                        $reu->delete();
+                    }
                     //colaboradores_por_area
                     foreach($colaboradores_por_area as $colaborador_por_area) {
                         $colaborador_por_area->delete();
@@ -1010,7 +1022,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
-            // return $e;
+            //return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
