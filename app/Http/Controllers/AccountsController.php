@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\Candidatos;
 use App\Models\Colaboradores;
+use App\Models\Colaboradores_por_Area;
 use App\Models\User;
 use App\Models\UsuarioAdministrador;
 use App\Models\UsuarioJefeArea;
@@ -58,7 +59,16 @@ class AccountsController extends Controller
         if (!$access) {
             return redirect('dashboard')->with('error', 'No tiene permisos para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
-        $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->get();
+        //Colaboradores jefes de area
+        $colaboradores = [];
+        $colaboradoresTotales = Colaboradores::with('candidato')->whereNot('estado', 2)->get();
+        foreach($colaboradoresTotales as $colaborador){
+            $jefe = Colaboradores_por_Area::where("colaborador_id", $colaborador->id)->where("estado", 1)->where("jefe_area", 1)->first();
+            if($jefe){
+                $colaboradores[] = $colaborador;
+            }
+        }
+        // return $colaboradores;
         $areas = Area::where(["estado" => 1])->get();
         return view('inspiniaViews.accounts.create', ["colaboradores" => $colaboradores, "areas" => $areas]);
     }

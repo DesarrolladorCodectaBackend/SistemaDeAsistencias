@@ -168,7 +168,6 @@
                                         {{$colaborador->candidato->apellido}}</option>
                                     @endforeach
                                 </select>
-
                                 <button onclick="handleColabSelect()" class="btn btn-info">Seleccionar</button>
                             </div>
                         </div>

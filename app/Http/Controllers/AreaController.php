@@ -504,37 +504,41 @@ class AreaController extends Controller
 
             //Asignar jefe de area
             //Se busca el registro que este marcado como jefe
-            $jefeArea = Colaboradores_por_Area::where('area_id', $area_id)->where('estado', 1)->where('jefe_Area', 1)->first();
+            $jefeArea = Colaboradores_por_Area::where('area_id', $area_id)->where('jefe_Area', 1)->first();
             if ($jefeArea) {
-                if (isset($request->jefe_area_id) || $request->jefe_area_id != 0) {
-                    //Si existe se compara con el que se esta enviando
-                    if ($request->jefe_area_id != $jefeArea->id) {
-                        //Si el que se le envia es otro se le quita el puesto y se asigna al otro
-                        $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
-                        if ($newJefeArea) {
-                            if ($newJefeArea->estado == 1) {
-                                $newJefeArea->update(["jefe_area" => 1]);
+                if (isset($request->jefe_area_id)) {
+                    if($request->jefe_area_id != 0){
+                        //Si existe se compara con el que se esta enviando
+                        if ($request->jefe_area_id != $jefeArea->id) {
+                            //Si el que se le envia es otro se le quita el puesto y se asigna al otro
+                            $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
+                            if ($newJefeArea) {
+                                if ($newJefeArea->estado == 1) {
+                                    $newJefeArea->update(["jefe_area" => 1]);
+                                }
                             }
-                        }
+                            $jefeArea->update(["jefe_area" => 0]);
+                        } //Si son el mismo se mantiene
+                    } else {
                         $jefeArea->update(["jefe_area" => 0]);
-                    } //Si son el mismo se mantiene
+                    }
                     //Si no se envia nada, se le quita el puesto de jefe y el area queda sin jefe
                 } else {
                     $jefeArea->update(["jefe_area" => 0]);
                 }
             } else {
                 //Si no existe se sigue con la asignacion
-                if (isset($request->jefe_area_id) || $request->jefe_area_id != 0) {
-                    $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
-                    if ($newJefeArea) {
-                        if ($newJefeArea->estado == 1) {
-                            $newJefeArea->update(["jefe_area" => 1]);
+                if (isset($request->jefe_area_id)) {
+                    if($request->jefe_area_id != 0){
+                        $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
+                        if ($newJefeArea) {
+                            if ($newJefeArea->estado == 1) {
+                                $newJefeArea->update(["jefe_area" => 1]);
+                            }
                         }
                     }
                 }
             }
-
-
 
             //Se busca el área por el id ingresado como parámetro
             $area = Area::findOrFail($area_id);
@@ -578,7 +582,7 @@ class AreaController extends Controller
                 return redirect()->route('areas.index');
             }
         } catch (Exception $e) {
-            return $e;
+            // return $e;
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollBack();
@@ -621,6 +625,7 @@ class AreaController extends Controller
 
             if ($area->estado == 0) {
                 $colaboradoresArea = Colaboradores_por_Area::where('estado', 1)->where('area_id', $area_id)->get();
+                AreaController::removeJefeArea($area_id);
                 // Por cada registro encontrado
                 foreach ($colaboradoresArea as $colaboradorArea) {
                     //Se inactiva su estado
@@ -709,6 +714,16 @@ class AreaController extends Controller
                 "colaboradores" => $colaboradoresArea,
             ]);
         }
+
+    }
+
+    public static function removeJefeArea($area_id){
+        //Buscar al jefe de area
+        $jefe_area = Colaboradores_por_Area::where('area_id', $area_id)->where('jefe_area', 1)->first();
+        //Si existe se le quita el puesto de jefe
+        if($jefe_area){
+            $jefe_area->update(["jefe_area" => 0]);
+        } 
 
     }
 
