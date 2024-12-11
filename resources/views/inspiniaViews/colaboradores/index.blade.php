@@ -375,15 +375,15 @@
                                         </div>
 
                                         <div class="mt-2">
-                                            <form role="form" method="POST" action="{{route('colaboradores.despedirColaborador', $colaborador->id)}}">
+                                            {{-- <form role="form" method="POST" action="{{route('colaboradores.despedirColaborador', $colaborador->id)}}">
                                                 @csrf
                                                 @method('PUT')
                                                 @isset($pageData->currentURL)
                                                 <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                 @endisset
                                                 <button class="btn btn-danger">Despedir</button>
-                                            </form>
-
+                                            </form> --}}
+                                            <button class="btn btn-danger" onclick="confirmDespedir({{$colaborador->id}})">Despedir</button>
                                         </div>
 
                                     </div>
@@ -944,7 +944,13 @@
                 </div>
             </div>
             @endif
-
+            <style>
+                .swal2-container {
+        position: fixed;  /* O usa absolute si lo prefieres */
+        z-index: 9999999999999;
+    }
+    
+                </style>
 
         </div>
 
@@ -1231,54 +1237,51 @@
    </script>
 
     <script>
-        // function confirmDespedir(id, currentURL){
-        //     Swal.fire({
-        //             title: "¿Deseas despedir a este colaborador?",
-        //             showCancelButton: true,
-        //             confirmButtonText: "Despedir",
-        //             cancelButtonText: "Cancelar",
-        //             zIndex: 9999999999
-        //         }).then((result) => {
-        //             if (result.isConfirmed) {
+        function confirmDespedir(id){
+            Swal.fire({
+                    title: "¿Deseas despedir a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Despedir",
+                    cancelButtonText: "Cancelar",
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
-        //             let form = document.createElement('form');
-        //             form.method = 'POST';
-        //             form.action = `/colaboradores/despedirColaborador/${id}`;
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/colaboradores/despedirColaborador/${id}`;
 
-        //             form.innerHTML = '@csrf @method("PUT")';
+                    form.innerHTML = '@csrf @method("PUT")';
 
-        //             if (currentURL != null) {
-        //                 let inputHidden = document.createElement('input');
-        //                 inputHidden.type = 'hidden';
-        //                 inputHidden.name = 'currentURL';
-        //                 inputHidden.value = currentURL;
-        //                 form.appendChild(inputHidden);
-        //             }
+                 
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
 
-        //             document.body.appendChild(form);
-        //             form.submit();
-        //             } else {
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue despedido",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
 
-        //                 Swal.fire({
-        //                     title: "Acción cancelada",
-        //                     text: "El colaborador no fue despedido",
-        //                     icon: "info",
-        //                     customClass: {
-        //                         content: 'swal-content'
-        //                     }
-        //                 });
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    // console.log(result);
+                    });
 
-        //                 const style = document.createElement('style');
-        //                 style.innerHTML = `
-        //                     .swal2-html-container{
-        //                         color: #FFFFFF;
-        //                     }
-        //                 `;
-        //                 document.head.appendChild(style);
-        //             }
-        //             });
+        }
+       
 
-        // }
+        
+      
 
         function  confirmRecontratar(id, currentURL){
             Swal.fire({
