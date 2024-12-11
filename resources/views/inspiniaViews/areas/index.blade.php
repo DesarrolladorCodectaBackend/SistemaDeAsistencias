@@ -273,6 +273,16 @@
                                                     value="{{ $area->color_hex }}">
 
                                             </div>
+                                            <div class="form-group"><label>Jefe del Área</label>
+                                                <select class="form-control" name="jefe_area_id" id="">
+                                                    <option @if($area->hasBoss == false) selected @endif value="0">Sin jefe</option>
+                                                    @foreach($area->integrantes as $integrante){
+                                                        <option @if($integrante->jefe_area) selected @endif value="{{$integrante->id}}">{{$integrante->colaborador->candidato->nombre}} {{$integrante->colaborador->candidato->apellido}}</option>
+                                                    }
+                                                    @endforeach
+                                                </select>
+
+                                            </div>
 
                                         </div>
                                         <div class="col-sm-6">

@@ -150,9 +150,14 @@ class PerfilController extends Controller
                 return redirect()->route('perfil.index')->withErrors($errors)->withInput();
             }
 
-            $user->update([
-                'password' => Hash::make($request->new_password)
-            ]);
+            //Si la contraseña es diferente cambiarla
+            if (!Hash::check($request->new_password, $user->password)) {
+                $user->update([
+                    "password" => Hash::make($request->new_password)
+                ]);
+
+                UsuariosPasswordsController::registrar($user->id, $request->new_password);
+            }
 
             DB::commit();
             return redirect()->route('perfil.index')->with('success', 'Contraseña actualizada correctamente.');

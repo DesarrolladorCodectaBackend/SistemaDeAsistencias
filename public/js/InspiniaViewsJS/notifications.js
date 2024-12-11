@@ -6,7 +6,7 @@ let notificationsContainer = document.getElementById('notificationsContainer');
         // const UserToken = <?php echo json_encode(session('api_token')); ?>;
         const UserToken = document.getElementById('userToken').innerText.replace(/"/g, '');
 
-        console.log(UserToken);
+        // console.log(UserToken);
         const notificationCard = (icon, message, url) => {
             let card = `<li>
                             <a href="${url}" class="dropdown-item">

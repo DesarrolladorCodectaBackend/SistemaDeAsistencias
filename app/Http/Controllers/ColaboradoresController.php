@@ -63,12 +63,23 @@ class ColaboradoresController extends Controller
     public function asignarColorJefesArea($colaboradores)
     {
         $colaboradoresConColor = [];
-        $correosJefesAreaActivos = UsuarioJefeArea::where('estado', 1)->with('user')->get()->pluck('user.email')->toArray();
+        // $correosJefesAreaActivos = UsuarioJefeArea::where('estado', 1)->with('user')->get()->pluck('user.email')->toArray();
 
         foreach ($colaboradores as $colaborador) {
-            $correoColaborador = $colaborador->candidato->correo;
+            $jefeDeArea = Colaboradores_por_Area::where("colaborador_id", $colaborador->id)->where("estado", 1)->where("jefe_area", 1)->first();
 
-            if (in_array($correoColaborador, $correosJefesAreaActivos)) {
+
+            // $correoColaborador = $colaborador->candidato->correo;
+
+            // if (in_array($correoColaborador, $correosJefesAreaActivos)) {
+            //     $colaborador->estadoJefe = [
+            //         'color' => '#264b90',
+            //         'message' => 'Jefe de Área'
+            //     ];
+
+            //     $colaboradoresConColor[] = $colaborador;
+            // }
+            if ($jefeDeArea) {
                 $colaborador->estadoJefe = [
                     'color' => '#264b90',
                     'message' => 'Jefe de Área'
@@ -324,6 +335,8 @@ class ColaboradoresController extends Controller
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
         $countColaboradores = Colaboradores::whereIn('candidato_id', $candidatosFiltradosId)->get()->count();
+        $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
+
 
         // return $estados;
         foreach($estados as $estado) {
@@ -369,6 +382,7 @@ class ColaboradoresController extends Controller
 
             'horasTotales' => $horasTotales,
             'ciclosAll' => $ciclosAll,
+            'colaboradoresCol' => $colaboradoresCol
         ]);
     }
     public function store(StoreColaboradoresRequest $request)
@@ -620,6 +634,9 @@ class ColaboradoresController extends Controller
             foreach ($areasInactivas as $areaInactiva) {
                 //Se inactiva su estado
                 $areaInactiva->update(['estado' => false]);
+                if($areaInactiva->jefe_area == 1){
+                    $areaInactiva->update(['jefe_area' => 0]);
+                }
                 //Crear registro de inactivación
                 RegistroActividadController::crearRegistro($areaInactiva->id, false);
                 //Se busca si tiene computadoras
@@ -713,7 +730,7 @@ class ColaboradoresController extends Controller
             if($colaborador->estado == 0){
                 $colaboradoresAreaActivos = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('estado', 1)->get();
                 foreach($colaboradoresAreaActivos as $colabArea){
-                    $colabArea->update(['estado' => false]);
+                    $colabArea->update(['estado' => false, "jefe_area" => 0]);
                     //Crear registro de inactivación
                     RegistroActividadController::crearRegistro($colabArea->id, false);
                 }
@@ -789,6 +806,8 @@ class ColaboradoresController extends Controller
         $carreras = $carrerasAll->where('estado', 1);
         $areas = $areasAll->where('estado', 1);
 
+        $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
+
 
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
@@ -820,7 +839,8 @@ class ColaboradoresController extends Controller
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
-            'horasTotales' =>  $horasTotales
+            'horasTotales' =>  $horasTotales,
+            'colaboradoresCol' => $colaboradoresCol
         ]);
 
     }

@@ -21,6 +21,23 @@ use Exception;
 
 class AreaController extends Controller
 {
+    function getAreaWithIntegrantes($areas){
+        foreach($areas as $area){
+            $area->hasBoss = false;
+            // $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
+            $integrantesArea = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->get();
+            foreach($integrantesArea as $integrante){
+                if($integrante->jefe_area){ 
+                    $area->hasBoss = true;
+                    break;
+                }
+            }
+            $colaboradoresAreaCount = $integrantesArea->count();
+            $area->integrantes = $integrantesArea;
+            $area->count_colabs = $colaboradoresAreaCount;
+        }
+        return $areas;
+    }
     /**
      * INDEX
      *
@@ -41,10 +58,11 @@ class AreaController extends Controller
         $salones = Salones::where('estado', 1)->get();
         $pageData = FunctionHelperController::getPageData($areas);
         $hasPagination = true;
-        foreach ($areas as $area) {
-            $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
-            $area->count_colabs = $colaboradoresAreaCount;
-        }
+        // foreach ($areas as $area) {
+        //     $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
+        //     $area->count_colabs = $colaboradoresAreaCount;
+        // }
+        $areas = $this->getAreaWithIntegrantes($areas);
         $countAreas = Area::where('estado', 1)->count();
         $countColabs = Colaboradores::where('estado', 1)->count();
         // return response()->json(["areas" => $areas]);
@@ -343,29 +361,29 @@ class AreaController extends Controller
             $errors = [];
 
             // validacion especializacion
-            if(!isset($request->especializacion)){
+            if (!isset($request->especializacion)) {
                 $errors['especializacion'] = "Este campo es obligatorio.";
-            }else {
-                if(strlen($request->especializacion) > 100){
+            } else {
+                if (strlen($request->especializacion) > 100) {
                     $errors['especializacion'] = "Excede los 100 caracteres.";
                 }
             }
 
             // validacion descripcion
-            if(!isset($request->descripcion)){
+            if (!isset($request->descripcion)) {
                 $errors['descripcion'] = "Este campo es obligatorio.";
-            }else {
-                if(strlen($request->descripcion) > 250){
+            } else {
+                if (strlen($request->descripcion) > 250) {
                     $errors['descripcion'] = "Excede los 250 caracteres.";
                 }
             }
 
             // validacion color_hex
-            if(!isset($request->color_hex)){
+            if (!isset($request->color_hex)) {
                 $errors['color_hex'] = "Este campo es obligatorio.";
             }
 
-            if(!empty($errors)){
+            if (!empty($errors)) {
                 return redirect()->route('areas.index')->withErrors($errors)->withInput();
             }
             //Validar que los datos no esten vacios
@@ -458,31 +476,70 @@ class AreaController extends Controller
             $errors = [];
 
             // validacion especializacion
-            if(!isset($request->especializacion)){
-                $errors['especializacion'.$area_id] = "Este campo es obligatorio.";
-            }else {
-                if(strlen($request->especializacion) > 100){
-                    $errors['especializacion'.$area_id] = "Excede los 100 caracteres.";
+            if (!isset($request->especializacion)) {
+                $errors['especializacion' . $area_id] = "Este campo es obligatorio.";
+            } else {
+                if (strlen($request->especializacion) > 100) {
+                    $errors['especializacion' . $area_id] = "Excede los 100 caracteres.";
                 }
             }
 
             // validacion descripcion
-            if(!isset($request->descripcion)){
-                $errors['descripcion'.$area_id] = "Este campo es obligatorio.";
-            }else {
-                if(strlen($request->descripcion) > 250){
-                    $errors['descripcion'.$area_id] = "Excede los 250 caracteres.";
+            if (!isset($request->descripcion)) {
+                $errors['descripcion' . $area_id] = "Este campo es obligatorio.";
+            } else {
+                if (strlen($request->descripcion) > 250) {
+                    $errors['descripcion' . $area_id] = "Excede los 250 caracteres.";
                 }
             }
 
             // validacion descripcion
-            if(!isset($request->color_hex)){
-                $errors['color_hex'.$area_id] = "Este campo es obligatorio.";
+            if (!isset($request->color_hex)) {
+                $errors['color_hex' . $area_id] = "Este campo es obligatorio.";
             }
 
-            if(!empty($errors)){
+            if (!empty($errors)) {
                 return redirect()->route('areas.index')->withErrors($errors)->withInput();
             }
+
+            //Asignar jefe de area
+            //Se busca el registro que este marcado como jefe
+            $jefeArea = Colaboradores_por_Area::where('area_id', $area_id)->where('jefe_Area', 1)->first();
+            if ($jefeArea) {
+                if (isset($request->jefe_area_id)) {
+                    if($request->jefe_area_id != 0){
+                        //Si existe se compara con el que se esta enviando
+                        if ($request->jefe_area_id != $jefeArea->id) {
+                            //Si el que se le envia es otro se le quita el puesto y se asigna al otro
+                            $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
+                            if ($newJefeArea) {
+                                if ($newJefeArea->estado == 1) {
+                                    $newJefeArea->update(["jefe_area" => 1]);
+                                }
+                            }
+                            $jefeArea->update(["jefe_area" => 0]);
+                        } //Si son el mismo se mantiene
+                    } else {
+                        $jefeArea->update(["jefe_area" => 0]);
+                    }
+                    //Si no se envia nada, se le quita el puesto de jefe y el area queda sin jefe
+                } else {
+                    $jefeArea->update(["jefe_area" => 0]);
+                }
+            } else {
+                //Si no existe se sigue con la asignacion
+                if (isset($request->jefe_area_id)) {
+                    if($request->jefe_area_id != 0){
+                        $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
+                        if ($newJefeArea) {
+                            if ($newJefeArea->estado == 1) {
+                                $newJefeArea->update(["jefe_area" => 1]);
+                            }
+                        }
+                    }
+                }
+            }
+
             //Se busca el área por el id ingresado como parámetro
             $area = Area::findOrFail($area_id);
             //Se asignan los valores ingresados por el usuario a las variables correspondientes, si no se ingresó nada se asigna el valor actual de la base de datos
@@ -525,6 +582,7 @@ class AreaController extends Controller
                 return redirect()->route('areas.index');
             }
         } catch (Exception $e) {
+            // return $e;
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollBack();
@@ -567,6 +625,7 @@ class AreaController extends Controller
 
             if ($area->estado == 0) {
                 $colaboradoresArea = Colaboradores_por_Area::where('estado', 1)->where('area_id', $area_id)->get();
+                AreaController::removeJefeArea($area_id);
                 // Por cada registro encontrado
                 foreach ($colaboradoresArea as $colaboradorArea) {
                     //Se inactiva su estado
@@ -623,7 +682,7 @@ class AreaController extends Controller
     {
         $access = FunctionHelperController::verifyAreaAccess($area_id);
 
-        if(!$access){
+        if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para visualizar esa area. No lo intente denuevo o puede ser baneado.');
         }
 
@@ -655,6 +714,16 @@ class AreaController extends Controller
                 "colaboradores" => $colaboradoresArea,
             ]);
         }
+
+    }
+
+    public static function removeJefeArea($area_id){
+        //Buscar al jefe de area
+        $jefe_area = Colaboradores_por_Area::where('area_id', $area_id)->where('jefe_area', 1)->first();
+        //Si existe se le quita el puesto de jefe
+        if($jefe_area){
+            $jefe_area->update(["jefe_area" => 0]);
+        } 
 
     }
 

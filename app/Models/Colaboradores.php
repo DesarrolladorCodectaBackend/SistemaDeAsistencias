@@ -11,7 +11,8 @@ class Colaboradores extends Model
 
     protected $fillable = [
         'estado',
-        'candidato_id'
+        'candidato_id',
+        'editable'
     ];
 
 

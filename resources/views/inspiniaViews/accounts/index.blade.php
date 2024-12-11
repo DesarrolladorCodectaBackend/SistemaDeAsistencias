@@ -25,33 +25,33 @@
             </div>
             <div class="col-lg-2 ">
                 <form action="{{route('accounts.create')}}">
-                    <button type="submit" class="btn btn-success dim float-right" >Agregar</button>
+                    <button type="submit" class="btn btn-success dim float-right">Agregar</button>
                 </form>
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             @if(session('error'))
-                <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
-                    role="alert" style="position: relative;">
-                    <div style="flex-grow: 1;">
-                        <strong>Error:</strong> {{ session('error') }}
-                    </div>
-                    <button onclick="deleteAlert('alert-error')" type="button" class="btn btn-outline-dark btn-xs"
-                        style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
-                            class="fa fa-close"></i></button>
+            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
+                role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Error:</strong> {{ session('error') }}
                 </div>
+                <button onclick="deleteAlert('alert-error')" type="button" class="btn btn-outline-dark btn-xs"
+                    style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
+                        class="fa fa-close"></i></button>
+            </div>
             @endif
 
             @if(session('success'))
-                <div id="alert-success" class="alert alert-success alert-dismissible fade show d-flex align-items-start"
-                    role="alert" style="position: relative;">
-                    <div style="flex-grow: 1;">
-                        <strong>Éxito:</strong> {{ session('success') }}
-                    </div>
-                    <button onclick="deleteAlert('alert-success')" type="button" class="btn btn-outline-dark btn-xs"
-                        style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
-                            class="fa fa-close"></i></button>
+            <div id="alert-success" class="alert alert-success alert-dismissible fade show d-flex align-items-start"
+                role="alert" style="position: relative;">
+                <div style="flex-grow: 1;">
+                    <strong>Éxito:</strong> {{ session('success') }}
                 </div>
+                <button onclick="deleteAlert('alert-success')" type="button" class="btn btn-outline-dark btn-xs"
+                    style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i
+                        class="fa fa-close"></i></button>
+            </div>
             @endif
 
             <div class="row">
@@ -67,6 +67,7 @@
                                             <th>Nombres</th>
                                             <th>Apellidos</th>
                                             <th>Email</th>
+                                            <th>Password</th>
                                             <th>Rol</th>
                                             <th>Estado</th>
                                             <th class="oculto">Editar</th>
@@ -80,6 +81,36 @@
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->apellido }}</td>
                                             <td>{{ $user->email }}</td>
+                                            <style>
+                                                /* Cambiar el tamaño y el color del scrollbar */
+                                                .overflow-auto::-webkit-scrollbar {
+                                                    height: 8px;
+                                                    /* Altura del scrollbar horizontal */
+                                                }
+
+                                                /* Color y estilo del fondo del scrollbar */
+                                                .overflow-auto::-webkit-scrollbar-track {
+                                                    background: #f1f1f1;
+                                                    /* Fondo del track */
+                                                    border-radius: 8px;
+                                                    /* Bordes redondeados */
+                                                }
+
+                                                /* Color y estilo del "thumb" (barra de desplazamiento) */
+                                                .overflow-auto::-webkit-scrollbar-thumb {
+                                                    background: #222;
+                                                    border-radius: 18px;
+                                                }
+                                            </style>
+                                            <td class="d-flex justify-content-between overflow-auto"><span
+                                                    class="overflow-auto"
+                                                    style="max-width: 200px; white-space: nowrap; overflow-x: auto; "
+                                                    id="showPassword-{{$user->id}}" hidden>{{ $user->clave
+                                                    }}</span><span
+                                                    id="hidePassword-{{$user->id}}">*************</span><button
+                                                    class="border-0 btn-outline-dark rounded"
+                                                    onclick="showHidePassword({{$user->id}})"><i id="iconEyeTable-{{$user->id}}"
+                                                        class="fa fa-eye"></i></button></td>
                                             <td>{{ $user->rol }}</td>
                                             <td>
                                                 <form method="POST"
@@ -130,6 +161,42 @@
                                                                             required value="{{$user->email}}"
                                                                             type="email">
                                                                         @error('email'.$user->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <style>
+                                                                            .input-container {
+                                                                                position: relative;
+                                                                            }
+
+                                                                            .input-password {
+                                                                                padding-right: 30px;
+                                                                            }
+
+                                                                            .toggle-button {
+                                                                                position: absolute;
+                                                                                top: 50%;
+                                                                                right: 10px;
+                                                                                transform: translateY(-50%);
+                                                                                background: none;
+                                                                                border: none;
+                                                                                cursor: pointer;
+                                                                                font-size: 16px;
+                                                                            }
+                                                                        </style>
+                                                                        <label>Contraseña:</label>
+                                                                        <div class="input-container">
+                                                                            <input class="form-control input-password"
+                                                                                id="password-{{$user->id}}" name="password"
+                                                                                type="password" value="{{$user->clave}}"
+                                                                                required />
+                                                                            <button class="toggle-button"
+                                                                                onclick="toogleInput('password-{{$user->id}}', 'password-icon-{{$user->id}}')"
+                                                                                type="button"><i class="fa fa-eye"
+                                                                                    id="password-icon-{{$user->id}}"></i></button>
+                                                                        </div>
+                                                                        @error('password'.$user->id)
                                                                         <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
@@ -203,6 +270,36 @@
     </div>
     </div>
     <script>
+        const showHidePassword = (user_id) => {
+            let showPassword = document.getElementById(`showPassword-${user_id}`);
+            let hidePassword = document.getElementById(`hidePassword-${user_id}`);
+            let iconEyeTable = document.getElementById(`iconEyeTable-${user_id}`);
+
+            if(showPassword.hidden){
+                showPassword.hidden = false;
+                hidePassword.hidden = true;
+                iconEyeTable.className = 'fa fa-eye-slash'
+            } else{
+                showPassword.hidden = true;
+                hidePassword.hidden = false;
+                iconEyeTable.className = 'fa fa-eye'
+
+            }
+
+        }
+        const toogleInput = (inputId, iconId) => {
+            let input = document.getElementById(inputId);
+            let icon = document.getElementById(iconId);
+
+            if(input.type == "password"){
+                input.type = "text";
+                icon.className = 'fa fa-eye-slash'
+            } else {
+                input.type = "password";
+                icon.className = 'fa fa-eye'
+            }
+        }
+
         const deleteAlert = (id) => {
             let alertError = document.getElementById(id);
             if (alertError) {
