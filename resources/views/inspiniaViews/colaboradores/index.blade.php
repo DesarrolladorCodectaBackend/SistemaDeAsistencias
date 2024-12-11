@@ -978,11 +978,6 @@
         </script>
     @endif
 
-
-
-
-
-
     <style>
         .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
