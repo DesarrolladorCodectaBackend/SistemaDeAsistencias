@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA | Colaboradores</title>
 </head>
@@ -51,84 +53,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <!--
-                                    <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
-                                        <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
-                                        <div class="row">
-                                            <div class="col-sm-12 col-md-6 b-r">
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Areas:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="select-all-areas"><span>Seleccionar
-                                                            todos</span>
-                                                    </div>
-                                                    @foreach($areasAll as $index => $area)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="checkbox-areas-{{$index}}" class="area-checkbox" value="{{ $area->id }}"><span>{{$area->especializacion}}</span>
-                                                    </div>
-                                                    @endforeach
 
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Estados:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="select-all-estados"><span>Seleccionar
-                                                            todos</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-1"
-                                                            value="1"><span>activo</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-0"
-                                                            value="0"><span>inactivo</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-0"
-                                                            value="2"><span>Ex colaborador</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 col-md-6 b-r">
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Carreras:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox"
-                                                            id="select-all-carreras"><span>Seleccionar todos</span>
-                                                    </div>
-                                                    @foreach($carrerasAll as $index => $carrera)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="carrera-checkbox" value="{{ $carrera->id }}"><span>{{ $carrera->nombre }}</span>
-                                                    </div>
-                                                    @endforeach
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Instituciones:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox"
-                                                            id="select-all-instituciones"><span>Seleccionar todos</span>
-                                                    </div>
-                                                    @foreach($institucionesAll as $index => $institucion)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="institucion-checkbox" value="{{ $institucion->id }}"><span>{{ $institucion->nombre }}</span>
-                                                    </div>
-                                                    @endforeach
-                                                </div>
-                                                <div class="form-group mt-3 text-center">
-                                                    <button type="submit" class="btn btn-primary px-5">Filtrar</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    -->
                                     <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                         <h2 class="m-t-none m-b font-bold text-center">Filtrar Colaboradores</h2>
                                         <div class="accordion" id="accordionExample">
@@ -211,6 +136,7 @@
                                                 </div>
                                             </div>
 
+
                                             <!-- Ciclos -->
                                             <div class="card">
                                                 <div class="card-header" id="headingCiclosCandidatos">
@@ -263,6 +189,30 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Sedes -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingSedesCandidatos">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedesCandidatos" aria-expanded="false" aria-controls="collapseSedesCandidatos">
+                                                            Sedes
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseSedesCandidatos" class="collapse" aria-labelledby="headingSedesCandidatos" data-parent="#accordionExampleCandidatos">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @foreach($sedesAll as $index => $sede)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input sede-checkbox" id="checkbox-sede-candidatos-{{ $sede->id }}" value="{{ $sede->id }}">
+                                                            <span for="checkbox-sede-candidatos-{{ $sede->id }}">{{ $sede->nombre }}</span>
+                                                        </div>
+                                                        @endforeach
+                                 
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <!-- Submit Button -->
                                             <div class="text-center mt-4">
                                                 <button type="submit" class="btn btn-primary px-5">Filtrar</button>
@@ -433,8 +383,9 @@
                                                 @endisset
                                                 <button class="btn btn-danger">Despedir</button>
                                             </form>
+                                            
                                         </div>
-
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -547,7 +498,7 @@
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         @endisset
 
-                                
+
                                     </form>
                                     <button type="button" class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs" onclick="confirmState({{ $colaborador->id }})">
                                         <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
@@ -935,17 +886,17 @@
                                         </div>
                                         @else
                                         <div class="text-center d-flex justify-content-center gap-10">
-                                            <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
+                                            {{-- <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
                                                 @csrf
                                                 @method('PUT')
                                                 @isset($pageData->currentURL)
                                                 <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                 @endisset
-                                                <button class="btn btn-success" type="submit">
-                                                    Re Contratar
-                                                </button>
-                                            </form>
-
+                                                
+                                            </form> --}}
+                                            <button class="btn btn-success" type="submit" onclick="confirmRecontratar({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
+                                                Re Contratar
+                                            </button>
                                             {{-- delete --}}
                                                 <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
                                                     Eliminar
@@ -1054,9 +1005,9 @@
                 // Crear un formulario dinámicamente
                 let form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/colaboradores/activar-inactivar/${id}`; 
+                form.action = `/colaboradores/activar-inactivar/${id}`;
 
-               
+
                 let csrfToken = '{{ csrf_token() }}';
                 let inputCSRF = document.createElement('input');
                 inputCSRF.type = 'hidden';
@@ -1073,7 +1024,7 @@
                 let inputCurrentURL = document.createElement('input');
                 inputCurrentURL.type = 'hidden';
                 inputCurrentURL.name = 'currentURL';
-                inputCurrentURL.value = '{{ $pageData->currentURL }}'; 
+                inputCurrentURL.value = '{{ $pageData->currentURL }}';
                 form.appendChild(inputCurrentURL);
 
                 document.body.appendChild(form);
@@ -1242,29 +1193,151 @@
    </script>
 
     <script>
-        function confirmDelete(id, currentURL) {
-            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
-                if (e) {
-                    let form = document.createElement('form')
+        
+        // function confirmDespedir(id, currentURL){
+        //     Swal.fire({
+        //             title: "¿Deseas despedir a este colaborador?",
+        //             showCancelButton: true,
+        //             confirmButtonText: "Despedir",
+        //             cancelButtonText: "Cancelar",
+        //             zIndex: 9999999999
+        //         }).then((result) => {
+        //             if (result.isConfirmed) {
+                  
+        //             let form = document.createElement('form');
+        //             form.method = 'POST';
+        //             form.action = `/colaboradores/despedirColaborador/${id}`; 
 
+        //             form.innerHTML = '@csrf @method("PUT")';
+
+        //             if (currentURL != null) {
+        //                 let inputHidden = document.createElement('input');
+        //                 inputHidden.type = 'hidden';
+        //                 inputHidden.name = 'currentURL';
+        //                 inputHidden.value = currentURL;
+        //                 form.appendChild(inputHidden);
+        //             }
+    
+        //             document.body.appendChild(form);
+        //             form.submit(); 
+        //             } else {
+                        
+        //                 Swal.fire({
+        //                     title: "Acción cancelada",
+        //                     text: "El colaborador no fue despedido",
+        //                     icon: "info",
+        //                     customClass: {
+        //                         content: 'swal-content'  
+        //                     }
+        //                 });
+        
+        //                 const style = document.createElement('style');
+        //                 style.innerHTML = `
+        //                     .swal2-html-container{
+        //                         color: #FFFFFF;  
+        //                     }
+        //                 `;
+        //                 document.head.appendChild(style);
+        //             }
+        //             });
+                
+        // }
+
+        function  confirmRecontratar(id, currentURL){
+            Swal.fire({
+                    title: "¿Deseas re contratar a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Re contratar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                  
+                    let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/colaboradores/${id}`;
-                    form.innerHTML = `@csrf @method('DELETE')`;
+                    form.action = `/colaboradores/recontratarColaborador/${id}`; 
+
+                    form.innerHTML = '@csrf @method("PUT")';
 
                     if (currentURL != null) {
                         let inputHidden = document.createElement('input');
                         inputHidden.type = 'hidden';
                         inputHidden.name = 'currentURL';
                         inputHidden.value = currentURL;
-                        form.appendChild(inputHidden)
+                        form.appendChild(inputHidden);
                     }
+    
+                    document.body.appendChild(form);
+                    form.submit(); 
+                    } else {
+                        
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'  
+                            }
+                        });
+        
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+        }
 
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
+
+        function confirmDelete(id, currentURL) {
+            Swal.fire({
+                    title: "¿Deseas eliminar este registro? Se eliminará todo lo relacionado a este colaborador",
+                    showCancelButton: true,
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                  
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/colaboradores/${id}`; 
+
+                    form.innerHTML = '@csrf @method("DELETE")';
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+    
+                    document.body.appendChild(form);
+                    form.submit(); 
+                    } else {
+                        
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'  
+                            }
+                        });
+        
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+
+        
         }
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');
@@ -1321,6 +1394,7 @@
 
 
 
+
         function prepareSearchActionURL(event) {
             // preventDefault();
 
@@ -1347,15 +1421,17 @@
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
+            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
 
             estados = estados.length ? estados.join(',') : '0,1,2';
             areas = areas.length ? areas.join(',') : '0';
             carreras = carreras.length ? carreras.join(',') : '0';
             instituciones = instituciones.length ? instituciones.join(',') : '0';
             ciclos = ciclos.length ? ciclos.join(',') : '0';
+            sedes = sedes.length ? sedes.join(',') : '0';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos !=null){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
@@ -1388,8 +1464,11 @@
         checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
-
-
+        //sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.sede-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        });
 
 
 
@@ -1434,6 +1513,14 @@
             }
         });
 
+        // sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
         document.querySelectorAll('input[id^="checkbox-areas-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-areas-"]', 'select-all-areas');
@@ -1464,6 +1551,12 @@
             });
         });
 
+        // sedes
+        document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
+            });
+        })
 
     </script>
 

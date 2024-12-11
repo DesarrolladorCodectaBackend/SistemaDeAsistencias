@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Inspina|Candidatos</title>
 </head>
@@ -109,6 +111,9 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
+
                                         <!-- Ciclos -->
                                             <div class="card">
                                                 <div class="card-header" id="headingCiclosCandidatos">
@@ -160,6 +165,32 @@
                                             </div>
                                         </div>
 
+                                        {{-- sedes --}}
+                                        <div class="card">
+                                            <div class="card-header" id="headingSedesCandidatos">
+                                                <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedesCandidatos" aria-expanded="false" aria-controls="collapseSedesCandidatos">
+                                                        Sedes
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseSedesCandidatos" class="collapse" aria-labelledby="headingSedesCandidatos" data-parent="#accordionExampleCandidatos">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
+                                                    </div>
+                                                    @foreach($sedesAll as $index => $sede)
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input sede-checkbox" id="checkbox-sede-candidatos-{{ $sede->id }}" value="{{ $sede->id }}">
+                                                        <span for="checkbox-sede-candidatos-{{ $sede->id }}">{{ $sede->nombre }}</span>
+                                                    </div>
+                                                    @endforeach
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                         <!-- Submit Button -->
                                         <div class="text-center mt-4">
                                             <button type="submit" class="btn btn-primary px-5">Filtrar</button>
@@ -210,7 +241,7 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            
+
 
                                             <style>
                                                 /* Quitar los controles de incremento y decremento en los navegadores */
@@ -300,7 +331,7 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <label>Celular</label> 
+                                                <label>Celular</label>
                                                <div class="position-relative">
                                                     <input type="number" id="cel-store"
                                                     placeholder="Ingrese celular" class="form-control" name="celular" oninput="limitCel(this)">
@@ -311,9 +342,9 @@
                                                </div>
                                             </div>
 
-                                          
+
                                         </div>
-                                      
+
                                         <div>
                                             <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit" ><i
                                                     class="fa fa-check"></i>&nbsp;Confirmar
@@ -450,16 +481,17 @@
                                                 Agregar Colaborador
                                             </button>
                                         </form>
-                                        <form class="text-center" method="POST"
+                                        {{-- <form class="text-center" method="POST"
                                             action="{{ route('candidatos.rechazarCandidato', $candidato->id) }}">
                                             @csrf
                                             @isset($pageData->currentURL)
                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             @endisset
-                                            <button class="btn btn-danger" type="submit">
-                                                Rechazar
-                                            </button>
-                                        </form>
+                                           
+                                        </form> --}}
+                                        <button class="btn btn-danger" type="submit" onclick="confirmRechazar({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
+                                            Rechazar
+                                        </button>
                                     </div>
 
                                     @elseif($candidato->estado == 0)
@@ -468,16 +500,17 @@
                                     </div>
                                     @elseif($candidato->estado == 2)
                                     <div class="d-flex justify-content-center gap-10">
-                                        <form class="text-center" method="POST"
+                                        {{-- <form class="text-center" method="POST"
                                             action="{{ route('candidatos.reconsiderarCandidato', $candidato->id) }}">
                                             @csrf
                                             @isset($pageData->currentURL)
                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             @endisset
-                                            <button class="btn btn-success" type="submit">
-                                                Reconsiderar
-                                            </button>
-                                        </form>
+                                            
+                                        </form> --}}
+                                        <button class="btn btn-success" type="submit" onclick="confirmReconsiderar({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
+                                            Reconsiderar
+                                        </button>
                                         <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
                                             Eliminar
                                         </button>
@@ -587,8 +620,8 @@
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
-                                                                    
-                                                                    
+
+
                                                                     <div class="form-group"><label>Dirección</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
@@ -858,7 +891,7 @@
 
 
 
-        // limiteDNI 
+        // limiteDNI
         function limitDNI(input) {
             // Asegura que solo se permitan 8 caracteres
             if (input.value.length > 8) {
@@ -982,18 +1015,18 @@
     }
 }
 
-function hideModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('show');
-        modal.style.display = 'none'; // Asegúrate de que el modal se oculte
-    }
-}
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none'; // Asegúrate de que el modal se oculte
+            }
+        }
 
-function abrirModalCreacion(index) {
-    ocultarTodosLosModales();
-    showModal('modal-create-form-' + index);
-}
+        function abrirModalCreacion(index) {
+            ocultarTodosLosModales();
+            showModal('modal-create-form-' + index);
+        }
 
 
         function abrirModalEdicion(id) {
@@ -1001,29 +1034,176 @@ function abrirModalCreacion(index) {
             showModal('modal-form-update' + id);
         }
 
-        function confirmDelete(id, currentURL) {
-            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
+        
 
-                    form.method = 'POST'
-                    form.action = `/candidatos/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
+        function confirmReconsiderar(id, currentURL) {
+                Swal.fire({
+                    title: "¿Deseas reconsiderar este candidato?",
+                    showCancelButton: true,
+                    confirmButtonText: "Reconsiderar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                  
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/candidato/reconsiderarCandidato/${id}`; 
 
-                    if(currentURL != null){
+                    form.innerHTML = '@csrf @method("POST")';
+
+                    if (currentURL != null) {
                         let inputHidden = document.createElement('input');
                         inputHidden.type = 'hidden';
                         inputHidden.name = 'currentURL';
                         inputHidden.value = currentURL;
-                        form.appendChild(inputHidden)
+                        form.appendChild(inputHidden);
+                    }
+    
+                    document.body.appendChild(form);
+                    form.submit(); 
+                    } else {
+                        
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El candidato no fue reconsiderado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'  
+                            }
+                        });
+        
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  // Cambia el color del texto del contenido
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+            }
+
+
+            function confirmRechazar(id, currentURL) {
+                Swal.fire({
+                    title: "¿Deseas rechazar este candidato?",
+                    showCancelButton: true,
+                    confirmButtonText: "Rechazar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    // Crear el formulario y enviarlo
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/candidato/rechazarCandidato/${id}`; // Ruta a la que se enviará el formulario
+
+                    // Agregar el CSRF token y el método HTTP necesario
+                    form.innerHTML = '@csrf @method("POST")';
+
+                    // Agregar el parámetro currentURL, si está disponible
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
                     }
 
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
+            
+                    document.body.appendChild(form);
+                    form.submit(); 
+                    } else {
+                        
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El candidato no fue rechazado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'  // Asignamos una clase personalizada al contenido
+                            }
+                        });
+                        // Luego, en tu CSS, puedes cambiar el color del contenido
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  // Cambia el color del texto del contenido
+                            }
+                        `;
+                        document.head.appendChild(style);
+                                    }
+                    });
+            }
+
+
+        function confirmDelete(id, currentURL) {
+
+            Swal.fire({
+                title: "¿Deseas eliminar este registro? Esta acción es permanente",
+                showCancelButton: true,
+                confirmButtonText: "Despedir",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/candidatos/${id}`; 
+
+                form.innerHTML = '@csrf @method("DELETE")';
+
+                if (currentURL != null) {
+                    let inputHidden = document.createElement('input');
+                    inputHidden.type = 'hidden';
+                    inputHidden.name = 'currentURL';
+                    inputHidden.value = currentURL;
+                    form.appendChild(inputHidden);
                 }
-            });
+
+         
+                document.body.appendChild(form);
+                form.submit(); 
+                } else {
+                    
+                    Swal.fire({
+                        title: "Acción cancelada",
+                        text: "El candidato no fue despedido",
+                        icon: "info",
+                        customClass: {
+                            content: 'swal-content' 
+                        }
+                    });
+               
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                        .swal2-html-container{
+                            color: #FFFFFF;  
+                        }
+                    `;
+                    document.head.appendChild(style);
+                                }
+                });
+
+            // alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente", function(e) {
+            //     if (e) {
+            //         let form = document.createElement('form')
+
+            //         form.method = 'POST'
+            //         form.action = `/candidatos/${id}`
+            //         form.innerHTML = '@csrf @method('DELETE')'
+
+            //         if(currentURL != null){
+            //             let inputHidden = document.createElement('input');
+            //             inputHidden.type = 'hidden';
+            //             inputHidden.name = 'currentURL';
+            //             inputHidden.value = currentURL;
+            //             form.appendChild(inputHidden)
+            //         }
+
+            //         document.body.appendChild(form)
+            //         form.submit()
+            //     } else {
+            //         return false
+            //     }
+            // });
         }
 
         function updateSelectAll(checkboxGroup, selectAllId) {
@@ -1053,6 +1233,16 @@ function abrirModalCreacion(index) {
             }
         });
 
+        // sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+
+
         document.querySelectorAll('input[id^="checkbox-estados-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-estados-"]', 'select-all-estados');
@@ -1071,6 +1261,13 @@ function abrirModalCreacion(index) {
             });
         });
 
+
+        // sedes
+        document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
+            });
+        })
 
 
     </script>
@@ -1095,14 +1292,18 @@ function abrirModalCreacion(index) {
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
+            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
 
             estados = estados.length ? estados.join(',') : '0,1,2,3';
             carreras = carreras.length ? carreras.join(',') : '0';
             instituciones = instituciones.length ? instituciones.join(',') : '0';
             ciclos = ciclos.length ? ciclos.join(',') : '0';
+            sedes = sedes.length ? sedes.join(',') : '0';
 
-            if(estados != null && carreras != null && instituciones != null && ciclos !=null) {
-                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
+
+
+            if(estados != null && carreras != null && instituciones != null && ciclos != null, sedes != null) {
+                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarCandidatos').action = actionUrl;
 
@@ -1129,6 +1330,13 @@ function abrirModalCreacion(index) {
         let checkboxes = document.querySelectorAll('.ciclo-checkbox');
         checkboxes.forEach(cb => cb.checked = this.checked);
     });
+
+    //sedes
+    document.getElementById('select-all-sedes').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.sede-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
     </script>
 
 </body>

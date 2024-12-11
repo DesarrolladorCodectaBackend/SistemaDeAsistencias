@@ -109,7 +109,7 @@
                                                     }}</span><span
                                                     id="hidePassword-{{$user->id}}">*************</span><button
                                                     class="border-0 btn-outline-dark rounded"
-                                                    onclick="showHidePassword({{$user->id}})"><i
+                                                    onclick="showHidePassword({{$user->id}})"><i id="iconEyeTable-{{$user->id}}"
                                                         class="fa fa-eye"></i></button></td>
                                             <td>{{ $user->rol }}</td>
                                             <td>
@@ -273,13 +273,16 @@
         const showHidePassword = (user_id) => {
             let showPassword = document.getElementById(`showPassword-${user_id}`);
             let hidePassword = document.getElementById(`hidePassword-${user_id}`);
+            let iconEyeTable = document.getElementById(`iconEyeTable-${user_id}`);
 
             if(showPassword.hidden){
                 showPassword.hidden = false;
                 hidePassword.hidden = true;
+                iconEyeTable.className = 'fa fa-eye-slash'
             } else{
                 showPassword.hidden = true;
                 hidePassword.hidden = false;
+                iconEyeTable.className = 'fa fa-eye'
 
             }
 

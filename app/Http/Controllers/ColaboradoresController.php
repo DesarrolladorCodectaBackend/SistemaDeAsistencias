@@ -261,7 +261,7 @@ class ColaboradoresController extends Controller
 
     //FUNCTION getObjetoColabodaor
 
-    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '')
+    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '')
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -273,6 +273,7 @@ class ColaboradoresController extends Controller
         $areas = $areas ? explode(',', $areas) : [];
         $carreras = $carreras ? explode(',', $carreras) : [];
         $instituciones = $instituciones ? explode(',', $instituciones) : [];
+        $sedes = $sedes ? explode(',', $sedes) : [];
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
@@ -291,17 +292,19 @@ class ColaboradoresController extends Controller
         $estadoAreas = empty($areas) ? [1,0] : [1];
         $requestCiclos = empty($ciclos) ? $ciclosAll : $ciclos;
 
+        // justsedes
+        $requestSedes = empty($sedes) ? $sedesAll->pluck('id') : $sedes;
+        // return $requestSedes;
         // return $requestEstados;
 
-
-
+        
         // Obtenemos a los colaboradores filtrados por áreas
         $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
             ->whereIn('area_id', $requestAreas)
             ->whereIn('estado', $estadoAreas)
             ->get()
             ->pluck('colaborador');
-        
+
         // return $colaboradoresArea;
 
         //filtramos por los estados
@@ -316,11 +319,18 @@ class ColaboradoresController extends Controller
         //         $query->whereIn('ciclo_de_estudiante', $ciclos);
         //     })
         //     ->pluck('id');
+
+        // just sedes
+        $sedesId = Sede::whereIn('id', $requestSedes)->pluck('id');
+
+        // return $sedesId;
+
         $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
             ->whereIn('carrera_id', $requestCarreras) //filtrar por la carrera
             ->whereIn('sede_id', $sedesInstitucionesId) //filtrar por la sede
+            ->whereIn('sede_id', $sedesId)
             ->whereIn('ciclo_de_estudiante', $requestCiclos)->pluck('id');
-
+        
         // return $colaboradoresArea;
 
         $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
@@ -358,21 +368,23 @@ class ColaboradoresController extends Controller
             'countColaboradores' => $countColaboradores,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
+
             'sedes' => $sedesFiltradas,
             'instituciones' => $institucionesFiltradas,
             'carreras' => $carrerasFiltradas,
             'areas' => $areasFiltradas,
+            
             'sedesAll' => $sedesAll,
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
+
             'horasTotales' => $horasTotales,
             'ciclosAll' => $ciclosAll,
             'colaboradoresCol' => $colaboradoresCol
         ]);
     }
-
     public function store(StoreColaboradoresRequest $request)
     {
         // return $request;

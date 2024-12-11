@@ -331,7 +331,7 @@ class CandidatosController extends Controller
     }
 
 
-    public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '', string $ciclos = '')
+    public function filtrarCandidatos(string $estados = '0,1,2,3', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '')
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -341,6 +341,8 @@ class CandidatosController extends Controller
         $estados = explode(',', $estados);
         $carreras = $carreras ? explode(',', $carreras) : [];
         $instituciones = $instituciones ? explode(',', $instituciones) : [];
+        $sedes = $sedes ? explode(',', $sedes) : [];
+
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
@@ -348,20 +350,26 @@ class CandidatosController extends Controller
         $ciclosAll = [4,5,6,7,8,9,10];
 
 
-        $sedes = $sedesAll->where('estado', 1);
+        $sedesFiltradas = $sedesAll->where('estado', 1);
         $institucionesFiltradas = $institucionesAll->where('estado', 1);
         $carrerasFiltradas = $carrerasAll->where('estado', 1);
 
         $requestCarreras = empty($carreras) ? $carrerasAll->pluck('id')->toArray() : $carreras;
         $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
         $requestCiclos = empty($ciclos) ? $ciclosAll : $ciclos;
+        $requestSedes = empty($sedes) ? $sedesAll->pluck('id') : $sedes;
+        // return $requestSedes;
 
-        $sedesId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
+        $sedesInstiId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
+
+        $sedesId = Sede::whereIn('id', $requestSedes)->pluck('id');
+        
 
         $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)
-            ->whereIn('sede_id', $sedesId)
+            ->whereIn('sede_id', $sedesInstiId)
             ->whereIn('estado', $estados)
             ->whereIn('ciclo_de_estudiante', $requestCiclos)
+            ->whereIn('sede_id', $sedesId)
             ->paginate(6);
 
         $pageData = FunctionHelperController::getPageData($candidatos);
@@ -371,7 +379,7 @@ class CandidatosController extends Controller
             'candidatos' => $candidatos,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
-            'sedes' => $sedes,
+            'sedes' => $sedesFiltradas,
             'instituciones' => $institucionesFiltradas,
             'carreras' => $carrerasFiltradas,
             'sedesAll' => $sedesAll,
@@ -380,6 +388,7 @@ class CandidatosController extends Controller
             'ciclosAll' => $ciclosAll,
         ]);
     }
+
 
     public function search(string $busqueda = '')
     {

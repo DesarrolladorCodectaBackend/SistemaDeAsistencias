@@ -59,14 +59,16 @@ class AccountsController extends Controller
         if (!$access) {
             return redirect('dashboard')->with('error', 'No tiene permisos para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
+        //Usuarios
+        $usersEmails = User::get()->pluck('email');
         //Colaboradores jefes de area
-        $colaboradores = [];
-        $colaboradoresTotales = Colaboradores::with('candidato')->whereNot('estado', 2)->get();
-        foreach($colaboradoresTotales as $colaborador){
-            $jefe = Colaboradores_por_Area::where("colaborador_id", $colaborador->id)->where("estado", 1)->where("jefe_area", 1)->first();
-            if($jefe){
-                $colaboradores[] = $colaborador;
-            }
+        $colabsCandUsuariosId = Candidatos::whereIn('correo', $usersEmails)->get()->pluck('id');
+        $colaboradoresJefesId = Colaboradores_por_Area::where('estado', 1)->where('jefe_area', 1)->get()->pluck('colaborador_id')->unique();
+        $colaboradores = Colaboradores::with('candidato')->whereIn('id', $colaboradoresJefesId)->whereNotIn('candidato_id', $colabsCandUsuariosId)->get();
+        //Agregarles sus areas que lideran
+        foreach($colaboradores as $colaborador){
+            $areasJefe = Colaboradores_por_Area::with('area')->where('estado', 1)->where('jefe_area', 1)->where('colaborador_id', $colaborador->id)->get()->pluck('area');
+            $colaborador->areas = $areasJefe;
         }
         // return $colaboradores;
         $areas = Area::where(["estado" => 1])->get();
