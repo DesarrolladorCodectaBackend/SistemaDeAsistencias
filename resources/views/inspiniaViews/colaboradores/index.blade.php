@@ -949,7 +949,7 @@
         position: fixed;  /* O usa absolute si lo prefieres */
         z-index: 9999999999999;
     }
-    
+
                 </style>
 
         </div>
@@ -1009,10 +1009,13 @@
             cancelButtonText: "Cancelar",
         }).then((result) => {
             if (result.isConfirmed) {
-              
+
                 let form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/colaboradores/activar-inactivar/${id}`;
+                // form.action = `/colaboradores/activar-inactivar/${id}`;
+
+                let routeTemplate = "<?php echo route('colaboradores.activarInactivar', ':id'); ?>";
+                form.action = routeTemplate.replace(':id', id);
 
                 form.innerHTML = `
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -1023,7 +1026,7 @@
                 document.body.appendChild(form);
                 form.submit();
             } else {
-            
+
                 Swal.fire({
                     title: "Acción cancelada",
                     text: "El colaborador no fue cambiado de estado",
@@ -1042,42 +1045,6 @@
                 document.head.appendChild(style);
             }
         });
-
-
-        // alertify.confirm("¿Deseas cambiar el estado del colaborador?", function (e) {
-        //     if (e) {
-        //         // Crear un formulario dinámicamente
-        //         let form = document.createElement('form');
-        //         form.method = 'POST';
-        //         form.action = `/colaboradores/activar-inactivar/${id}`;
-
-
-        //         let csrfToken = '{{ csrf_token() }}';
-        //         let inputCSRF = document.createElement('input');
-        //         inputCSRF.type = 'hidden';
-        //         inputCSRF.name = '_token';
-        //         inputCSRF.value = csrfToken;
-        //         form.appendChild(inputCSRF);
-
-        //         let inputMethod = document.createElement('input');
-        //         inputMethod.type = 'hidden';
-        //         inputMethod.name = '_method';
-        //         inputMethod.value = 'PUT';
-        //         form.appendChild(inputMethod);
-
-        //         let inputCurrentURL = document.createElement('input');
-        //         inputCurrentURL.type = 'hidden';
-        //         inputCurrentURL.name = 'currentURL';
-        //         inputCurrentURL.value = '{{ $pageData->currentURL }}';
-        //         form.appendChild(inputCurrentURL);
-
-        //         document.body.appendChild(form);
-
-        //         form.submit();
-        //     } else {
-        //         return false;
-        //     }
-        // });
         }
     </script>
 
@@ -1248,14 +1215,14 @@
 
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    // form.action = `/colaboradores/despedirColaborador/${id}`;
+
                     let routeTemplate = "<?php echo route('colaboradores.despedirColaborador', ':id'); ?>";
                     form.action = routeTemplate.replace(':id', id);
 
 
                     form.innerHTML = '@csrf @method("PUT")';
 
-                 
+
                     document.body.appendChild(form);
                     form.submit();
                     } else {
@@ -1281,10 +1248,10 @@
                     });
 
         }
-       
 
-        
-      
+
+
+
 
         function  confirmRecontratar(id, currentURL){
             Swal.fire({
@@ -1297,7 +1264,10 @@
 
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/colaboradores/recontratarColaborador/${id}`;
+                    // form.action = `/colaboradores/recontratarColaborador/${id}`;
+
+                    let routeTemplate = "<?php echo route('colaboradores.recontratarColaborador', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
 
                     form.innerHTML = '@csrf @method("PUT")';
 
@@ -1345,7 +1315,10 @@
 
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/colaboradores/${id}`;
+                    // form.action = `/colaboradores/${id}`;
+
+                    let routeTemplate = "<?php echo route('colaboradores.destroy', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
 
                     form.innerHTML = '@csrf @method("DELETE")';
 

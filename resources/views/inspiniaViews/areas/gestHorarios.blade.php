@@ -173,7 +173,7 @@
                                                                     </button>
                                                                 </form>
                                                             </div>
-                                                            
+
                                                             @endforeach
                                                         </div>
 
@@ -277,7 +277,10 @@
 
                         let form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = `/areas/horarioDelete/${area_id}/${id}`;
+                        // form.action = `/areas/horarioDelete/${area_id}/${id}`;
+
+                        let routeTemplate = "<?php echo route('areas.horarioDelete', [':area_id', ':horario_presencial_asignado_id']); ?>";
+                        form.action = routeTemplate.replace(':area_id', area_id).replace(':horario_presencial_asignado_id', id);
 
                         form.innerHTML = '@csrf @method("DELETE")';
 
@@ -303,7 +306,7 @@
                         document.head.appendChild(style);
                     }
                     console.console.log(result);
-                    
+
                     });
 
 
@@ -333,7 +336,7 @@
             }
             uncheckOthers(id, type);
         }
-    
+
         function uncheckOthers(id, type) {
             const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
             checkboxes.forEach(checkbox => {
@@ -342,7 +345,7 @@
                 }
             });
         }
-    
+
         function updateSubmitButton(type) {
             const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
             const submitButton = document.getElementById(`submit-button-${type}`);
@@ -417,7 +420,7 @@
             const formContainer = button.closest('.storeForm');
             formContainer.remove();
         }
-    
+
     </script>
 
 
@@ -425,26 +428,26 @@
 
     <script>
         $(document).ready(function() {
-    
+
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
-    
+
             /* initialize the external events -----------------------------------------------------------------*/
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
                     title: $.trim($(this).text()),
                     stick: true
                 });
-    
+
                 $(this).draggable({
                     zIndex: 1111999,
                     revert: true,
                     revertDuration: 0
                 });
             });
-    
+
             /* initialize the calendar -----------------------------------------------------------------*/
             var date = new Date();
             var d = date.getDate();
@@ -452,7 +455,7 @@
             var y = date.getFullYear();
             var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
             const area = <?php echo json_encode($area); ?>;
-            
+
             var eventosHorarios = horariosFormateados.map(function(horario) {
                 var numeroDia;
                 if(horario.dia == "Lunes"){
@@ -481,8 +484,8 @@
                     editable: false
                 };
             });
-            
-    
+
+
             var eventos = [{
                     title: 'Domingo',
                     start: new Date(2024, 1, 4, 0, 0),
@@ -540,7 +543,7 @@
                     editable: false
                 }
             ].concat(eventosHorarios);
-    
+
             $('#calendar').fullCalendar({
                 locale: 'es',
                 defaultView: 'agendaWeek',
