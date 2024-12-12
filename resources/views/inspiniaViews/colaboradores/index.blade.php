@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA | Colaboradores</title>
 </head>
@@ -207,7 +209,7 @@
                                                             <span for="checkbox-sede-candidatos-{{ $sede->id }}">{{ $sede->nombre }}</span>
                                                         </div>
                                                         @endforeach
-                                 
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -373,14 +375,15 @@
                                         </div>
 
                                         <div class="mt-2">
-                                            <form role="form" method="POST" action="{{route('colaboradores.despedirColaborador', $colaborador->id)}}">
+                                            {{-- <form role="form" method="POST" action="{{route('colaboradores.despedirColaborador', $colaborador->id)}}">
                                                 @csrf
                                                 @method('PUT')
                                                 @isset($pageData->currentURL)
                                                 <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                 @endisset
                                                 <button class="btn btn-danger">Despedir</button>
-                                            </form>
+                                            </form> --}}
+                                            <button class="btn btn-danger" onclick="confirmDespedir({{$colaborador->id}})">Despedir</button>
                                         </div>
 
                                     </div>
@@ -883,17 +886,17 @@
                                         </div>
                                         @else
                                         <div class="text-center d-flex justify-content-center gap-10">
-                                            <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
+                                            {{-- <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
                                                 @csrf
                                                 @method('PUT')
                                                 @isset($pageData->currentURL)
                                                 <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                 @endisset
-                                                <button class="btn btn-success" type="submit">
-                                                    Re Contratar
-                                                </button>
-                                            </form>
 
+                                            </form> --}}
+                                            <button class="btn btn-success" type="submit" onclick="confirmRecontratar({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
+                                                Re Contratar
+                                            </button>
                                             {{-- delete --}}
                                                 <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
                                                     Eliminar
@@ -941,7 +944,13 @@
                 </div>
             </div>
             @endif
-
+            <style>
+                .swal2-container {
+        position: fixed;  /* O usa absolute si lo prefieres */
+        z-index: 9999999999999;
+    }
+    
+                </style>
 
         </div>
 
@@ -975,11 +984,6 @@
         </script>
     @endif
 
-
-
-
-
-
     <style>
         .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
@@ -997,41 +1001,84 @@
 
     <script>
       function confirmState(id) {
-        alertify.confirm("¿Deseas cambiar el estado del colaborador?", function (e) {
-            if (e) {
-                // Crear un formulario dinámicamente
+
+        Swal.fire({
+            title: "¿Deseas cambiar el estado del colaborador?",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+              
                 let form = document.createElement('form');
                 form.method = 'POST';
                 form.action = `/colaboradores/activar-inactivar/${id}`;
 
-
-                let csrfToken = '{{ csrf_token() }}';
-                let inputCSRF = document.createElement('input');
-                inputCSRF.type = 'hidden';
-                inputCSRF.name = '_token';
-                inputCSRF.value = csrfToken;
-                form.appendChild(inputCSRF);
-
-                let inputMethod = document.createElement('input');
-                inputMethod.type = 'hidden';
-                inputMethod.name = '_method';
-                inputMethod.value = 'PUT';
-                form.appendChild(inputMethod);
-
-                let inputCurrentURL = document.createElement('input');
-                inputCurrentURL.type = 'hidden';
-                inputCurrentURL.name = 'currentURL';
-                inputCurrentURL.value = '{{ $pageData->currentURL }}';
-                form.appendChild(inputCurrentURL);
+                form.innerHTML = `
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="_method" value="PUT">
+                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
 
                 document.body.appendChild(form);
-
                 form.submit();
             } else {
-                return false;
+            
+                Swal.fire({
+                    title: "Acción cancelada",
+                    text: "El colaborador no fue cambiado de estado",
+                    icon: "info",
+                    customClass: {
+                        content: 'swal-content'
+                    }
+                });
+
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .swal2-html-container {
+                        color: #FFFFFF;
+                    }
+                `;
+                document.head.appendChild(style);
             }
         });
-    }
+
+
+        // alertify.confirm("¿Deseas cambiar el estado del colaborador?", function (e) {
+        //     if (e) {
+        //         // Crear un formulario dinámicamente
+        //         let form = document.createElement('form');
+        //         form.method = 'POST';
+        //         form.action = `/colaboradores/activar-inactivar/${id}`;
+
+
+        //         let csrfToken = '{{ csrf_token() }}';
+        //         let inputCSRF = document.createElement('input');
+        //         inputCSRF.type = 'hidden';
+        //         inputCSRF.name = '_token';
+        //         inputCSRF.value = csrfToken;
+        //         form.appendChild(inputCSRF);
+
+        //         let inputMethod = document.createElement('input');
+        //         inputMethod.type = 'hidden';
+        //         inputMethod.name = '_method';
+        //         inputMethod.value = 'PUT';
+        //         form.appendChild(inputMethod);
+
+        //         let inputCurrentURL = document.createElement('input');
+        //         inputCurrentURL.type = 'hidden';
+        //         inputCurrentURL.name = 'currentURL';
+        //         inputCurrentURL.value = '{{ $pageData->currentURL }}';
+        //         form.appendChild(inputCurrentURL);
+
+        //         document.body.appendChild(form);
+
+        //         form.submit();
+        //     } else {
+        //         return false;
+        //     }
+        // });
+        }
     </script>
 
     <script>
@@ -1190,29 +1237,147 @@
    </script>
 
     <script>
-        function confirmDelete(id, currentURL) {
-            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
-                if (e) {
-                    let form = document.createElement('form')
+        function confirmDespedir(id){
+            Swal.fire({
+                    title: "¿Deseas despedir a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Despedir",
+                    cancelButtonText: "Cancelar",
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
+                    let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/colaboradores/${id}`;
-                    form.innerHTML = `@csrf @method('DELETE')`;
+                    form.action = `/colaboradores/despedirColaborador/${id}`;
+
+                    form.innerHTML = '@csrf @method("PUT")';
+
+                 
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue despedido",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    // console.log(result);
+                    });
+
+        }
+       
+
+        
+      
+
+        function  confirmRecontratar(id, currentURL){
+            Swal.fire({
+                    title: "¿Deseas re contratar a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Re contratar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/colaboradores/recontratarColaborador/${id}`;
+
+                    form.innerHTML = '@csrf @method("PUT")';
 
                     if (currentURL != null) {
                         let inputHidden = document.createElement('input');
                         inputHidden.type = 'hidden';
                         inputHidden.name = 'currentURL';
                         inputHidden.value = currentURL;
-                        form.appendChild(inputHidden)
+                        form.appendChild(inputHidden);
                     }
 
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+        }
+
+
+        function confirmDelete(id, currentURL) {
+            Swal.fire({
+                    title: "¿Deseas eliminar este registro? Se eliminará todo lo relacionado a este colaborador",
+                    showCancelButton: true,
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/colaboradores/${id}`;
+
+                    form.innerHTML = '@csrf @method("DELETE")';
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+
+
         }
         const deleteAlertError = () => {
             let alertError = document.getElementById('alert-error');

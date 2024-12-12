@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
@@ -266,18 +267,58 @@
     </style>
     <script>
         function confirmDelete(id, area_id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/areas/horarioDelete/${area_id}/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
+            Swal.fire({
+                    title: "¿Deseas eliminar este horario?",
+                    showCancelButton: true,
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        let form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/areas/horarioDelete/${area_id}/${id}`;
+
+                        form.innerHTML = '@csrf @method("DELETE")';
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El horario no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    console.console.log(result);
+                    
+                    });
+
+
+            // alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+            //     if (e) {
+            //         let form = document.createElement('form')
+            //         form.method = 'POST'
+            //         form.action = `/areas/horarioDelete/${area_id}/${id}`
+            //         form.innerHTML = '@csrf @method('DELETE')'
+            //         document.body.appendChild(form)
+            //         form.submit()
+            //     } else {
+            //         return false
+            //     }
+            // });
         }
 
         function toggleCheckbox(event, id, type) {

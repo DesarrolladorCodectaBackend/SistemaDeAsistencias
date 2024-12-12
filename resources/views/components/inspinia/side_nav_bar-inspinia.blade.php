@@ -16,6 +16,8 @@
     <link href="{{ asset('css/plugins/chartist/chartist.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/inspinia.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
 
@@ -109,7 +111,7 @@
             </li>
             @endif
             <li>
-                <form id="logoutForm" method="POST" action="{{route('logout')}}">
+                <form id="logoutForm" method="POST" action="{{ route('logout') }}">
                     @csrf
                 </form>
 
@@ -117,6 +119,7 @@
                     <i class="fa fa-sign-out"></i>
                     <span class="nav-label">Cerrar Sesión</span>
                 </a>
+
             </li>
         </ul>
 
@@ -173,15 +176,38 @@
     </style>
 
 <script>
-    function confirmLogout() {
-        alertify.confirm("¿Estás seguro de que deseas cerrar sesión?", function (e) {
-            if (e) {
-                document.getElementById('logoutForm').submit();
-            } else {
-                return false;
-            }
-        });
-    }
+function confirmLogout() {
+    Swal.fire({
+        title: "¿Estás seguro de que deseas cerrar sesión?",
+        text: "Puedes iniciar sesión nuevamente en cualquier momento.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Cerrar sesión",
+        cancelButtonText: "Cancelar",
+        customClass: {
+            popup: 'swal-center-popup',
+            title: 'swal-center-title',
+            content: 'swal2-center-html-container',
+            confirmButton: 'swal-center-confirm-button',
+            cancelButton: 'swal-center-cancel-button'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logoutForm').submit();
+        } else {
+            Swal.fire({
+                title: "Acción cancelada",
+                icon: "info",
+                customClass: {
+                    popup: 'swal-center-popup',
+                    title: 'swal-center-title',
+                    content: 'swal2-html-container'
+                }
+            });
+        }
+    });
+}
+
 </script>
 
     <!-- Mainly scripts -->

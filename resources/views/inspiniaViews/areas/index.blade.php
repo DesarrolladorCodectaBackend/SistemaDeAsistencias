@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <title>INSPINIA| Áreas</title>
 </head>
 
@@ -375,41 +377,87 @@
     </script>
 
     <script>
-        function confirmState(areaId) {
-        alertify.confirm("¿Deseas cambiar el estado de esta área?", function (e) {
-            if (e) {
-                // Crear un formulario dinámicamente
-                let form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/areas/activarInactivar/${areaId}`; 
+        function confirmState(areaId, currentURL) {
+            Swal.fire({
+                    title: "¿Deseas cambiar el estado de esta área?",
+                    showCancelButton: true,
+                    confirmButtonText: "Confirmar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                  
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/areas/activarInactivar/${areaId}`; 
+
+                    form.innerHTML = '@csrf @method("PUT")';
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+    
+                    document.body.appendChild(form);
+                    form.submit(); 
+                    } else {
+                        
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "No se cambió el estado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'  
+                            }
+                        });
+        
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+
+
+        // alertify.confirm("¿Deseas cambiar el estado de esta área?", function (e) {
+        //     if (e) {
+        //         // Crear un formulario dinámicamente
+        //         let form = document.createElement('form');
+        //         form.method = 'POST';
+        //         form.action = `/areas/activarInactivar/${areaId}`; 
 
                
-                let csrfToken = '{{ csrf_token() }}';
-                let inputCSRF = document.createElement('input');
-                inputCSRF.type = 'hidden';
-                inputCSRF.name = '_token';
-                inputCSRF.value = csrfToken;
-                form.appendChild(inputCSRF);
+        //         let csrfToken = '{{ csrf_token() }}';
+        //         let inputCSRF = document.createElement('input');
+        //         inputCSRF.type = 'hidden';
+        //         inputCSRF.name = '_token';
+        //         inputCSRF.value = csrfToken;
+        //         form.appendChild(inputCSRF);
 
-                let inputMethod = document.createElement('input');
-                inputMethod.type = 'hidden';
-                inputMethod.name = '_method';
-                inputMethod.value = 'PUT';
-                form.appendChild(inputMethod);
+        //         let inputMethod = document.createElement('input');
+        //         inputMethod.type = 'hidden';
+        //         inputMethod.name = '_method';
+        //         inputMethod.value = 'PUT';
+        //         form.appendChild(inputMethod);
 
-                let inputCurrentURL = document.createElement('input');
-                inputCurrentURL.type = 'hidden';
-                inputCurrentURL.name = 'currentURL';
-                inputCurrentURL.value = '{{ $pageData->currentURL }}'; 
-                form.appendChild(inputCurrentURL);
+        //         let inputCurrentURL = document.createElement('input');
+        //         inputCurrentURL.type = 'hidden';
+        //         inputCurrentURL.name = 'currentURL';
+        //         inputCurrentURL.value = '{{ $pageData->currentURL }}'; 
+        //         form.appendChild(inputCurrentURL);
 
-                document.body.appendChild(form);
+        //         document.body.appendChild(form);
 
-                form.submit();
-            } else {
-                return false;
-            }
-        });
+        //         form.submit();
+        //     } else {
+        //         return false;
+        //     }
+        // });
     }
     </script>
     <script>
