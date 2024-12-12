@@ -32,9 +32,8 @@
                     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="ibox">
                             <div class="ibox-content product-box">
-                                <div class="product-imitation">
-                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt=""
-                                        class="img-lg">
+                                <div class="product-imitation" style="object-fit: cover; padding: 0px; height: 225px;" onclick="onClickArea('{{ $area->id }}')">
+                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" style="height: 100%; width: 100%; object-fit: cover"  class="img-cover">
                                 </div>
                                 <div class="product-desc">
                                     {{-- <button class="btn btn-outline btn-primary dim float-right"
