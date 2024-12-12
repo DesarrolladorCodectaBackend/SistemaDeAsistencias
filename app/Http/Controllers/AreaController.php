@@ -559,8 +559,10 @@ class AreaController extends Controller
                 //Si existe buscamos la ruta publica
                 $rutaPublica = public_path('storage/areas');
                 //Si existe la imagen y no es la imagen por defecto, se elimina la imagen anterior
-                if ($area->icono && $area->icono !== 'default.png') {
-                    unlink($rutaPublica . '/' . $area->icono);
+                if ($area->icono) {
+                    if($area->icono != 'Default.png'){
+                        unlink($rutaPublica . '/' . $area->icono);
+                    }
                 }
                 //Se obtiene la imagen ingresada por el usuario
                 $icono = $request->file('icono');

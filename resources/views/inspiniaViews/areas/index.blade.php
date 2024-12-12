@@ -100,8 +100,8 @@
                     {{-- <button class="ibox" type="button" data-toggle="modal" href="#modal-form{{ $area->id }}"> --}}
                         <div class="ibox">
                             <div class="ibox-content product-box">
-                                <div class="product-imitation" onclick="onClickArea('{{ $area->id }}')">
-                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" class="img-lg">
+                                <div class="product-imitation" style="object-fit: cover; padding: 0px; height: 225px;" onclick="onClickArea('{{ $area->id }}')">
+                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" style="height: 100%; width: 100%; object-fit: cover"  class="img-cover">
                                 </div>
                                 <div class="product-desc">
                                     {{-- CAMBIO DE ESTADO ÁREAS --}}
