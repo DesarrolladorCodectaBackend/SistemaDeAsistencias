@@ -1463,7 +1463,7 @@
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
             let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
 
-            estados = estados.length ? estados.join(',') : '0,1,2';
+            estados = estados.length ? estados.join(',') : '1';
             areas = areas.length ? areas.join(',') : '0';
             carreras = carreras.length ? carreras.join(',') : '0';
             instituciones = instituciones.length ? instituciones.join(',') : '0';
