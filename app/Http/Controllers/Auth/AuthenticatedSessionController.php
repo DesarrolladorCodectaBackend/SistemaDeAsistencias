@@ -28,15 +28,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // $loginUser = User::where('email', $request->email)->where('estado', 1)->first();
-        // if(!$loginUser){
-        //     RateLimiter::hit($this->throttleKey());
-
-        //     throw ValidationException::withMessages([
-        //         'email' => trans('auth.failed'),
-        //     ]);
-        // }
-
         $remember = $request->has('remember');
 
         if(!Auth::attempt($request->only('email', 'password'), $remember)){
