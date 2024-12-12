@@ -1237,7 +1237,7 @@
    </script>
 
     <script>
-        function confirmDespedir(id){
+        function confirmDespedir(id) {
             Swal.fire({
                     title: "¿Deseas despedir a este colaborador?",
                     showCancelButton: true,
@@ -1248,7 +1248,10 @@
 
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/colaboradores/despedirColaborador/${id}`;
+                    // form.action = `/colaboradores/despedirColaborador/${id}`;
+                    let routeTemplate = "<?php echo route('colaboradores.despedirColaborador', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
 
                     form.innerHTML = '@csrf @method("PUT")';
 
