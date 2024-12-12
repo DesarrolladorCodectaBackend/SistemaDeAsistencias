@@ -1217,9 +1217,9 @@
                     form.method = 'POST';
 
                     let routeTemplate = "<?php echo route('colaboradores.despedirColaborador', ':id'); ?>";
+
+
                     form.action = routeTemplate.replace(':id', id);
-
-
                     form.innerHTML = '@csrf @method("PUT")';
 
 

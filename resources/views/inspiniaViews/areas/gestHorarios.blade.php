@@ -309,19 +309,6 @@
 
                     });
 
-
-            // alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-            //     if (e) {
-            //         let form = document.createElement('form')
-            //         form.method = 'POST'
-            //         form.action = `/areas/horarioDelete/${area_id}/${id}`
-            //         form.innerHTML = '@csrf @method('DELETE')'
-            //         document.body.appendChild(form)
-            //         form.submit()
-            //     } else {
-            //         return false
-            //     }
-            // });
         }
 
         function toggleCheckbox(event, id, type) {
