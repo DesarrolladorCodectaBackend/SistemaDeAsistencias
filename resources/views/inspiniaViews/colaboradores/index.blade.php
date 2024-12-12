@@ -949,7 +949,7 @@
         position: fixed;  /* O usa absolute si lo prefieres */
         z-index: 9999999999999;
     }
-    
+
                 </style>
 
         </div>
@@ -1009,7 +1009,7 @@
             cancelButtonText: "Cancelar",
         }).then((result) => {
             if (result.isConfirmed) {
-              
+
                 let form = document.createElement('form');
                 form.method = 'POST';
                 form.action = `/colaboradores/activar-inactivar/${id}`;
@@ -1023,7 +1023,7 @@
                 document.body.appendChild(form);
                 form.submit();
             } else {
-            
+
                 Swal.fire({
                     title: "Acción cancelada",
                     text: "El colaborador no fue cambiado de estado",
@@ -1249,13 +1249,14 @@
                     let form = document.createElement('form');
                     form.method = 'POST';
                     // form.action = `/colaboradores/despedirColaborador/${id}`;
+
                     let routeTemplate = "<?php echo route('colaboradores.despedirColaborador', ':id'); ?>";
+
+
                     form.action = routeTemplate.replace(':id', id);
-
-
                     form.innerHTML = '@csrf @method("PUT")';
 
-                 
+
                     document.body.appendChild(form);
                     form.submit();
                     } else {
@@ -1281,10 +1282,10 @@
                     });
 
         }
-       
 
-        
-      
+
+
+
 
         function  confirmRecontratar(id, currentURL){
             Swal.fire({
