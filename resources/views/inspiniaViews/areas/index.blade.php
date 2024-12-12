@@ -105,12 +105,15 @@
                                 </div>
                                 <div class="product-desc">
                                     {{-- CAMBIO DE ESTADO ÁREAS --}}
+
+
                                     <form action="{{ route('areas.activarInactivar', $area->id) }}" method="POST">
                                         @csrf
                                         @method('put')
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
 
                                     </form>
+
 
                                     <div>
                                         {{-- btn cambiar estado JS --}}
@@ -387,7 +390,7 @@
     </script>
 
     <script>
-        function confirmState(areaId, currentURL) {
+        function confirmState(id) {
             Swal.fire({
                     title: "¿Deseas cambiar el estado de esta área?",
                     showCancelButton: true,
@@ -395,79 +398,48 @@
                     cancelButtonText: "Cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                  
+
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/areas/activarInactivar/${areaId}`; 
+                    //form.action = `/areas/activarInactivar/${areaId}`;
 
+                    let routeTemplate = "<?php echo route('areas.activarInactivar', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    //console.log(routeTemplate);
                     form.innerHTML = '@csrf @method("PUT")';
 
-                    if (currentURL != null) {
-                        let inputHidden = document.createElement('input');
-                        inputHidden.type = 'hidden';
-                        inputHidden.name = 'currentURL';
-                        inputHidden.value = currentURL;
-                        form.appendChild(inputHidden);
-                    }
-    
+                    // if (currentURL != null) {
+                    //     let inputHidden = document.createElement('input');
+                    //     inputHidden.type = 'hidden';
+                    //     inputHidden.name = 'currentURL';
+                    //     inputHidden.value = currentURL;
+                    //     form.appendChild(inputHidden);
+                    // }
+
                     document.body.appendChild(form);
-                    form.submit(); 
+                    form.submit();
                     } else {
-                        
+
                         Swal.fire({
                             title: "Acción cancelada",
                             text: "No se cambió el estado",
                             icon: "info",
                             customClass: {
-                                content: 'swal-content'  
+                                content: 'swal-content'
                             }
                         });
-        
+
                         const style = document.createElement('style');
                         style.innerHTML = `
                             .swal2-html-container{
-                                color: #FFFFFF;  
+                                color: #FFFFFF;
                             }
                         `;
                         document.head.appendChild(style);
                     }
                     });
 
-
-        // alertify.confirm("¿Deseas cambiar el estado de esta área?", function (e) {
-        //     if (e) {
-        //         // Crear un formulario dinámicamente
-        //         let form = document.createElement('form');
-        //         form.method = 'POST';
-        //         form.action = `/areas/activarInactivar/${areaId}`; 
-
-               
-        //         let csrfToken = '{{ csrf_token() }}';
-        //         let inputCSRF = document.createElement('input');
-        //         inputCSRF.type = 'hidden';
-        //         inputCSRF.name = '_token';
-        //         inputCSRF.value = csrfToken;
-        //         form.appendChild(inputCSRF);
-
-        //         let inputMethod = document.createElement('input');
-        //         inputMethod.type = 'hidden';
-        //         inputMethod.name = '_method';
-        //         inputMethod.value = 'PUT';
-        //         form.appendChild(inputMethod);
-
-        //         let inputCurrentURL = document.createElement('input');
-        //         inputCurrentURL.type = 'hidden';
-        //         inputCurrentURL.name = 'currentURL';
-        //         inputCurrentURL.value = '{{ $pageData->currentURL }}'; 
-        //         form.appendChild(inputCurrentURL);
-
-        //         document.body.appendChild(form);
-
-        //         form.submit();
-        //     } else {
-        //         return false;
-        //     }
-        // });
     }
     </script>
     <script>
