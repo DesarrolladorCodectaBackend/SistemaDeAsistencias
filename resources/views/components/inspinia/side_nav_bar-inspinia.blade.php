@@ -157,9 +157,9 @@
 
         </nav>
     </div>
-    @if($userData['isAdmin'])
-        @include('components.chatbot.chatbot')
-    @endif
+    {{-- @if($userData['isAdmin'])
+        @include('components.chatbot.chatbot') //Agregar el componente de chatbot cuando sea generado
+    @endif --}}
     @if($user['estado'] == 0)
         <script>
             console.log('baneado');

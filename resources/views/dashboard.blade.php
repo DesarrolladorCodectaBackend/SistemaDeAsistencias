@@ -107,7 +107,6 @@
                 @endif
             </div>
         </div>
-        {{-- @include('components.chatbot.chatbot') --}}
 
         @include('components.inspinia.footer-inspinia')
     </div>
