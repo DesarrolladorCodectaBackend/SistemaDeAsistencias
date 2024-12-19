@@ -158,7 +158,7 @@
         </nav>
     </div>
     {{-- @if($userData['isAdmin'])
-        @include('components.chatbot.chatbot') //Agregar el componente de chatbot cuando sea generado
+        @include('components.chatbot.chatbot') //Agregar el componente de chatbot si es creado
     @endif --}}
     @if($user['estado'] == 0)
         <script>
