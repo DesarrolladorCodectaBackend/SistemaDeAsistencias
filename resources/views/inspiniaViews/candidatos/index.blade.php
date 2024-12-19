@@ -487,7 +487,7 @@
                                             @isset($pageData->currentURL)
                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             @endisset
-                                           
+
                                         </form> --}}
                                         <button class="btn btn-danger" type="submit" onclick="confirmRechazar({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
                                             Rechazar
@@ -506,7 +506,7 @@
                                             @isset($pageData->currentURL)
                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             @endisset
-                                            
+
                                         </form> --}}
                                         <button class="btn btn-success" type="submit" onclick="confirmReconsiderar({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
                                             Reconsiderar
@@ -1008,12 +1008,12 @@
 
     <script>
         function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('show');
-        modal.style.display = 'block'; // Asegúrate de que el modal se muestre
-    }
-}
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('show');
+                modal.style.display = 'block'; // Asegúrate de que el modal se muestre
+            }
+        }
 
         function hideModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -1034,7 +1034,7 @@
             showModal('modal-form-update' + id);
         }
 
-        
+
 
         function confirmReconsiderar(id, currentURL) {
                 Swal.fire({
@@ -1044,10 +1044,10 @@
                     cancelButtonText: "Cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                  
+
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/candidato/reconsiderarCandidato/${id}`; 
+                    form.action = `/candidato/reconsiderarCandidato/${id}`;
 
                     form.innerHTML = '@csrf @method("POST")';
 
@@ -1058,20 +1058,20 @@
                         inputHidden.value = currentURL;
                         form.appendChild(inputHidden);
                     }
-    
+
                     document.body.appendChild(form);
-                    form.submit(); 
+                    form.submit();
                     } else {
-                        
+
                         Swal.fire({
                             title: "Acción cancelada",
                             text: "El candidato no fue reconsiderado",
                             icon: "info",
                             customClass: {
-                                content: 'swal-content'  
+                                content: 'swal-content'
                             }
                         });
-        
+
                         const style = document.createElement('style');
                         style.innerHTML = `
                             .swal2-html-container{
@@ -1109,11 +1109,11 @@
                         form.appendChild(inputHidden);
                     }
 
-            
+
                     document.body.appendChild(form);
-                    form.submit(); 
+                    form.submit();
                     } else {
-                        
+
                         Swal.fire({
                             title: "Acción cancelada",
                             text: "El candidato no fue rechazado",
@@ -1146,7 +1146,7 @@
                 if (result.isConfirmed) {
                 let form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/candidatos/${id}`; 
+                form.action = `/candidatos/${id}`;
 
                 form.innerHTML = '@csrf @method("DELETE")';
 
@@ -1158,24 +1158,24 @@
                     form.appendChild(inputHidden);
                 }
 
-         
+
                 document.body.appendChild(form);
-                form.submit(); 
+                form.submit();
                 } else {
-                    
+
                     Swal.fire({
                         title: "Acción cancelada",
                         text: "El candidato no fue despedido",
                         icon: "info",
                         customClass: {
-                            content: 'swal-content' 
+                            content: 'swal-content'
                         }
                     });
-               
+
                     const style = document.createElement('style');
                     style.innerHTML = `
                         .swal2-html-container{
-                            color: #FFFFFF;  
+                            color: #FFFFFF;
                         }
                     `;
                     document.head.appendChild(style);
