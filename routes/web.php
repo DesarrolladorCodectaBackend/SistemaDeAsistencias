@@ -32,6 +32,7 @@ use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\MaquinaReservadaController;
 use App\Http\Controllers\ResponsabilidadController;
 use App\Http\Controllers\ReunionesProgramadasController;
+use App\Http\Controllers\TutorSeguimientoController;
 use App\Mail\ReunionProgramadaMailable;
 use Illuminate\Support\Facades\Route;
 
@@ -227,6 +228,12 @@ Route::middleware('auth')->group(function () {
     // INFORMESSEMANALES
    Route::resource('/InformeSemanal', InformesSemanalesController::class);
 
+
+    //TutoSeguimiento
+    Route::get('/especialista', [TutorSeguimientoController::class, 'index'])->name('especialista.index');
+    Route::post('/especialista/store', [TutorSeguimientoController::class, 'store'])->name('especialista.store');
+    Route::put('/especialista/update/{especialista_id}', [TutorSeguimientoController::class, 'update'])->name('especialista.update');
+    Route::put('/especialista/changeState/{especialista_id}', [TutorSeguimientoController::class, 'changeState'])->name('especialista.changeState');
 });
 
 require __DIR__ . '/auth.php';

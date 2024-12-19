@@ -12,7 +12,8 @@ class Colaboradores extends Model
     protected $fillable = [
         'estado',
         'candidato_id',
-        'editable'
+        'editable',
+        'especialista_id'
     ];
 
 
@@ -23,13 +24,17 @@ class Colaboradores extends Model
     public function colaborador_por_area(){
         return $this->hasMany(Colaboradores_por_Area::class, 'colaborador_id', 'id');
     }
-    
+
     public function horario_de_clases(){
         return $this->hasMany(Horario_de_Clases::class, 'colaborador_id', 'id');
     }
 
     public function horario_virtual_colaborador(){
         return $this->hasMany(Horario_Virtual_Colaborador::class, 'colaborador_id', 'id');
+    }
+
+    public function especialista() {
+        return $this->belongsTo(Especialista::class, 'especialista_id', 'id');
     }
 
 }

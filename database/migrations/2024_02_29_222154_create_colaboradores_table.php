@@ -18,6 +18,8 @@ return new class extends Migration
             $table->boolean('estado')->default(true);
             $table->unSignedBigInteger('candidato_id');
             $table->foreign('candidato_id')->references('id')->on('candidatos');
+            $table->unsignedBigInteger('especialista_id')->nullable();
+            $table->foreign('especialista_id')->references('id')->on('especialistas');
             $table->timestamps();
         });
     }
