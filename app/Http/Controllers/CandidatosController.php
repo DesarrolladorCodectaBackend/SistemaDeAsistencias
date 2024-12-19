@@ -428,7 +428,7 @@ class CandidatosController extends Controller
         $pageData = FunctionHelperController::getPageData($candidatos);
 
         //return $colaboradoresConArea;
-
+        
         return view('inspiniaViews.candidatos.index', [
             'candidatos' => $candidatos,
             'hasPagination' => $hasPagination,
