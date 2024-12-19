@@ -53,7 +53,7 @@ class TutorSeguimientoController extends Controller
             }
 
             if(!empty($errors)) {
-                return redirect()->route('especialista.index');
+                return redirect()->route('especialista.index')->withErrors($errors)->withInput();
             }
 
             Especialista::create([
@@ -119,7 +119,7 @@ class TutorSeguimientoController extends Controller
             }
 
             if(!empty($errors)) {
-                return redirect()->route('especialista.index');
+                return redirect()->route('especialista.index')->withErrors($errors)->withInput();
             }
 
             $especialista->update([
