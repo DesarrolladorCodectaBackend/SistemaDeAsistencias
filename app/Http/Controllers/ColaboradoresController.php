@@ -301,12 +301,17 @@ class ColaboradoresController extends Controller
 
 
         // Obtenemos a los colaboradores filtrados por áreas
-        $colaboradoresArea = Colaboradores_por_Area::with('colaborador')
+        $colaboradoresAreaId = Colaboradores_por_Area::with('colaborador')
             ->whereIn('area_id', $requestAreas)
             ->whereIn('estado', $estadoAreas)
             ->get()
-            ->pluck('colaborador');
+            ->pluck('colaborador_id')->toArray();
 
+        $colaboradoresApoyoArea = ColaboradoresApoyoAreas::whereIn('area_id', $requestAreas)->whereIn('estado', $estadoAreas)->get()->pluck('colaborador_id')->toArray();
+
+        $colaboradoresAreaId = array_merge($colaboradoresAreaId, $colaboradoresApoyoArea);
+
+        $colaboradoresArea = Colaboradores::whereIn('id', $colaboradoresAreaId);
         // return $colaboradoresArea;
 
         //filtramos por los estados
