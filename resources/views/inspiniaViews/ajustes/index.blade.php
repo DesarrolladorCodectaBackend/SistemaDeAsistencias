@@ -211,7 +211,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="{{route('especialistas.index')}}"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('especialista.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>

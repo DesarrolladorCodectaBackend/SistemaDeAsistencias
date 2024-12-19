@@ -10,6 +10,7 @@ use App\Models\AreaRecreativa;
 use App\Models\Asistentes_Clase;
 use App\Models\Colaboradores;
 use App\Models\Candidatos;
+use App\Models\Especialista;
 use App\Models\Colaboradores_por_Area;
 use App\Models\ColaboradoresApoyoAreas;
 use App\Models\Computadora_colaborador;
@@ -139,12 +140,13 @@ class ColaboradoresController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         $countColaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->get()->count();
-        $colaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->paginate(12);
+        $colaboradores = Colaboradores::with('candidato', 'especialista')->whereNot('estado', 2)->paginate(12);
 
         $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
 
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
 
+        $especialistas = Especialista::where('estado', 1)->get();
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
@@ -182,6 +184,7 @@ class ColaboradoresController extends Controller
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
             'sedes' => $sedes,
+            'especialistas' => $especialistas,
             'instituciones' => $instituciones,
             'carreras' => $carreras,
             'areas' => $areas,
@@ -281,6 +284,9 @@ class ColaboradoresController extends Controller
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
         $areasAll = Area::orderBy('especializacion', 'asc')->get();
+
+        $especialistas = Especialista::where('estado', 1)->get();
+
         $ciclosAll = [4,5,6,7,8,9,10];
 
         $sedesFiltradas = $sedesAll->where('estado', 1);
@@ -376,6 +382,7 @@ class ColaboradoresController extends Controller
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
 
+            'especialistas' => $especialistas,
             'sedes' => $sedesFiltradas,
             'instituciones' => $institucionesFiltradas,
             'carreras' => $carrerasFiltradas,
@@ -532,7 +539,7 @@ class ColaboradoresController extends Controller
             }
 
              // Validación de Celular
-             if (isset($request->celular) && strlen($request->celular) !== 9) {
+            if (isset($request->celular) && strlen($request->celular) !== 9) {
                 $errors['celular'.$colaborador_id] = 'El celular debe contener 9 números.';
             } else if (isset($request->celular)) {
                 $candidatos = Candidatos::where('celular', $request->celular)->get();
@@ -704,6 +711,14 @@ class ColaboradoresController extends Controller
 
             //Se actualizan los datos del candidato
             $candidato->update($datosActualizar);
+
+            $valorEspecialista = $request->especialista_id != 0 ? $request->especialista_id : null;
+            //Actualizar especialista de Seguimiento
+            $colaborador->update([
+                "especialista_id" => $valorEspecialista
+            ]);
+
+
             DB::commit();
 
             //Se redirige a la vista
@@ -801,6 +816,7 @@ class ColaboradoresController extends Controller
             $colaboradores = $colaboradoresPorNombre;
             $countColaboradores = $countColaboradoresNombre;
         }
+        $especialistas = Especialista::where('estado', 1)->get();
 
         $ciclosAll = [4,5,6,7,8,9,10];
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
@@ -836,6 +852,7 @@ class ColaboradoresController extends Controller
             'countColaboradores' => $countColaboradores,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
+            'especialistas' => $especialistas,
             'sedes' => $sedes,
             'instituciones' => $instituciones,
             'carreras' => $carreras,
