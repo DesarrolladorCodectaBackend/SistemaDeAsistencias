@@ -407,7 +407,10 @@
                     form.action = routeTemplate.replace(':id', id);
 
                     //console.log(routeTemplate);
-                    form.innerHTML = '@csrf @method("PUT")';
+                    form.innerHTML = `
+                        @csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
 
                     // if (currentURL != null) {
                     //     let inputHidden = document.createElement('input');

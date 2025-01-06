@@ -295,6 +295,12 @@
                                         </div>
 
 
+                                        <div class="form-group">
+                                            <p style="font-weight: bold; font-size: 1rem; margin: 0px;">Especialista de Seguimiento:</p>
+                                            <p class="overflowing-skipt" style="font-size: 0.9rem;">
+                                                {{ $colaborador?->especialista?->nombres ?? 'Sin Especialista' }}
+                                            </p>
+                                        </div>
                                         {{-- horas colab --}}
                                         <div class="form-group">
                                             <p style="font-weight: bold; font-size: 1rem; margin: 0px;">Horas Prácticas:</p>
@@ -817,6 +823,18 @@
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
+                                                                    <div class="form-group"><label>
+                                                                            <h5 class="m-t-none">Especialista de Seguimiento:</h5>
+                                                                        </label>
+                                                                        <select class="form-control" name="especialista_id">
+                                                                            <option value="0" @if($colaborador->especialista_id == null) selected @endif>Sin Especialista</option>
+                                                                            @foreach ($especialistas as $especialista)
+                                                                            <option value="{{ $especialista->id }}"
+                                                                                @if($especialista->id == $colaborador->especialista_id) selected @endif>
+                                                                                {{ $especialista->nombres }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
 
                                                                     <div class="mt-4 text-center">
                                                                         <button
@@ -1018,8 +1036,7 @@
                 form.action = routeTemplate.replace(':id', id);
 
                 form.innerHTML = `
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="_method" value="PUT">
+                    @csrf @method("PUT")
                     <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                     `;
 
@@ -1220,7 +1237,9 @@
 
 
                     form.action = routeTemplate.replace(':id', id);
-                    form.innerHTML = '@csrf @method("PUT")';
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
 
 
                     document.body.appendChild(form);
@@ -1269,7 +1288,9 @@
                     let routeTemplate = "<?php echo route('colaboradores.recontratarColaborador', ':id'); ?>";
                     form.action = routeTemplate.replace(':id', id);
 
-                    form.innerHTML = '@csrf @method("PUT")';
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
 
                     if (currentURL != null) {
                         let inputHidden = document.createElement('input');
@@ -1320,7 +1341,9 @@
                     let routeTemplate = "<?php echo route('colaboradores.destroy', ':id'); ?>";
                     form.action = routeTemplate.replace(':id', id);
 
-                    form.innerHTML = '@csrf @method("DELETE")';
+                    form.innerHTML = `@csrf @method("DELETE")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
 
                     if (currentURL != null) {
                         let inputHidden = document.createElement('input');
