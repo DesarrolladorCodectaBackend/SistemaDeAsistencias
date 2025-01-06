@@ -101,7 +101,7 @@
             @endif
             @if($userData['isAdmin'])
             <li id="maquinas">
-                <a href="{{route('maquinas.index')}}"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
+                <a href="{{route('maquinas.index')}}"><i class="fa fa-desktop"></i> <span class="nav-label">Máquinas</span></a>
             </li>
             <li id="salones">
                 <a href="{{route('salones.index')}}"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
