@@ -417,7 +417,7 @@
             var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
             var link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = "EventosCalendario.xlsx";
+            link.download = "horarios-areas.xlsx";
             link.click();
         });
     }
