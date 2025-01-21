@@ -6,6 +6,7 @@ use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\ColaboradorEditController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
@@ -60,6 +61,10 @@ Route::get('/', function () {
 // });
 
 Route::get('regenerateSession/{email}/{password}', [NotificationController::class, 'regenerateSession'])->name('regenerateSession');
+
+Route::get('/colaborador/editar', [ColaboradorEditController::class, 'edit'])->name('colaboradorEdit.edit');
+Route::get('/colaborador/search', [ColaboradorEditController::class, 'search'])->name('colaboradorEdit.buscar');
+Route::post('/colaborador/update/{id}', [ColaboradorEditController::class, 'update'])->name('colaboradorEdit.update');
 
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
