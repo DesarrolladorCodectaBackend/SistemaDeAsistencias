@@ -266,7 +266,7 @@ class ColaboradoresController extends Controller
 
     //FUNCTION getObjetoColabodaor
 
-    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '')
+    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '', string $pagos = 'false')
     {
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
@@ -302,9 +302,6 @@ class ColaboradoresController extends Controller
 
         // justsedes
         $requestSedes = empty($sedes) ? $sedesAll->pluck('id') : $sedes;
-        // return $requestSedes;
-        // return $requestEstados;
-
 
         // Obtenemos a los colaboradores filtrados por áreas
         $colaboradoresAreaId = Colaboradores_por_Area::with('colaborador')
@@ -315,26 +312,32 @@ class ColaboradoresController extends Controller
 
         $colaboradoresApoyoArea = ColaboradoresApoyoAreas::whereIn('area_id', $requestAreas)->whereIn('estado', $estadoAreas)->get()->pluck('colaborador_id')->toArray();
 
-        $colaboradoresAreaId = array_merge($colaboradoresAreaId, $colaboradoresApoyoArea);
+
+
 
         $colaboradoresArea = Colaboradores::whereIn('id', $colaboradoresAreaId);
         // return $colaboradoresArea;
 
+        // pagos
+        if ($pagos === 'true') {
+            $colaboradoresArea = $colaboradoresArea->where(function ($query) {
+                $query->where('pasaje', '>=', 1)
+                      ->orWhere('comida', '>=', 1);
+            });
+        }
+
+        $colaboradoresAreaId = array_merge($colaboradoresAreaId, $colaboradoresApoyoArea);
         //filtramos por los estados
         $colaboradoresCandidatoId = $colaboradoresArea->whereIn('estado', $estados)->pluck('candidato_id');
 
         //filtrar los candidatos por la carrera y la sede - institucion
         $sedesInstitucionesId = Sede::whereIn('institucion_id', $requestInstituciones)->pluck('id');
-        // $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
-        //     ->whereIn('carrera_id', $requestCarreras) //filtrar por la carrera
-        //     ->whereIn('sede_id', $sedesInstitucionesId) //filtrar por la sede
-        //     ->when(!empty($ciclos), function ($query) use ($ciclos) {
-        //         $query->whereIn('ciclo_de_estudiante', $ciclos);
-        //     })
-        //     ->pluck('id');
+
 
         // just sedes
         $sedesId = Sede::whereIn('id', $requestSedes)->pluck('id');
+
+
 
         // return $sedesId;
 
@@ -399,6 +402,7 @@ class ColaboradoresController extends Controller
             'colaboradoresCol' => $colaboradoresCol
         ]);
     }
+
     public function store(StoreColaboradoresRequest $request)
     {
         // return $request;
@@ -1072,5 +1076,32 @@ class ColaboradoresController extends Controller
             }
         }
 
+    }
+
+    public function pagos(Request $request, $colaborador_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $colaborador = Colaboradores::findOrFail($colaborador_id);
+
+            $colaborador->update([
+                'pasaje' => $request->pasaje,
+                'comida' => $request->comida
+            ]);
+            DB::commit();
+            return redirect()->route('colaboradores.index');
+
+        }catch (Exception $e){
+            DB::rollBack();
+            if($request->currentURL) {
+                return redirect($request->currentURL)->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
+            } else {
+                return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
+            }
+        }
     }
 }

@@ -8,10 +8,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Editar Colaborador</h1>
+        <h1>Ingrese DNI o correo</h1>
 
         <div>
-            <input type="text" id="buscar-input" placeholder="Ingrese DNI o Correo">
+            <input type="text" id="buscar-input">
             <button id="buscar-btn">Buscar</button>
         </div>
 
@@ -48,11 +48,11 @@
                 <h2>Editar Datos del Colaborador</h2>
                 <form id="editar-form">
 
-                    <label for="nombre">Nombre:</label>
+                    <label for="nombre">Nombres:</label>
                     <input type="text" id="nombre" value="${data.candidato.nombre}">
                     <br>
 
-                    <label for="apellido">Apellido:</label>
+                    <label for="apellido">Apellidos:</label>
                     <input type="text" id="apellido" value="${data.candidato.apellido}">
                     <br>
 
@@ -76,16 +76,38 @@
                     <input type="text" id="direccion" value="${data.candidato.direccion}">
                     <br>
 
+
                     <label for="sede_id">Sede:</label>
-                    <input type="text" id="sede_id" value="${data.candidato.sede_id}">
+                    <select class="form-select" aria-label="Default select example" id="sede_id">
+                        ${data.sedes.map(sede => `
+                            <option value="${sede.id}" ${sede.id === data.candidato.sede_id ? 'selected' : ''}>
+                                ${sede.nombre}
+                            </option>
+                        `).join('')}
+                    </select>
                     <br>
 
                     <label for="ciclo_de_estudiante">Ciclo de Estudiante:</label>
-                    <input type="text" id="ciclo_de_estudiante" value="${data.candidato.ciclo_de_estudiante}">
+                    <select class="form-select" aria-label="Default select example" id="ciclo_de_estudiante">
+
+                        ${[4, 5, 6, 7, 8, 9, 10].map(ciclo => `
+                            <option value="${ciclo}" ${ciclo === data.candidato.ciclo_de_estudiante ? 'selected' : ''}>
+                                ${ciclo}
+                            </option>
+                        `).join('')}
+                    </select>
                     <br>
 
-                    <label for="carrera_id">Carrera:</label>
-                    <input type="text" id="carrera_id" value="${data.candidato.carrera_id}">
+
+                    <label for="sede_id">Carrera:</label>
+                    <select class="form-select" aria-label="Default select example" id="carrera_id">
+
+                        ${data.carreras.map(carrera => `
+                            <option value="${carrera.id}" ${carrera.id === data.candidato.carrera_id ? 'selected' : ''}>
+                                ${carrera.nombre}
+                            </option>
+                        `).join('')}
+                    </select>
                     <br>
 
                     <button type="submit">Actualizar</button>

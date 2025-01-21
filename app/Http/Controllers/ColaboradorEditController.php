@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Candidatos;
+use App\Models\Carrera;
+use App\Models\Sede;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -15,18 +17,23 @@ class ColaboradorEditController extends Controller
     }
 
     public function search(Request $request) {
+        $sedes = Sede::get();
+        $carreras = Carrera::get();
         $input = $request->get('input');
+        $colabData = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'correo' : (is_numeric($input) ? 'dni' : null);
 
-        if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
-            $candidato = Candidatos::where('correo', $input)->where('estado', 0)->first();
-        } else if (is_numeric($input)) {
-            $candidato = Candidatos::where('dni', $input)->where('estado', 0)->first();
-        } else {
+
+        if ($colabData) {
+            $candidato = Candidatos::with(['sede', 'carrera'])
+            ->where($colabData, $input)
+            ->where('estado', 0)
+            ->first();
+        }else {
             return response()->json(['error' => 'El dato ingresado no es válido.'], 400);
         }
 
         if (!$candidato) {
-            return response()->json(['error' => 'Candidato no encontrado o no registrado.'], 404);
+            return response()->json(['error' => 'Candidato no registrado.'], 404);
         }
 
         $colaborador = $candidato->colaborador;
@@ -39,10 +46,12 @@ class ColaboradorEditController extends Controller
         return response()->json([
             'candidato' => $candidato,
             'colaborador' => $colaborador,
+            'sede' => $candidato->sede->nombre,
+            'carrera' => $candidato->carrera->nombre,
+            'sedes' => $sedes,
+            'carreras' => $carreras
         ]);
     }
-
-
 
 
     public function update(Request $request, $id)

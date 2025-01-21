@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/colaboradores/index.css') }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA | Colaboradores</title>
 </head>
@@ -136,7 +138,6 @@
                                                 </div>
                                             </div>
 
-
                                             <!-- Ciclos -->
                                             <div class="card">
                                                 <div class="card-header" id="headingCiclosCandidatos">
@@ -151,16 +152,12 @@
                                                         <div class="form-group">
                                                             <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
                                                         </div>
-                                                        {{-- @if(isset($ciclosAll) && $ciclosAll->isNotEmpty()) --}}
                                                         @foreach($ciclosAll as $index => $ciclo)
                                                         <div class="form-check">
                                                             <input type="checkbox" class="form-check-input ciclo-checkbox" id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
                                                             <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
                                                         </div>
                                                         @endforeach
-                                            {{-- @else --}}
-                                                {{-- <p>No hay ciclos disponibles.</p> --}}
-                                            {{-- @endif --}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -213,6 +210,17 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            {{-- pagos --}}
+                                            <div class="card">
+                                                <div class="card-header d-flex" id="headingCarreras">
+                                                    <div class="mb-0 pago-check-content">
+                                                        <input type="checkbox" id="pagos-checkbox">
+                                                        <h5>Colaboradores pagados</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <!-- Submit Button -->
                                             <div class="text-center mt-4">
                                                 <button type="submit" class="btn btn-primary px-5">Filtrar</button>
@@ -583,14 +591,24 @@
                                             <x-uiverse.tooltip nameTool="Horario">
                                                 <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
                                                     style="font-size: 20px;"
-                                                    onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
+                                                    onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();">
+                                                </button>
                                             </x-uiverse.tooltip>
 
                                             {{-- Botón ver colaborador --}}
                                             <x-uiverse.tooltip nameTool="Ver">
                                                 <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                     style="font-size: 20px;"
-                                                    href="#modal-form-view{{$colaborador->id}}"></button>
+                                                    href="#modal-form-view{{$colaborador->id}}">
+                                                </button>
+                                            </x-uiverse.tooltip>
+
+                                            {{-- btn pagos colab --}}
+                                            <x-uiverse.tooltip nameTool="Pagos">
+                                                <button data-toggle="modal" class="btn btn-primary btn-success fa fa-coins"
+                                                    style="font-size: 20px;"
+                                                    href="#modal-form-gasto{{$colaborador->id}}">
+                                                </button>
                                             </x-uiverse.tooltip>
                                         </div>
                                         <style>
@@ -605,6 +623,46 @@
                                                 -moz-appearance: textfield; /* Para Firefox */
                                             }
                                         </style>
+
+                                        {{-- MODAL GASTO --}}
+                                        <div id="modal-form-gasto{{ $colaborador->id }}" class="modal fade" aria-hidden="true">
+                                            <div class="modal-dialog modal-custom">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <form action="{{ route('pago.pagos', $colaborador->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="row d-flex justify-center pagos-content">
+                                                                    <div class="pasaje-content">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Pasaje:</h5>
+                                                                        </label>
+                                                                        <input type="text"
+                                                                                class="form-control" name="pasaje"
+                                                                                value="{{ $colaborador->pasaje }}"
+                                                                        >
+                                                                    </div>
+
+                                                                    <div class="comida-content">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Comida:</h5>
+                                                                        </label>
+                                                                        <input type="text"
+                                                                                class="form-control" name="comida"
+                                                                                value="{{ $colaborador->comida }}"
+                                                                        >
+                                                                    </div>
+
+                                                                    <button type="submit" class="btn btn-primary mt-4">
+                                                                        Guardar
+                                                                    </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
                                             aria-hidden="true">
@@ -1199,7 +1257,7 @@
            const inputsUpdate = document.querySelectorAll('[id^="dni-update-"]');
 
            inputsUpdate.forEach(inputUpdate => {
-               const colaboradorId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
+               const colaboradorId = inputUpdate.id.split('-')[2];
                const counterUpdate = document.getElementById(`dni-counter-update-${colaboradorId}`);
 
                // Inicializa el contador y el borde según el valor inicial
@@ -1461,6 +1519,7 @@
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
             let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
+            let pagos = document.getElementById('pagos-checkbox').checked ? 'true' : 'false';
 
             estados = estados.length ? estados.join(',') : '1';
             areas = areas.length ? areas.join(',') : '0';
@@ -1469,8 +1528,8 @@
             ciclos = ciclos.length ? ciclos.join(',') : '0';
             sedes = sedes.length ? sedes.join(',') : '0';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null && pagos != false){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}/pagos=${pagos}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
