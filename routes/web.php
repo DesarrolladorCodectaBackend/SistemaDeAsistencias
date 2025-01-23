@@ -174,6 +174,8 @@ Route::middleware('auth')->group(function () {
 
     Route::put('colaboradores/pagos/{colaborador_id}', [ColaboradoresController::class, 'pagos'])->name('pago.pagos');
 
+    Route::put('colaboradores/editState/{colaborador_id}', [ColaboradoresController::class, 'colabEditState'])->name('colaboradores.editState');
+
     //HORARIO DE CLASES
     Route::resource('horarioClase', HorarioDeClasesController::class);
     Route::get('/horarioClases/{colaborador_id}', [HorarioDeClasesController::class, 'getCalendariosColaborador'])->name('colaboradores.horarioClase');

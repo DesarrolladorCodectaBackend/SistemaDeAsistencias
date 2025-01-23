@@ -389,15 +389,17 @@
                                         </div>
 
                                         <div class="mt-2">
-                                            {{-- <form role="form" method="POST" action="{{route('colaboradores.despedirColaborador', $colaborador->id)}}">
-                                                @csrf
-                                                @method('PUT')
-                                                @isset($pageData->currentURL)
-                                                <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-                                                @endisset
-                                                <button class="btn btn-danger">Despedir</button>
-                                            </form> --}}
                                             <button class="btn btn-danger" onclick="confirmDespedir({{$colaborador->id}})">Despedir</button>
+                                        </div>
+
+                                        <div class="mt-2">
+                                            <button
+                                                class="btn btn-warning"
+                                                onclick="activeEdit({{ $colaborador->id }})"
+                                                {{ $colaborador->editable === 1 ? 'disabled' : '' }}
+                                            >
+                                                Activar Edición
+                                            </button>
                                         </div>
 
                                     </div>
@@ -1279,6 +1281,51 @@
    </script>
 
     <script>
+        function activeEdit(id) {
+            Swal.fire({
+                    title: "¿Deseas activar la edición?",
+                    showCancelButton: true,
+                    confirmButtonText: "Activar",
+                    cancelButtonText: "Cancelar",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+
+                    let routeTemplate = "<?php echo route('colaboradores.editState', ':id'); ?>";
+
+
+                    form.action = routeTemplate.replace(':id', id);
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "La edición no fue activada",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    // console.log(result);
+                    });
+
+        }
+
         function confirmDespedir(id) {
             Swal.fire({
                     title: "¿Deseas despedir a este colaborador?",

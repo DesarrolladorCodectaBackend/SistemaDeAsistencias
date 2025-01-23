@@ -1104,4 +1104,24 @@ class ColaboradoresController extends Controller
             }
         }
     }
+
+    public function colabEditState(Request $request, $colaborador_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        DB::beginTransaction();
+        try{
+            $colaborador = Colaboradores::findOrFail($colaborador_id);
+
+            $colaborador->update(['editable' => 1]);
+
+            DB::commit();
+            return redirect()->route('colaboradores.index');
+        }catch (Exception $e) {
+            DB::rollBack();
+            return redirect($request->currentURL)->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
+        }
+    }
 }
