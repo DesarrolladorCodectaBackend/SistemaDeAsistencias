@@ -22,11 +22,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('colaboradores', function (Blueprint $table) {
-            $table->unsignedBigInteger('especialista_id')->nullable()->after('candidato_id');
-
-            $table->foreign('especialista_id')->references('id')->on('especialistas');
-        });
     }
 
     /**

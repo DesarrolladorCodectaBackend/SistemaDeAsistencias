@@ -11,7 +11,6 @@ use App\Models\Sede;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class ColaboradorEditController extends Controller
 {

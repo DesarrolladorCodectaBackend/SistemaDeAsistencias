@@ -78,7 +78,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: aliceblue;
+    background-color: rgba(170, 179, 199, 0.664);
     width: 48%;
     padding: 1.5rem;
     border-radius: 2.5rem;

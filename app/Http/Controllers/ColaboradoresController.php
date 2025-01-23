@@ -23,6 +23,7 @@ use App\Models\Maquina_reservada;
 use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
 use App\Http\Requests\UpdateColaboradoresRequest;
+use App\Models\ColabPassword;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\IntegrantesReuniones;
 use App\Models\Programas_instalados;
@@ -39,6 +40,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Session;
 use Exception;
+use Illuminate\Support\Facades\Hash;
+use Str;
 
 class ColaboradoresController extends Controller
 {
@@ -405,36 +408,42 @@ class ColaboradoresController extends Controller
 
     public function store(StoreColaboradoresRequest $request)
     {
-        // return $request;
         $access = FunctionHelperController::verifyAdminAccess();
-        if(!$access){
+        if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
-        DB::beginTransaction();
-        try{
-            // return $request;
-            //Se busca al candidato por su id
-            $candidato = Candidatos::findOrFail($request->candidato_id);
-            //Se verifica si el candidato está activo
-            if ($candidato->estado == 1) {
-                //Sí el candidato está activo, se crea un nuevo colaborador con el id del candidato
-                $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
 
-                //Encontrar siguiente semana(Lunes)
+        DB::beginTransaction();
+        try {
+            // Buscar al candidato por su ID
+            $candidato = Candidatos::findOrFail($request->candidato_id);
+
+            // Verificar si el candidato está activo (estado == 1)
+            if ($candidato->estado == 1) {
+
+                // Actualizar el estado del candidato a 0 (pasará a ser colaborador)
+                $candidato->estado = 0;
+
+                // Guardar los cambios en el candidato
+                $candidato->save();
+
+                // Crear un nuevo colaborador relacionado con el candidato
+                $colaborador = Colaboradores::create(['candidato_id' => $candidato->id]);
+
+                // Encontrar la siguiente semana (lunes)
                 $semana = FunctionHelperController::findOrCreateNextWeek();
 
-                //Se recorre el request de areas
-                foreach($request->areas_id as $area_id){
-                    //Se crea un nuevo registro en la tabla Colaboradores_por_Area con el id del colaborador y el id del área
+                // Recorrer el request de áreas y asignarlas al colaborador
+                foreach ($request->areas_id as $area_id) {
                     Colaboradores_por_Area::create([
                         'colaborador_id' => $colaborador->id,
                         'area_id' => $area_id,
                         'semana_inicio_id' => $semana->id,
                     ]);
                 }
-                //Se recorre el request de horarios
+
+                // Recorrer el request de horarios y asignarlos al colaborador
                 foreach ($request->horarios as $horario) {
-                    //Se crea un nuevo registro en la tabla Horario_de_Clases con el id del colaborador y los datos del horario
                     Horario_de_Clases::create([
                         'colaborador_id' => $colaborador->id,
                         'hora_inicial' => $horario['hora_inicial'],
@@ -443,21 +452,22 @@ class ColaboradoresController extends Controller
                         'justificacion' => $horario['justificacion'],
                     ]);
                 }
-                //Se actualiza el estado del candidato a 0, significa que es un colaborador
-                $candidato->estado = 0;
-                $candidato->save();
+
+                // Commit de la transacción si todo está bien
+                DB::commit();
+                // Redirigir a la vista de colaboradores
+                return redirect()->route('colaboradores.index');
+            } else {
+                DB::rollBack();
+                return redirect()->route('colaboradores.index')->with('error', 'El candidato no está activo para ser convertido en colaborador.');
             }
-
-            DB::commit();
-            //Se redirige a la vista de colaboradores
-            return redirect()->route('colaboradores.index');
         } catch (Exception $e) {
+            // return $e;
             DB::rollBack();
-            return redirect()->route('colaboradores.index');
-
+            return redirect()->route('colaboradores.index')->with('error', 'Hubo un error al intentar crear el colaborador.');
         }
-
     }
+
 
     public function update(Request $request, $colaborador_id)
     {

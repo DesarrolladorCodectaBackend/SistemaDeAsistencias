@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Colaboradores;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Dotenv\Exception\ValidationException;
@@ -55,7 +56,13 @@ class AuthenticatedSessionController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+        $colab = Colaboradores::where('correo', $request->email)->firstOrFail();
+        if($colab && $colab->estado == 1 && $colab->editable == 1){
+            return redirect()->route('colaboradorEdit.edit');
+        }
         $token = $user->createToken('auth_token')->plainTextToken;
+
+
 
         return response()->json([
             'AccessToken' => $token,

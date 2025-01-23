@@ -54,7 +54,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group"><label>Correo</label> <input type="email"
                                                 placeholder="Ingrese su correo" value="{{ $candidato->correo }}"
-                                                class="form-control" disabled></div>
+                                                class="form-control" ></div>
                                         <div class="form-group"><label>Teléfono</label> <input type="text"
                                                 placeholder="Ingrese su telefono" value="{{ $candidato->celular }}"
                                                 class="form-control" disabled></div>

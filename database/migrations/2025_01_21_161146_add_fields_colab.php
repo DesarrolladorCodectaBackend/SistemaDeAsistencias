@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::table('colaboradores', function (Blueprint $table) {
             $table->float('pasaje', 5, 2)->nullable();
             $table->float('comida', 5, 2)->nullable();
+            $table->unsignedBigInteger('especialista_id')->nullable()->after('candidato_id');
+            $table->foreign('especialista_id')->references('id')->on('especialistas');
         });
     }
 
@@ -29,6 +31,7 @@ return new class extends Migration
         Schema::table('colaboradores', function (Blueprint $table) {
             $table->dropColumn('pasaje');
             $table->dropColumn('comida');
+            $table->dropColumn('especialista_id');
         });
     }
 };

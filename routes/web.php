@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
@@ -62,16 +62,16 @@ Route::get('/', function () {
 
 Route::get('regenerateSession/{email}/{password}', [NotificationController::class, 'regenerateSession'])->name('regenerateSession');
 
-Route::get('/colaborador', [ColaboradorEditController::class, 'edit'])->name('colaboradorEdit.edit');
-Route::get('/colaborador/search', [ColaboradorEditController::class, 'search'])->name('colaboradorEdit.buscar');
-Route::post('/colaborador/update/{id}', [ColaboradorEditController::class, 'update'])->name('colaboradorEdit.update');
+
 
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
+    Route::get('/colaborador', [ColaboradorEditController::class, 'edit'])->name('colaboradorEdit.edit');
+    Route::get('/colaborador/search', [ColaboradorEditController::class, 'search'])->name('colaboradorEdit.buscar');
+    Route::post('/colaborador/update/{id}', [ColaboradorEditController::class, 'update'])->name('colaboradorEdit.update');
     //FUNCION HELPER
     Route::get('/funcionPrueba', [FunctionHelperController::class, 'funcionPruebas']);
 

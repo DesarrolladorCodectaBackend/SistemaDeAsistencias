@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('colaboradores', function (Blueprint $table) {
+        Schema::create('colab_password', function (Blueprint $table) {
             $table->id();
-            $table->boolean('estado')->default(true);
-            $table->unSignedBigInteger('candidato_id');
+            $table->unsignedBigInteger('candidato_id');
             $table->foreign('candidato_id')->references('id')->on('candidatos');
+            $table->string('password')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('colaboradores');
+        Schema::dropIfExists('colab_password');
     }
 };
