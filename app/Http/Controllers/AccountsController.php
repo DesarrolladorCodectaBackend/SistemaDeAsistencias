@@ -40,10 +40,10 @@ class AccountsController extends Controller
                     $rol = 'Administrador';
                 }
 
-                $colaborador = UsuarioColaborador::where('user_id', $user->id)->first();
-                if($colaborador) {
-                    $rol = 'Colaborador';
-                }
+                // $colaborador = UsuarioColaborador::where('user_id', $user->id)->first();
+                // if($colaborador) {
+                //     $rol = 'Colaborador';
+                // }
 
                 $user->rol = $rol;
                 $user->clave = UsuariosPasswordsController::showPassword($user->id);
