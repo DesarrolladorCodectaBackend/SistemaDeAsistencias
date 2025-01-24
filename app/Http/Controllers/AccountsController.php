@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UsuarioCreadoMailable;
+use App\Models\UsuarioColaborador;
 
 class AccountsController extends Controller
 {
@@ -38,6 +39,12 @@ class AccountsController extends Controller
                 if ($admin) {
                     $rol = 'Administrador';
                 }
+
+                $colaborador = UsuarioColaborador::where('user_id', $user->id)->first();
+                if($colaborador) {
+                    $rol = 'Colaborador';
+                }
+
                 $user->rol = $rol;
                 $user->clave = UsuariosPasswordsController::showPassword($user->id);
 
