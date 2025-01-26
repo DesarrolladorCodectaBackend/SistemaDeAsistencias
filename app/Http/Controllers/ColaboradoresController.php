@@ -752,13 +752,11 @@ class ColaboradoresController extends Controller
                 $datosActualizar['icono'] = $nombreIcono;
             }
             if ($candidato->wasChanged('email')) {
-                // Buscar si existe un usuario con el mismo correo
                 $usuarioAsociado = User::where('email', $candidato->email)->first();
-
+                
                 if ($usuarioAsociado) {
-                    // Si se encuentra un usuario con ese correo, actualizar el correo del usuario
                     $usuarioAsociado->update([
-                        'email' => $candidato->email, // Asignar el nuevo correo del candidato
+                        'email' => $candidato->email,
                     ]);
                 }
             }
