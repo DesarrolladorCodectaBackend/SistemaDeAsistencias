@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('usuarios_colaboradores', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('colaborador_id');
-            $table->foreign('colaborador_id')->references('id')->on('colaboradores');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('area_id');
             $table->foreign('area_id')->references('id')->on('areas');
             $table->timestamps();

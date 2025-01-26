@@ -246,7 +246,7 @@
                 console.error(`Elemento con ID '${id}' no encontrado.`);
             }
         }
-        
+
     let cacheEmail = '';
     let cacheNombre = '';
     let cacheApellido = ''
@@ -256,12 +256,12 @@
    // Inicializar Choices.js para permitir escribir en el select
     document.addEventListener('DOMContentLoaded', function() {
         const selectElement = document.getElementById('colaboradorSelectedId');
-        
+
         // Crear un nuevo objeto Choices para hacer el select escribible y filtrable
         const choices = new Choices(selectElement, {
-            searchEnabled: true,  
-            itemSelectText: '',  
-            noResultsText: 'No se encontraron colaboradores',  
+            searchEnabled: true,
+            itemSelectText: '',
+            noResultsText: 'No se encontraron colaboradores',
         });
     });
 
@@ -274,7 +274,7 @@
             const colaborador = @json($colaboradores->keyBy('id')); // Suponiendo que `$colaboradores` es un array de objetos en tu backend
             const selectedColab = colaborador[selectedColabId];
             const areasJefe = selectedColab.areas;
-            
+
             // Asigna los valores a los campos correspondientes
             let email = document.getElementById('email');
             let name = document.getElementById('name');
@@ -444,7 +444,7 @@
     }
 
 
-    
+
 </script>
 
 </html>

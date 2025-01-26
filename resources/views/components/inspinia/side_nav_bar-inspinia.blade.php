@@ -30,6 +30,7 @@
     $rol = '';
     if($userData['isBoss']) $rol = 'Jefe de Área';
     if($userData['isAdmin']) $rol = 'Administrador';
+    if($userData['isColab']) $rol = 'Colaborador';
 @endphp
 
 
@@ -48,6 +49,11 @@
                         @if($userData['isAdmin'])
                         <li><a class="dropdown-item" href="{{route('accounts.index')}}">Administrar Cuentas</a></li>
                         @endif
+                        @if($userData['isColab'])
+                            <li><a class="dropdown-item" href="{{ route('colaboradorEdit.edit', session('colaborador_id')) }}">Editar datos</a></li>
+                        @endif
+
+
                         <li class="dropdown-divider"></li>
                         <li><a class="dropdown-item"
                             href="javascript:void(0);" onclick="confirmLogout();">Cerrar Sesión</a></li>

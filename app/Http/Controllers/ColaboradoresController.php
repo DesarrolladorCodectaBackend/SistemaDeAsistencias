@@ -23,6 +23,7 @@ use App\Models\Maquina_reservada;
 use App\Models\Prestamos_objetos_por_colaborador;
 use App\Models\Programas;
 use App\Http\Requests\UpdateColaboradoresRequest;
+use App\Mail\UsuarioCreadoMailable;
 use App\Models\ColabPassword;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\IntegrantesReuniones;
@@ -34,6 +35,8 @@ use App\Models\ReunionesProgramadas;
 use App\Models\Semanas;
 use App\Models\User;
 use App\Models\UsuarioJefeArea;
+use App\Models\UsuarioColaborador;
+use App\Models\UsuariosPasswords;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +44,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Session;
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Str;
 
 class ColaboradoresController extends Controller
@@ -408,42 +412,71 @@ class ColaboradoresController extends Controller
 
     public function store(StoreColaboradoresRequest $request)
     {
+        // return $request;
         $access = FunctionHelperController::verifyAdminAccess();
-        if (!$access) {
+        if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
-
         DB::beginTransaction();
-        try {
-            // Buscar al candidato por su ID
+        try{
+            // return $request;
+            //Se busca al candidato por su id
             $candidato = Candidatos::findOrFail($request->candidato_id);
-
-            // Verificar si el candidato está activo (estado == 1)
+            //Se verifica si el candidato está activo
             if ($candidato->estado == 1) {
+                //Sí el candidato está activo, se crea un nuevo colaborador con el id del candidato
+                $colaborador = Colaboradores::create(['candidato_id' => $request->candidato_id]);
 
-                // Actualizar el estado del candidato a 0 (pasará a ser colaborador)
-                $candidato->estado = 0;
-
-                // Guardar los cambios en el candidato
-                $candidato->save();
-
-                // Crear un nuevo colaborador relacionado con el candidato
-                $colaborador = Colaboradores::create(['candidato_id' => $candidato->id]);
-
-                // Encontrar la siguiente semana (lunes)
+                //Encontrar siguiente semana(Lunes)
                 $semana = FunctionHelperController::findOrCreateNextWeek();
 
-                // Recorrer el request de áreas y asignarlas al colaborador
-                foreach ($request->areas_id as $area_id) {
+                 // Generar una contraseña aleatoria directamente aquí
+                 $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@_';
+                 $randomPassword = substr(str_shuffle(str_repeat($characters, 12)), 0, 12);
+
+                 $user = User::create([
+                     'name' => $candidato->nombre,
+                     'apellido' => $candidato->apellido,
+                     'email' => $candidato->correo,
+                     'password' => Hash::make($randomPassword),
+                 ]);
+
+
+                 // Registrar al usuario con la contraseña generada
+                 UsuariosPasswordsController::registrar($user->id, $randomPassword);
+
+                // Verificar que el candidato tiene un correo válido
+                 if (filter_var($candidato->correo, FILTER_VALIDATE_EMAIL)) {
+                     // Enviar email con las credenciales
+                     Mail::to($candidato->correo)->send(
+                         new UsuarioCreadoMailable(
+                             $candidato->correo,
+                             $randomPassword,
+                             $candidato->nombre . " " . $candidato->apellido,
+                             'Colaborador'
+                         )
+                     );
+                 } else {
+                     throw new Exception('El correo electrónico del candidato no es válido.');
+                 }
+
+                //Se recorre el request de areas
+                foreach($request->areas_id as $area_id){
+                    //Se crea un nuevo registro en la tabla Colaboradores_por_Area con el id del colaborador y el id del área
                     Colaboradores_por_Area::create([
                         'colaborador_id' => $colaborador->id,
                         'area_id' => $area_id,
                         'semana_inicio_id' => $semana->id,
                     ]);
-                }
 
-                // Recorrer el request de horarios y asignarlos al colaborador
+                    UsuarioColaborador::create([
+                        'user_id' => $user->id,
+                        'area_id' => $area_id
+                    ]);
+                }
+                //Se recorre el request de horarios
                 foreach ($request->horarios as $horario) {
+                    //Se crea un nuevo registro en la tabla Horario_de_Clases con el id del colaborador y los datos del horario
                     Horario_de_Clases::create([
                         'colaborador_id' => $colaborador->id,
                         'hora_inicial' => $horario['hora_inicial'],
@@ -453,19 +486,24 @@ class ColaboradoresController extends Controller
                     ]);
                 }
 
-                // Commit de la transacción si todo está bien
-                DB::commit();
-                // Redirigir a la vista de colaboradores
-                return redirect()->route('colaboradores.index');
-            } else {
-                DB::rollBack();
-                return redirect()->route('colaboradores.index')->with('error', 'El candidato no está activo para ser convertido en colaborador.');
+
+
+
+                //Se actualiza el estado del candidato a 0, significa que es un colaborador
+                $candidato->estado = 0;
+                $candidato->save();
             }
+
+            DB::commit();
+            //Se redirige a la vista de colaboradores
+            return redirect()->route('colaboradores.index');
         } catch (Exception $e) {
-            // return $e;
+            return $e;
             DB::rollBack();
-            return redirect()->route('colaboradores.index')->with('error', 'Hubo un error al intentar crear el colaborador.');
+            return redirect()->route('colaboradores.index');
+
         }
+
     }
 
 
@@ -908,6 +946,11 @@ class ColaboradoresController extends Controller
                 }
                 //Estado 2 es igual a ex trabajador
                 $colaborador->update(["estado" => 2]);
+                // si es jefe_area
+                $user = User::where('email', $colaborador->candidato->correo)->first();
+                if($user) {
+                    UsuarioJefeArea::where('user_id', $user->id)->delete();
+                }
             }
             DB::commit();
             if($request->currentURL) {
@@ -1002,74 +1045,125 @@ class ColaboradoresController extends Controller
                     //reuniones_programadas
                     $reuniones_programadas = ReunionesProgramadas::whereIn('id', $colaboradores->pluck('id'))->get();
 
+
                     //ELIMINACIÓN EN CASCADA
                     //ahora procedemos a eliminarlos de los ultimos a los primeros
                     //asistencias_clase
-                    foreach($asistencias_clases as $asistencia_clase) {
-                        $asistencia_clase->delete();
+                    if($asistencias_clases){
+                        foreach($asistencias_clases as $asistencia_clase) {
+                            $asistencia_clase->delete();
+                        }
                     }
                     //prestamos_objetos
-                    foreach($prestamos_objetos as $prestamo_objeto) {
-                        $prestamo_objeto->delete();
+                    if($prestamos_objetos){
+                        foreach($prestamos_objetos as $prestamo_objeto) {
+                            $prestamo_objeto->delete();
+                        }
                     }
                     //registros_mantenimientos
-                    foreach($registros_mantenimientos as $registro_mantenimiento) {
-                        $registro_mantenimiento->delete();
+                    if($registros_mantenimientos){
+                        foreach($registros_mantenimientos as $registro_mantenimiento) {
+                            $registro_mantenimiento->delete();
+                        }
                     }
                     //programas_instalados
-                    foreach($programas_instalados as $programa_instalado) {
-                        $programa_instalado->delete();
+                    if($programas_instalados){
+                        foreach($programas_instalados as $programa_instalado) {
+                            $programa_instalado->delete();
+                        }
                     }
                     //computadoras
-                    foreach($computadoras as $computadora) {
-                        $computadora->delete();
+                    if($computadoras){
+                        foreach($computadoras as $computadora) {
+                            $computadora->delete();
+                        }
                     }
                     //responsabilidades_Semanales_cumplidas
-                    foreach($responsabilidades_semanales_cumplidas as $responsabilidad_semanal_cumplida) {
-                        $responsabilidad_semanal_cumplida->delete();
+                    if($responsabilidades_semanales_cumplidas){
+                        foreach($responsabilidades_semanales_cumplidas as $responsabilidad_semanal_cumplida) {
+                            $responsabilidad_semanal_cumplida->delete();
+                        }
                     }
                     //maquinas_reservadas
-                    foreach($maquinas_reservadas as $maquina_reservada) {
-                        $maquina_reservada->delete();
+                    if($maquinas_reservadas){
+                        foreach($maquinas_reservadas as $maquina_reservada) {
+                            $maquina_reservada->delete();
+                        }
                     }
                     //registros_actividad
-                    foreach($registros_actividad as $registro_actividad) {
-                        $registro_actividad->delete();
+                    if($registros_actividad){
+                        foreach($registros_actividad as $registro_actividad) {
+                            $registro_actividad->delete();
+                        }
                     }
                     //horarios_de_clases
-                    foreach($horarios_de_clases as $horario_de_clase) {
-                        $horario_de_clase->delete();
+                    if($horarios_de_clases){
+                        foreach($horarios_de_clases as $horario_de_clase) {
+                            $horario_de_clase->delete();
+                        }
                     }
                     // areas_recreativa
-                    foreach($colaborador_actividades as $activ){
-                        $activ->delete();
+                    if($colaborador_actividades){
+                        foreach($colaborador_actividades as $activ){
+                            $activ->delete();
+                        }
                     }
                     // apoyo_areas
-                    foreach($colaborador_apoyo_areas as $apo){
-                        $apo->delete();
+                    if($colaborador_apoyo_areas){
+                        foreach($colaborador_apoyo_areas as $apo){
+                            $apo->delete();
+                        }
                     }
                     //integrantes_reuniones
-                    foreach($integrantes_reuniones as $inte){
-                        $inte->delete();
+                    if($integrantes_reuniones){
+                        foreach($integrantes_reuniones as $inte){
+                            $inte->delete();
+                        }
                     }
                     //reuniones_programadas
-                    foreach($reuniones_programadas as $reu){
-                        $reu->delete();
+                    if($reuniones_programadas){
+                        foreach($reuniones_programadas as $reu){
+                            $reu->delete();
+                        }
                     }
                     //colaboradores_por_area
-                    foreach($colaboradores_por_area as $colaborador_por_area) {
-                        $colaborador_por_area->delete();
+                    if($colaboradores_por_area){
+                        foreach($colaboradores_por_area as $colaborador_por_area) {
+                            $colaborador_por_area->delete();
+                        }
                     }
                     //colaboradores
-                    foreach($colaboradores as $colab) {
-                        $colab->delete();
+                    if($colaboradores){
+                        foreach($colaboradores as $colab) {
+                            $colab->delete();
+                        }
                     }
 
                     //candidato
                     $candidato->delete();
-                }
-            }
+                    // Verificar si el colaborador tiene un usuario asociado
+                    $user = User::where('email', $candidato->correo)->first();
 
+                    $usuario_jefe_areas = UsuarioJefeArea::whereIn('user_id', $user->pluck('id'))->get();
+                    if ($usuario_jefe_areas) {
+                        foreach ($usuario_jefe_areas as $usuario_jefe_area) {
+                            $usuario_jefe_area->delete();
+                        }
+                    }
+                    if ($user) {
+                        // Si el usuario existe, buscar su contraseña
+                        $usuarioPassword = UsuariosPasswords::where('user_id', $user->id)->first();
+
+                        if ($usuarioPassword) {
+                            // Eliminar la contraseña si existe
+                            $usuarioPassword->delete();
+                        }
+
+                        // Eliminar el usuario después de manejar las dependencias
+                        $user->delete();
+                    }
+            }
+        }
             DB::commit();
             if($request->currentURL) {
                 return redirect($request->currentURL);
@@ -1078,7 +1172,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
-            //return $e;
+            return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {

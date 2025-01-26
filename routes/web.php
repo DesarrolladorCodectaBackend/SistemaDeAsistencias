@@ -69,9 +69,8 @@ Route::middleware('auth')->group(function () {
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/colaborador', [ColaboradorEditController::class, 'edit'])->name('colaboradorEdit.edit');
-    Route::get('/colaborador/search', [ColaboradorEditController::class, 'search'])->name('colaboradorEdit.buscar');
-    Route::post('/colaborador/update/{id}', [ColaboradorEditController::class, 'update'])->name('colaboradorEdit.update');
+    Route::get('/colaborador/edit', [ColaboradorEditController::class, 'edit'])->name('colaboradorEdit.edit');
+    Route::put('/colaborador/update/{id}', [ColaboradorEditController::class, 'update'])->name('colaboradorEdit.update');
     //FUNCION HELPER
     Route::get('/funcionPrueba', [FunctionHelperController::class, 'funcionPruebas']);
 

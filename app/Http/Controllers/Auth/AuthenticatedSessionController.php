@@ -56,13 +56,8 @@ class AuthenticatedSessionController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
-        $colab = Colaboradores::where('correo', $request->email)->firstOrFail();
-        if($colab && $colab->estado == 1 && $colab->editable == 1){
-            return redirect()->route('colaboradorEdit.edit');
-        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
-
-
 
         return response()->json([
             'AccessToken' => $token,

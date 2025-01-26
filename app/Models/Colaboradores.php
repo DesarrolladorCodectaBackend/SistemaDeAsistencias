@@ -39,4 +39,7 @@ class Colaboradores extends Model
         return $this->belongsTo(Especialista::class, 'especialista_id', 'id');
     }
 
+    public function usuario_colaborador() {
+        return $this->hasMany(UsuarioColaborador::class, 'colaborador_id', 'id');
+    }
 }
