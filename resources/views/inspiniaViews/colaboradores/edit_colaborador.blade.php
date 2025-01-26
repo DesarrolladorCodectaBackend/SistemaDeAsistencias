@@ -26,6 +26,15 @@
 
         <main class="main-colaborador-edit">
             <section class="section-colaborador">
+                @if(session('warning'))
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Advertencia!</strong> {{ session('warning') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
+
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong>¡Éxito!</strong> {{ session('success') }}
@@ -36,14 +45,6 @@
                 @elseif(session('error'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong>Error!</strong> {{ session('error') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-
-                @elseif(session('warning'))
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Advertencia!</strong> {{ session('warning') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -156,6 +157,9 @@
                     <div class="form-group">
                         <label for="especialista_id">Especialista</label>
                         <select id="especialista_id" name="especialista_id" class="form-control" {{ !$isEditable ? 'disabled' : '' }}>
+                            <option value="" {{ old('especialista_id', optional($colaborador->especialista)->id) == '' ? 'selected' : '' }}>
+                                Sin especialista
+                            </option>
                             @foreach ($especialistas as $especialista)
                                 <option value="{{ $especialista->id }}" {{ old('especialista_id', optional($colaborador->especialista)->id) == $especialista->id ? 'selected' : '' }}>
                                     {{ $especialista->nombres }}
@@ -163,6 +167,27 @@
                             @endforeach
                         </select>
                     </div>
+
+
+                    <div class="form-group">
+                        <label>
+                            <h5 class="m-t-none">Actividades favoritas:</h5>
+                        </label>
+                        <select name="actividades_id[]" multiple class="form-control multiple_actividades_select">
+                            @foreach ($actividades as $actividad)
+                                <option value="{{ $actividad->id }}"
+                                    @if(in_array($actividad->id, old('actividades_id', $colaborador->actividades->pluck('id')->toArray() ?? [])))
+                                        selected
+                                    @endif
+                                >
+                                    {{ $actividad->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                    </div>
+
+
                     @if($isEditable)
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     @endif
@@ -173,6 +198,10 @@
 
     </div>
 
-
+    <script>
+        $(document).ready(function() {
+            $('.multiple_actividades_select').select2();
+        });
+    </script>
 </body>
 </html>

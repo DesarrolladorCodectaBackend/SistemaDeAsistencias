@@ -27,6 +27,34 @@
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
+            @if($userData['isColab'])
+                @if(session('warning'))
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Advertencia!</strong> {{ session('warning') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>¡Éxito!</strong> {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @elseif(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
+
+            @endif
+
             @if(session('error'))
             <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start"
                 role="alert" style="position: relative;">
@@ -135,21 +163,21 @@
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
-    
+
             // initialize the external events
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
-                    title: $.trim($(this).text()), 
+                    title: $.trim($(this).text()),
                     stick: true
                 });
-    
+
                 $(this).draggable({
                     zIndex: 1111999,
                     revert: true,
                     revertDuration: 0
                 });
             });
-    
+
             // initialize the calendar
             var date = new Date();
             var d = date.getDate();
@@ -157,7 +185,7 @@
             var y = date.getFullYear();
 
             var reunionesProgramadas = <?php echo json_encode($reunionesProgramadas); ?>;
-    
+
             var eventosHorarios = reunionesProgramadas.map(function(reunion) {
                 let hf = reunion.horario_modificado;
                 return {
@@ -169,7 +197,7 @@
                     url: hf.url
                 };
             });
-    
+
             $('#ReunionesCalendar').fullCalendar({
                 header: {
                     left: '',
@@ -177,7 +205,7 @@
                     right: ''
                 },
                 editable: false,
-                droppable: false, 
+                droppable: false,
                 defaultView: 'agendaDay',
                 timeFormat: 'h:mm A',
                 columnHeaderFormat: 'ddd M/D',
@@ -197,21 +225,21 @@
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
-    
+
             // initialize the external events
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
-                    title: $.trim($(this).text()), 
+                    title: $.trim($(this).text()),
                     stick: true
                 });
-    
+
                 $(this).draggable({
                     zIndex: 1111999,
                     revert: true,
                     revertDuration: 0
                 });
             });
-    
+
             // initialize the calendar
             var date = new Date();
             var d = date.getDate();
@@ -219,7 +247,7 @@
             var y = date.getFullYear();
 
             var areas = <?php echo json_encode($areas); ?>;
-    
+
             var eventosHorarios = areas.map(function(area) {
                 return {
                     title: area.especializacion,
@@ -231,7 +259,7 @@
                     url: area.url
                 };
             });
-    
+
             $('#AreasCalendar').fullCalendar({
                 header: {
                     left: '',
@@ -239,7 +267,7 @@
                     right: ''
                 },
                 editable: false,
-                droppable: false, 
+                droppable: false,
                 defaultView: 'agendaDay',
                 timeFormat: 'h:mm A',
                 columnHeaderFormat: 'ddd M/D',
@@ -260,11 +288,11 @@
     let coloresAreas = areasProm.map(areaProm => areaProm.area.color_hex);
     let promediosAreas = areasProm.map(areaProm => areaProm.promedio);
 
-    new Chartist.Bar('#areasMetrics', 
+    new Chartist.Bar('#areasMetrics',
         {
             labels: nombresAreas/*.concat(nombresAreas).concat(nombresAreas).concat(nombresAreas).concat(nombresAreas)*/, //Nombres de las áreas en la parte inferior
             series: [
-                promediosAreas/*.concat(promediosAreas).concat(promediosAreas).concat(promediosAreas).concat(promediosAreas)*/,  // Notas de cada área 
+                promediosAreas/*.concat(promediosAreas).concat(promediosAreas).concat(promediosAreas).concat(promediosAreas)*/,  // Notas de cada área
             ]
         }, {
             stackBars: false,
@@ -306,7 +334,7 @@
             } else{
                 console.error("Elemento con ID 'alert-error' no encontrado.");
             }
-        }    
+        }
 </script>
 
 </html>

@@ -764,11 +764,23 @@ class ColaboradoresController extends Controller
             $candidato->update($datosActualizar);
 
             $valorEspecialista = $request->especialista_id != 0 ? $request->especialista_id : null;
-            //Actualizar especialista de Seguimiento
             $colaborador->update([
                 "especialista_id" => $valorEspecialista
             ]);
 
+
+            $nuevoCorreo = $request->correo;
+            if ($candidato->correo !== $nuevoCorreo) {
+                $candidato->update([
+                    'correo' => $nuevoCorreo
+                ]);
+                $usuario = User::where('email', $nuevoCorreo)->first();
+                if ($usuario) {
+                    $usuario->update([
+                        'email' => $nuevoCorreo
+                    ]);
+                }
+            }
 
             DB::commit();
 

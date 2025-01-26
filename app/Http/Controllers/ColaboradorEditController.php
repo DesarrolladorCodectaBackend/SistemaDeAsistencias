@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Actividades;
+use App\Models\AreaRecreativa;
 use App\Models\Candidatos;
 use App\Models\Carrera;
 use App\Models\Colaboradores;
@@ -19,19 +21,27 @@ class ColaboradorEditController extends Controller
     public function edit() {
         $user = auth()->user();
 
-        $candidato = Candidatos::with(['sede', 'carrera', 'colaborador.especialista'])->where('correo', $user->email)->first();
+        $candidato = Candidatos::with(['sede', 'carrera', 'colaborador.especialista', 'colaborador.actividades'])->where('correo', $user->email)->first();
 
         $sedes = Sede::get();
         $carreras = Carrera::get();
         $especialistas = Especialista::get();
+        $actividades = Actividades::where('estado', 1)->get();
 
         $colaborador = $candidato->colaborador;
+
+        if ($colaborador && $colaborador->editable == 0) {
+            return redirect()->route('dashboard')->with('warning', 'Su edición de datos no está activada. Por favor, consulte con RRHH.');
+        }
+
+        // return $actividades;
 
         return view('inspiniaViews.colaboradores.edit_colaborador', [
             'candidato' => $candidato,
             'colaborador' => $colaborador,
             'sedes' => $sedes,
             'carreras' => $carreras,
+            'actividades' => $actividades,
             'especialistas' => $especialistas,
             'especialista' => $colaborador && $colaborador->especialista ? $colaborador->especialista->nombres : null
         ]);
@@ -49,7 +59,7 @@ class ColaboradorEditController extends Controller
 
             $colaborador = $candidato->colaborador;
             if ($colaborador && $colaborador->editable == 0) {
-                return redirect()->route('colaboradorEdit.edit')->with('warning', 'Este colaborador no puede ser editado. Por favor, consulte con RRHH.');
+                return redirect()->route('dashboard')->with('warning', 'Su edición de datos no está activada. Por favor, consulte con RRHH.');
             }
 
             $errors = [];
@@ -123,12 +133,27 @@ class ColaboradorEditController extends Controller
                 }
             }
 
+             // Registrar las actividades recreativas
+             foreach ($request->actividades_id as $actividad_id) {
+                $actividad_recreativa = AreaRecreativa::where('colaborador_id', $colaborador->id)
+                    ->where('actividad_id', $actividad_id)
+                    ->first();
+
+                if (!$actividad_recreativa) {
+                    AreaRecreativa::create([
+                        'colaborador_id' => $colaborador->id,
+                        'actividad_id' => $actividad_id,
+                        'estado' => true
+                    ]);
+                }
+            }
+
             DB::commit();
-            return redirect()->route('colaboradorEdit.edit')->with('success', 'Para volver a actualizar sus datos, consulte con RRHH para activar la edición de datos.');
+            return redirect()->route('dashboard')->with('success', 'Para volver a actualizar sus datos, consulte con RRHH para activar la edición de datos.');
 
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->route('colaboradorEdit.edit')->with('error', 'Ocurrió un error al actualizar el colaborador.');
+            return redirect()->route('dashboard')->with('error', 'Ocurrió un error al actualizar el colaborador.');
         }
     }
 

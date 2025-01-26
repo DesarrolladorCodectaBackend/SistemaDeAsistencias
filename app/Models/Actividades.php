@@ -14,4 +14,8 @@ class Actividades extends Model
         'estado'
     ];
 
+    public function colaboradores() {
+        return $this->belongsToMany(Colaboradores::class, 'area_recreativas', 'actividad_id', 'colaborador_id');
+    }
+
 }
