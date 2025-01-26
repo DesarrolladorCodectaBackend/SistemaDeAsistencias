@@ -109,7 +109,7 @@ class PerfilController extends Controller
                 "correo" => $request->email
             ]);
         }
-        
+
             $user->update([
                 "name" => $request->name,
                 "apellido" => $request->apellido,
@@ -121,7 +121,7 @@ class PerfilController extends Controller
             DB::commit();
             return redirect()->route('perfil.index');
         } catch(Exception $e){
-            return $e;
+            // return $e;
             DB::rollBack();
             return redirect()->route('perfil.index')->with('error', 'Ocurrió un error al realizar la acción.');
         }
