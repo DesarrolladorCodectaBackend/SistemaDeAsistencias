@@ -1299,7 +1299,7 @@ class ColaboradoresController extends Controller
             return redirect()->route('colaboradores.index')->with('success', 'El colaborador ha sido creado con éxito y se ha enviado un correo con las credenciales.');
 
         } catch (Exception $e) {
-            return $e;
+            // return $e;
             return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar al colaborador: ' . $e->getMessage());
         }
     }
