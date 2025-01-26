@@ -12,7 +12,7 @@
         <div class="body-info">
             <div>
                 <p>Le informamos que usted ha sido agregado a nuestro sistema como un usuario <span
-                        class="text-bold">{{$tipo_usuario == 1 ? "Administrador" : "Jefe de área"}}</span>.</p>
+                        class="text-bold">{{$tipo_usuario == 1 ? "Administrador" : "Colaborador"}}</span>.</p>
             </div>
             <div>
                 <p>Sus credenciales son las siguentes:</p>

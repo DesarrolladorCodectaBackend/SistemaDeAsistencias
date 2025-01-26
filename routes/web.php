@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // userColab
     Route::get('/colaborador/edit', [ColaboradorEditController::class, 'edit'])->name('colaboradorEdit.edit');
     Route::put('/colaborador/update/{id}', [ColaboradorEditController::class, 'update'])->name('colaboradorEdit.update');
     //FUNCION HELPER
@@ -174,6 +175,8 @@ Route::middleware('auth')->group(function () {
     Route::put('colaboradores/pagos/{colaborador_id}', [ColaboradoresController::class, 'pagos'])->name('pago.pagos');
 
     Route::put('colaboradores/editState/{colaborador_id}', [ColaboradoresController::class, 'colabEditState'])->name('colaboradores.editState');
+
+    Route::post('colaboradores/createEmailPassword/{colaborador_id}', [ColaboradoresController::class, 'createEmailPassword'])->name('colaboradores.store');
 
     //HORARIO DE CLASES
     Route::resource('horarioClase', HorarioDeClasesController::class);
