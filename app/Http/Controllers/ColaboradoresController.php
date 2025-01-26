@@ -753,7 +753,7 @@ class ColaboradoresController extends Controller
             }
             if ($candidato->wasChanged('email')) {
                 $usuarioAsociado = User::where('email', $candidato->email)->first();
-                
+
                 if ($usuarioAsociado) {
                     $usuarioAsociado->update([
                         'email' => $candidato->email,
@@ -1140,25 +1140,24 @@ class ColaboradoresController extends Controller
 
                     //candidato
                     $candidato->delete();
-                    // Verificar si el colaborador tiene un usuario asociado
-                    $user = User::where('email', $candidato->correo)->first();
 
-                    $usuario_jefe_areas = UsuarioJefeArea::whereIn('user_id', $user->pluck('id'))->get();
-                    if ($usuario_jefe_areas) {
+                    $user = User::where('email', $candidato->correo)->first();
+                    if ($user) {
+                        $usuario_colab = UsuarioColaborador::where('user_id', $user->id)->first();
+                        if ($usuario_colab) {
+                            $usuario_colab->delete();
+                        }
+
+                        $usuario_jefe_areas = UsuarioJefeArea::where('user_id', $user->id)->get();
                         foreach ($usuario_jefe_areas as $usuario_jefe_area) {
                             $usuario_jefe_area->delete();
                         }
-                    }
-                    if ($user) {
-                        // Si el usuario existe, buscar su contraseña
-                        $usuarioPassword = UsuariosPasswords::where('user_id', $user->id)->first();
 
+                        $usuarioPassword = UsuariosPasswords::where('user_id', $user->id)->first();
                         if ($usuarioPassword) {
-                            // Eliminar la contraseña si existe
                             $usuarioPassword->delete();
                         }
 
-                        // Eliminar el usuario después de manejar las dependencias
                         $user->delete();
                     }
             }
@@ -1171,7 +1170,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
-            return $e;
+            // return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
