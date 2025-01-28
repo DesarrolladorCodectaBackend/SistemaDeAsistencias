@@ -239,6 +239,7 @@
 
         <!-- Page-Level Scripts -->
         <script>
+            
             $(document).ready(function(){
                 $('.dataTables-example').DataTable({
                     pageLength: 10,

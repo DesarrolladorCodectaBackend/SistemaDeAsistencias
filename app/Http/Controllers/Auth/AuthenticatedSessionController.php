@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Colaboradores;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Dotenv\Exception\ValidationException;
@@ -55,6 +56,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([

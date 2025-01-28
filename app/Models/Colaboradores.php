@@ -13,7 +13,7 @@ class Colaboradores extends Model
         'estado',
         'candidato_id',
         'editable',
-        'especialista_id'
+        'especialista_id',
     ];
 
 
@@ -35,6 +35,14 @@ class Colaboradores extends Model
 
     public function especialista() {
         return $this->belongsTo(Especialista::class, 'especialista_id', 'id');
+    }
+
+    public function usuario_colaborador() {
+        return $this->hasMany(UsuarioColaborador::class, 'colaborador_id', 'id');
+    }
+
+    public function actividades() {
+        return $this->belongsToMany(Actividades::class, 'area_recreativas', 'colaborador_id', 'actividad_id');
     }
 
 }

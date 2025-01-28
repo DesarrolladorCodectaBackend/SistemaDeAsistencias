@@ -15,6 +15,8 @@ use App\Models\Salones;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
+use App\Models\User;
+use App\Models\UsuarioJefeArea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -27,7 +29,7 @@ class AreaController extends Controller
             // $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
             $integrantesArea = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->get();
             foreach($integrantesArea as $integrante){
-                if($integrante->jefe_area){ 
+                if($integrante->jefe_area){
                     $area->hasBoss = true;
                     break;
                 }
@@ -349,14 +351,6 @@ class AreaController extends Controller
         //Se inicia la transacción
         DB::beginTransaction();
         try {
-            //Solicitar los datos requeridos
-            // $request->validate([
-            //     'especializacion' => 'required|string|min:1|max:100',
-            //     'descripcion' => 'required|string|min:1|max:255',
-            //     'color_hex' => 'required|string|min:1|max:7',
-            //     'salon_id' => 'required|integer',
-            //     'icono' => 'image'
-            // ]);
 
             $errors = [];
 
@@ -462,16 +456,6 @@ class AreaController extends Controller
         //Se inicia la transacción
         DB::beginTransaction();
         try {
-            //Se raliza la validación de los datos ingresados por el usuario
-            // $request->validate([
-            //     'especializacion' => 'sometimes|string|min:1|max:100',
-            //     'descripcion' => 'sometimes|string|min:1|max:255',
-            //     'color_hex' => 'sometimes|string|min:1|max:7',
-            //     'salon_id' => 'sometimes|integer',
-            //     'icono' => 'sometimes|image',
-            // ]);
-
-            // return $request;
 
             $errors = [];
 
@@ -502,43 +486,69 @@ class AreaController extends Controller
                 return redirect()->route('areas.index')->withErrors($errors)->withInput();
             }
 
-            //Asignar jefe de area
-            //Se busca el registro que este marcado como jefe
-            $jefeArea = Colaboradores_por_Area::where('area_id', $area_id)->where('jefe_Area', 1)->first();
+           // Asignar jefe de área
+            $jefeArea = Colaboradores_por_Area::where('area_id', $area_id)->where('jefe_area', 1)->first();
+
             if ($jefeArea) {
-                if (isset($request->jefe_area_id)) {
-                    if($request->jefe_area_id != 0){
-                        //Si existe se compara con el que se esta enviando
-                        if ($request->jefe_area_id != $jefeArea->id) {
-                            //Si el que se le envia es otro se le quita el puesto y se asigna al otro
-                            $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
-                            if ($newJefeArea) {
-                                if ($newJefeArea->estado == 1) {
-                                    $newJefeArea->update(["jefe_area" => 1]);
+                // 1. Eliminar el registro de usuario_jefe_areas para el jefe anterior
+                $previousUser = User::where('email', $jefeArea->colaborador->candidato->correo)->first();
+                if ($previousUser) {
+                    UsuarioJefeArea::where('user_id', $previousUser->id)
+                        ->where('area_id', $area_id)
+                        ->delete();
+                }
+
+                if (isset($request->jefe_area_id) && $request->jefe_area_id != 0) {
+                    // 2. Verificar si el nuevo jefe es diferente al actual
+                    if ($request->jefe_area_id != $jefeArea->id) {
+                        // 3. Reasignar el nuevo jefe
+                        $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
+                        if ($newJefeArea && $newJefeArea->estado == 1) {
+                            $newJefeArea->update(["jefe_area" => 1]);
+
+                            // Buscar al candidato para obtener el correo
+                            $candidato = $newJefeArea->colaborador->candidato;
+                            if ($candidato && $candidato->correo) {
+                                $user = User::where('email', $candidato->correo)->first();
+                                if ($user) {
+                                    // Registrar al nuevo jefe en usuario_jefe_areas
+                                    UsuarioJefeArea::updateOrCreate(
+                                        ['user_id' => $user->id, 'area_id' => $area_id],
+                                        ['estado' => 1] // Activo
+                                    );
                                 }
                             }
-                            $jefeArea->update(["jefe_area" => 0]);
-                        } //Si son el mismo se mantiene
-                    } else {
+                        }
+                        // 4. Quitar la jefatura del jefe anterior
                         $jefeArea->update(["jefe_area" => 0]);
                     }
-                    //Si no se envia nada, se le quita el puesto de jefe y el area queda sin jefe
                 } else {
+                    // Si no se selecciona jefe (valor 0), eliminar al jefe actual
                     $jefeArea->update(["jefe_area" => 0]);
                 }
             } else {
-                //Si no existe se sigue con la asignacion
-                if (isset($request->jefe_area_id)) {
-                    if($request->jefe_area_id != 0){
-                        $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
-                        if ($newJefeArea) {
-                            if ($newJefeArea->estado == 1) {
-                                $newJefeArea->update(["jefe_area" => 1]);
+                // Caso en el que no hay jefe actual
+                if (isset($request->jefe_area_id) && $request->jefe_area_id != 0) {
+                    $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
+                    if ($newJefeArea && $newJefeArea->estado == 1) {
+                        $newJefeArea->update(["jefe_area" => 1]);
+
+                        // Buscar al candidato para obtener el correo
+                        $candidato = $newJefeArea->colaborador->candidato;
+                        if ($candidato && $candidato->correo) {
+                            $user = User::where('email', $candidato->correo)->first();
+                            if ($user) {
+                                // Registrar al nuevo jefe en usuario_jefe_areas
+                                UsuarioJefeArea::updateOrCreate(
+                                    ['user_id' => $user->id, 'area_id' => $area_id],
+                                    ['estado' => 1] // Activo
+                                );
                             }
                         }
                     }
                 }
             }
+
 
             //Se busca el área por el id ingresado como parámetro
             $area = Area::findOrFail($area_id);
@@ -597,18 +607,6 @@ class AreaController extends Controller
             // return response()->json(["message" => "Hubo un error", "error" => $e->getMessage()]);
         }
     }
-
-
-
-    // public function destroy($area_id)
-    // {
-    //     $area = Area::findOrFail($area_id);
-
-    //     $area->delete();
-
-    //     return redirect()->route('areas.index');
-    // }
-
 
     public function activarInactivar(Request $request, $area_id)
     {
@@ -725,7 +723,7 @@ class AreaController extends Controller
         //Si existe se le quita el puesto de jefe
         if($jefe_area){
             $jefe_area->update(["jefe_area" => 0]);
-        } 
+        }
 
     }
 

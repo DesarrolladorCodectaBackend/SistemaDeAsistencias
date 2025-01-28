@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
@@ -6,6 +6,7 @@ use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\ColaboradorEditController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
@@ -61,12 +62,16 @@ Route::get('/', function () {
 
 Route::get('regenerateSession/{email}/{password}', [NotificationController::class, 'regenerateSession'])->name('regenerateSession');
 
+
+
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
+    // userColab
+    Route::get('/colaborador/edit', [ColaboradorEditController::class, 'edit'])->name('colaboradorEdit.edit');
+    Route::put('/colaborador/update/{id}', [ColaboradorEditController::class, 'update'])->name('colaboradorEdit.update');
     //FUNCION HELPER
     Route::get('/funcionPrueba', [FunctionHelperController::class, 'funcionPruebas']);
 
@@ -160,12 +165,18 @@ Route::middleware('auth')->group(function () {
     Route::put('colaboradores/update/{colaborador_id}', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
     Route::delete('colaboradores/{colaborador_id}', [ColaboradoresController::class, 'destroy'])->name('colaboradores.destroy');
     Route::put('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
-    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}/sedes={sedes?}', [ColaboradoresController::class, 'filtrarColaboradores'])
+    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}/sedes={sedes?}/pagos={pagos?}', [ColaboradoresController::class, 'filtrarColaboradores'])
     ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*','sedes' => '[0-9,]*'])->name('colaboradores.filtrar');
 
     Route::get('colaboradores/search/{busqueda}', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
     Route::put('colaboradores/despedirColaborador/{colaborador_id}', [ColaboradoresController::class, 'despedirColaborador'])->name('colaboradores.despedirColaborador');
     Route::put('colaboradores/recontratarColaborador/{colaborador_id}', [ColaboradoresController::class, 'recontratarColaborador'])->name('colaboradores.recontratarColaborador');
+
+    Route::put('colaboradores/pagos/{colaborador_id}', [ColaboradoresController::class, 'pagos'])->name('pago.pagos');
+
+    Route::put('colaboradores/editState/{colaborador_id}', [ColaboradoresController::class, 'colabEditState'])->name('colaboradores.editState');
+
+    Route::post('colaboradores/createEmailPassword/{colaborador_id}', [ColaboradoresController::class, 'createEmailPassword'])->name('colaboradores.store');
 
     //HORARIO DE CLASES
     Route::resource('horarioClase', HorarioDeClasesController::class);

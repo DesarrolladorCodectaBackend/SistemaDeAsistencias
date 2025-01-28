@@ -21,26 +21,26 @@ class NotificationController extends Controller
         $notifications = [];
 
         $userData = FunctionHelperController::getUserRol();
-        
+
         $today = Carbon::now()->format('Y-m-d');
         $dia_today = Carbon::now()->format('l');
         //traducir el día a español
         $dias = [
-            "Monday" => "Lunes", 
-            "Tuesday" => "Martes", 
-            "Wednesday" => "Miércoles", 
-            "Thursday" => "Jueves", 
-            "Friday" => "Viernes", 
-            "Saturday" => "Sábado", 
+            "Monday" => "Lunes",
+            "Tuesday" => "Martes",
+            "Wednesday" => "Miércoles",
+            "Thursday" => "Jueves",
+            "Friday" => "Viernes",
+            "Saturday" => "Sábado",
             "Sunday" => "Domingo"
         ];
-        
+
         $dia_español = $dias[$dia_today];
 
         if($userData['isAdmin']){
-            
+
             $BirthDayColaboradores = [];
-    
+
             $numberDayToday = date('d', strtotime($today));
             $numberMonthToday = date('m', strtotime($today));
             $colaboradoresEmpresa = Colaboradores::whereNot("estado", 2)->get();
@@ -53,35 +53,39 @@ class NotificationController extends Controller
                     }
                 }
             }
-            
+
             // return $BirthDayColaboradores;
-            
+
             $reunionesProgramadasToday = ReunionesProgramadas::where('fecha', $today)->get();
             $horariosToday = Horarios_Presenciales::where('dia', $dia_español)->get();
             $horariosAreasToday = Horario_Presencial_Asignado::with('area', 'horario_presencial')->whereIn('horario_presencial_id', $horariosToday->pluck('id'))->get();
             $areasToday = [];
             foreach($horariosAreasToday as $horario){
-            //Si el area ya esta en el array areasToday, entonces modificar
-                if(isset($areasToday[$horario->area_id])){
-                    //Modificar hoy_inicial y hora_final segun corresponda
-                    if($areasToday[$horario->area_id]['horario_id'] < $horario->horario_presencial_id){
-                        //Quedarse con el horario_id más grande
-                        $areasToday[$horario->area_id]['horario_id'] = $horario->horario_presencial_id;
-                        $areasToday[$horario->area_id]['hora_final'] = $horario->horario_presencial->hora_final;
-                    } else if($areasToday[$horario->area_id]['horario_id'] > $horario->horario_presencial_id){
-                        $areasToday[$horario->area_id]['hora_inicial'] = $horario->horario_presencial->hora_inicial;
+                // Verificar si el área está activa antes de agregarla a las notificaciones
+                if ($horario->area->estado == 1) {
+                    // Si el area ya esta en el array areasToday, entonces modificar
+                    if(isset($areasToday[$horario->area_id])){
+                        // Modificar hoy_inicial y hora_final según corresponda
+                        if($areasToday[$horario->area_id]['horario_id'] < $horario->horario_presencial_id){
+                            // Quedarse con el horario_id más grande
+                            $areasToday[$horario->area_id]['horario_id'] = $horario->horario_presencial_id;
+                            $areasToday[$horario->area_id]['hora_final'] = $horario->horario_presencial->hora_final;
+                        } else if($areasToday[$horario->area_id]['horario_id'] > $horario->horario_presencial_id){
+                            $areasToday[$horario->area_id]['hora_inicial'] = $horario->horario_presencial->hora_inicial;
+                        }
+                    } else {
+                        $areasToday[$horario->area_id] = [
+                            'area_id' => $horario->area_id,
+                            'area' => $horario->area->especializacion,
+                            'horario_id' => $horario->horario_presencial_id,
+                            'hora_inicial' => $horario->horario_presencial->hora_inicial,
+                            'hora_final' => $horario->horario_presencial->hora_final,
+                        ];
                     }
-                }else{
-                    $areasToday[$horario->area_id] = [
-                        'area_id' => $horario->area_id,
-                        'area' => $horario->area->especializacion,
-                        'horario_id' => $horario->horario_presencial_id,
-                        'hora_inicial' => $horario->horario_presencial->hora_inicial,
-                        'hora_final' => $horario->horario_presencial->hora_final,
-                    ];
                 }
             }
-    
+
+
             foreach($reunionesProgramadasToday as $reunion){
                 $notificacion = [
                     "icon" => "fa fa-video-camera",
@@ -90,7 +94,7 @@ class NotificationController extends Controller
                 ];
                 $notifications[] = $notificacion;
             }
-    
+
             foreach($areasToday as $area){
                 $notificacion = [
                     "icon" => "fa fa-clock-o",
@@ -99,7 +103,7 @@ class NotificationController extends Controller
                 ];
                 $notifications[] = $notificacion;
             }
-    
+
             foreach($BirthDayColaboradores as $colab){
                 $notificacion = [
                     "icon" => "fa fa-birthday-cake",
@@ -109,35 +113,10 @@ class NotificationController extends Controller
                 $notifications[] = $notificacion;
             }
         }
-        
+
         return response()->json(["notifications" => $notifications]);
     }
 
-    // public function login(Request $request)
-    // {
-    //     try{
-
-    //         if (! Auth::attempt($request->only('email', 'password'))) {
-    //             return response()->json(["message" => "Unauthorized"]);
-    //         }
-    
-    //         $user = User::where('email', $request->email)->firstOrFail();
-    //         // $token = $user->createToken('auth_token')->plainTextToken;
-    //         $url = route('dashboard');
-    
-    //         $request->session()->regenerate();
-    //         return response()->json([
-    //             // 'AccessToken' => $token,
-    //             // 'TokenType' => 'Bearer',
-    //             'status' => 200,
-    //             'message' => 'Inicio de sesion exitoso.',
-    //             'user' => $user,
-    //             'url' => $url
-    //         ], 200);
-    //     } catch(Exception $e){
-    //         return response()->json(["status" => "500", "message" => "ha ocurrido un error", "error" => $e, "errorMessage" => $e->getMessage()]);
-    //     }
-    // }
 
     public function login(Request $request)
     {
@@ -148,7 +127,7 @@ class NotificationController extends Controller
             $url = route('regenerateSession', ["email" => $request->email, "password" => $request->password]);
 
             $user = User::where('email', $request->email)->firstOrFail();
-            
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Inicio de sesión exitoso.',

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Candidatos;
+use App\Models\Colaboradores;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -70,6 +72,7 @@ class PerfilController extends Controller
                         $errors['email'] = 'El email debe ser mayor a 1 caracter';
                     }
                 }
+
                 $sameUserEmail = User::where('email', $request->email)->whereNot('id', $user_id)->first();
                 if($sameUserEmail){
                     $errors['email'] = 'ya hay un usuario registrado con ese email';
@@ -98,6 +101,15 @@ class PerfilController extends Controller
             // $candidato = FunctionHelperController::findUserCandidato(1, $user->email);
             FunctionHelperController::modifyColabByUser($user, $request);
 
+            // Actualización de datos del candidato en la tabla 'candidatos'
+        $colabEmail = Candidatos::where('correo', $user->email)->first();
+        if ($colabEmail) {
+            // Verifica si no hay conflictos con el correo antes de actualizarlo
+            $colabEmail->update([
+                "correo" => $request->email
+            ]);
+        }
+
             $user->update([
                 "name" => $request->name,
                 "apellido" => $request->apellido,
@@ -105,9 +117,11 @@ class PerfilController extends Controller
             ]);
 
 
+
             DB::commit();
             return redirect()->route('perfil.index');
         } catch(Exception $e){
+            // return $e;
             DB::rollBack();
             return redirect()->route('perfil.index')->with('error', 'Ocurrió un error al realizar la acción.');
         }

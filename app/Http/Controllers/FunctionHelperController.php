@@ -31,12 +31,19 @@ class FunctionHelperController extends Controller
         $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
         $isBoss = false;
         if($jefeArea->count() > 0){$isBoss = true;}
+        $colaborador = Candidatos::where('correo', $user->email)->first();
+        $isColab = false;
+        if($colaborador) {
+            $isColab = true;
+        }
+
         return [
             "user" => $user,
             "administrador" => $administrador,
             "Jefeareas" => $jefeArea,
             "isAdmin" => $isAdmin,
             "isBoss" => $isBoss,
+            "isColab" => $isColab
         ];
     }
 
@@ -416,18 +423,18 @@ class FunctionHelperController extends Controller
         $semanaActual = FunctionHelperController::findThisWeek();
         $semanasTotales = Semanas::where('id', '>=', $colaboradorArea->semana_inicio_id)
             ->where('id', '<', $semanaActual->id)->whereNotIn('id', $semanasInactivasId)->get();
-        
+
         //retornar las semanas y conteo
         return ["semanas" => $semanasTotales, "conteoSemanas" => $semanasTotales->count()];
     }
 
     public static function semanasColaborador($colaborador_id){
-        //obtener primero colaborador Area 
+        //obtener primero colaborador Area
         $colaboradorArea = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->first();
         $semanaActual = FunctionHelperController::findThisWeek();
         $semanasTotales = Semanas::where('id', '>=', $colaboradorArea->semana_inicio_id)
             ->where('id', '<', $semanaActual->id)->get();
-        
+
         return ["semanas" => $semanasTotales, "conteoSemanas" => $semanasTotales->count()];
     }
 
@@ -475,7 +482,7 @@ class FunctionHelperController extends Controller
         $responsabilidadesCount = count($responsabilidades) === 0 ?  false : count($responsabilidades);
         // return $responsabilidadesCount;
         if(!$responsabilidadesCount){
-            $promedio = null;           
+            $promedio = null;
         } else{
             $promedio = number_format(array_sum($promedioNotas)/$responsabilidadesCount, 1);
         }
@@ -513,7 +520,7 @@ class FunctionHelperController extends Controller
                         $notasTotales[$notaTotal] = $notasTotalesColabArea[$notaTotal];
                     }
                 }
-    
+
                 $promedioNotasColabArea = $dataColabArea['promedioNotas'];
                 foreach(array_keys($promedioNotasColabArea) as $promedioNota){
                     if(isset($promedioNotas[$promedioNota])){
@@ -524,14 +531,14 @@ class FunctionHelperController extends Controller
                         $promedioNotas[$promedioNota] = $promedioNotasColabArea[$promedioNota];
                     }
                 }
-    
+
                 //Sumar promedio de cada colab area para obtener el promedio total del colaborador
                 $promedio += $dataColabArea['promedio'];
                 // return $dataColabArea;
             }
         }
         // return $colaboradorAreas;
-        
+
         //dividir todo entre el numero de colaboradoresArea
         $colaboradorAreasCount = $colaboradorAreas->count() === 0 ?  1 : $colaboradorAreas->count();
 
@@ -539,13 +546,13 @@ class FunctionHelperController extends Controller
             $promedioNotas[$promedioNota] = number_format($promedioNotas[$promedioNota]/$colaboradorAreasCount, 1);
         }
         $promedio = number_format($promedio/$colaboradorAreasCount, 1);
-        
+
         $data = [
             "notasTotales" => $notasTotales,
             "promedioNotas" => $promedioNotas,
             "promedio" => $promedio,
         ];
-        
+
         return $data;
     }
 
@@ -555,7 +562,7 @@ class FunctionHelperController extends Controller
         foreach($colaborador_areas as $colaborador_area){
             $conteoSemanasColabArea = Cumplio_Responsabilidad_Semanal::where("colaborador_area_id",$colaborador_area->id)->get()
                 ->pluck('semana_id')->unique()->count();
-            if($conteoSemanasColabArea > $conteoSemanas) $conteoSemanas = $conteoSemanasColabArea; 
+            if($conteoSemanasColabArea > $conteoSemanas) $conteoSemanas = $conteoSemanasColabArea;
         }
         return $conteoSemanas;
     }
@@ -566,7 +573,7 @@ class FunctionHelperController extends Controller
         $resultado = FunctionHelperController::promedioColaborador(1, $semanas['semanas']);
         $colab1 = FunctionHelperController::promedioColaboradorArea(1, $semanas['semanas']);
         $colab2 = FunctionHelperController::promedioColaboradorArea(14, $semanas['semanas']);
-        
+
         return $semanas;
         // return [$colab1, $colab2];
     }
