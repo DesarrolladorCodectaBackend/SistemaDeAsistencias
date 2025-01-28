@@ -372,6 +372,8 @@ class ColaboradoresController extends Controller
               $horasPracticas = collect($horasTotales)
                   ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
               $colaborador->horasPracticas = $horasPracticas;
+              $correo = $colaborador->candidato->correo;
+              $colaborador->hasUser = User::where('email', $correo)->exists();
           }
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
