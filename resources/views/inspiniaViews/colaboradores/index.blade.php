@@ -639,7 +639,7 @@
                                         </style>
 
                                         {{-- MODAL GASTO --}}
-                                        <div id="modal-form-gasto{{ $colaborador->id }}" class="modal fade" aria-hidden="true">
+                                        {{-- <div id="modal-form-gasto{{ $colaborador->id }}" class="modal fade" aria-hidden="true">
                                             <div class="modal-dialog modal-custom">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
@@ -675,7 +675,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
 
                                         {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"

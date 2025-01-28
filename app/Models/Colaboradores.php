@@ -14,8 +14,6 @@ class Colaboradores extends Model
         'candidato_id',
         'editable',
         'especialista_id',
-        'pasaje',
-        'comida'
     ];
 
 
