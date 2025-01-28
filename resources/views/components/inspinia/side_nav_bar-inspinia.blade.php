@@ -28,9 +28,9 @@
     $userData = FunctionHelperController::getUserRol();
     $user = $userData['user'];
     $rol = '';
-    if($userData['isBoss']) $rol = 'Jefe de Área';
     if($userData['isAdmin']) $rol = 'Administrador';
     if($userData['isColab']) $rol = 'Colaborador';
+    if($userData['isBoss']) $rol = 'Jefe de Área';
 @endphp
 
 

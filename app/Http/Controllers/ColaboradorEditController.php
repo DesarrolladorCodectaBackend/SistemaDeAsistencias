@@ -133,18 +133,19 @@ class ColaboradorEditController extends Controller
                 }
             }
 
-             // Registrar las actividades recreativas
-             foreach ($request->actividades_id as $actividad_id) {
-                $actividad_recreativa = AreaRecreativa::where('colaborador_id', $colaborador->id)
-                    ->where('actividad_id', $actividad_id)
-                    ->first();
+            if (isset($request->actividades_id) && is_array($request->actividades_id)) {
+                foreach ($request->actividades_id as $actividad_id) {
+                    $actividad_recreativa = AreaRecreativa::where('colaborador_id', $colaborador->id)
+                        ->where('actividad_id', $actividad_id)
+                        ->first();
 
-                if (!$actividad_recreativa) {
-                    AreaRecreativa::create([
-                        'colaborador_id' => $colaborador->id,
-                        'actividad_id' => $actividad_id,
-                        'estado' => true
-                    ]);
+                    if (!$actividad_recreativa) {
+                        AreaRecreativa::create([
+                            'colaborador_id' => $colaborador->id,
+                            'actividad_id' => $actividad_id,
+                            'estado' => true
+                        ]);
+                    }
                 }
             }
 
@@ -152,6 +153,7 @@ class ColaboradorEditController extends Controller
             return redirect()->route('dashboard')->with('success', 'Para volver a actualizar sus datos, consulte con RRHH para activar la edición de datos.');
 
         } catch (Exception $e) {
+            return $e;
             DB::rollBack();
             return redirect()->route('dashboard')->with('error', 'Ocurrió un error al actualizar el colaborador.');
         }
