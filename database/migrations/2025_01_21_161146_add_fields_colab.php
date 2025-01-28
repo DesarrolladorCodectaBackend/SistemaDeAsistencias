@@ -14,7 +14,6 @@ return new class extends Migration
     public function up()
     {
         Schema::table('colaboradores', function (Blueprint $table) {
-            // Verifica si la columna 'especialista_id' no existe antes de agregarla
             if (!Schema::hasColumn('colaboradores', 'especialista_id')) {
                 $table->unsignedBigInteger('especialista_id')->nullable()->after('candidato_id');
                 $table->foreign('especialista_id')->references('id')->on('especialistas');
