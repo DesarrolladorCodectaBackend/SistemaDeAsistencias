@@ -31,21 +31,22 @@ class AccountsController extends Controller
 
             foreach ($users as $user) {
                 $jefe = UsuarioJefeArea::where('user_id', $user->id)->first();
-                $rol = 'Colaborador';
+                $rol = 'Sin rol';
 
                 $admin = UsuarioAdministrador::where('user_id', $user->id)->first();
                 if ($admin) {
                     $rol = 'Administrador';
                 }
 
+
                 $colaborador = UsuarioColaborador::where('user_id', $user->id)->first();
                 if($colaborador) {
                     $rol = 'Colaborador';
                 }
+
                 if ($jefe) {
                     $rol = 'Jefe de Área';
                 }
-
                 $user->rol = $rol;
                 $user->clave = UsuariosPasswordsController::showPassword($user->id);
 
