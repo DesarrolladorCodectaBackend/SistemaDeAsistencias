@@ -180,7 +180,9 @@ class ColaboradoresController extends Controller
             $horasPracticas = collect($horasTotales)
                 ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
             $colaborador->horasPracticas = $horasPracticas;
-            $colaborador->hasUser = User::where('email', $colaborador->candidato->correo)->exists();
+
+            $correo = $colaborador->candidato->correo;
+            $colaborador->hasUser = User::where('email', $correo)->exists();
         }
 
 
@@ -205,22 +207,6 @@ class ColaboradoresController extends Controller
             'horasTotales' => $horasTotales,
             'colaboradoresCol' => $colaboradoresCol
         ]);
-
-        // return response()->json([
-        //     'colaboradores' => $colaboradores,
-        //     'hasPagination' => $hasPagination,
-        //     'pageData' => $pageData,
-        //     'sedes' => $sedes,
-        //     'instituciones' => $instituciones,
-        //     'carreras' => $carreras,
-        //     'areas' => $areas,
-        //     'sedesAll' => $sedesAll,
-        //     'institucionesAll' => $institucionesAll,
-        //     'carrerasAll' => $carrerasAll,
-        //     'areasAll' => $areasAll,
-        //     'Allactividades' => $Allactividades,
-        //     'horasTotales' => $horasTotales,
-        // ]);
     }
 
     public function getComputadoraColaborador($colaborador_id){
@@ -1192,7 +1178,7 @@ class ColaboradoresController extends Controller
 
     }
 
-   
+
 
     public function colabEditState(Request $request, $colaborador_id) {
         $access = FunctionHelperController::verifyAdminAccess();
@@ -1222,24 +1208,26 @@ class ColaboradoresController extends Controller
         }
 
         try {
-            // Buscar el candidato
-            $candidato = Candidatos::findOrFail($colaborador_id);
+            $colaborador = Colaboradores::findOrFail($colaborador_id);
+            $candidato = $colaborador->candidato;
 
-            // Verificar si ya existe un usuario con el correo del candidato
-            $existingUser = User::where('email', $candidato->correo)->first();
-            if ($existingUser) {
-                return redirect()->route('colaboradores.index')->with('error', 'Este colaborador ya tiene una cuenta asociada.');
+            // dd($candidato);
+            if (!$candidato || !$candidato->correo) {
+                return redirect()->route('colaboradores.index')->with('error', 'El candidato no tiene un correo asignado.');
             }
 
-            // Generar una contraseña aleatoria
+            $existingUser = User::where('email', $candidato->correo)->first();
+            if ($existingUser) {
+                return redirect()->route('colaboradores.index', ['existUser' => $existingUser])->with('error', 'Este colaborador ya tiene una cuenta asociada.');
+            }
+
             $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@_';
             $randomPassword = substr(str_shuffle(str_repeat($characters, 12)), 0, 12);
 
-            // Crear el usuario
             $user = User::create([
                 'name' => $candidato->nombre,
                 'apellido' => $candidato->apellido,
-                'email' => $candidato->correo,
+                'email' => $candidato->correo,  // Usar el correo del candidato
                 'password' => Hash::make($randomPassword),
             ]);
 
@@ -1259,24 +1247,21 @@ class ColaboradoresController extends Controller
             } else {
                 throw new Exception('El correo electrónico del candidato no es válido.');
             }
+            $areas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->get();
 
-           // Obtener las áreas asignadas al colaborador desde la tabla colaborador_por_area
-        $areas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->get();
-
-        // Asignar las áreas al usuario
-        foreach ($areas as $area) {
-            UsuarioColaborador::create([
-                'user_id' => $user->id,
-                'area_id' => $area->area_id
-            ]);
-        }
+            foreach ($areas as $area) {
+                UsuarioColaborador::create([
+                    'user_id' => $user->id,
+                    'area_id' => $area->area_id
+                ]);
+            }
 
             return redirect()->route('colaboradores.index')->with('success', 'El colaborador ha sido creado con éxito y se ha enviado un correo con las credenciales.');
 
         } catch (Exception $e) {
-            // return $e;
             return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar al colaborador: ' . $e->getMessage());
         }
     }
+
 
 }

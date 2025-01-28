@@ -404,7 +404,7 @@
 
                                         <div class="mt-2">
                                             @if(!$colaborador->hasUser)
-                                                <form action="{{ route('colaboradores.store', $colaborador->id) }}" method="POST">
+                                                <form action="{{ route('colaboradoresEmail.store', $colaborador->id) }}" method="POST">
                                                     @csrf
                                                     <button type="submit" class="btn btn-success">
                                                         Crear usuario
@@ -412,6 +412,9 @@
                                                 </form>
                                             @endif
                                         </div>
+
+
+
 
 
                                     </div>
