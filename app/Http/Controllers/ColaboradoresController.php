@@ -426,6 +426,9 @@ class ColaboradoresController extends Controller
                      'password' => Hash::make($randomPassword),
                  ]);
 
+                 UsuarioColaborador::create([
+                    'user_id' => $user->id
+                ]);
 
                  // Registrar al usuario con la contraseña generada
                  UsuariosPasswordsController::registrar($user->id, $randomPassword);
@@ -453,10 +456,7 @@ class ColaboradoresController extends Controller
                         'semana_inicio_id' => $semana->id,
                     ]);
 
-                    UsuarioColaborador::create([
-                        'user_id' => $user->id,
-                        'area_id' => $area_id
-                    ]);
+
                 }
 
                 foreach ($request->horarios as $horario) {
@@ -1249,14 +1249,13 @@ class ColaboradoresController extends Controller
             } else {
                 throw new Exception('El correo electrónico del candidato no es válido.');
             }
-            $areas = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->get();
 
-            foreach ($areas as $area) {
+
+
                 UsuarioColaborador::create([
-                    'user_id' => $user->id,
-                    'area_id' => $area->area_id
+                    'user_id' => $user->id
                 ]);
-            }
+
 
             return redirect()->route('colaboradores.index')->with('success', 'El colaborador ha sido creado con éxito y se ha enviado un correo con las credenciales.');
 
