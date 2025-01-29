@@ -153,7 +153,7 @@ class ColaboradorEditController extends Controller
             return redirect()->route('dashboard')->with('success', 'Para volver a actualizar sus datos, consulte con RRHH para activar la edición de datos.');
 
         } catch (Exception $e) {
-            return $e;
+            // return $e;
             DB::rollBack();
             return redirect()->route('dashboard')->with('error', 'Ocurrió un error al actualizar el colaborador.');
         }

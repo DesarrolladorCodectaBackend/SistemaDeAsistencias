@@ -27,8 +27,4 @@ class Area extends Model
         return $this->belongsTo(Salones::class,'salon_id','id');
     }
 
-    public function usuario_colaborador() {
-        return $this->hasMany(UsuarioColaborador::class, 'area_id', 'id');
-    }
-
 }
