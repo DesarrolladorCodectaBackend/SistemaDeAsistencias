@@ -1202,7 +1202,7 @@ class ColaboradoresController extends Controller
         }
     }
 
-    public function createEmailPassword(Request $request, $colaborador_id) {
+    public function createEmailPassword($colaborador_id) {
         // Verificar acceso de administrador
         $access = FunctionHelperController::verifyAdminAccess();
         if (!$access) {
@@ -1250,8 +1250,6 @@ class ColaboradoresController extends Controller
                 throw new Exception('El correo electrónico del candidato no es válido.');
             }
 
-
-
                 UsuarioColaborador::create([
                     'user_id' => $user->id
                 ]);
@@ -1264,5 +1262,24 @@ class ColaboradoresController extends Controller
         }
     }
 
+    public function pagoColab(Request $request, $colaborador_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
 
+        DB::beginTransaction();
+        try {
+
+            $colaborador = Colaboradores::findOrFail($colaborador_id)->where('estado', 1);
+
+
+        }catch (Exception $e) {
+
+            DB::rollback();
+            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar pago al colaborador');
+
+        }
+
+    }
 }
