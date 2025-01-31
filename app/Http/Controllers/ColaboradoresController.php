@@ -17,6 +17,7 @@ use App\Models\Computadora_colaborador;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
 use App\Models\Horarios_Presenciales;
+use App\Models\PagoColaborador;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Maquina_reservada;
@@ -205,7 +206,7 @@ class ColaboradoresController extends Controller
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
             'horasTotales' => $horasTotales,
-            'colaboradoresCol' => $colaboradoresCol
+            'colaboradoresCol' => $colaboradoresCol,
         ]);
     }
 
@@ -1262,24 +1263,53 @@ class ColaboradoresController extends Controller
         }
     }
 
-    public function pagoColab(Request $request, $colaborador_id) {
+    public function pagoColab(Request $request, $colaborador_id){
         $access = FunctionHelperController::verifyAdminAccess();
-        if(!$access){
-            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción.');
         }
 
         DB::beginTransaction();
         try {
+            $colaborador = Colaboradores::where('estado', 1)->findOrFail($colaborador_id);
 
-            $colaborador = Colaboradores::findOrFail($colaborador_id)->where('estado', 1);
+            if ($request->has("gastos_eliminados") && !empty($request->gastos_eliminados[$colaborador_id])) {
+                $gastosEliminar = explode(",", $request->gastos_eliminados[$colaborador_id]);
 
+                if (!empty($gastosEliminar)) {
+                    PagoColaborador::whereIn("id", $gastosEliminar)->delete();
+                }
+            }
 
-        }catch (Exception $e) {
+            if ($request->has("descripcion") && isset($request->descripcion[$colaborador_id])) {
+                foreach ($request->descripcion[$colaborador_id] as $index => $descripcion) {
+                    $monto = $request->monto[$colaborador_id][$index];
+                    $gastoId = $request->input("gasto_id")[$index] ?? null;
 
+                    if ($gastoId) {
+                        $gasto = PagoColaborador::find($gastoId);
+                        if ($gasto) {
+                            $gasto->update([
+                                'descripcion' => $descripcion,
+                                'monto' => $monto,
+                            ]);
+                        }
+                    } else {
+
+                        PagoColaborador::create([
+                            'colaborador_id' => $colaborador_id,
+                            'descripcion' => $descripcion,
+                            'monto' => $monto,
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('colaboradores.index')->with('success', 'Pagos actualizados correctamente.');
+        } catch (Exception $e) {
             DB::rollback();
-            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar pago al colaborador');
-
+            return redirect()->route('colaboradores.index')->with('error', 'Error al actualizar pagos.');
         }
-
     }
 }

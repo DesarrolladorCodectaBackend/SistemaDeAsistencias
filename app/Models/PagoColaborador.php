@@ -16,4 +16,8 @@ class PagoColaborador extends Model
         'descripcion',
         'monto'
     ];
+
+    public function colaborador() {
+        return $this->belongsTo(Colaboradores::class, 'colaborador_id', 'id');
+    }
 }

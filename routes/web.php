@@ -172,7 +172,7 @@ Route::middleware('auth')->group(function () {
     Route::put('colaboradores/despedirColaborador/{colaborador_id}', [ColaboradoresController::class, 'despedirColaborador'])->name('colaboradores.despedirColaborador');
     Route::put('colaboradores/recontratarColaborador/{colaborador_id}', [ColaboradoresController::class, 'recontratarColaborador'])->name('colaboradores.recontratarColaborador');
 
-    Route::put('colaboradores/pagos/{colaborador_id}', [ColaboradoresController::class, 'pagos'])->name('colaboradores.pagos');
+    Route::post('colaboradores/pagos/{colaborador_id}', [ColaboradoresController::class, 'pagoColab'])->name('colaboradores.pagos');
 
     Route::put('colaboradores/editState/{colaborador_id}', [ColaboradoresController::class, 'colabEditState'])->name('colaboradores.editState');
 

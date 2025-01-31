@@ -45,4 +45,8 @@ class Colaboradores extends Model
         return $this->belongsToMany(Actividades::class, 'area_recreativas', 'colaborador_id', 'actividad_id');
     }
 
+    public function pago_colaborador() {
+        return $this->hasMany(PagoColaborador::class, 'colaborador_id', 'id');
+    }
+
 }
