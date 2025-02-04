@@ -48,7 +48,7 @@ button {
 .fecha-content {
     display: flex;
     font-size: 1.1em;
-    gap: 0.4em;
+    /* gap: 0.4em; */
 }
 
 .fecha-content label {
@@ -153,4 +153,16 @@ input:checked + label[for^="transferencia"] {
 
 .img-text {
     font-size: 0.9em !important;
+}
+
+.filter-fecha-caja-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-filter-montos {
+    width: 100em !important;
+    padding: 2em;
 }

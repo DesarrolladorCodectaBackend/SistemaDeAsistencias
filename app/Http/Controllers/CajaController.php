@@ -24,13 +24,23 @@ class CajaController extends Controller
         if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción.');
         }
+
         $thisWeekMonday = Carbon::now()->startOfWeek()->toDateString();
         $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
 
-        $colaboradores = Colaboradores::where('estado', 1)
-        ->whereHas('pago_colaborador')
-        ->with('candidato')
-        ->get();
+        $cajaAbierta = Semanas::where('fecha_lunes', $thisWeekMonday)->value('caja_abierta');
+
+        $colaboradores = collect(); // Inicializamos vacío
+        if ($cajaAbierta) {
+            $colaboradores = Colaboradores::where('estado', 1)
+                ->whereHas('pago_colaborador')
+                ->with('candidato')
+                ->get();
+        }
+        // $colaboradores = Colaboradores::where('estado', 1)
+        // ->whereHas('pago_colaborador')
+        // ->with('candidato')
+        // ->get();
 
         $pagoColab = PagoColaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
 
@@ -50,6 +60,7 @@ class CajaController extends Controller
 
             $transaccion = Transaccion::where('semana_id', $semanaActual->id)
                 ->where('dni', $colaborador->candidato->dni)
+                ->where('estado', 1)
                 ->first();
 
             $transaccionDetalle = null;
@@ -69,13 +80,13 @@ class CajaController extends Controller
 
         $depositos = Transaccion::where('tipo_transaccion_id', 1)
         ->where('semana_id', $thisSemana->id)
-        // ->where('estado', 1)
+        ->where('estado', 1)
         ->with('tipo_transaccion')
         ->get();
 
         $cajas = Transaccion::where('tipo_transaccion_id', 2)
         ->where('semana_id', $thisSemana->id)
-        // ->where('estado', 1)
+        ->where('estado', 1)
         ->with('tipo_transaccion')
         ->get();
 
@@ -97,6 +108,7 @@ class CajaController extends Controller
             'cajas' => $cajas,
             'ingresos' => $ingresos,
             'egresos' => $egresos,
+            'cajaAbierta' => $cajaAbierta
         ]);
 
     }
@@ -176,6 +188,7 @@ class CajaController extends Controller
                 'semana_id' => $thisSemana->id,
                 'monto' => $request->total_monto,
                 'tipo' => 'egreso',
+                'fecha' => Carbon::now(),
             ]);
 
             DB::commit();
@@ -251,7 +264,8 @@ class CajaController extends Controller
                 'transaccion_id' => $transaccion->id,
                 'semana_id' => $thisSemana->id,
                 'monto' => $request->monto,
-                'tipo' => $tipo
+                'tipo' => $tipo,
+                'fecha' => Carbon::now(),
             ]);
 
             DB::commit();
@@ -266,7 +280,34 @@ class CajaController extends Controller
         }
     }
 
-    public function cerrarCajaSemanaActual() {
+    public function abrirCaja() {
+        $thisWeekMonday = Carbon::now()->startOfWeek()->toDateString();
+        Semanas::where('fecha_lunes', $thisWeekMonday)->update(['caja_abierta' => 1]);
+        return redirect()->back()->with('success', 'Caja abierta.');
+    }
+
+    public function cerrarCaja() {
+        try {
+
+            $thisWeekMonday = Carbon::now()->startOfWeek()->toDateString();
+            $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
+
+            Semanas::where('fecha_lunes', $thisWeekMonday)->update(['caja_abierta' => 0]);
+
+            Transaccion::where('semana_id', $thisSemana->id)
+            ->update(['estado' => 0]);
+
+            return redirect()->back()->with('success', 'Caja cerrada.');
+
+        }catch(Exception $e) {
+
+            return redirect()->route('error', 'Ocurrió un error inesperado.');
+
+        }
+    }
+
+    public function filtrarFecha(Request $request) {
+
         $access = FunctionHelperController::verifyAdminAccess();
         if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción.');
@@ -275,27 +316,25 @@ class CajaController extends Controller
         DB::beginTransaction();
         try {
 
-            $thisWeekMonday = Carbon::now()->startOfWeek()->toDateString();
-            $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
+            $ingresosEgresos = IngresoEgresoTransaccion::query();
 
-            if (!$thisSemana) {
-                return redirect()->route('caja.index')->with('error', 'No se ha generado la semana actual en el sistema.');
+            if($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+                $ingresosEgresos->whereBetween('fecha', [$request->fecha_inicio, $request->fecha_fin]);
             }
 
-            Transaccion::where('semana_id', $thisSemana->id)
-            ->update(['estado' => 0]);
+            $ingresos = (clone $ingresosEgresos)->where('tipo', 'ingreso')->sum('monto');
+            $egresos = (clone $ingresosEgresos)->where('tipo', 'egreso')->sum('monto');
 
-            DB::commit();
-            return redirect()->route('caja.index')->with('success', 'Caja cerrada exitosamente.');
+            return response()->json([
+                'ingresos' => $ingresos,
+                'egresos' => $egresos
+            ]);
 
-        } catch (Exception $e) {
+        }catch(Exception $e) {
 
-            return $e;
-            DB::rollback();
-            return redirect()->route('caja.index')->with('error', 'Error al cerrar la caja.');
+            return redirect()->route('caja.index')->with('error', 'Error al filtrar.');
 
         }
+
     }
-
-
 }

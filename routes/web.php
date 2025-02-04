@@ -251,9 +251,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/caja-chica', [CajaController::class, 'index'])->name('caja.index');
     Route::post('/caja-chica/transaccionColab/{colaborador_id}', [CajaController::class, 'transaccionColab'])->name('caja.transaccionColab');
     Route::post('/caja-chica/deposito', [CajaController::class, 'registroTransaccion'])->name('caja.registroTransaccion');
-    Route::put('/caja/cerrar-semana', [CajaController::class, 'cerrarCajaSemanaActual'])
-    ->name('caja.cerrarSemana');
+    // Route::put('/caja/cerrar-semana', [CajaController::class, 'cerrarCajaSemanaActual'])
+    // ->name('caja.cerrarSemana');
 
+    Route::post('/caja-chica/abrir', [CajaController::class, 'abrirCaja'])->name('caja.abrir');
+    Route::post('/caja-chica/cerrar', [CajaController::class, 'cerrarCaja'])->name('caja.cerrar');
+    Route::post('/caja-chica/filtrarFecha', [CajaController::class, 'filtrarFecha'])->name('caja.filtrarFecha');
 });
 
 require __DIR__ . '/auth.php';

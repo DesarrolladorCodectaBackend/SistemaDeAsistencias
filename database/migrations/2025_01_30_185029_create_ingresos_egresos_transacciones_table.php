@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('semana_id')->references('id')->on('semanas');
             $table->decimal('monto', 11, 2);
             $table->string('tipo');
+            $table->date('fecha');
             $table->timestamps();
         });
     }

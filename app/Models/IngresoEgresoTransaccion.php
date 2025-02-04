@@ -15,7 +15,8 @@ class IngresoEgresoTransaccion extends Model
         'semana_id',
         'transaccion_id',
         'monto',
-        'tipo'
+        'tipo',
+        'fecha'
     ];
 
     public function transaccion() {

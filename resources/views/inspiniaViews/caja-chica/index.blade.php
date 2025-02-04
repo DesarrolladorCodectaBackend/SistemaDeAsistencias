@@ -54,14 +54,36 @@
                 @endif
             </section>
 
-            <p>INGRESOS: S/{{ $ingresos }}</p>
-            <p>EGRESOS: S/{{ $egresos }}</p>
 
 
             <div class="transaccion-content m-3">
                 <div class="fecha-content">
-                    <label class="fecha-text">Fecha:</label>
-                    <input type="text" id="semana" class="fecha-input" readonly>
+                    <div class="fecha-date-content d-flex flex-column">
+                       <div>
+                        <h3>Total de Ingresos: <span id="total-ingresos">0</span></h3>
+                        <h3>Total de Egresos: <span id="total-egresos">0</span></h3>
+                       </div>
+
+                      <div>
+                        <form id="filtrar-form">
+                            <div class="filter-fecha-caja-content d-flex gap-3">
+                                <div>
+                                    <label for="fecha_inicio">Fecha Inicio:</label>
+                                    <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                                </div>
+
+                                <div>
+                                    <label for="fecha_fin">Fecha Fin:</label>
+                                    <input type="date" id="fecha_fin" name="fecha_fin" required>
+                                </div>
+
+                                <button type="submit" class="btn-filter-montos">Filtrar</button>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+
+
 
                     <div class="saldo-content" readonly>
                         <label class="saldo-text">Saldo Actual:</label>
@@ -70,13 +92,15 @@
                 </div>
 
                 <div class="btns-transaccion-content">
-                    <button type="button" class="btn btn-primary btn-add-registro" data-toggle="modal" data-target="#transaccionModal">
-                        Agregar
-                    </button>
+                    @if($cajaAbierta)
+                        <button class="btn btn-danger" onclick="cerrarCaja()">Cerrar Caja</button>
 
-                    <button type="button" class="btn btn-danger btn-cerrar-caja" onclick="confirmarCierre()">
-                        Cerrar Caja
-                    </button>
+                        <button type="button" class="btn btn-primary btn-add-registro" data-toggle="modal" data-target="#transaccionModal">
+                            Agregar
+                        </button>
+                    @else
+                        <button onclick="abrirCaja()" class="btn btn-primary">Abrir Caja</button>
+                    @endif
                 </div>
             </div>
 
@@ -147,7 +171,7 @@
                 </div>
             </div>
 
-            <table class="table table-bordered" cellpadding="10" cellspacing="0">
+            <table class="table table-bordered" cellpadding="10" cellspacing="0" id="tabla-colaboradores">
                 <thead>
                     <tr>
                         <th>NRO. PAGO</th>
@@ -555,72 +579,56 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function confirmarCierre() {
-            Swal.fire({
-                title: "¿Deseas cerrar la caja? La caja cerrará la semana actual.",
-                showCancelButton: true,
-                confirmButtonText: "Cerrar Caja",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let form = document.createElement('form');
-                    form.method = 'POST';
 
-                    form.action = "<?php echo route('caja.cerrarSemana'); ?>";
-
-                    let csrfTokenInput = document.createElement('input');
-                    csrfTokenInput.type = 'hidden';
-                    csrfTokenInput.name = '_token';
-                    csrfTokenInput.value = "<?php echo csrf_token(); ?>";
-                    form.appendChild(csrfTokenInput);
-
-                    let methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'PUT';
-                    form.appendChild(methodInput);
-
-                    document.body.appendChild(form);
-                    form.submit();
-                } else {
-                    Swal.fire({
-                        title: "Acción cancelada",
-                        text: "La caja no fue cerrada",
-                        icon: "info",
-                        customClass: {
-                            content: 'swal-content'
-                        }
-                    });
-                    const style = document.createElement('style');
-                    style.innerHTML = `
-                        .swal2-html-container{
-                            color: #FFFFFF;
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
-            });
+        function cerrarCaja() {
+            fetch("{{ route('caja.cerrar') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json",
+                },
+            }).then(() => location.reload());
         }
+
+        function abrirCaja() {
+            fetch("{{ route('caja.abrir') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json",
+                },
+            }).then(() => location.reload());
+        }
+
     </script>
 
     <script>
-        function obtenerSemana() {
-            var fechaHoy = new Date();
-            var diaSemana = fechaHoy.getDay();
-            var diferencia = (diaSemana == 0 ? 6 : diaSemana - 1);
+        document.getElementById('filtrar-form').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-            fechaHoy.setDate(fechaHoy.getDate() - diferencia);
-            var lunes = new Date(fechaHoy);
-            var lunesFormato = lunes.getDate().toString().padStart(2, '0') + '/' + (lunes.getMonth() + 1).toString().padStart(2, '0') + '/' + lunes.getFullYear();
+            let fechaInicio = document.getElementById('fecha_inicio').value;
+            let fechaFin = document.getElementById('fecha_fin').value;
 
-            var siguienteLunes = new Date(lunes);
-            siguienteLunes.setDate(lunes.getDate() + 7);
-            var siguienteLunesFormato = siguienteLunes.getDate().toString().padStart(2, '0') + '/' + (siguienteLunes.getMonth() + 1).toString().padStart(2, '0') + '/' +  siguienteLunes.getFullYear();
-
-            return lunesFormato + ' - ' + siguienteLunesFormato;
-        }
-
-        document.getElementById('semana').value = obtenerSemana();
+            fetch("{{ route('caja.filtrarFecha') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    fecha_inicio: fechaInicio,
+                    fecha_fin: fechaFin
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('total-ingresos').textContent = data.ingresos;
+                document.getElementById('total-egresos').textContent = data.egresos;
+            })
+            .catch(error => {
+                console.error("Error al filtrar:", error);
+            });
+        });
     </script>
 
 </body>
