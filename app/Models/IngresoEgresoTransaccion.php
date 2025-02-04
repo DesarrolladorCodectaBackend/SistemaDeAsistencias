@@ -5,20 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TransaccionDetalle extends Model
+class IngresoEgresoTransaccion extends Model
 {
     use HasFactory;
 
-    protected $table = 'transaccion_detalle';
+    protected $table = 'ingresos_egresos_transacciones';
 
     protected $fillable = [
+        'semana_id',
         'transaccion_id',
-        'metodo_pago',
-        'comprobante',
-        'nro_operacion'
+        'monto',
+        'tipo'
     ];
 
     public function transaccion() {
         return $this->belongsTo(Transaccion::class, 'transaccion_id', 'id');
+    }
+
+    public function semana() {
+        return $this->belongsTo(Semanas::class, 'semana_id', 'id');
     }
 }

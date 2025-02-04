@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradorEditController;
@@ -245,6 +246,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/especialista/store', [TutorSeguimientoController::class, 'store'])->name('especialista.store');
     Route::put('/especialista/update/{especialista_id}', [TutorSeguimientoController::class, 'update'])->name('especialista.update');
     Route::put('/especialista/changeState/{especialista_id}', [TutorSeguimientoController::class, 'changeState'])->name('especialista.changeState');
+
+    // CajaChica
+    Route::get('/caja-chica', [CajaController::class, 'index'])->name('caja.index');
+    Route::post('/caja-chica/transaccionColab/{colaborador_id}', [CajaController::class, 'transaccionColab'])->name('caja.transaccionColab');
+    Route::post('/caja-chica/deposito', [CajaController::class, 'registroTransaccion'])->name('caja.registroTransaccion');
+    Route::put('/caja/cerrar-semana', [CajaController::class, 'cerrarCajaSemanaActual'])
+    ->name('caja.cerrarSemana');
+
 });
 
 require __DIR__ . '/auth.php';

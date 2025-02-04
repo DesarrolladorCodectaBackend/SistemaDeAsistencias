@@ -1761,11 +1761,9 @@
                 const newFields = document.createElement('div');
                 newFields.classList.add('input-group', 'mb-2', 'gasto-item');
 
-                // Crear un identificador único basado en colaboradorId
                 const uniqueId = `descripcion-${colaboradorId}-${document.querySelectorAll('.gasto-item').length}`;
                 const unId = `monto-${colaboradorId}-${document.querySelectorAll('.gasto-item').length}`;
 
-                // Crear div para descripción
                 const descripcionContent = document.createElement('div');
                 descripcionContent.classList.add('descripcion-content');
 
@@ -1779,11 +1777,9 @@
                 descripcionInput.setAttribute('name', `descripcion[${colaboradorId}][]`);
                 descripcionInput.setAttribute('id', uniqueId);
 
-                // Agregar label e input a descripcion-content
                 descripcionContent.appendChild(descripcionLabel);
                 descripcionContent.appendChild(descripcionInput);
 
-                // Crear div para monto
                 const montoContent = document.createElement('div');
                 montoContent.classList.add('monto-content');
 
@@ -1797,11 +1793,9 @@
                 montoInput.setAttribute('name', `monto[${colaboradorId}][]`);
                 montoInput.setAttribute('id', unId);
 
-                // Agregar label e input a monto-content
                 montoContent.appendChild(montoLabel);
                 montoContent.appendChild(montoInput);
 
-                // Botón de eliminar
                 const deleteButton = document.createElement('button');
                 deleteButton.classList.add('btn', 'btn-danger', 'btn-sm', 'delete-btn', 'btn-pagos');
                 deleteButton.innerHTML = 'X';
@@ -1809,17 +1803,13 @@
                     newFields.remove();
                 });
 
-                // Agregar elementos al contenedor principal
                 newFields.appendChild(descripcionContent);
                 newFields.appendChild(montoContent);
                 newFields.appendChild(deleteButton);
 
-                // Agregar al contenedor correspondiente
                 document.getElementById(`gastos-container-${colaboradorId}`).appendChild(newFields);
             });
         });
-
-
 
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -1837,13 +1827,7 @@
                 gastoItem.remove();
             });
         });
-
     </script>
-
-
-
-
-
 
 </body>
 

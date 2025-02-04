@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('transaccion_id')->references('id')->on('transacciones');
             $table->unsignedBigInteger('semana_id');
             $table->foreign('semana_id')->references('id')->on('semanas');
-            $table->decimal('monto', 8, 2);
+            $table->decimal('monto', 11, 2);
             $table->string('tipo');
             $table->timestamps();
         });

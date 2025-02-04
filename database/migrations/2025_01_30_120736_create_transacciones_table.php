@@ -15,15 +15,18 @@ return new class extends Migration
     {
         Schema::create('transacciones', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('semana_id');
+            $table->unsignedBigInteger('semana_id')->nullable();
             $table->foreign('semana_id')->references('id')->on('semanas');
             $table->bigInteger('nro_pago')->unique();
             $table->string('nombres');
             $table->bigInteger('dni');
             $table->text('descripcion');
-            $table->decimal('monto', 5, 2);
+            $table->text('observaciones')->nullable();
+            $table->decimal('monto', 10, 2);
             $table->unsignedBigInteger('tipo_transaccion_id');
             $table->foreign('tipo_transaccion_id')->references('id')->on('tipo_transacciones');
+            $table->boolean('estado');
+            $table->date('fecha');
             $table->timestamps();
         });
     }

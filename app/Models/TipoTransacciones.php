@@ -15,4 +15,8 @@ class TipoTransacciones extends Model
         'descripcion',
         'es_ingreso'
     ];
+
+    public function transaccion() {
+        return $this->hasMany(Transaccion::class, 'tipo_transaccion_id', 'id');
+    }
 }

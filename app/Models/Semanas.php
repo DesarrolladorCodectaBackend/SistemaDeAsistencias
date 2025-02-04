@@ -17,5 +17,11 @@ class Semanas extends Model
         return $this->hasMany(Horario_virtual_colaborador::class, 'semana_id', 'id');
     }
 
+    public function transaccion() {
+        return $this->hasMany(Transaccion::class, 'semana_id', 'id');
+    }
 
+    public function ingreso_egreso_transaccion() {
+        return $this->hasMany(IngresoEgresoTransaccion::class, 'semana_id', 'id');
+    }
 }

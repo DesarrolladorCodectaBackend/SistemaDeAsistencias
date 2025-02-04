@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('colaborador_id');
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
             $table->string('descripcion');
-            $table->decimal('monto', 5, 2);
+            $table->decimal('monto', 8, 2);
             $table->timestamps();
         });
     }

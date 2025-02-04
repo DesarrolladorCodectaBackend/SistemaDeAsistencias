@@ -1295,7 +1295,6 @@ class ColaboradoresController extends Controller
                             ]);
                         }
                     } else {
-
                         PagoColaborador::create([
                             'colaborador_id' => $colaborador_id,
                             'descripcion' => $descripcion,

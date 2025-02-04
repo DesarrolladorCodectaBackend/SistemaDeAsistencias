@@ -16,4 +16,8 @@ class SaldoTransaccion extends Model
         'saldo_actual',
         'transaccion_id',
     ];
+
+    public function transaccion() {
+        return $this->belongsTo(Transaccion::class, 'transaccion_id', 'id');
+    }
 }

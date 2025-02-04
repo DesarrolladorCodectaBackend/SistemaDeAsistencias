@@ -67,55 +67,61 @@
                 <a href="{{route('dashboard')}}"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span></a>
             </li>
             @if($userData['isAdmin'])
-            <li>
-                <a href="#"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
-                        Generales</span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="{{route('horarios.getHorarioGeneral')}}">Presencial</a></li>
-                    <li><a href="{{route('reuniones.getAll')}}">Reuniones Áreas</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="{{route('reunionesProgramadas.allReu')}}"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu.
-                        Programadas</span></a>
-            </li>
-            <li>
-                <a href="{{route('reportes.index')}}"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
-            </li>
-            <li id="personalCont">
-                <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse">
-                    <li id="candidatos">
-                        <a href="{{route('candidatos.index')}}">Candidatos</a>
-                    </li>
-                    <li id="colaboradores">
-                        <a href="{{route('colaboradores.index')}}">Colaboradores</a>
-                    </li>
-                </ul>
+                <li>
+                    <a href="#"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
+                            Generales</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="{{route('horarios.getHorarioGeneral')}}">Presencial</a></li>
+                        <li><a href="{{route('reuniones.getAll')}}">Reuniones Áreas</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{route('reunionesProgramadas.allReu')}}"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu.
+                            Programadas</span></a>
+                </li>
+                <li>
+                    <a href="{{route('reportes.index')}}"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
+                </li>
+                <li id="personalCont">
+                    <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
+                            class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                        <li id="candidatos">
+                            <a href="{{route('candidatos.index')}}">Candidatos</a>
+                        </li>
+                        <li id="colaboradores">
+                            <a href="{{route('colaboradores.index')}}">Colaboradores</a>
+                        </li>
+                        <li>
+                            <a href="{{route('caja.index')}}">Caja Chica</a>
+                        </li>
+                    </ul>
 
-            </li>
-            <li id="areas">
-                <a href="{{route('areas.index')}}"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
-            </li>
+                </li>
+                <li id="areas">
+                    <a href="{{route('areas.index')}}"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
+                </li>
             @endif
+
             @if($userData['isAdmin'] || $userData['isBoss'])
-            <li>
-                <a href="{{route('responsabilidades.index')}}"><i class="fa fa-list-alt"></i> <span
-                        class="nav-label">Responsabilidades</span></a>
-            </li>
+                <li>
+                    <a href="{{route('responsabilidades.index')}}"><i class="fa fa-list-alt"></i> <span
+                            class="nav-label">Responsabilidades</span></a>
+                </li>
             @endif
+
             @if($userData['isAdmin'])
-            <li id="maquinas">
-                <a href="{{route('maquinas.index')}}"><i class="fa fa-desktop"></i> <span class="nav-label">Máquinas</span></a>
-            </li>
-            <li id="salones">
-                <a href="{{route('salones.index')}}"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
-            </li>
-            <li id="ajustes">
-                <a href="{{route('ajustes.index')}}"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
-            </li>
+                <li id="maquinas">
+                    <a href="{{route('maquinas.index')}}"><i class="fa fa-desktop"></i> <span class="nav-label">Máquinas</span></a>
+                </li>
+                <li id="salones">
+                    <a href="{{route('salones.index')}}"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
+                </li>
+                <li id="ajustes">
+                    <a href="{{route('ajustes.index')}}"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
+                </li>
             @endif
+
             <li>
                 <form id="logoutForm" method="POST" action="{{ route('logout') }}">
                     @csrf

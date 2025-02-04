@@ -19,22 +19,39 @@ class Transaccion extends Model
         'descripcion',
         'observaciones',
         'monto',
-        'tipo_transaccion_id'
+        'tipo_transaccion_id',
+        'estado',
+        'fecha'
     ];
 
-    protected static function boot()
-    {
+    protected static function boot(){
         parent::boot();
 
         static::creating(function ($registro) {
             $ultimoPago = self::max('nro_pago');
             $nro_pago = $ultimoPago ? $ultimoPago + 1 : 1;
-            $numeroDeDigitos = strlen($nro_pago);
-            if ($numeroDeDigitos > 4) {
-                $registro->nro_pago = $nro_pago;
-            } else {
-                $registro->nro_pago = str_pad($nro_pago, 4, '0', STR_PAD_LEFT);
-            }
+            $registro->nro_pago = $nro_pago;
         });
+    }
+
+
+    public function transaccion_detalle() {
+        return $this->hasMany(TransaccionDetalle::class, 'transaccion_id', 'id');
+    }
+
+    public function ingreso_egreso_transaccion() {
+        return $this->hasMany(IngresoEgresoTransaccion::class, 'transaccion_id', 'id');
+    }
+
+    public function tipo_transaccion() {
+        return $this->belongsTo(TipoTransacciones::class, 'tipo_transaccion_id', 'id');
+    }
+
+    public function saldo_transaccion() {
+        return $this->hasMany(SaldoTransaccion::class, 'transaccion_id', 'id');
+    }
+
+    public function semana() {
+        return $this->belongsTo(Semanas::class, 'semana_id', 'id');
     }
 }

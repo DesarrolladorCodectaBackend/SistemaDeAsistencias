@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('saldo_transacciones', function (Blueprint $table) {
             $table->id();
             $table->date('fecha');
-            $table->decimal('saldo_actual', 8, 2);
+            $table->decimal('saldo_actual', 10, 2);
             $table->unsignedBigInteger('transaccion_id');
             $table->foreign('transaccion_id')->references('id')->on('transacciones');
             $table->timestamps();

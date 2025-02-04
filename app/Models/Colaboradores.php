@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,4 +50,8 @@ class Colaboradores extends Model
         return $this->hasMany(PagoColaborador::class, 'colaborador_id', 'id');
     }
 
+    
+    
+  
+    
 }
