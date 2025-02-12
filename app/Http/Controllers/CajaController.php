@@ -11,6 +11,7 @@ use App\Models\Semanas;
 use App\Models\TipoTransacciones;
 use App\Models\Transaccion;
 use App\Models\TransaccionDetalle;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -37,10 +38,6 @@ class CajaController extends Controller
                 ->with('candidato')
                 ->get();
         }
-        // $colaboradores = Colaboradores::where('estado', 1)
-        // ->whereHas('pago_colaborador')
-        // ->with('candidato')
-        // ->get();
 
         $pagoColab = PagoColaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
 
@@ -99,6 +96,8 @@ class CajaController extends Controller
             ->whereIn('semana_id', $semanasIds)
             ->sum('monto');
 
+        $users = User::get();
+
         return view('inspiniaViews.caja-chica.index', [
             'colaboradores' => $colaboradores,
             'pagoColab' => $pagoColab,
@@ -108,9 +107,9 @@ class CajaController extends Controller
             'cajas' => $cajas,
             'ingresos' => $ingresos,
             'egresos' => $egresos,
-            'cajaAbierta' => $cajaAbierta
+            'cajaAbierta' => $cajaAbierta,
+            'users' => $users
         ]);
-
     }
 
     public function transaccionColab(Request $request, $colaborador_id) {

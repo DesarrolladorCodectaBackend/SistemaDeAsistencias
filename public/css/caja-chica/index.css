@@ -41,14 +41,14 @@ button {
 .transaccion-content {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
     width: 100%;
 }
 
 .fecha-content {
     display: flex;
     font-size: 1.1em;
-    /* gap: 0.4em; */
+    gap: 0.9em;
 }
 
 .fecha-content label {
@@ -66,12 +66,17 @@ button {
     align-items: center;
     font-size: 1em;
     background-color: white;
-    padding: 0.2em 0.8em;
+    padding: 0.4em 0.8em;
     gap: 0.7em;
     border: 0.8px solid black;
     text-align: center;
+    justify-content: center;
+    width: 60%;
 }
 
+.saldo-text {
+    margin: 0;
+}
 
 .btns-transaccion-content {
     display: flex;
@@ -158,11 +163,33 @@ input:checked + label[for^="transferencia"] {
 .filter-fecha-caja-content {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: end;
     width: 100%;
+    gap: 1em;
+}
+
+.btn-filter-content {
+    width: 100%;
+    height: 100%;
+    padding: 0;
 }
 
 .btn-filter-montos {
-    width: 100em !important;
-    padding: 2em;
+    width: 100% ;
+    height: 100%;
+    padding: 0 0.7em;
+}
+
+.fecha-date-content {
+    gap: 0.9em;
+}
+
+.seleccionar-usuario {
+    cursor: pointer;
+    background-color: white;
+}
+
+.seleccionar-usuario:hover {
+    border: 3px solid #3a3a3a;
+    color: #1a1a1a;
 }

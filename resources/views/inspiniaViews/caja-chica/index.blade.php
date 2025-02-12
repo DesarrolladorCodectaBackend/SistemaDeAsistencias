@@ -57,38 +57,47 @@
 
 
             <div class="transaccion-content m-3">
+
                 <div class="fecha-content">
+
                     <div class="fecha-date-content d-flex flex-column">
-                       <div>
-                        <h3>Total de Ingresos: <span id="total-ingresos">0</span></h3>
-                        <h3>Total de Egresos: <span id="total-egresos">0</span></h3>
-                       </div>
 
-                      <div>
-                        <form id="filtrar-form">
-                            <div class="filter-fecha-caja-content d-flex gap-3">
-                                <div>
-                                    <label for="fecha_inicio">Fecha Inicio:</label>
-                                    <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                        <div class="saldo-content" readonly>
+                            <label class="saldo-text">Saldo Actual:</label>
+                            <label class="saldo-text"> S/{{ $saldoActual->saldo_actual ?? 0 }} </label>
+                        </div>
+
+                        <div>
+                            <form id="filtrar-form">
+                                <div class="filter-fecha-caja-content">
+                                    <div>
+                                        <label for="fecha_inicio">Fecha Inicio:</label>
+                                        <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" required>
+                                    </div>
+
+                                    <div>
+                                        <label for="fecha_fin">Fecha Fin:</label>
+                                        <input type="date" id="fecha_fin" name="fecha_fin" required>
+                                    </div>
+
+                                    <div class="btn-filter-content">
+                                        <button type="submit" class="btn-filter-montos btn-success">Filtrar</button>
+                                    </div>
+
                                 </div>
+                            </form>
+                        </div>
 
-                                <div>
-                                    <label for="fecha_fin">Fecha Fin:</label>
-                                    <input type="date" id="fecha_fin" name="fecha_fin" required>
-                                </div>
+                        <div>
+                            <h3>Total de Ingresos: S/<span id="total-ingresos">0</span></h3>
+                            <h3>Total de Egresos: S/<span id="total-egresos">0</span></h3>
+                        </div>
 
-                                <button type="submit" class="btn-filter-montos">Filtrar</button>
-                            </div>
-                        </form>
-                      </div>
                     </div>
 
 
 
-                    <div class="saldo-content" readonly>
-                        <label class="saldo-text">Saldo Actual:</label>
-                        <label> S/{{ $saldoActual->saldo_actual ?? 0 }} </label>
-                    </div>
+
                 </div>
 
                 <div class="btns-transaccion-content">
@@ -103,6 +112,7 @@
                     @endif
                 </div>
             </div>
+
 
             {{-- modal registro transaccion --}}
             <div class="modal fade" id="transaccionModal" tabindex="-1" role="dialog" aria-labelledby="transaccionModalLabel" aria-hidden="true">
@@ -124,7 +134,12 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label" for="nombres">Nombres:</label>
-                                        <input type="text" name="nombres" class="form-control">
+                                        <div class="d-flex">
+                                            <input type="text" name="nombres" id="nombres" class="form-control">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuarios">
+                                            ...
+                                        </button>
+                                        </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label" for="dni">DNI:</label>
@@ -171,6 +186,39 @@
                 </div>
             </div>
 
+            {{-- modal seleccion usuario --}}
+            <div class="modal fade" id="modalUsuarios" tabindex="-1" aria-labelledby="modalUsuariosLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalUsuariosLabel">Seleccionar Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombres</th>
+                                        <th>Correo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($users as $user)
+                                        <tr class="seleccionar-usuario" data-nombre="{{ $user->name }} {{ $user->apellido }}" data-dni="{{ $user->dni }}">
+                                            <td>{{ $user->id }}</td>
+                                            <td>{{ $user->name }} {{ $user->apellido }}</td>
+                                            <td>{{ $user->email }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- tabla transacciones --}}
             <table class="table table-bordered" cellpadding="10" cellspacing="0" id="tabla-colaboradores">
                 <thead>
                     <tr>
@@ -630,6 +678,17 @@
             });
         });
     </script>
+
+    <script>
+        $(document).on("click", ".seleccionar-usuario", function () {
+            let nombreCompleto = $(this).data("nombre");
+
+            $("#nombres").val(nombreCompleto);
+            // Cerrar el modal
+            $("#modalUsuarios").modal("hide");
+        });
+    </script>
+
 
 </body>
 </html>
