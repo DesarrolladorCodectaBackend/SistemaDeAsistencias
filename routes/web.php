@@ -18,6 +18,7 @@ use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
+use App\Http\Controllers\LibroController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObjetoController;
@@ -257,6 +258,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/caja-chica/abrir', [CajaController::class, 'abrirCaja'])->name('caja.abrir');
     Route::post('/caja-chica/cerrar', [CajaController::class, 'cerrarCaja'])->name('caja.cerrar');
     Route::post('/caja-chica/filtrarFecha', [CajaController::class, 'filtrarFecha'])->name('caja.filtrarFecha');
+
+    // Libros
+    Route::get('/biblioteca', [LibroController::class, 'index'])->name('libro.index');
+    Route::post('/biblioteca/store', [LibroController::class, 'store'])->name('libro.store');
+    Route::put('/biblioteca/update/{libro_id}', [LibroController::class, 'update'])->name('libro.update');
+    Route::post('/biblioteca/active-inactive/{libro_id}', [LibroController::class, 'activeInactive'])->name('libro.activarInactivar');
+    // Route::get('/biblioteca/{colaborador_id}', [])
 });
 
 require __DIR__ . '/auth.php';

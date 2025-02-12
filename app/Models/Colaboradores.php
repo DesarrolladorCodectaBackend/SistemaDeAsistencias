@@ -50,8 +50,8 @@ class Colaboradores extends Model
         return $this->hasMany(PagoColaborador::class, 'colaborador_id', 'id');
     }
 
-    
-    
-  
-    
+    public function libros() {
+        return $this->belongsToMany(Libro::class, 'colaborador_libro','libro_id', 'colaborador_id');
+    }
+
 }
