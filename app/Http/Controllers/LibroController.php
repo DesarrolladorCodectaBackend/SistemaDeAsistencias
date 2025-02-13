@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Colaboradores;
+use App\Models\ColaboradorLibro;
 use App\Models\Libro;
 use Exception;
 use Illuminate\Http\Request;
@@ -11,15 +13,26 @@ class LibroController extends Controller
 {
     public function index() {
 
-        $libros = Libro::get();
+        $libros = Libro::with('colaboradores.candidato')->get();
 
         $cantidadLib = $libros->count();
+
+        foreach ($libros as $libro) {
+            $ultimoPrestamo = ColaboradorLibro::where('libro_id', $libro->id)
+                ->latest('id')
+                ->first();
+
+            $colaborador = ($ultimoPrestamo && !$ultimoPrestamo->devuelto)
+                ? Colaboradores::find($ultimoPrestamo->colaborador_id)
+                : null;
+
+            $libro->setAttribute('colaborador_actual', $colaborador);
+        }
 
         return view('inspiniaViews.libros.index',[
             'libros' => $libros,
             'cantidadLib' => $cantidadLib
-        ]
-    );
+        ]);
     }
 
     public function store(Request $request) {
@@ -36,7 +49,7 @@ class LibroController extends Controller
             return redirect()->route('libro.index');
 
         }catch (Exception $e) {
-            
+
             // return $e;
             DB::rollback();
             return redirect()->route('libro.index');

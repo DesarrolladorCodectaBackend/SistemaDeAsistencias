@@ -20,7 +20,7 @@
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
                 <h2>Gestión Libros</h2>
-                <h3>cantidad: {{ $cantidadLib }}</h3>
+
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{route('dashboard')}}">Inicio</a>
@@ -84,7 +84,7 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Tabla</h5>
+                    <h3>Cantidad de libros: {{ $cantidadLib }}</h3>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -112,7 +112,7 @@
                                 <th class="col-lg-2">Titulo</th>
                                 <th class="col-lg-2">Autor</th>
                                 <th class="col-lg-1">Estado</th>
-                                <th class="col-lg-1 oculto">Editar</th>
+                                <th class="col-lg-1 oculto">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -127,12 +127,58 @@
 
                                         {{-- @csrf --}}
                                         <button type="button" class="btn btn-{{ $libro->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                            <span>{{ $libro->estado ? 'No usado' : 'Usado' }}</span>
+                                            <span>{{ $libro->estado ? 'Disponible' : 'No Disponible' }}</span>
                                         </button>
                                     {{-- </form> --}}
                                 </td>
-                                <td class="oculto"><button class="btn btn-info" type="button" href="#modal-form{{ $libro->id }}" data-toggle="modal"><i
-                                            class="fa fa-paste"></i></button></td>
+                                <td class="oculto">
+                                    <button class="btn btn-info" type="button" href="#modal-form{{ $libro->id }}" data-toggle="modal">
+                                        <i
+                                            class="fa fa-paste">
+                                        </i>
+                                    </button>
+
+                                    <button class="btn btn-secondary" type="button" href="#modal-form-show{{ $libro->id }}" data-toggle="modal">
+                                        <i
+                                            class="fa fa-eye">
+                                        </i>
+                                    </button>
+                                </td>
+                                {{-- show libro --}}
+                                <div id="modal-form-show{{ $libro->id }}" class="modal fade" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <div class="row" style="display: flex; justify-content:center; align-items:center">
+                                                    <div class="col-sm-11 b-r">
+                                                        <h3 class="m-t-none m-b">Libro</h3>
+                                                            <div class="form-group"><label>Título</label>
+                                                                <input type="text"
+                                                                    class="form-control" id="titulo"
+                                                                    value="{{ $libro->titulo }}" readonly>
+                                                            </div>
+
+                                                            <div class="form-group"><label>Autor</label>
+                                                                <input type="text"
+                                                                    class="form-control" id="autor"
+                                                                    value="{{ $libro->autor }}" readonly>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                @if ($libro->colaborador_actual)
+                                                                    <label>Prestado a <strong>{{ $libro->colaborador_actual->candidato->nombre . " " . $libro->colaborador_actual->candidato->apellido }}</strong></label>
+                                                                @else
+                                                                    Disponible
+                                                                @endif
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- update libro --}}
                                 <div id="modal-form{{ $libro->id }}" class="modal fade" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -140,10 +186,6 @@
                                                 <div class="row" style="display: flex; justify-content:center; align-items:center">
                                                     <div class="col-sm-11 b-r">
                                                         <h3 class="m-t-none m-b">Libro</h3>
-
-                                                        <!--
-                                                            <p>Sign in today for more expirience.</p>
-                                                        -->
 
                                                         <form role="form" method="POST"
                                                             action="{{ route('libro.update', $libro->id) }}">

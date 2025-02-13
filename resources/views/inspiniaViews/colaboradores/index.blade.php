@@ -376,14 +376,15 @@
                                                 class="img-lg  max-min-h-w-200 img-cover">
 
                                         </div>
-                                        <div style="display: flex; gap:2px">
+
+                                        <div class="botones-colabs">
                                             {{-- Redirección a computadora --}}
                                             <form id="getComputadoraColab{{$colaborador->id}}"
                                                 action="{{route('colaboradores.getComputadora', $colaborador->id)}}">
                                             </form>
                                             <x-uiverse.tooltip nameTool="Maquinas">
                                             <a href="#" class="btn btn-primary btn-success fa fa-desktop"
-                                                style="width: 100px; font-size: 18px;"
+                                                style="width: 110px; font-size: 18px;"
                                                 onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
                                             </a>
                                             </x-uiverse.tooltip>
@@ -393,7 +394,7 @@
                                             </form>
                                             <x-uiverse.tooltip nameTool="Prestamos">
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
-                                                style="width: 100px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                                style="width: 110px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
                                             </x-uiverse.tooltip>
 
                                             {{-- Redirección a librería --}}
@@ -402,8 +403,8 @@
                                             <x-uiverse.tooltip nameTool="Libreria">
                                                 <a
                                                     href="javascript:void(0);"
-                                                    class="btn btn-primary btn-success fa fa-desktop"
-                                                    style="width: 100%; font-size: 18px;"
+                                                    class="btn btn-primary btn-success fa fa-book"
+                                                    style="width: 110px; font-size: 18px;"
                                                     onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
                                                 >
                                                 </a>

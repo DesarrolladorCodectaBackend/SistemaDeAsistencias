@@ -2,23 +2,9 @@
 <html>
 
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>INSPINIA | Préstamos</title>
-
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="css/plugins/switchery/switchery.css" rel="stylesheet">
-
-    <!-- Toastr style -->
-    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
-
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
-
 
 </head>
 
@@ -207,7 +193,7 @@
                                                             <label><h4 class="m-t-none m-b-2 font-bold">Autor:</h4></label>
                                                             <label class="font-bold">{{ $libroColab->libro->autor }}</label>
                                                         </div>
-                                                        
+
                                                         <div class="text-center mb-3">
                                                             <label><h5 class="m-t-none m-b-2">Fecha de Préstamo:</h5></label>
                                                             <label>{{ $libroColab->fecha_prestamo }}</label>
@@ -258,23 +244,7 @@
 </div>
 
 
-<!-- Mainly scripts -->
-<script src="js/jquery-3.1.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-<!-- Custom and plugin javascript -->
-<script src="js/inspinia.js"></script>
-<script src="js/plugins/pace/pace.min.js"></script>
-<script src="js/plugins/switchery/switchery.js"></script>
-
-
 <script>
-
-
-
 
 function hideModal(modalId) {
   const modal = document.getElementById(modalId);
@@ -290,21 +260,6 @@ function showModal(modalId) {
     modal.classList.add('show');
   }
 }
-
-        var elem_5 = document.querySelector('.js-switch_5');
-        var switchery_5 = new Switchery(elem_5, { color: '#1AB394' });
-            switchery_5.disable();
-            var elem_6 = document.querySelector('.js-switch_6');
-        var switchery_6 = new Switchery(elem_6, { color: '#1AB394' });
-            switchery_6.disable();
-            var elem_7 = document.querySelector('.js-switch_7');
-        var switchery_7 = new Switchery(elem_7, { color: 'red' });
-            switchery_7.disable();
-
-
-        var elem = document.querySelector('.js-switch');
-        var switchery = new Switchery(elem, { color: '#1AB394' });
-
 
 
 </script>

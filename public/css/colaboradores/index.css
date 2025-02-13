@@ -63,3 +63,9 @@
     text-align: center;
     font-weight: bold;
 }
+
+.botones-colabs {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
