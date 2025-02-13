@@ -119,7 +119,7 @@
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
+                                    <img src={{asset('img/svg/sedes.svg')}} class="img-md">
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Sedes</strong></h4>
@@ -203,7 +203,7 @@
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
+                                    <img src={{asset('img/svg/especialistas.svg')}} class="img-md">
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Especialistas</strong></h4>
@@ -224,7 +224,7 @@
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
+                                    <img src={{asset('img/svg/book.svg')}} class="img-md">
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Biblioteca</strong></h4>

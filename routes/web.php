@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\BirthdayController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
@@ -253,6 +254,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/caja-chica', [CajaController::class, 'index'])->name('caja.index');
     Route::post('/caja-chica/transaccionColab/{colaborador_id}', [CajaController::class, 'transaccionColab'])->name('caja.transaccionColab');
     Route::post('/caja-chica/deposito', [CajaController::class, 'registroTransaccion'])->name('caja.registroTransaccion');
+    Route::post('/caja-chica/anularColab/{colaborador_id}', [CajaController::class, 'anularTransaccionColab'])->name('caja.anularTransaccionColab');
     // Route::put('/caja/cerrar-semana', [CajaController::class, 'cerrarCajaSemanaActual'])
     // ->name('caja.cerrarSemana');
 
@@ -269,6 +271,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/biblioteca/{colaborador_id}', [PrestamoLibroController::class, 'colabLibros'])->name('libro.colabLibro');
     Route::post('/biblioteca/prestamo/store', [PrestamoLibroController::class, 'store'])->name('libroPrestamo.store');
     Route::put('biblioteca/prestamo/devolver/{libro_id}', [PrestamoLibroController::class, 'devolver'])->name('libroPrestamo.devolver');
+
+    Route::get('/calendar', [BirthdayController::class, 'index']);
 });
 
 require __DIR__ . '/auth.php';

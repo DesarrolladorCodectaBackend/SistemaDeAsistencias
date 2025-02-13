@@ -56,18 +56,12 @@
 
 
 
+
             <div class="transaccion-content m-3">
-
-                <div class="fecha-content">
-
-                    <div class="fecha-date-content d-flex flex-column">
-
-                        <div class="saldo-content" readonly>
-                            <label class="saldo-text">Saldo Actual:</label>
-                            <label class="saldo-text"> S/{{ $saldoActual->saldo_actual ?? 0 }} </label>
-                        </div>
-
-                        <div>
+                <div class="saldo-content col-2 d-flex" readonly>
+                    <label class="saldo-text">Saldo Actual:</label>
+                    <label class="saldo-text"> S/{{ $saldoActual->saldo_actual ?? 0 }} </label>
+                </div>
                             <form id="filtrar-form">
                                 <div class="filter-fecha-caja-content">
                                     <div>
@@ -86,19 +80,18 @@
 
                                 </div>
                             </form>
+
+
+                        <div class="total-ingresos-egresos-content row">
+                            <div class="text-center total-in-content">
+                                <h3>Total de Ingresos: S/<span id="total-ingresos">0</span></h3>
+                            </div>
+
+                            <div class="text-center total-e-content">
+                                <h3>Total de Egresos: S/<span id="total-egresos">0</span></h3>
+                            </div>
+
                         </div>
-
-                        <div>
-                            <h3>Total de Ingresos: S/<span id="total-ingresos">0</span></h3>
-                            <h3>Total de Egresos: S/<span id="total-egresos">0</span></h3>
-                        </div>
-
-                    </div>
-
-
-
-
-                </div>
 
                 <div class="btns-transaccion-content">
                     @if($cajaAbierta)
@@ -404,7 +397,13 @@
                             <td>{{ $colaborador->candidato->nombre . " " . $colaborador->candidato->apellido }}</td>
                             <td>Colaborador</td>
                             <td>0</td>
-                            <td>{{ $colaborador->transaccion->monto ?? $colaborador->total_monto }}</td>
+                            <td>
+                                @if ($colaborador->anulado)
+                                    {{ $colaborador->transaccion->monto ?? 0 }}
+                                @else
+                                    {{ $colaborador->total_monto }}
+                                @endif
+                            </td>
 
                             <td>
                                 @if($colaborador->pagado)
@@ -414,12 +413,27 @@
                                             data-descripcion="{{ implode(' - ', $colaborador->pago_colaborador->pluck('descripcion')->toArray()) }}">
                                         Ver
                                     </button>
+
+                                @elseif($colaborador->anulado)
+                                    <button class="btn btn-secondary btn-sm" disabled>Anulado</button>
                                 @else
-                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    <div class="btn-">
+                                        <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#pagoModal{{ $colaborador->id }}"
                                             data-descripcion="{{ implode(' - ', $colaborador->pago_colaborador->pluck('descripcion')->toArray()) }}">
-                                        Pagar
-                                    </button>
+                                            Pagar
+                                        </button>
+                                        {{-- <form action="{{ route('caja.anularTransaccionColab', $colaborador->id) }}" method="POST">
+                                            @csrf --}}
+                                            <button
+                                                class="btn btn-danger btn-sm"
+                                                type="submit"
+                                                onclick="confirmAnular({{ $colaborador->id }})"
+                                            >
+                                                Anular
+                                            </button>
+                                        {{-- </form> --}}
+                                   </div>
                                 @endif
                             </td>
                         </tr>
@@ -689,6 +703,51 @@
         });
     </script>
 
+    <script>
+        function confirmAnular(id) {
+            Swal.fire({
+                    title: "¿Deseas anular esta transacción?",
+                    showCancelButton: true,
+                    confirmButtonText: "Anular",
+                    cancelButtonText: "Cancelar",
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+
+                    let routeTemplate = "<?php echo route('caja.anularTransaccionColab', ':id'); ?>";
+
+
+                    form.action = routeTemplate.replace(':id', id);
+                    form.innerHTML = `@csrf`;
+
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "La transacción no fue cancelada",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    // console.log(result);
+                    });
+
+        }
+    </script>
 </body>
 </html>

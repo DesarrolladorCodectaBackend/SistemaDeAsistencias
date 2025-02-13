@@ -17,6 +17,10 @@ class LibroController extends Controller
 
         $cantidadLib = $libros->count();
 
+        $libroDisponible = Libro::where('estado', 1)->get();
+        $librosDispo = $libroDisponible->count();
+
+
         foreach ($libros as $libro) {
             $ultimoPrestamo = ColaboradorLibro::where('libro_id', $libro->id)
                 ->latest('id')
@@ -31,7 +35,8 @@ class LibroController extends Controller
 
         return view('inspiniaViews.libros.index',[
             'libros' => $libros,
-            'cantidadLib' => $cantidadLib
+            'cantidadLib' => $cantidadLib,
+            'librosDispo' => $librosDispo
         ]);
     }
 
@@ -98,4 +103,5 @@ class LibroController extends Controller
 
     //     }
     // }
+
 }

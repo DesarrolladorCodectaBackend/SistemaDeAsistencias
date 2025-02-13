@@ -84,7 +84,8 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h3>Cantidad de libros: {{ $cantidadLib }}</h3>
+                    <h3>Cantidad de libros: <strong>{{ $cantidadLib }}</strong></h3>
+                    <h4>Libros disponibles: <strong>{{ $librosDispo }}</strong></h4>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>

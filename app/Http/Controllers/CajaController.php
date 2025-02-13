@@ -52,15 +52,22 @@ class CajaController extends Controller
                 $colaborador->pagado = false;
                 $colaborador->transaccion = null;
                 $colaborador->transaccion_detalle = null;
+                $colaborador->anulado = false;
                 continue;
             }
 
             $transaccion = Transaccion::where('semana_id', $semanaActual->id)
                 ->where('dni', $colaborador->candidato->dni)
                 ->where('estado', 1)
+                ->where('anulado', 0)
                 ->first();
 
             $transaccionDetalle = null;
+
+            $transaccionAnulada = Transaccion::where('semana_id', $semanaActual->id)
+                ->where('dni', $colaborador->candidato->dni)
+                ->where('anulado', 1)
+                ->first();
 
             if ($transaccion) {
                 $transaccionDetalle = TransaccionDetalle::where('transaccion_id', $transaccion->id)->first();
@@ -69,6 +76,7 @@ class CajaController extends Controller
             $colaborador->pagado = $transaccion;
             $colaborador->transaccion = $transaccion;
             $colaborador->transaccion_detalle = $transaccionDetalle;
+            $colaborador->anulado = $transaccionAnulada;
         }
 
         $tipoTransacciones = TipoTransacciones::where('es_ingreso', false)->get();
@@ -146,9 +154,10 @@ class CajaController extends Controller
                     ->with('error', 'No se pueden registrar transacciones en semanas futuras.');
             }
 
+            $nro_pago = FunctionHelperController::generarNroPago();
             $transaccion = Transaccion::create([
                 'semana_id' => $thisSemana->id,
-                'nro_pago' => null,
+                'nro_pago' => $nro_pago,
                 'nombres' => $atributosColab->nombre ." ". $atributosColab->apellido,
                 'dni' => $atributosColab->dni,
                 'descripcion' => $request->descripcion,
@@ -157,6 +166,7 @@ class CajaController extends Controller
                 'tipo_transaccion_id' => $tipoColab->id,
                 'estado' => 1,
                 'fecha' => $request->fecha,
+                'anulado' => 0
             ]);
 
 
@@ -195,7 +205,7 @@ class CajaController extends Controller
 
         }catch (Exception $e) {
 
-            return $e;
+            // return $e;
             DB::rollback();
             return redirect()->route('caja.index')->with('error', 'Error al registrar el pago.');
 
@@ -231,10 +241,10 @@ class CajaController extends Controller
                     ->with('error', 'No se pueden registrar transacciones en semanas futuras.');
             }
 
-
+            $nro_pago = FunctionHelperController::generarNroPago();
             $transaccion = Transaccion::create([
                 'semana_id' => $thisSemana->id,
-                'nro_pago' => null,
+                'nro_pago' => $nro_pago,
                 'nombres' => $request->nombres,
                 'dni' => $request->dni,
                 'descripcion' => $request->descripcion,
@@ -243,6 +253,7 @@ class CajaController extends Controller
                 'estado' => 1,
                 'fecha' => $request->fecha,
                 'observaciones' => $request->observaciones,
+                'anulado' => 0
             ]);
 
             if ($tipoTransaccion->es_ingreso == 1) {
@@ -280,12 +291,20 @@ class CajaController extends Controller
     }
 
     public function abrirCaja() {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción.');
+        }
         $thisWeekMonday = Carbon::now()->startOfWeek()->toDateString();
         Semanas::where('fecha_lunes', $thisWeekMonday)->update(['caja_abierta' => 1]);
         return redirect()->back()->with('success', 'Caja abierta.');
     }
 
     public function cerrarCaja() {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción.');
+        }
         try {
 
             $thisWeekMonday = Carbon::now()->startOfWeek()->toDateString();
@@ -306,7 +325,6 @@ class CajaController extends Controller
     }
 
     public function filtrarFecha(Request $request) {
-
         $access = FunctionHelperController::verifyAdminAccess();
         if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción.');
@@ -334,6 +352,61 @@ class CajaController extends Controller
             return redirect()->route('caja.index')->with('error', 'Error al filtrar.');
 
         }
+    }
+
+    public function anularTransaccionColab(Request $request, $colaborador_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $colaborador = Colaboradores::findOrFail($colaborador_id);
+
+            $atributosColab = $colaborador->candidato;
+
+            $tipoColab = TipoTransacciones::where('descripcion', 'Colaborador')->first();
+
+
+            $thisWeekMonday = Carbon::now()->startOfWeek()->toDateString();
+            $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
+            if (!$thisSemana) {
+                return redirect()->route('caja.index')->with('error', 'No se ha generado la semana actual en el sistema.');
+            }
+
+            if ($request->semana_id > $thisSemana->id) {
+                return redirect()->route('caja.index')
+                    ->with('error', 'No se pueden registrar transacciones en semanas futuras.');
+            }
+
+            $fechaHoy = Carbon::now()->format('Y-m-d');
+            Transaccion::create([
+                'semana_id' => $thisSemana->id,
+                'nro_pago' => null,
+                'nombres' => $atributosColab->nombre ." ". $atributosColab->apellido,
+                'dni' => $atributosColab->dni,
+                'descripcion' => null,
+                'observaciones' => null,
+                'monto' => 0,
+                'tipo_transaccion_id' => $tipoColab->id,
+                'estado' => null,
+                'fecha' => $fechaHoy,
+                'anulado' => 1
+            ]);
+
+
+            DB::commit();
+            return redirect()->route('caja.index')->with('success', 'Anulación exitosa.');
+
+        }catch (Exception $e) {
+
+            // return $e;
+            DB::rollback();
+            return redirect()->route('caja.index')->with('error', 'Error al registrar el pago.');
+
+        }
 
     }
+
 }

@@ -12,6 +12,7 @@ use App\Models\Horario_Presencial_Asignado;
 use App\Models\Maquina_reservada;
 use App\Models\Responsabilidades_semanales;
 use App\Models\Semanas;
+use App\Models\Transaccion;
 use App\Models\User;
 use App\Models\UsuarioAdministrador;
 use App\Models\UsuarioJefeArea;
@@ -578,4 +579,8 @@ class FunctionHelperController extends Controller
         // return [$colab1, $colab2];
     }
 
+    public static function generarNroPago() {
+        $ultimoPago = Transaccion::max('nro_pago');
+        return $ultimoPago ? $ultimoPago + 1 : 1;
+    }
 }

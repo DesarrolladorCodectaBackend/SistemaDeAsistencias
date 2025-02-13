@@ -20,12 +20,13 @@ return new class extends Migration
             $table->bigInteger('nro_pago')->unique();
             $table->string('nombres');
             $table->bigInteger('dni');
-            $table->text('descripcion');
+            $table->text('descripcion')->nullable();
             $table->text('observaciones')->nullable();
             $table->decimal('monto', 10, 2);
             $table->unsignedBigInteger('tipo_transaccion_id');
             $table->foreign('tipo_transaccion_id')->references('id')->on('tipo_transacciones');
-            $table->boolean('estado');
+            $table->boolean('estado')->nullable();
+            $table->boolean('anulado');
             $table->date('fecha');
             $table->timestamps();
         });

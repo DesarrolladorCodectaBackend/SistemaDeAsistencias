@@ -43,6 +43,19 @@ button {
     justify-content: space-between;
     align-items: end;
     width: 100%;
+    gap: 1.4em;
+}
+
+.total-ingresos-egresos-content {
+    display: flex;
+    gap: 2em;
+}
+
+.total-in-content, .total-e-content {
+    display: flex !important;
+    width: 20em !important;
+    border: 1.5px solid black;
+    text-align: center;
 }
 
 .fecha-content {
@@ -67,16 +80,17 @@ button {
     font-size: 1em;
     background-color: white;
     padding: 0.4em 0.8em;
-    gap: 0.7em;
+    /* gap: 0.7em; */
     border: 0.8px solid black;
     text-align: center;
     justify-content: center;
-    width: 60%;
+    width: 10em !important;
 }
 
 .saldo-text {
     margin: 0;
 }
+
 
 .btns-transaccion-content {
     display: flex;

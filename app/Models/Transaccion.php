@@ -21,7 +21,8 @@ class Transaccion extends Model
         'monto',
         'tipo_transaccion_id',
         'estado',
-        'fecha'
+        'fecha',
+        'anulado'
     ];
 
     protected static function boot(){
