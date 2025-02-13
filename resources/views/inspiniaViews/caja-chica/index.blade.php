@@ -19,6 +19,9 @@
                         <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
+                        <span>Personal</span>
+                    </li>
+                    <li class="breadcrumb-item active">
                         <strong>Caja Chica</strong>
                     </li>
                 </ol>

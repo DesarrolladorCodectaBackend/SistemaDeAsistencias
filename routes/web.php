@@ -272,7 +272,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/biblioteca/prestamo/store', [PrestamoLibroController::class, 'store'])->name('libroPrestamo.store');
     Route::put('biblioteca/prestamo/devolver/{libro_id}', [PrestamoLibroController::class, 'devolver'])->name('libroPrestamo.devolver');
 
-    Route::get('/calendar', [BirthdayController::class, 'index']);
+    Route::get('/birthdays', [BirthdayController::class, 'index'])->name('cumplecolabs.index');
 });
 
 require __DIR__ . '/auth.php';

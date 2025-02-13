@@ -4,7 +4,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.css') }}">
-
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="{{ asset('css/plugins/switchery/switchery.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     <link href="{{asset('css/plugins/select2/select2.min.css') }}" rel="stylesheet">
@@ -147,6 +147,11 @@
 
             </div>
             <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a href="{{ route('cumplecolabs.index') }}">
+                        <i class='bx bxs-cake' style="font-size: 25px"></i>
+                    </a>
+                </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                         <i style="font-size: 20px" class="fa fa-bell "></i>
@@ -248,7 +253,7 @@ function confirmLogout() {
     <!-- Full Calendar -->
     <script src="{{ asset('js/plugins/fullcalendar/moment.min.js') }}"></script>
     <script src="{{ asset('js/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
-
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <!-- Select2 -->
     <script src="{{asset('js/plugins/select2/select2.full.min.js')}} "></script>
 
