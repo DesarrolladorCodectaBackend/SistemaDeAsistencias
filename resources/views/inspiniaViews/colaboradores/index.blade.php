@@ -395,6 +395,19 @@
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
                                                 style="width: 100px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
                                             </x-uiverse.tooltip>
+
+                                            {{-- Redirección a librería --}}
+                                            <form id="getLibroColab{{ $colaborador->id }}" action="{{ route('libro.colabLibro', $colaborador->id) }}">
+                                            </form>
+                                            <x-uiverse.tooltip nameTool="Libreria">
+                                                <a
+                                                    href="javascript:void(0);"
+                                                    class="btn btn-primary btn-success fa fa-desktop"
+                                                    style="width: 100%; font-size: 18px;"
+                                                    onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
+                                                >
+                                                </a>
+                                            </x-uiverse.tooltip>
                                         </div>
 
                                         <div class="mt-2">
@@ -962,14 +975,15 @@
 
                                                                         </button>
                                                                         @error('icono'.$colaborador->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
-                                                                    @enderror
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                         <script>
                                                                             document.getElementById('icon-upload-{{ $colaborador->candidato->id }}').addEventListener('click', function() {
                                                                                 document.getElementById('icono-{{ $colaborador->candidato->id }}').click();
                                                                             });
                                                                         </script>
                                                                     </div>
+                                                                    {{-- tooltip btns colab --}}
                                                                     <div style="display: flex; gap:2px">
                                                                         <x-uiverse.tooltip nameTool="Maquinas">
                                                                             <a href="#"
@@ -983,8 +997,21 @@
                                                                             <a data-toggle="modal"
                                                                             class="btn btn-primary btn-success fa fa-dropbox"
                                                                             style="width: 100px; font-size: 18px;"
-                                                                            href="" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                                                            href=""
+                                                                            onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"></a>
                                                                         </x-uiverse.tooltip>
+
+
+                                                                        <x-uiverse.tooltip nameTool="Libreria">
+                                                                            <a
+                                                                                href=""
+                                                                                class="btn btn-primary btn-success fa fa-desktop"
+                                                                                style="width: 100%; font-size: 18px;"
+                                                                                onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
+                                                                            >
+                                                                            </a>
+                                                                        </x-uiverse.tooltip>
+
                                                                     </div>
 
                                                                 </div>
