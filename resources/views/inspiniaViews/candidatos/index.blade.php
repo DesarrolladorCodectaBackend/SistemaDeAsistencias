@@ -1095,10 +1095,13 @@
                     // Crear el formulario y enviarlo
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/candidato/rechazarCandidato/${id}`; // Ruta a la que se enviará el formulario
+                    let routeTemplate = "<?php echo route('candidatos.rechazarCandidato', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
 
                     // Agregar el CSRF token y el método HTTP necesario
-                    form.innerHTML = '@csrf @method("POST")';
+                    form.innerHTML = `@csrf @method("POST")
+                     <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
 
                     // Agregar el parámetro currentURL, si está disponible
                     if (currentURL != null) {
