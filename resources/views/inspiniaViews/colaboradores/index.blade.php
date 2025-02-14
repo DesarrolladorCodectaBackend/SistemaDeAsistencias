@@ -1637,7 +1637,6 @@
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
             let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
-            let pagos = document.getElementById('pagos-checkbox').checked ? 'true' : 'false';
 
             estados = estados.length ? estados.join(',') : '1';
             areas = areas.length ? areas.join(',') : '0';
@@ -1646,8 +1645,8 @@
             ciclos = ciclos.length ? ciclos.join(',') : '0';
             sedes = sedes.length ? sedes.join(',') : '0';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null && pagos != false){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}/pagos=${pagos}') }}`;
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
