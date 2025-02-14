@@ -151,11 +151,9 @@
                     <a href="{{ route('cumplecolabs.index') }}">
                         <i class='bx bxs-cake' style="font-size: 25px"></i>
                             <span id="notificationsCountBirthdayBContainer" class="label label-primary badge-cumple" ></span>
-                       
-                    </a>
-                    <ul id="notificationsBirthdayContainer" class="dropdown-menu dropdown-alerts max-height-scrollable">
 
-                    </ul>
+                    </a>
+                   
                     <style>
                         .badge-cumple {
 position: absolute;

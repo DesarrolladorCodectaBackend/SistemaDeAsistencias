@@ -380,11 +380,26 @@ class AccountsController extends Controller
                     }
 
                 } else if($userData['isAdmin']){
+
                     $user->update([
-                        'name'=> $request->name,
-                        'apellido'=> $request->apellido,
+                        'name' => $request->name,
+                        'apellido' => $request->apellido,
                         'email' => $request->email
                     ]);
+
+
+                }else {
+                    $oldEmail = $user->email;
+                    $user->update([
+                        'name' => $request->name,
+                        'apellido' => $request->apellido,
+                        'email' => $request->email
+                    ]);
+
+                    $candidato = Candidatos::where('correo', $oldEmail)->first();
+                    if ($candidato) {
+                        $candidato->update(['correo' => $request->email]);
+                    }
                 }
                 // return $userData;
 
