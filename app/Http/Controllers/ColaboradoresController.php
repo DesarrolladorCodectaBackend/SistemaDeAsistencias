@@ -26,6 +26,7 @@ use App\Models\Programas;
 use App\Http\Requests\UpdateColaboradoresRequest;
 use App\Mail\UsuarioCreadoMailable;
 use App\Models\ColabPassword;
+use App\Models\ColaboradorLibro;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\IntegrantesReuniones;
 use App\Models\Programas_instalados;
@@ -1044,7 +1045,14 @@ class ColaboradoresController extends Controller
                     $integrantes_reuniones = IntegrantesReuniones::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
                     //reuniones_programadas
                     $reuniones_programadas = ReunionesProgramadas::whereIn('id', $colaboradores->pluck('id'))->get();
+                    //pago_colaborador
+                    $pago_colaborador = PagoColaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //libro_colaborador
+                    $libro_colaborador = ColaboradorLibro::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
 
+                    if($libro_colaborador) {
+                        return redirect()->route('colaboradores.index')->with('warning', 'Este colaborador sigue teniendo libros prestados.');
+                    }
 
                     //ELIMINACIÓN EN CASCADA
                     //ahora procedemos a eliminarlos de los ultimos a los primeros
@@ -1132,6 +1140,14 @@ class ColaboradoresController extends Controller
                             $colaborador_por_area->delete();
                         }
                     }
+
+                    // pago_colaborador
+                    if($pago_colaborador) {
+                        foreach($pago_colaborador as $pago_colab) {
+                            $pago_colab->delete();
+                        }
+                    }
+
                     //colaboradores
                     if($colaboradores){
                         foreach($colaboradores as $colab) {
@@ -1171,7 +1187,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
-            // return $e;
+            return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {

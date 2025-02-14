@@ -51,7 +51,7 @@
                                             <input type="hidden" name="form_type" value="create">
 
                                             <div class="form-group"><label>Libro</label> <input type="text"
-                                                    placeholder="Ingrese un título" name="titulo" class="form-control">
+                                                    placeholder="Ingrese un título" name="titulo" class="form-control" required>
                                             </div>
                                             @error('titulo')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -198,7 +198,7 @@
                                                             <div class="form-group"><label>Título</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="titulo" id="titulo"
-                                                                    value="{{ $libro->titulo }}">
+                                                                    value="{{ $libro->titulo }}" required>
                                                                     @error('titulo'.$libro->id)
                                                                         <span class="text-danger">{{ $message }}</span>
                                                                     @enderror
@@ -207,7 +207,7 @@
                                                             <div class="form-group"><label>Autor</label>
                                                                 <input type="text" placeholder="....."
                                                                     class="form-control" name="autor" id="autor"
-                                                                    value="{{ $libro->autor }}">
+                                                                    value="{{ $libro->autor }}" required>
                                                                     @error('autor'.$libro->id)
                                                                         <span class="text-danger">{{ $message }}</span>
                                                                     @enderror

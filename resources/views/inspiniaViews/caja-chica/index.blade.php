@@ -191,6 +191,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            <input type="text" id="buscarUsuario" class="form-control mb-3" placeholder="Buscar usuario...">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -409,16 +410,15 @@
                             </td>
 
                             <td>
-                                @if($colaborador->pagado)
+                                @if($colaborador->anulado)
+                                    <button class="btn btn-secondary btn-sm" disabled>Anulado</button>
+                                @elseif($colaborador->pagado)
                                     <button class="btn btn-secondary btn-sm" disabled>Pagado</button>
                                     <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#verpagoModal{{ $colaborador->id }}"
                                             data-descripcion="{{ implode(' - ', $colaborador->pago_colaborador->pluck('descripcion')->toArray()) }}">
                                         Ver
                                     </button>
-
-                                @elseif($colaborador->anulado)
-                                    <button class="btn btn-secondary btn-sm" disabled>Anulado</button>
                                 @else
                                     <div class="btn-">
                                         <button class="btn btn-success btn-sm" data-bs-toggle="modal"
@@ -426,8 +426,6 @@
                                             data-descripcion="{{ implode(' - ', $colaborador->pago_colaborador->pluck('descripcion')->toArray()) }}">
                                             Pagar
                                         </button>
-                                        {{-- <form action="{{ route('caja.anularTransaccionColab', $colaborador->id) }}" method="POST">
-                                            @csrf --}}
                                             <button
                                                 class="btn btn-danger btn-sm"
                                                 type="submit"
@@ -435,7 +433,6 @@
                                             >
                                                 Anular
                                             </button>
-                                        {{-- </form> --}}
                                    </div>
                                 @endif
                             </td>

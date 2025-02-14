@@ -31,7 +31,7 @@ class CajaController extends Controller
 
         $cajaAbierta = Semanas::where('fecha_lunes', $thisWeekMonday)->value('caja_abierta');
 
-        $colaboradores = collect(); // Inicializamos vacío
+        $colaboradores = collect();
         if ($cajaAbierta) {
             $colaboradores = Colaboradores::where('estado', 1)
                 ->whereHas('pago_colaborador')
@@ -59,7 +59,6 @@ class CajaController extends Controller
             $transaccion = Transaccion::where('semana_id', $semanaActual->id)
                 ->where('dni', $colaborador->candidato->dni)
                 ->where('estado', 1)
-                ->where('anulado', 0)
                 ->first();
 
             $transaccionDetalle = null;
@@ -283,7 +282,7 @@ class CajaController extends Controller
 
         } catch (Exception $e) {
 
-            return $e;
+            // return $e;
             DB::rollback();
             return redirect()->route('caja.index')->with('error', 'Error al registrar la transacción.');
 

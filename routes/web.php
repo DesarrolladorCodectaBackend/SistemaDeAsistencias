@@ -257,6 +257,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/caja-chica/anularColab/{colaborador_id}', [CajaController::class, 'anularTransaccionColab'])->name('caja.anularTransaccionColab');
     // Route::put('/caja/cerrar-semana', [CajaController::class, 'cerrarCajaSemanaActual'])
     // ->name('caja.cerrarSemana');
+    Route::get('/buscar-usuarios', function (Request $request) {
+        $query = $request->query('query');
+
+        $users = User::where('name', 'LIKE', "%$query%")
+                     ->orWhere('apellido', 'LIKE', "%$query%")
+                     ->orWhere('email', 'LIKE', "%$query%")
+                     ->get();
+
+        return response()->json($users);
+    });
 
     Route::post('/caja-chica/abrir', [CajaController::class, 'abrirCaja'])->name('caja.abrir');
     Route::post('/caja-chica/cerrar', [CajaController::class, 'cerrarCaja'])->name('caja.cerrar');

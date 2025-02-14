@@ -212,14 +212,14 @@
                                             </div>
 
                                             {{-- pagos --}}
-                                            <div class="card">
+                                            {{-- <div class="card">
                                                 <div class="card-header d-flex" id="headingCarreras">
                                                     <div class="mb-0 pago-check-content">
                                                         <input type="checkbox" id="pagos-checkbox">
                                                         <h5>Colaboradores pagados</h5>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <!-- Submit Button -->
                                             <div class="text-center mt-4">
@@ -240,6 +240,15 @@
                 <div id="alert" class="alert alert-success alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
                     <div style="flex-grow: 1;">
                         <strong>Éxito:</strong> {{ session('success') }}
+                    </div>
+                    <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+                </div>
+            @endif
+
+            @if(session('warning'))
+                <div id="alert" class="alert alert-warning alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Advertencia:</strong> {{ session('warning') }}
                     </div>
                     <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
                 </div>

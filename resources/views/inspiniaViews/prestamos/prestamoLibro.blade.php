@@ -53,7 +53,7 @@
 
                                                 <div class="form-group">
                                                     <label for="fecha_prestamo">Fecha de Préstamo</label>
-                                                    <input type="date" placeholder="....." class="form-control" name="fecha_prestamo" id="fecha_prestamo" value="{{ old('fecha_prestamo') }}" required>
+                                                    <input type="date" placeholder="....." class="form-control" name="fecha_prestamo" id="fecha_prestamo" value="{{ \Carbon\Carbon::now()->toDateString() }}" readonly>
                                                 </div>
 
                                                 <div class="form-group">
