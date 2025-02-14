@@ -212,14 +212,14 @@
                                             </div>
 
                                             {{-- pagos --}}
-                                            <div class="card">
+                                            {{-- <div class="card">
                                                 <div class="card-header d-flex" id="headingCarreras">
                                                     <div class="mb-0 pago-check-content">
                                                         <input type="checkbox" id="pagos-checkbox">
                                                         <h5>Colaboradores pagados</h5>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <!-- Submit Button -->
                                             <div class="text-center mt-4">
@@ -236,13 +236,31 @@
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
-            @if(session('error'))
-            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
-                <div style="flex-grow: 1;">
-                    <strong>Error:</strong> {{ session('error') }}
+            @if(session('success'))
+                <div id="alert" class="alert alert-success alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Éxito:</strong> {{ session('success') }}
+                    </div>
+                    <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
                 </div>
-                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
-            </div>
+            @endif
+
+            @if(session('warning'))
+                <div id="alert" class="alert alert-warning alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Advertencia:</strong> {{ session('warning') }}
+                    </div>
+                    <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div id="alert" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Error:</strong> {{ session('error') }}
+                    </div>
+                    <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+                </div>
             @endif
             <div class="row">
                 @foreach($colaboradores->data as $index => $colaborador)
@@ -367,14 +385,15 @@
                                                 class="img-lg  max-min-h-w-200 img-cover">
 
                                         </div>
-                                        <div style="display: flex; gap:2px">
+
+                                        <div class="botones-colabs">
                                             {{-- Redirección a computadora --}}
                                             <form id="getComputadoraColab{{$colaborador->id}}"
                                                 action="{{route('colaboradores.getComputadora', $colaborador->id)}}">
                                             </form>
                                             <x-uiverse.tooltip nameTool="Maquinas">
                                             <a href="#" class="btn btn-primary btn-success fa fa-desktop"
-                                                style="width: 100px; font-size: 18px;"
+                                                style="width: 110px; font-size: 18px;"
                                                 onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
                                             </a>
                                             </x-uiverse.tooltip>
@@ -384,7 +403,20 @@
                                             </form>
                                             <x-uiverse.tooltip nameTool="Prestamos">
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
-                                                style="width: 100px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                                style="width: 110px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                            </x-uiverse.tooltip>
+
+                                            {{-- Redirección a librería --}}
+                                            <form id="getLibroColab{{ $colaborador->id }}" action="{{ route('libro.colabLibro', $colaborador->id) }}">
+                                            </form>
+                                            <x-uiverse.tooltip nameTool="Libreria">
+                                                <a
+                                                    href="javascript:void(0);"
+                                                    class="btn btn-primary btn-success fa fa-book"
+                                                    style="width: 110px; font-size: 18px;"
+                                                    onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
+                                                >
+                                                </a>
                                             </x-uiverse.tooltip>
                                         </div>
 
@@ -642,43 +674,55 @@
                                         </style>
 
                                         {{-- MODAL GASTO --}}
-                                        {{-- <div id="modal-form-gasto{{ $colaborador->id }}" class="modal fade" aria-hidden="true">
+                                        <div id="modal-form-gasto{{ $colaborador->id }}" class="modal fade" aria-hidden="true">
                                             <div class="modal-dialog modal-custom">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
-                                                        <form action="{{ route('pago.pagos', $colaborador->id) }}" method="POST">
+                                                        <form action="{{ route('colaboradores.pagos', $colaborador->id) }}" method="POST">
                                                             @csrf
-                                                            @method('PUT')
+                                                            @method('POST')
+
+                                                            <input type="hidden" name="gastos_eliminados[{{ $colaborador->id }}]" id="eliminar-gastos-{{ $colaborador->id }}">
+
+                                                            <h2 class="name-colab">{{ $colaborador->candidato->nombre . " " . $colaborador->candidato->apellido}}</h2>
+
                                                             <div class="row d-flex justify-center pagos-content">
-                                                                    <div class="pasaje-content">
-                                                                        <label>
-                                                                            <h5 class="m-t-none">Pasaje:</h5>
-                                                                        </label>
-                                                                        <input type="text"
-                                                                                class="form-control" name="pasaje"
-                                                                                value="{{ $colaborador->pasaje }}"
-                                                                        >
-                                                                    </div>
+                                                                <div class="row btn-agregar-content">
+                                                                    <button type="button" class="btn btn-primary btn-pago-colab" id="add-more-{{ $colaborador->id }}">+</button>
+                                                                    <span>Agregar pagos</span>
+                                                                </div>
 
-                                                                    <div class="comida-content">
-                                                                        <label>
-                                                                            <h5 class="m-t-none">Comida:</h5>
-                                                                        </label>
-                                                                        <input type="text"
-                                                                                class="form-control" name="comida"
-                                                                                value="{{ $colaborador->comida }}"
-                                                                        >
-                                                                    </div>
+                                                                <div class="row d-flex justify-center pagos-content" id="gastos-container-{{ $colaborador->id }}">
 
-                                                                    <button type="submit" class="btn btn-primary mt-4">
-                                                                        Guardar
-                                                                    </button>
+                                                                    @foreach ($colaborador->pago_colaborador as $gasto)
+                                                                        <div class="input-group mb-2 gasto-item" data-id="{{ $gasto->id }}">
+
+                                                                            <input type="hidden" name="gasto_id[]" value="{{ $gasto->id }}">
+
+                                                                           <div class="descripcion-content">
+                                                                                <label >Descripcion</label>
+                                                                                <input type="text" name="descripcion[{{ $colaborador->id }}][]" value="{{ $gasto->descripcion }}" class="form-control">
+                                                                           </div>
+
+                                                                            <div class="monto-content">
+                                                                                <label >Monto</label>
+                                                                                <input type="number" name="monto[{{ $colaborador->id }}][]" value="{{ $gasto->monto }}" class="form-control">
+                                                                            </div>
+
+                                                                            <button type="button" class="btn btn-danger btn-sm delete-btn btn-pagos" data-id="{{ $gasto->id }}">X</button>
+
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+
+                                                                <button type="submit" class="btn btn-primary mt-4">Guardar</button>
                                                             </div>
                                                         </form>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div> --}}
+                                        </div>
+
 
                                         {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
@@ -941,14 +985,15 @@
 
                                                                         </button>
                                                                         @error('icono'.$colaborador->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
-                                                                    @enderror
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                         <script>
                                                                             document.getElementById('icon-upload-{{ $colaborador->candidato->id }}').addEventListener('click', function() {
                                                                                 document.getElementById('icono-{{ $colaborador->candidato->id }}').click();
                                                                             });
                                                                         </script>
                                                                     </div>
+                                                                    {{-- tooltip btns colab --}}
                                                                     <div style="display: flex; gap:2px">
                                                                         <x-uiverse.tooltip nameTool="Maquinas">
                                                                             <a href="#"
@@ -962,8 +1007,21 @@
                                                                             <a data-toggle="modal"
                                                                             class="btn btn-primary btn-success fa fa-dropbox"
                                                                             style="width: 100px; font-size: 18px;"
-                                                                            href="" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                                                            href=""
+                                                                            onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"></a>
                                                                         </x-uiverse.tooltip>
+
+
+                                                                        <x-uiverse.tooltip nameTool="Libreria">
+                                                                            <a
+                                                                                href=""
+                                                                                class="btn btn-primary btn-success fa fa-desktop"
+                                                                                style="width: 100%; font-size: 18px;"
+                                                                                onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
+                                                                            >
+                                                                            </a>
+                                                                        </x-uiverse.tooltip>
+
                                                                     </div>
 
                                                                 </div>
@@ -1498,12 +1556,10 @@
 
 
         }
-        const deleteAlertError = () => {
-            let alertError = document.getElementById('alert-error');
-            if (alertError) {
-                alertError.remove();
-            } else{
-                console.error("Elemento con ID 'alert-error' no encontrado.");
+        const deleteAlert = () => {
+            let alert = document.getElementById('alert');
+            if (alert) {
+                alert.remove();
             }
         }
         document.addEventListener('DOMContentLoaded', function() {
@@ -1733,6 +1789,84 @@
             $('.multiple_actividades_select').select2();
         });
     </script>
+
+    <script>
+        document.querySelectorAll('.btn-pago-colab').forEach(button => {
+            button.addEventListener('click', function() {
+                const colaboradorId = this.id.split('-')[2];
+
+                const newFields = document.createElement('div');
+                newFields.classList.add('input-group', 'mb-2', 'gasto-item');
+
+                const uniqueId = `descripcion-${colaboradorId}-${document.querySelectorAll('.gasto-item').length}`;
+                const unId = `monto-${colaboradorId}-${document.querySelectorAll('.gasto-item').length}`;
+
+                const descripcionContent = document.createElement('div');
+                descripcionContent.classList.add('descripcion-content');
+
+                const descripcionLabel = document.createElement('label');
+                descripcionLabel.textContent = 'Descripción';
+                descripcionLabel.setAttribute('for', uniqueId);
+
+                const descripcionInput = document.createElement('input');
+                descripcionInput.setAttribute('type', 'text');
+                descripcionInput.classList.add('form-control');
+                descripcionInput.setAttribute('name', `descripcion[${colaboradorId}][]`);
+                descripcionInput.setAttribute('id', uniqueId);
+
+                descripcionContent.appendChild(descripcionLabel);
+                descripcionContent.appendChild(descripcionInput);
+
+                const montoContent = document.createElement('div');
+                montoContent.classList.add('monto-content');
+
+                const montoLabel = document.createElement('label');
+                montoLabel.textContent = 'Monto';
+                montoLabel.setAttribute('for', unId);
+
+                const montoInput = document.createElement('input');
+                montoInput.setAttribute('type', 'number');
+                montoInput.classList.add('form-control');
+                montoInput.setAttribute('name', `monto[${colaboradorId}][]`);
+                montoInput.setAttribute('id', unId);
+
+                montoContent.appendChild(montoLabel);
+                montoContent.appendChild(montoInput);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('btn', 'btn-danger', 'btn-sm', 'delete-btn', 'btn-pagos');
+                deleteButton.innerHTML = 'X';
+                deleteButton.addEventListener('click', function() {
+                    newFields.remove();
+                });
+
+                newFields.appendChild(descripcionContent);
+                newFields.appendChild(montoContent);
+                newFields.appendChild(deleteButton);
+
+                document.getElementById(`gastos-container-${colaboradorId}`).appendChild(newFields);
+            });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const gastoItem = this.closest('.gasto-item');
+                const gastoId = gastoItem.dataset.id;
+                const colaboradorId = this.closest('.pagos-content').id.split('-')[2];
+
+                if (gastoId) {
+                    let hiddenInput = document.getElementById(`eliminar-gastos-${colaboradorId}`);
+                    let valoresActuales = hiddenInput.value ? hiddenInput.value.split(',') : [];
+                    valoresActuales.push(gastoId);
+                    hiddenInput.value = valoresActuales.join(',');
+                }
+
+                gastoItem.remove();
+            });
+        });
+    </script>
+
 </body>
 
 </html>
+

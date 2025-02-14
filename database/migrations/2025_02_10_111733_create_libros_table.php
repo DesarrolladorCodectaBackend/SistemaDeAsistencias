@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('semanas', function (Blueprint $table) {
+        Schema::create('libros', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_lunes');
-            $table->boolean('caja_abierta')->default(0);
+            $table->string('titulo');
+            $table->string('autor')->nullable();
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('semanas');
+        Schema::dropIfExists('libros');
     }
 };

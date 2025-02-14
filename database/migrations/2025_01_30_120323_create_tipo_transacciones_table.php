@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('semanas', function (Blueprint $table) {
+        Schema::create('tipo_transacciones', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_lunes');
-            $table->boolean('caja_abierta')->default(0);
+            $table->string('descripcion');
+            $table->boolean('es_ingreso');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('semanas');
+        Schema::dropIfExists('tipo_transacciones');
     }
 };

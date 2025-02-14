@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('semanas', function (Blueprint $table) {
-            $table->id();
-            $table->date('fecha_lunes');
-            $table->boolean('caja_abierta')->default(0);
-            $table->timestamps();
+        Schema::table('semanas', function(Blueprint $table) {
+            if(!Schema::hasColumn('semanas', 'caja_abierta')) {
+                $table->boolean('caja_abierta')->default(0);
+            }
         });
     }
 
@@ -28,6 +27,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('semanas');
+        Schema::table('semanas', function (Blueprint $table) {
+            $table->dropColumn('caja_abierta');
+        });
     }
 };

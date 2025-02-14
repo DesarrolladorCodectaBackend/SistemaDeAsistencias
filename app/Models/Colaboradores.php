@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,6 +44,15 @@ class Colaboradores extends Model
 
     public function actividades() {
         return $this->belongsToMany(Actividades::class, 'area_recreativas', 'colaborador_id', 'actividad_id');
+    }
+
+    public function pago_colaborador() {
+        return $this->hasMany(PagoColaborador::class, 'colaborador_id', 'id');
+    }
+
+    public function libros() {
+        return $this->belongsToMany(Libro::class, 'colaborador_libro', 'colaborador_id', 'libro_id');
+
     }
 
 }

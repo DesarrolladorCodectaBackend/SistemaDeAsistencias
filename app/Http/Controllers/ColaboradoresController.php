@@ -17,6 +17,7 @@ use App\Models\Computadora_colaborador;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
 use App\Models\Horarios_Presenciales;
+use App\Models\PagoColaborador;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Maquina_reservada;
@@ -25,6 +26,7 @@ use App\Models\Programas;
 use App\Http\Requests\UpdateColaboradoresRequest;
 use App\Mail\UsuarioCreadoMailable;
 use App\Models\ColabPassword;
+use App\Models\ColaboradorLibro;
 use App\Models\Horario_Presencial_Asignado;
 use App\Models\IntegrantesReuniones;
 use App\Models\Programas_instalados;
@@ -205,7 +207,7 @@ class ColaboradoresController extends Controller
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
             'horasTotales' => $horasTotales,
-            'colaboradoresCol' => $colaboradoresCol
+            'colaboradoresCol' => $colaboradoresCol,
         ]);
     }
 
@@ -1043,7 +1045,14 @@ class ColaboradoresController extends Controller
                     $integrantes_reuniones = IntegrantesReuniones::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
                     //reuniones_programadas
                     $reuniones_programadas = ReunionesProgramadas::whereIn('id', $colaboradores->pluck('id'))->get();
+                    //pago_colaborador
+                    $pago_colaborador = PagoColaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    //libro_colaborador
+                    $libro_colaborador = ColaboradorLibro::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
 
+                    if($libro_colaborador) {
+                        return redirect()->route('colaboradores.index')->with('warning', 'Este colaborador sigue teniendo libros prestados.');
+                    }
 
                     //ELIMINACIÓN EN CASCADA
                     //ahora procedemos a eliminarlos de los ultimos a los primeros
@@ -1131,6 +1140,14 @@ class ColaboradoresController extends Controller
                             $colaborador_por_area->delete();
                         }
                     }
+
+                    // pago_colaborador
+                    if($pago_colaborador) {
+                        foreach($pago_colaborador as $pago_colab) {
+                            $pago_colab->delete();
+                        }
+                    }
+
                     //colaboradores
                     if($colaboradores){
                         foreach($colaboradores as $colab) {
@@ -1170,7 +1187,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
-            // return $e;
+            return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
@@ -1202,7 +1219,7 @@ class ColaboradoresController extends Controller
         }
     }
 
-    public function createEmailPassword(Request $request, $colaborador_id) {
+    public function createEmailPassword($colaborador_id) {
         // Verificar acceso de administrador
         $access = FunctionHelperController::verifyAdminAccess();
         if (!$access) {
@@ -1250,8 +1267,6 @@ class ColaboradoresController extends Controller
                 throw new Exception('El correo electrónico del candidato no es válido.');
             }
 
-
-
                 UsuarioColaborador::create([
                     'user_id' => $user->id
                 ]);
@@ -1264,5 +1279,52 @@ class ColaboradoresController extends Controller
         }
     }
 
+    public function pagoColab(Request $request, $colaborador_id){
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción.');
+        }
 
+        DB::beginTransaction();
+        try {
+            $colaborador = Colaboradores::where('estado', 1)->findOrFail($colaborador_id);
+
+            if ($request->has("gastos_eliminados") && !empty($request->gastos_eliminados[$colaborador_id])) {
+                $gastosEliminar = explode(",", $request->gastos_eliminados[$colaborador_id]);
+
+                if (!empty($gastosEliminar)) {
+                    PagoColaborador::whereIn("id", $gastosEliminar)->delete();
+                }
+            }
+
+            if ($request->has("descripcion") && isset($request->descripcion[$colaborador_id])) {
+                foreach ($request->descripcion[$colaborador_id] as $index => $descripcion) {
+                    $monto = $request->monto[$colaborador_id][$index];
+                    $gastoId = $request->input("gasto_id")[$index] ?? null;
+
+                    if ($gastoId) {
+                        $gasto = PagoColaborador::find($gastoId);
+                        if ($gasto) {
+                            $gasto->update([
+                                'descripcion' => $descripcion,
+                                'monto' => $monto,
+                            ]);
+                        }
+                    } else {
+                        PagoColaborador::create([
+                            'colaborador_id' => $colaborador_id,
+                            'descripcion' => $descripcion,
+                            'monto' => $monto,
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('colaboradores.index')->with('success', 'Pagos actualizados correctamente.');
+        } catch (Exception $e) {
+            DB::rollback();
+            return redirect()->route('colaboradores.index')->with('error', 'Error al actualizar pagos.');
+        }
+    }
 }

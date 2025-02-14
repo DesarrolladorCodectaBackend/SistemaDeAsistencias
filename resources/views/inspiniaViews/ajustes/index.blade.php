@@ -119,7 +119,7 @@
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
+                                    <img src={{asset('img/svg/sedes.svg')}} class="img-md">
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Sedes</strong></h4>
@@ -203,7 +203,7 @@
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
+                                    <img src={{asset('img/svg/especialistas.svg')}} class="img-md">
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Especialistas</strong></h4>
@@ -212,6 +212,27 @@
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
                                         <a class="btn btn-success" href="{{route('especialista.index')}}"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="ibox ">
+                        <div class="show-grid container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <img src={{asset('img/svg/book.svg')}} class="img-md">
+                                </div>
+                                <div class="col-sm">
+                                    <h4><strong>Biblioteca</strong></h4>
+                                    <p>Tabla de libros</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="{{route('libro.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>

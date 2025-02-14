@@ -35,7 +35,8 @@ class DatabaseSeeder extends Seeder
             // HorarioDeClasesSeeder::class, // Reemplazar con los de sql
             // UsuarioAdministradorSeeder::class,
             // UsuarioJefeAreaSeeder::class,
-            UsuariosPasswordSeeder::class
+            // UsuariosPasswordSeeder::class
+            TipoTransaccionSeeder::class
         ]);
         // \App\Models\User::factory(10)->create();
 

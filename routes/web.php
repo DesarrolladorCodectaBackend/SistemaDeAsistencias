@@ -4,6 +4,8 @@ use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\BirthdayController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\ColaboradorEditController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\Horario_Presencial_AsignadoController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
+use App\Http\Controllers\LibroController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObjetoController;
@@ -31,6 +34,7 @@ use App\Http\Controllers\Reuniones_AreasController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\MaquinaReservadaController;
+use App\Http\Controllers\PrestamoLibroController;
 use App\Http\Controllers\ResponsabilidadController;
 use App\Http\Controllers\ReunionesProgramadasController;
 use App\Http\Controllers\TutorSeguimientoController;
@@ -172,7 +176,7 @@ Route::middleware('auth')->group(function () {
     Route::put('colaboradores/despedirColaborador/{colaborador_id}', [ColaboradoresController::class, 'despedirColaborador'])->name('colaboradores.despedirColaborador');
     Route::put('colaboradores/recontratarColaborador/{colaborador_id}', [ColaboradoresController::class, 'recontratarColaborador'])->name('colaboradores.recontratarColaborador');
 
-    Route::put('colaboradores/pagos/{colaborador_id}', [ColaboradoresController::class, 'pagos'])->name('pago.pagos');
+    Route::post('colaboradores/pagos/{colaborador_id}', [ColaboradoresController::class, 'pagoColab'])->name('colaboradores.pagos');
 
     Route::put('colaboradores/editState/{colaborador_id}', [ColaboradoresController::class, 'colabEditState'])->name('colaboradores.editState');
 
@@ -245,6 +249,40 @@ Route::middleware('auth')->group(function () {
     Route::post('/especialista/store', [TutorSeguimientoController::class, 'store'])->name('especialista.store');
     Route::put('/especialista/update/{especialista_id}', [TutorSeguimientoController::class, 'update'])->name('especialista.update');
     Route::put('/especialista/changeState/{especialista_id}', [TutorSeguimientoController::class, 'changeState'])->name('especialista.changeState');
+
+    // CajaChica
+    Route::get('/caja-chica', [CajaController::class, 'index'])->name('caja.index');
+    Route::post('/caja-chica/transaccionColab/{colaborador_id}', [CajaController::class, 'transaccionColab'])->name('caja.transaccionColab');
+    Route::post('/caja-chica/deposito', [CajaController::class, 'registroTransaccion'])->name('caja.registroTransaccion');
+    Route::post('/caja-chica/anularColab/{colaborador_id}', [CajaController::class, 'anularTransaccionColab'])->name('caja.anularTransaccionColab');
+    // Route::put('/caja/cerrar-semana', [CajaController::class, 'cerrarCajaSemanaActual'])
+    // ->name('caja.cerrarSemana');
+    Route::get('/buscar-usuarios', function (Request $request) {
+        $query = $request->query('query');
+
+        $users = User::where('name', 'LIKE', "%$query%")
+                     ->orWhere('apellido', 'LIKE', "%$query%")
+                     ->orWhere('email', 'LIKE', "%$query%")
+                     ->get();
+
+        return response()->json($users);
+    });
+
+    Route::post('/caja-chica/abrir', [CajaController::class, 'abrirCaja'])->name('caja.abrir');
+    Route::post('/caja-chica/cerrar', [CajaController::class, 'cerrarCaja'])->name('caja.cerrar');
+    Route::post('/caja-chica/filtrarFecha', [CajaController::class, 'filtrarFecha'])->name('caja.filtrarFecha');
+
+    // Libros
+    Route::get('/biblioteca', [LibroController::class, 'index'])->name('libro.index');
+    Route::post('/biblioteca/store', [LibroController::class, 'store'])->name('libro.store');
+    Route::put('/biblioteca/update/{libro_id}', [LibroController::class, 'update'])->name('libro.update');
+    // Route::post('/biblioteca/active-inactive/{libro_id}', [LibroController::class, 'activeInactive'])->name('libro.activarInactivar');
+
+    Route::get('/biblioteca/{colaborador_id}', [PrestamoLibroController::class, 'colabLibros'])->name('libro.colabLibro');
+    Route::post('/biblioteca/prestamo/store', [PrestamoLibroController::class, 'store'])->name('libroPrestamo.store');
+    Route::put('biblioteca/prestamo/devolver/{libro_id}', [PrestamoLibroController::class, 'devolver'])->name('libroPrestamo.devolver');
+
+    Route::get('/birthdays', [BirthdayController::class, 'index'])->name('cumplecolabs.index');
 });
 
 require __DIR__ . '/auth.php';

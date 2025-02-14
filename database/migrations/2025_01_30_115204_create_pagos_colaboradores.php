@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('semanas', function (Blueprint $table) {
+        Schema::create('pagos_colaboradores', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_lunes');
-            $table->boolean('caja_abierta')->default(0);
+            $table->unsignedBigInteger('colaborador_id');
+            $table->foreign('colaborador_id')->references('id')->on('colaboradores');
+            $table->string('descripcion');
+            $table->decimal('monto', 8, 2);
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('semanas');
+        Schema::dropIfExists('pagos_colaboradores');
     }
 };

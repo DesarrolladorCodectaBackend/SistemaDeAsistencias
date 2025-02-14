@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('semanas', function (Blueprint $table) {
+        Schema::create('transaccion_detalle', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_lunes');
-            $table->boolean('caja_abierta')->default(0);
+            $table->unsignedBigInteger('transaccion_id');
+            $table->foreign('transaccion_id')->references('id')->on('transacciones');
+            $table->string('metodo_pago');
+            $table->bigInteger('nro_operacion')->nullable();
+            $table->string('comprobante');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('semanas');
+        Schema::dropIfExists('transaccion_detalle');
     }
 };
