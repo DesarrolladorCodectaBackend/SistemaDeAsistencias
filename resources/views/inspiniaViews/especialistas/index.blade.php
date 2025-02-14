@@ -19,7 +19,7 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Gestión instituciones</h2>
+                <h2>Gestión especialistas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{route('dashboard')}}">Inicio</a>
