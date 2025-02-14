@@ -150,12 +150,27 @@
                 <li>
                     <a href="{{ route('cumplecolabs.index') }}">
                         <i class='bx bxs-cake' style="font-size: 25px"></i>
+                            <span id="notificationsCountBirthdayBContainer" class="label label-primary badge-cumple" ></span>
+                       
                     </a>
+                    <ul id="notificationsBirthdayContainer" class="dropdown-menu dropdown-alerts max-height-scrollable">
+
+                    </ul>
+                    <style>
+                        .badge-cumple {
+position: absolute;
+top: 13px; /* Ajusta la posición arriba */
+right: 176px;
+width: 5px
+line-height: 1;
+}
+                    </style>
                 </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                         <i style="font-size: 20px" class="fa fa-bell "></i>
                         <span id="notificationsCountContainer" class="label label-primary" hidden>8</span>
+
                     </a>
                     <ul id="notificationsContainer" class="dropdown-menu dropdown-alerts max-height-scrollable">
 
@@ -291,3 +306,4 @@ function confirmLogout() {
     -->
 
     <script src="{{asset('js/InspiniaViewsJS/notifications.js')}}"></script>
+    <script src="{{ asset('js/InspiniaViewsJS/notificacionBirthday.js') }}"></script>

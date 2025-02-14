@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BirthdayController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ use App\Http\Controllers\InstitucionController;
 ------------------------------
 */
 //INSTITUCIONES 
-// Route::get('institucion/show/{institucion_id}', [InstitucionController::class, 'show']);
+// Route::get('istitucion/show/{institucion_id}', [InstitucionController::class, 'show']);
 
 // Route::post('apiLogin', [NotificationController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -37,4 +38,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::post('login', [NotificationController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function (){
         Route::get('notificaciones', [NotificationController::class, 'index'])->name('notificaciones');
+        
+        
+
 });

@@ -169,7 +169,7 @@ Route::middleware('auth')->group(function () {
     Route::put('colaboradores/update/{colaborador_id}', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
     Route::delete('colaboradores/{colaborador_id}', [ColaboradoresController::class, 'destroy'])->name('colaboradores.destroy');
     Route::put('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
-    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}/sedes={sedes?}/pagos={pagos?}', [ColaboradoresController::class, 'filtrarColaboradores'])
+    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}/sedes={sedes?}', [ColaboradoresController::class, 'filtrarColaboradores'])
     ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*','sedes' => '[0-9,]*'])->name('colaboradores.filtrar');
 
     Route::get('colaboradores/search/{busqueda}', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
@@ -257,16 +257,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/caja-chica/anularColab/{colaborador_id}', [CajaController::class, 'anularTransaccionColab'])->name('caja.anularTransaccionColab');
     // Route::put('/caja/cerrar-semana', [CajaController::class, 'cerrarCajaSemanaActual'])
     // ->name('caja.cerrarSemana');
-    Route::get('/buscar-usuarios', function (Request $request) {
-        $query = $request->query('query');
-
-        $users = User::where('name', 'LIKE', "%$query%")
-                     ->orWhere('apellido', 'LIKE', "%$query%")
-                     ->orWhere('email', 'LIKE', "%$query%")
-                     ->get();
-
-        return response()->json($users);
-    });
 
     Route::post('/caja-chica/abrir', [CajaController::class, 'abrirCaja'])->name('caja.abrir');
     Route::post('/caja-chica/cerrar', [CajaController::class, 'cerrarCaja'])->name('caja.cerrar');
@@ -283,6 +273,7 @@ Route::middleware('auth')->group(function () {
     Route::put('biblioteca/prestamo/devolver/{libro_id}', [PrestamoLibroController::class, 'devolver'])->name('libroPrestamo.devolver');
 
     Route::get('/birthdays', [BirthdayController::class, 'index'])->name('cumplecolabs.index');
+    Route::get('/cumpleaneros', [BirthdayController::class, 'getCumpleanerosHoy'])->name('cumpleaneros.json');
 });
 
 require __DIR__ . '/auth.php';
