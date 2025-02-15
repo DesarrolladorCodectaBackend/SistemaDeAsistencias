@@ -58,7 +58,6 @@ class CajaController extends Controller
 
             $transaccion = Transaccion::where('semana_id', $semanaActual->id)
                 ->where('dni', $colaborador->candidato->dni)
-                ->where('estado', 1)
                 ->first();
 
             $transaccionDetalle = null;
@@ -158,8 +157,8 @@ class CajaController extends Controller
                 'semana_id' => $thisSemana->id,
                 'nro_pago' => $nro_pago,
                 'nombres' => $atributosColab->nombre ." ". $atributosColab->apellido,
-                'dni' => $atributosColab->dni,
-                'descripcion' => $request->descripcion,
+                'dni' => $atributosColab->dni ?? null,
+                    'descripcion' => $request->descripcion,
                 'observaciones' => $request->observaciones,
                 'monto' => $request->total_monto,
                 'tipo_transaccion_id' => $tipoColab->id,
@@ -204,7 +203,7 @@ class CajaController extends Controller
 
         }catch (Exception $e) {
 
-            // return $e;
+            return $e;
             DB::rollback();
             return redirect()->route('caja.index')->with('error', 'Error al registrar el pago.');
 

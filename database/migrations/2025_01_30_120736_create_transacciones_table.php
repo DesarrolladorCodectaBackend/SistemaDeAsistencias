@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('semana_id')->references('id')->on('semanas');
             $table->bigInteger('nro_pago')->unique();
             $table->string('nombres');
-            $table->bigInteger('dni');
+            $table->bigInteger('dni')->nullable();
             $table->text('descripcion')->nullable();
             $table->text('observaciones')->nullable();
             $table->decimal('monto', 10, 2);
