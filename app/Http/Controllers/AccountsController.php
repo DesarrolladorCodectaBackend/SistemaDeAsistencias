@@ -28,7 +28,7 @@ class AccountsController extends Controller
         try {
             $users = User::get();
             $areas = Area::get();
-
+            $areasUsuarios = [];
             foreach ($users as $user) {
                 $jefe = UsuarioJefeArea::where('user_id', $user->id)->first();
                 $rol = 'Sin rol';
@@ -54,9 +54,29 @@ class AccountsController extends Controller
                     $areasJefe = FunctionHelperController::getAreasJefe($user->id);
                     $user->areas = $areasJefe;
                 }
+
+                $candidato = Candidatos::where('correo', $user->email)->first();
+
+                if ($candidato) {
+                    $colaborador = $candidato->colaborador;
+
+                    if ($colaborador) {
+                        $colabArea = Colaboradores_por_area::where('colaborador_id', $colaborador->id)->first();
+
+                        if ($colabArea) {
+                            $area = $colabArea->area;
+                            $areasUsuarios[$user->id] = $area;
+                        }
+                    }
+                }
+
+
             }
+
+
+            // return $areasUsuarios;
             // return $users;
-            return view('inspiniaViews.accounts.index', ['users' => $users, "areas" => $areas]);
+            return view('inspiniaViews.accounts.index', ['users' => $users, "areas" => $areas, 'areasUsuarios' => $areasUsuarios]);
         } catch (Exception $e) {
             // return $e;
             return redirect('dashboard')->with('error', 'Ocurrió un error al acceder a la vista. Si el error persiste comuniquese con su equipo de soporte.');
@@ -413,5 +433,27 @@ class AccountsController extends Controller
             // return $e;
             return redirect()->route('accounts.index')->with('error', 'Ocurrió un error al realizar la acción. Si el error persiste comuniquese con su equipo de soporte.');
         }
+    }
+
+    public function changeToJefeArea($user_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect('dashboard')->with('error', 'No tiene permisos para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        DB::commit();
+        try {
+
+            $user = User::findOrFail($user_id);
+
+
+
+        } catch (Exception $e) {
+
+            DB::rollBack();
+            return redirect()->route('accounts.index')->with('error', 'Ocurrió un error al realizar la acción. Si el error persiste comuniquese con su equipo de soporte.');
+
+        }
+
     }
 }

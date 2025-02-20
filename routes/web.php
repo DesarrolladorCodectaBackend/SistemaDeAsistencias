@@ -88,6 +88,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/cuentas/store', [AccountsController::class, 'store'])->name('accounts.store');
     Route::put('/cuentas/activar-inactivar/{user_id}', [AccountsController::class, 'activarInactivar'])->name('accounts.activarInactivar');
     Route::put('/cuentas/update/{user_id}', [AccountsController::class, 'update'])->name('accounts.update');
+    // cambiarAJefe
+    Route::post('/cuentas/changeToJefe/{user_id}', [AccountsController::class, 'changeToJefeArea'])->name('accounts.changeToJefe');
 
     //PERFIL
     Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil.index');

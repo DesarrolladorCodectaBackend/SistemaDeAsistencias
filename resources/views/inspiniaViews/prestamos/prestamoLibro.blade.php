@@ -22,7 +22,7 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Préstamos</h2>
+                <h2>Librería</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{route('dashboard')}}">Home</a>
@@ -31,7 +31,7 @@
                         <a href="{{route('colaboradores.index')}}">Colaborador</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <strong>Préstamos</strong>
+                        <strong>Préstamos de libros</strong>
                     </li>
                 </ol>
             </div>
