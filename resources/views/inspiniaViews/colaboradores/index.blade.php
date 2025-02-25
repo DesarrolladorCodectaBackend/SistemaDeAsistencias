@@ -994,7 +994,7 @@
                                                                         </script>
                                                                     </div>
                                                                     {{-- tooltip btns colab --}}
-                                                                    <div style="display: flex; gap:2px">
+                                                                    <div style="display: flex; gap:2px; flex-direction: column">
                                                                         <x-uiverse.tooltip nameTool="Maquinas">
                                                                             <a href="#"
                                                                             class="btn btn-primary btn-success fa fa-desktop"
@@ -1014,9 +1014,9 @@
 
                                                                         <x-uiverse.tooltip nameTool="Libreria">
                                                                             <a
-                                                                                href=""
-                                                                                class="btn btn-primary btn-success fa fa-desktop"
-                                                                                style="width: 100%; font-size: 18px;"
+                                                                                href="javascript:void(0);"
+                                                                                class="btn btn-primary btn-success fa fa-book"
+                                                                                style="width: 100px; font-size: 18px;"
                                                                                 onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
                                                                             >
                                                                             </a>
