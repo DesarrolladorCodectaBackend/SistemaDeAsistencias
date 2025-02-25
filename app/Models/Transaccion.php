@@ -25,16 +25,6 @@ class Transaccion extends Model
         'anulado'
     ];
 
-    protected static function boot(){
-        parent::boot();
-
-        static::creating(function ($registro) {
-            $ultimoPago = self::max('nro_pago');
-            $nro_pago = $ultimoPago ? $ultimoPago + 1 : 1;
-            $registro->nro_pago = $nro_pago;
-        });
-    }
-
 
     public function transaccion_detalle() {
         return $this->hasMany(TransaccionDetalle::class, 'transaccion_id', 'id');
