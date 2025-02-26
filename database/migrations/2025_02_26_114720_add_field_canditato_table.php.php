@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('candidatos', function(Blueprint $table) {
             if(!Schema::hasColumn('candidatos', 'id_senati')) {
-                $table->string('id_senati')->nullable();
+                $table->string('id_senati')->nullable()->unique();
             }
         });
     }

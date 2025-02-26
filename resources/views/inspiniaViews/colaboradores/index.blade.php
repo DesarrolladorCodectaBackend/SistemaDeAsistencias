@@ -879,7 +879,7 @@
                                                                         value="{{$colaborador->candidato->dni}}" oninput="limitDNI(this)"></input>
                                                                         <span id="dni-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
                                                                         @error('dni'.$colaborador->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                            <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                        </div>
                                                                     </div>

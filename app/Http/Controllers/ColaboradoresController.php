@@ -552,6 +552,17 @@ class ColaboradoresController extends Controller
                 }
             }
 
+            // validacion id_senati
+            if(isset($request->id_senati)) {
+                $candidatos = Candidatos::where('id_senati', $request->id_senati)->get();
+                foreach($candidatos as $candidato){
+                    if($candidato->id != $colaborador->candidato_id) {
+                        $errors['id_senati'.$colaborador_id] = 'El ID ya está en uso.';
+                        break;
+                    }
+                }
+            }
+
             // Verificar correo
             if(isset($request->correo)){
                 $candidatos = Candidatos::where('correo', $request->correo)->get();

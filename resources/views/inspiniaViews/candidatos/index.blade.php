@@ -640,9 +640,11 @@
                                                                     <div class="form-group">
                                                                         <label>ID Senati</label>
                                                                         <div class="position-relative">
-                                                                            <!-- Campo DNI con ID dinámico -->
+                                                                            <!-- Campo ID senati -->
                                                                             <input type="number"  placeholder="Ingrese ID senati" class="form-control" name="id_senati" value="{{ $candidato->id_senati ?? 'No tiene' }}" autocomplete="off" >
-
+                                                                            @error('id_senati'.$candidato->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
                                                                         </div>
                                                                         @error('dni.' . $candidato->id)
                                                                             <span class="text-danger">{{ $message }}</span>
