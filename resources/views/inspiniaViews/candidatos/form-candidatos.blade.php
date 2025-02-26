@@ -50,6 +50,11 @@
                                                 class="form-control" disabled>
                                         </div>
 
+                                        <div class="form-group"><label class="col-form-label">ID Senati</label><input
+                                            type="text" value="{{ $candidato->id_senati }}"
+                                            class="form-control" disabled>
+                                        </div>
+
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group"><label>Correo</label> <input type="email"

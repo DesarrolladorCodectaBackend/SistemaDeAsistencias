@@ -119,7 +119,8 @@ class CandidatosController extends Controller
                 'carrera_id' => $request->carrera_id,
                 'correo' => $request->correo,
                 'celular' => $request->celular,
-                'icono' => $nombreIcono
+                'icono' => $nombreIcono,
+                'id_senati' => $request->id_senati
             ]);
 
             DB::commit();
@@ -363,7 +364,7 @@ class CandidatosController extends Controller
         $sedesInstiId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
 
         $sedesId = Sede::whereIn('id', $requestSedes)->pluck('id');
-        
+
 
         $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)
             ->whereIn('sede_id', $sedesInstiId)
@@ -428,7 +429,7 @@ class CandidatosController extends Controller
         $pageData = FunctionHelperController::getPageData($candidatos);
 
         //return $colaboradoresConArea;
-        
+
         return view('inspiniaViews.candidatos.index', [
             'candidatos' => $candidatos,
             'hasPagination' => $hasPagination,
