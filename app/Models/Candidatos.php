@@ -23,6 +23,7 @@ class Candidatos extends Model
         'correo',
         'celular',
         'icono',
+        'id_senati'
     ];
 
     public function sede(){
@@ -44,7 +45,7 @@ class Candidatos extends Model
 
         return $candidatosPorNombre;
     }
-    
+
     public static function searchByDni($search = ''){
         $candidatosPorDni = Candidatos::with('sede', 'carrera')
         ->where(DB::raw("dni"), 'like', '%' . $search . '%')

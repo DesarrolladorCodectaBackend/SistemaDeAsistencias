@@ -471,7 +471,7 @@ class ColaboradoresController extends Controller
             //Se redirige a la vista de colaboradores
             return redirect()->route('colaboradores.index');
         } catch (Exception $e) {
-            // return $e;
+            return $e;
             DB::rollBack();
             return redirect()->route('colaboradores.index');
 
@@ -548,6 +548,17 @@ class ColaboradoresController extends Controller
                             $errors['dni'.$colaborador_id] = 'El DNI ya está en uso.';
                             break;
                         }
+                    }
+                }
+            }
+
+            // validacion id_senati
+            if(isset($request->id_senati)) {
+                $candidatos = Candidatos::where('id_senati', $request->id_senati)->get();
+                foreach($candidatos as $candidato){
+                    if($candidato->id != $colaborador->candidato_id) {
+                        $errors['id_senati'.$colaborador_id] = 'El ID ya está en uso.';
+                        break;
                     }
                 }
             }

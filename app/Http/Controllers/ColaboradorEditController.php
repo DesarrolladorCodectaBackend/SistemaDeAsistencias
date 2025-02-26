@@ -48,9 +48,6 @@ class ColaboradorEditController extends Controller
     }
 
 
-
-
-
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
@@ -64,14 +61,17 @@ class ColaboradorEditController extends Controller
 
             $errors = [];
 
+            // validation nombre
             if(!isset($request->nombre)) {
                 $errors['nombre'] = 'Campo obligatorio';
             }
 
+            // validation apellido
             if(!isset($request->apellido)) {
                 $errors['apellido'] = 'Campo obligatorio';
             }
 
+            // validation dni
             if(!isset($request->dni)) {
                 $errors['dni'] = 'Campo obligatorio';
             }else if (isset($request->dni) && strlen($request->dni) !== 8) {
@@ -86,6 +86,7 @@ class ColaboradorEditController extends Controller
                 }
             }
 
+            // validation correo
             if(!isset($request->correo)) {
                 $errors['correo'] = 'Campo obligatorio';
             }else if(isset($request->correo)){
@@ -98,6 +99,19 @@ class ColaboradorEditController extends Controller
                 }
             }
 
+            if(!isset($request->id_senati)) {
+                $errors['id_senati'] = 'Campo obligatorio';
+            }else if(isset($request->id_senati)){
+                $candidatos = Candidatos::where('id_senati', $request->id_senati)->get();
+                foreach($candidatos as $cand) {
+                    if ($cand->id != $id) {
+                        $errors['id_senati'] = 'ID en uso';
+                        break;
+                    }
+                }
+            }
+
+            // validation celular
             if(isset($request->celular) && strlen($request->celular) !== 9) {
                 $errors['celular'] = 'Debe contener 9 dígitos';
             } else if(isset($request->celular)){
@@ -114,9 +128,12 @@ class ColaboradorEditController extends Controller
                return redirect()->route('colaboradorEdit.edit')->withErrors($errors)->withInput();
             }
 
-            $candidato->update($request->only([
-                'nombre', 'apellido', 'dni', 'correo', 'celular', 'fecha_nacimiento', 'direccion', 'sede_id', 'ciclo_de_estudiante', 'carrera_id'
-            ]));
+            // $candidato->update($request->only([
+            //     'nombre', 'apellido', 'dni', 'correo', 'celular', 'fecha_nacimiento', 'direccion', 'sede_id', 'ciclo_de_estudiante', 'carrera_id'
+            // ]));
+
+            $candidato->update($request->all());
+
 
             if ($candidato->correo !== auth()->user()->email) {
                 $user = auth()->user();

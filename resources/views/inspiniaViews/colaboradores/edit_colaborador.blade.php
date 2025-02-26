@@ -92,6 +92,14 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="id_senati">ID Senati</label>
+                        <input type="number" id="id_senati" name="id_senati" class="form-control" value="{{ old('id_senati', $candidato->id_senati) }}" {{ !$isEditable ? 'disabled' : '' }}>
+                        @error('id_senati')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
                         <label for="celular">Celular</label>
                         <input type="number" id="celular" name="celular" class="form-control" value="{{ old('celular', $candidato->celular) }}" {{ !$isEditable ? 'disabled' : '' }}>
                         @error('celular')

@@ -315,6 +315,12 @@
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">DNI:</p>
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->dni ?? 'Sin DNI'}}</p>
                                         </div>
+
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">ID Senati:</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->id_senati ?? 'Sin ID'}}</p>
+                                        </div>
+
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Celular:</p>
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->celular ?? 'Sin celular'}}</p>
@@ -611,9 +617,19 @@
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark">DNI:</h3>
                                 </small>
+
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">{{$colaborador->candidato->dni ?? 'Sin DNI'}}</h5>
                                 </div>
+
+                                <small class="text-muted text-left">
+                                    <h3 class="text-dark">ID Senati:</h3>
+                                </small>
+
+                                <div class="small m-t-xs text-left">
+                                    <h5 class="overflowing-text">{{$colaborador->candidato->id_senati ?? 'Sin ID'}}</h5>
+                                </div>
+
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark">Correo:</h3>
                                 </small>
@@ -863,7 +879,25 @@
                                                                         value="{{$colaborador->candidato->dni}}" oninput="limitDNI(this)"></input>
                                                                         <span id="dni-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
                                                                         @error('dni'.$colaborador->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                       </div>
+                                                                    </div>
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
+                                                                            <h5 class="m-t-none">ID Senati:</h5>
+                                                                        </label>
+
+                                                                       <div class="position-relative">
+
+                                                                        <input type="number" placeholder="....."
+                                                                        class="form-control" name="id_senati"
+                                                                        value="{{$colaborador->candidato->id_senati}}"></input>
+
+                                                                        @error('id_senati'.$colaborador->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                        </div>
                                                                     </div>
@@ -994,7 +1028,7 @@
                                                                         </script>
                                                                     </div>
                                                                     {{-- tooltip btns colab --}}
-                                                                    <div style="display: flex; gap:2px">
+                                                                    <div style="display: flex; gap:2px; flex-direction: column">
                                                                         <x-uiverse.tooltip nameTool="Maquinas">
                                                                             <a href="#"
                                                                             class="btn btn-primary btn-success fa fa-desktop"
@@ -1014,9 +1048,9 @@
 
                                                                         <x-uiverse.tooltip nameTool="Libreria">
                                                                             <a
-                                                                                href=""
-                                                                                class="btn btn-primary btn-success fa fa-desktop"
-                                                                                style="width: 100%; font-size: 18px;"
+                                                                                href="javascript:void(0);"
+                                                                                class="btn btn-primary btn-success fa fa-book"
+                                                                                style="width: 100px; font-size: 18px;"
                                                                                 onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
                                                                             >
                                                                             </a>

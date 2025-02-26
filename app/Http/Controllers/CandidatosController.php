@@ -119,7 +119,8 @@ class CandidatosController extends Controller
                 'carrera_id' => $request->carrera_id,
                 'correo' => $request->correo,
                 'celular' => $request->celular,
-                'icono' => $nombreIcono
+                'icono' => $nombreIcono,
+                'id_senati' => $request->id_senati
             ]);
 
             DB::commit();
@@ -193,6 +194,19 @@ class CandidatosController extends Controller
                 foreach ($candidatos as $cand) {
                     if ($cand->id != $candidato_id) {
                         $errors['dni'.$candidato_id] = 'El DNI ya está en uso.';
+                        break;
+                    }
+                }
+            }
+
+            // Validación de id_senati
+            if (!isset($request->id_senati)) {
+                $errors['id_senati'.$candidato_id] = 'Campo obligatorio.';
+            } else if (isset($request->id_senati)) {
+                $candidatos = Candidatos::where('id_senati', $request->id_senati)->get();
+                foreach ($candidatos as $cand) {
+                    if ($cand->id != $candidato_id) {
+                        $errors['id_senati'.$candidato_id] = 'El ID ya está en uso.';
                         break;
                     }
                 }
@@ -363,7 +377,7 @@ class CandidatosController extends Controller
         $sedesInstiId = Sede::whereIn('institucion_id', $requestInstituciones)->get()->pluck('id');
 
         $sedesId = Sede::whereIn('id', $requestSedes)->pluck('id');
-        
+
 
         $candidatos = Candidatos::whereIn('carrera_id', $requestCarreras)
             ->whereIn('sede_id', $sedesInstiId)
@@ -428,7 +442,7 @@ class CandidatosController extends Controller
         $pageData = FunctionHelperController::getPageData($candidatos);
 
         //return $colaboradoresConArea;
-        
+
         return view('inspiniaViews.candidatos.index', [
             'candidatos' => $candidatos,
             'hasPagination' => $hasPagination,

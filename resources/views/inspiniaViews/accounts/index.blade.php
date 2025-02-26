@@ -76,161 +76,197 @@
 
                                     <tbody>
                                         @foreach ($users as $user)
-                                        <tr class="gradeX">
-                                            <td>{{ $user->id }}</td>
-                                            <td>{{ $user->name }}</td>
-                                            <td>{{ $user->apellido }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <style>
-                                                /* Cambiar el tamaño y el color del scrollbar */
-                                                .overflow-auto::-webkit-scrollbar {
-                                                    height: 8px;
-                                                    /* Altura del scrollbar horizontal */
-                                                }
+                                            <tr class="gradeX">
+                                                <td>{{ $user->id }}</td>
+                                                <td>{{ $user->name }}</td>
+                                                <td>{{ $user->apellido }}</td>
+                                                <td>{{ $user->email }}</td>
+                                                <style>
+                                                    /* Cambiar el tamaño y el color del scrollbar */
+                                                    .overflow-auto::-webkit-scrollbar {
+                                                        height: 8px;
+                                                        /* Altura del scrollbar horizontal */
+                                                    }
 
-                                                /* Color y estilo del fondo del scrollbar */
-                                                .overflow-auto::-webkit-scrollbar-track {
-                                                    background: #f1f1f1;
-                                                    /* Fondo del track */
-                                                    border-radius: 8px;
-                                                    /* Bordes redondeados */
-                                                }
+                                                    /* Color y estilo del fondo del scrollbar */
+                                                    .overflow-auto::-webkit-scrollbar-track {
+                                                        background: #f1f1f1;
+                                                        /* Fondo del track */
+                                                        border-radius: 8px;
+                                                        /* Bordes redondeados */
+                                                    }
 
-                                                /* Color y estilo del "thumb" (barra de desplazamiento) */
-                                                .overflow-auto::-webkit-scrollbar-thumb {
-                                                    background: #222;
-                                                    border-radius: 18px;
-                                                }
-                                            </style>
-                                            <td class="d-flex justify-content-between overflow-auto"><span
-                                                    class="overflow-auto"
-                                                    style="max-width: 200px; white-space: nowrap; overflow-x: auto; "
-                                                    id="showPassword-{{$user->id}}" hidden>{{ $user->clave
-                                                    }}</span><span
-                                                    id="hidePassword-{{$user->id}}">*************</span><button
-                                                    class="border-0 btn-outline-dark rounded"
-                                                    onclick="showHidePassword({{$user->id}})"><i id="iconEyeTable-{{$user->id}}"
-                                                        class="fa fa-eye"></i></button></td>
-                                            <td>{{ $user->rol }}</td>
-                                            <td>
-                                                <form method="POST"
-                                                    action="{{route('accounts.activarInactivar', $user->id)}}">
-                                                    @method('put')
-                                                    @csrf
-                                                    <button type="submit"
-                                                        class="btn btn-sm btn-{{$user->estado == 1 ? 'primary' : 'danger'}}">@if($user->estado
-                                                        == 1) Activado @else Inactivo @endif</button>
-                                                </form>
-                                            </td>
-                                            <td class="oculto">
-                                                <a data-toggle="modal" href="#modal-form-update{{$user->id}}"
-                                                    class="btn btn-sm btn-success text-white">Editar</a>
-                                            </td>
-                                            <div id="modal-form-update{{$user->id}}" class="modal fade"
-                                                aria-hidden="true">
-                                                <div class="modal-dialog modal-custom">
-                                                    <div style="min-width: 750px" class="modal-content">
-                                                        <div
-                                                            class="modal-header d-flex flex-column align-items-center justify-content-center">
-                                                            <h2 class="font-bold">Editar Usuario</h2>
+                                                    /* Color y estilo del "thumb" (barra de desplazamiento) */
+                                                    .overflow-auto::-webkit-scrollbar-thumb {
+                                                        background: #222;
+                                                        border-radius: 18px;
+                                                    }
+                                                </style>
+                                                <td class="d-flex justify-content-between overflow-auto"><span
+                                                        class="overflow-auto"
+                                                        style="max-width: 200px; white-space: nowrap; overflow-x: auto; "
+                                                        id="showPassword-{{$user->id}}" hidden>{{ $user->clave
+                                                        }}</span><span
+                                                        id="hidePassword-{{$user->id}}">*************</span><button
+                                                        class="border-0 btn-outline-dark rounded"
+                                                        onclick="showHidePassword({{$user->id}})"><i id="iconEyeTable-{{$user->id}}"
+                                                            class="fa fa-eye"></i></button></td>
+                                                <td class="changeToJefe" onclick="btnJefeArea({{ $user->id }}, '{{ $user->rol }}')">{{ $user->rol }}</td>
+                                                <style>
+                                                    .changeToJefe {
+                                                        cursor: pointer;
+                                                    }
+                                                </style>
+                                                <td>
+                                                    <form method="POST"
+                                                        action="{{route('accounts.activarInactivar', $user->id)}}">
+                                                        @method('put')
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="btn btn-sm btn-{{$user->estado == 1 ? 'primary' : 'danger'}}">@if($user->estado
+                                                            == 1) Activado @else Inactivo @endif</button>
+                                                    </form>
+                                                </td>
+                                                <td class="oculto">
+                                                    <a data-toggle="modal" href="#modal-form-update{{$user->id}}"
+                                                        class="btn btn-sm btn-success text-white">Editar</a>
+                                                </td>
+                                                <div id="modal-form-update{{$user->id}}" class="modal fade"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-custom">
+                                                        <div style="min-width: 750px" class="modal-content">
+                                                            <div
+                                                                class="modal-header d-flex flex-column align-items-center justify-content-center">
+                                                                <h2 class="font-bold">Editar Usuario</h2>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form method="POST"
+                                                                    action="{{route('accounts.update', $user->id)}}">
+                                                                    @method('put')
+                                                                    @csrf
+                                                                    <div class="form-group">
+                                                                        <label>Nombres:</label>
+                                                                        <input class='form-control' name="name" required
+                                                                            value="{{$user->name}}" type="text">
+                                                                        @error('name'.$user->id)
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                        <div class="form-group">
+                                                                            <label>Apellidos:</label>
+                                                                            <input class='form-control' name="apellido"
+                                                                                required value="{{$user->apellido}}"
+                                                                                type="text">
+                                                                            @error('apellido'.$user->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label>Email:</label>
+                                                                            <input class='form-control' name="email"
+                                                                                required value="{{$user->email}}"
+                                                                                type="email">
+                                                                            @error('email'.$user->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <style>
+                                                                                .input-container {
+                                                                                    position: relative;
+                                                                                }
+
+                                                                                .input-password {
+                                                                                    padding-right: 30px;
+                                                                                }
+
+                                                                                .toggle-button {
+                                                                                    position: absolute;
+                                                                                    top: 50%;
+                                                                                    right: 10px;
+                                                                                    transform: translateY(-50%);
+                                                                                    background: none;
+                                                                                    border: none;
+                                                                                    cursor: pointer;
+                                                                                    font-size: 16px;
+                                                                                }
+                                                                            </style>
+                                                                            <label>Contraseña:</label>
+                                                                            <div class="input-container">
+                                                                                <input class="form-control input-password"
+                                                                                    id="password-{{$user->id}}" name="password"
+                                                                                    type="password" value="{{$user->clave}}"
+                                                                                    required />
+                                                                                <button class="toggle-button"
+                                                                                    onclick="toogleInput('password-{{$user->id}}', 'password-icon-{{$user->id}}')"
+                                                                                    type="button"><i class="fa fa-eye"
+                                                                                        id="password-icon-{{$user->id}}"></i></button>
+                                                                            </div>
+                                                                            @error('password'.$user->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        </div>
+                                                                        @if($user->rol === 'Jefe de Área')
+                                                                        <div class="form-group">
+                                                                            <label>Áreas:</label>
+                                                                            <select required
+                                                                                class='form-control multiple_areas_select'
+                                                                                multiple name="areas_id[]">
+                                                                                @foreach($areas as $area)
+                                                                                <option value="{{$area->id}}"
+                                                                                    @foreach($user->areas as $areaJefe)
+                                                                                    @if($areaJefe->id === $area->id)
+                                                                                    selected
+                                                                                    @endif
+                                                                                    @endforeach
+                                                                                    >
+
+                                                                                    {{$area->especializacion}}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        @endif
+                                                                        <div class="d-flex justify-content-end">
+                                                                            <button type="submit"
+                                                                                class="btn btn-success">Editar</button>
+                                                                        </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </tr>
+
+                                            {{-- modal JefeArea --}}
+                                            <div class="modal fade" id="myModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Cambiar a jefe</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <form method="POST"
-                                                                action="{{route('accounts.update', $user->id)}}">
-                                                                @method('put')
-                                                                @csrf
-                                                                <div class="form-group">
-                                                                    <label>Nombres:</label>
-                                                                    <input class='form-control' name="name" required
-                                                                        value="{{$user->name}}" type="text">
-                                                                    @error('name'.$user->id)
-                                                                    <span class="text-danger">{{ $message }}</span>
-                                                                    @enderror
-                                                                    <div class="form-group">
-                                                                        <label>Apellidos:</label>
-                                                                        <input class='form-control' name="apellido"
-                                                                            required value="{{$user->apellido}}"
-                                                                            type="text">
-                                                                        @error('apellido'.$user->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label>Email:</label>
-                                                                        <input class='form-control' name="email"
-                                                                            required value="{{$user->email}}"
-                                                                            type="email">
-                                                                        @error('email'.$user->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <style>
-                                                                            .input-container {
-                                                                                position: relative;
-                                                                            }
+                                                            <p id="modalContent{{ $user->id }}"></p>
 
-                                                                            .input-password {
-                                                                                padding-right: 30px;
-                                                                            }
+                                                            <div class="user">
+                                                                <p>Nombre: {{ $user->name }}</p>
+                                                                <p>Rol: {{ $user->rol }}</p>
 
-                                                                            .toggle-button {
-                                                                                position: absolute;
-                                                                                top: 50%;
-                                                                                right: 10px;
-                                                                                transform: translateY(-50%);
-                                                                                background: none;
-                                                                                border: none;
-                                                                                cursor: pointer;
-                                                                                font-size: 16px;
-                                                                            }
-                                                                        </style>
-                                                                        <label>Contraseña:</label>
-                                                                        <div class="input-container">
-                                                                            <input class="form-control input-password"
-                                                                                id="password-{{$user->id}}" name="password"
-                                                                                type="password" value="{{$user->clave}}"
-                                                                                required />
-                                                                            <button class="toggle-button"
-                                                                                onclick="toogleInput('password-{{$user->id}}', 'password-icon-{{$user->id}}')"
-                                                                                type="button"><i class="fa fa-eye"
-                                                                                    id="password-icon-{{$user->id}}"></i></button>
-                                                                        </div>
-                                                                        @error('password'.$user->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
-                                                                    </div>
-                                                                    @if($user->rol === 'Jefe de Área')
-                                                                    <div class="form-group">
-                                                                        <label>Áreas:</label>
-                                                                        <select required
-                                                                            class='form-control multiple_areas_select'
-                                                                            multiple name="areas_id[]">
-                                                                            @foreach($areas as $area)
-                                                                            <option value="{{$area->id}}"
-                                                                                @foreach($user->areas as $areaJefe)
-                                                                                @if($areaJefe->id === $area->id)
-                                                                                selected
-                                                                                @endif
-                                                                                @endforeach
-                                                                                >
-
-                                                                                {{$area->especializacion}}</option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                    @endif
-                                                                    <div class="d-flex justify-content-end">
-                                                                        <button type="submit"
-                                                                            class="btn btn-success">Editar</button>
-                                                                    </div>
-                                                            </form>
+                                                                @if (isset($areasUsuarios[$user->id]))
+                                                                    <p>Área: {{ $areasUsuarios[$user->id]->especializacion }}</p>
+                                                                @else
+                                                                    <p>No se encontró área asociada.</p>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                        </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -370,6 +406,20 @@
             $('.multiple_areas_select').select2();
         });
     </script>
+
+    <script>
+
+        function btnJefeArea(id, rol) {
+
+            if(rol === "Administrador"){
+                return;
+            }
+
+            $('#myModal' + id).modal('show');
+        }
+
+    </script>
+
 
 </body>
 

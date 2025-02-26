@@ -267,6 +267,17 @@
                                                     @enderror
                                             </div>
 
+                                            <div class="form-group">
+                                                <label>ID Senati</label>
+                                                <input type="text"
+                                                    placeholder="Ingrese su id" class="form-control"
+                                                    name="id_senati" value="{{ old('id_senati')}}" autocomplete="off">
+
+                                                    @error('id_senati')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                            </div>
+
                                             <div class="form-group"><label>Fecha de Nacimiento</label> <input
                                                     type="date" class="form-control" name="fecha_nacimiento" value="{{ old('fecha_nacimiento')}}" autocomplete="off">
                                             </div>
@@ -421,6 +432,11 @@
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">DNI:</h5>
                                                 </label><label for="">{{$candidato->dni  ?? 'Sin DNI'}}</label>
+                                            </div>
+
+                                            <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">ID Senati:</h5>
+                                                </label><label for="">{{$candidato->id_senati  ?? 'Sin ID'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Celular:</h5>
@@ -621,6 +637,19 @@
                                                                         @enderror
                                                                     </div>
 
+                                                                    <div class="form-group">
+                                                                        <label>ID Senati</label>
+                                                                        <div class="position-relative">
+                                                                            <!-- Campo ID senati -->
+                                                                            <input type="number"  placeholder="Ingrese ID senati" class="form-control" name="id_senati" value="{{ $candidato->id_senati ?? 'No tiene' }}" autocomplete="off" >
+                                                                            @error('id_senati'.$candidato->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        </div>
+                                                                        @error('dni.' . $candidato->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                    </div>
 
                                                                     <div class="form-group"><label>Dirección</label>
                                                                         <input type="text" placeholder="....."
