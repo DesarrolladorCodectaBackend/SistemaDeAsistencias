@@ -471,7 +471,7 @@ class ColaboradoresController extends Controller
             //Se redirige a la vista de colaboradores
             return redirect()->route('colaboradores.index');
         } catch (Exception $e) {
-            // return $e;
+            return $e;
             DB::rollBack();
             return redirect()->route('colaboradores.index');
 
