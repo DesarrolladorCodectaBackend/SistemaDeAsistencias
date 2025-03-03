@@ -99,6 +99,7 @@ class ColaboradorEditController extends Controller
                 }
             }
 
+            // validation id_senati
             if(!isset($request->id_senati)) {
                 $errors['id_senati'] = 'Campo obligatorio';
             }else if(isset($request->id_senati)){
