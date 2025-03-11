@@ -91,7 +91,9 @@ class InformesSemanalesController extends Controller
             'nota_semanal' => $request->nota_semanal,
             'informe_url' => $nombreInforme,
             'semana_id' => $semana_id,
-            'area_id' => $area_id
+            'area_id' => $area_id,
+            'dia' => Carbon::now()->toDateString(),
+            'hora' => Carbon::now()->toTimeString(),
         ]);
 
         DB::commit();
@@ -156,6 +158,9 @@ class InformesSemanalesController extends Controller
 
             // Preparar los datos para actualizar
             $datosActualizar = $request->except(['informe_url']);
+            
+            $datosActualizar['dia'] = Carbon::now()->toDateString();
+            $datosActualizar['hora'] = Carbon::now()->toTimeString();
 
             if ($request->hasFile('informe_url')) {
                 $rutaPublica = public_path('storage/informes');

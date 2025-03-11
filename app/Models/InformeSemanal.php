@@ -16,7 +16,9 @@ class InformeSemanal extends Model
         'estado',
         'informe_url',
         'semana_id',
-        'area_id'
+        'area_id',
+        'dia',
+        'hora',
     ];
 
     // Relación con el modelo Semana

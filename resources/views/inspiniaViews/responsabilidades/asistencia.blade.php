@@ -239,6 +239,13 @@
                         <p>{{ $informe->nota_semanal ? $informe->nota_semanal : 'No se ha escrito una nota.' }}</p>
                     </div>
 
+                    <div class="d-flex flex-column justify-content-center mb-2">
+                        <h4>Fecha de Entrega:</h4>
+                        <p class="fw-bold">📅 {{ \Carbon\Carbon::parse($informe->dia)->format('d/m/Y') }}</p>
+                        <p class="fw-bold">🕒 {{ \Carbon\Carbon::parse($informe->hora)->format('H:i') }}</p>
+                    </div>
+
+
                     <div class="d-flex flex-column justify-content-center mb-3">
                         <h4>Archivo:</h4>
                         @if($informe->informe_url)
