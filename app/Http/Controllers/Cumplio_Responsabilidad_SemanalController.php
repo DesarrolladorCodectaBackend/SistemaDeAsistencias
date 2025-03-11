@@ -321,8 +321,6 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
             $semana = Semanas::find($request->semana_id);
 
-
-
             $today = Carbon::today();
             $isSunday = $today->dayOfWeek == Carbon::SUNDAY;
 
