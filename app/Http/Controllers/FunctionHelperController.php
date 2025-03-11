@@ -239,12 +239,17 @@ class FunctionHelperController extends Controller
     public static function getWeekFromToDisponible($semana_id){
         $disponible = true;
         $semana = Semanas::where('id', $semana_id)->first();
-        $thisWeek = FunctionHelperController::findThisWeek();
-        if($semana->id >= $thisWeek->id) $disponible = false;
+
+        $yesterday = Carbon::today()->subDay();
+        $thisWeekMonday = $yesterday->copy()->startOfWeek()->toDateString();
+        $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
+
+        if($semana->id >= $thisSemana->id) $disponible = false;
 
         $desde = Carbon::parse($semana->fecha_lunes)->format('d/m/Y');
         $hasta = Carbon::parse($semana->fecha_lunes);
-        while(!$hasta->isFriday()){
+
+        while(!$hasta->isSunday()){
             $hasta->addDay();
         }
 
@@ -253,7 +258,6 @@ class FunctionHelperController extends Controller
             "hasta" => $hasta->format('d/m/Y'),
             "disponible" => $disponible
         ];
-
     }
 
     public static function getSemanaByDay($date){

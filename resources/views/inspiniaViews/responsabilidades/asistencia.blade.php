@@ -141,12 +141,16 @@
                             <h3 class="p-0 m-0">
                                 {{$area->especializacion}}
                             </h3>
-                            <p title="La evaluación de nuevas semanas se liberan cada lunes."
+                            {{-- <p title="La evaluación de nuevas semanas se liberan cada domingo."
                                 class="p-0 m-0 font-italic {{$semana->disponible ? 'text-success' : 'text-danger'}}">
                                 {{
                                     $semana->disponible ? '(Esta semana está disponible para ser evaluada)'
                                     : '(Esta semana no puede ser evaluada aún)'
                                 }}
+                            </p> --}}
+                            <p title="La evaluación de nuevas semanas se liberan cada domingo."
+                                class="p-0 m-0 font-italic text-success">
+                                Activado los domingos
                             </p>
                         </div>
                         <div style="width: 10%">
@@ -203,9 +207,11 @@
                                     <div>
                                         <button
                                             onclick="confirmDelete({{ $informe->id }}, {{ $index+1 }}, {{ $year }}, '{{ $mes }}', {{ $area->id }})"
-                                            class="btn btn-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                            class="btn btn-danger btn-sm"
+                                            type="button"
+                                            title="Eliminar informe">
+                                        <i style="font-size: 20px" class="fa fa-trash"></i>
+                                    </button>
                                     </div>
                                 </div>
                                 <hr>
@@ -236,6 +242,23 @@
                         <h4>Nota Semanal:</h4>
                         <p>{{ $informe->nota_semanal ? $informe->nota_semanal : 'No se ha escrito una nota.' }}</p>
                     </div>
+
+                    <div class="d-flex flex-column justify-content-center mb-2">
+                        <h4>Fecha de Entrega:</h4>
+
+                        @if (!empty($informe->dia))
+                            <p class="fw-bold">📅 {{ \Carbon\Carbon::parse($informe->dia)->format('d/m/Y') }}</p>
+                        @else
+                            <p class="fw-bold text-muted">📅 No especificado</p>
+                        @endif
+
+                        @if (!empty($informe->hora))
+                            <p class="fw-bold">🕒 {{ \Carbon\Carbon::parse($informe->hora)->format('H:i') }}</p>
+                        @else
+                            <p class="fw-bold text-muted">🕒 No especificado</p>
+                        @endif
+                    </div>
+
 
                     <div class="d-flex flex-column justify-content-center mb-3">
                         <h4>Archivo:</h4>
@@ -714,12 +737,28 @@
 
             function confirmDelete(informeId, index, year, mes, area_id) {
                 forzarCerrado('modal-form-' + index);
-                alertify.confirm("¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.", function(e) {
-                    if (e) {
+                alertify.confirm(
+                    "Confirmación de eliminación",
+                    "¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.",
+                    function() {
                         let form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = `/InformeSemanal/${informeId}`;
-                        form.innerHTML = '@csrf @method('DELETE')';
+
+                        let routeTemplate = "<?php echo route('InformeSemanal.destroy', ':id'); ?>";
+                        form.action = routeTemplate.replace(':id', informeId);
+
+                        let csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = "{{ csrf_token() }}";
+
+                        let methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'DELETE';
+
+                        form.appendChild(csrfToken);
+                        form.appendChild(methodField);
 
                         let inputYear = document.createElement('input');
                         inputYear.type = 'hidden';
@@ -741,12 +780,11 @@
 
                         document.body.appendChild(form);
                         form.submit();
-                    } else {
-                        return false;
+                    },
+                    function() {
+                        console.log('Eliminación cancelada');
                     }
-                }, function() {
-                    console.log('Cancelado');
-                });
+                ).set('labels', {ok:'Eliminar', cancel:'Cancelar'});
             }
     </script>
 
@@ -755,7 +793,6 @@
 
 
     <!--===PRUEBAS===-->
-
 
     @if(session('error'))
     <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert"

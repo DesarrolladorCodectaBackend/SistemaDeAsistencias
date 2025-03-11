@@ -319,14 +319,26 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
             $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
             $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
-
-
             $semana = Semanas::find($request->semana_id);
 
-            if ($semana->id >= $thisSemana->id) {
-                DB::rollBack();
-                return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
-                    ->with('EvaluacionWarning', 'No se puede evaluar semanas que aún no concluyen.')->with('current_semana_id', $request->index);
+            $today = Carbon::today();
+            $isSunday = $today->dayOfWeek == Carbon::SUNDAY;
+
+            if ($isSunday) {
+                $nextWeekMonday = $today->copy()->addDay()->toDateString();
+                $nextSemana = Semanas::where('fecha_lunes', $nextWeekMonday)->first();
+
+                if ($semana->id >= ($nextSemana ? $nextSemana->id : PHP_INT_MAX)) {
+                    DB::rollBack();
+                    return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                        ->with('EvaluacionWarning', 'No se puede evaluar semanas que aún no concluyen.')->with('current_semana_id', $request->index);
+                }
+            } else {
+                if ($semana->id >= $thisSemana->id) {
+                    DB::rollBack();
+                    return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                        ->with('EvaluacionWarning', 'No se puede evaluar semanas que aún no concluyen.')->with('current_semana_id', $request->index);
+                }
             }
 
             $responsabilidades = Responsabilidades_semanales::get();
@@ -388,20 +400,39 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             ]);
             $year = $request->year;
             $mes = $request->mes;
-
+            $today = Carbon::today();
+            $isSunday = $today->dayOfWeek == Carbon::SUNDAY;
             $semana = Semanas::find($semana_id);
-            $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
+            $thisWeekMonday = $today->copy()->startOfWeek()->toDateString();
             $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
-            //Verificar solo por si acaso
-            if ($thisSemana->id > $semana->id) {
-                $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('id');
 
-                $registros = Cumplio_Responsabilidad_Semanal::where('semana_id', $semana_id)->whereIn('colaborador_area_id', $colaboradoresAreaId)->get();
+            if ($isSunday) {
+                $nextWeekMonday = $today->copy()->addDay()->toDateString();
+                $nextSemana = Semanas::where('fecha_lunes', $nextWeekMonday)->first();
 
-                foreach ($registros as $index => $registro) {
-                    $registro->cumplio = $request->cumplio[$index];
-                    $registro->save();
+                if ($semana->id >= ($nextSemana ? $nextSemana->id : PHP_INT_MAX)) {
+                    DB::rollBack();
+                    return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                        ->with('EvaluacionWarning', 'No se puede evaluar semanas que aún no concluyen.')
+                        ->with('current_semana_id', $request->index);
                 }
+            } else {
+                if ($semana->id >= $thisSemana->id) {
+                    DB::rollBack();
+                    return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                        ->with('EvaluacionWarning', 'No se puede evaluar semanas que aún no concluyen.')
+                        ->with('current_semana_id', $request->index);
+                }
+            }
+            //Verificar solo por si acaso
+            $colaboradoresAreaId = Colaboradores_por_Area::where('area_id', $area_id)->get()->pluck('id');
+            $registros = Cumplio_Responsabilidad_Semanal::where('semana_id', $semana_id)
+                ->whereIn('colaborador_area_id', $colaboradoresAreaId)
+                ->get();
+
+            foreach ($registros as $index => $registro) {
+                $registro->cumplio = $request->cumplio[$index];
+                $registro->save();
             }
 
             DB::commit();
@@ -611,7 +642,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
                 foreach ($colaboradoresAreaId as $colabAreaId) {
                     $activo = RegistroActividadController::verifyColaboradorInactivity($colabAreaId, $semana->id);
-                    
+
                     // Si el colaborador está activo, añadirlo al array temporal
                     if ($activo === true) {
                         $colaboradoresActivosId[] = $colabAreaId;
