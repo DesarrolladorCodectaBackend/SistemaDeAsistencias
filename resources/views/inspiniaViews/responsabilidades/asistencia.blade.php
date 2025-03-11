@@ -245,8 +245,18 @@
 
                     <div class="d-flex flex-column justify-content-center mb-2">
                         <h4>Fecha de Entrega:</h4>
-                        <p class="fw-bold">📅 {{ \Carbon\Carbon::parse($informe->dia)->format('d/m/Y') }}</p>
-                        <p class="fw-bold">🕒 {{ \Carbon\Carbon::parse($informe->hora)->format('H:i') }}</p>
+
+                        @if (!empty($informe->dia))
+                            <p class="fw-bold">📅 {{ \Carbon\Carbon::parse($informe->dia)->format('d/m/Y') }}</p>
+                        @else
+                            <p class="fw-bold text-muted">📅 No especificado</p>
+                        @endif
+
+                        @if (!empty($informe->hora))
+                            <p class="fw-bold">🕒 {{ \Carbon\Carbon::parse($informe->hora)->format('H:i') }}</p>
+                        @else
+                            <p class="fw-bold text-muted">🕒 No especificado</p>
+                        @endif
                     </div>
 
 

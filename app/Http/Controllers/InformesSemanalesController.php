@@ -99,6 +99,7 @@ class InformesSemanalesController extends Controller
         DB::commit();
         return redirect($returnRoute)->with('success', 'Informe guardado correctamente.');
     } catch (Exception $e) {
+        // return $e; 
         DB::rollBack();
         return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
             ->with('error', 'Ocurrió un error.');
@@ -158,7 +159,7 @@ class InformesSemanalesController extends Controller
 
             // Preparar los datos para actualizar
             $datosActualizar = $request->except(['informe_url']);
-            
+
             $datosActualizar['dia'] = Carbon::now()->toDateString();
             $datosActualizar['hora'] = Carbon::now()->toTimeString();
 
