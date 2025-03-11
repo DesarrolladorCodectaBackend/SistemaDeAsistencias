@@ -203,9 +203,11 @@
                                     <div>
                                         <button
                                             onclick="confirmDelete({{ $informe->id }}, {{ $index+1 }}, {{ $year }}, '{{ $mes }}', {{ $area->id }})"
-                                            class="btn btn-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                            class="btn btn-danger btn-sm"
+                                            type="button"
+                                            title="Eliminar informe">
+                                        <i style="font-size: 20px" class="fa fa-trash"></i>
+                                    </button>
                                     </div>
                                 </div>
                                 <hr>
@@ -714,12 +716,28 @@
 
             function confirmDelete(informeId, index, year, mes, area_id) {
                 forzarCerrado('modal-form-' + index);
-                alertify.confirm("¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.", function(e) {
-                    if (e) {
+                alertify.confirm(
+                    "Confirmación de eliminación",
+                    "¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.",
+                    function() {
                         let form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = `/InformeSemanal/${informeId}`;
-                        form.innerHTML = '@csrf @method('DELETE')';
+
+                        let routeTemplate = "<?php echo route('InformeSemanal.destroy', ':id'); ?>";
+                        form.action = routeTemplate.replace(':id', informeId);
+
+                        let csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = "{{ csrf_token() }}";
+
+                        let methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'DELETE';
+
+                        form.appendChild(csrfToken);
+                        form.appendChild(methodField);
 
                         let inputYear = document.createElement('input');
                         inputYear.type = 'hidden';
@@ -741,12 +759,11 @@
 
                         document.body.appendChild(form);
                         form.submit();
-                    } else {
-                        return false;
+                    },
+                    function() {
+                        console.log('Eliminación cancelada');
                     }
-                }, function() {
-                    console.log('Cancelado');
-                });
+                ).set('labels', {ok:'Eliminar', cancel:'Cancelar'});
             }
     </script>
 
@@ -755,7 +772,6 @@
 
 
     <!--===PRUEBAS===-->
-
 
     @if(session('error'))
     <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert"
