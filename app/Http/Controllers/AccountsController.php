@@ -178,28 +178,28 @@ class AccountsController extends Controller
                 }
             }
             //ColaboradorId (Puede ser usado solo si el tipo es igual a 2, pero no es requerido, integer, existe en la tabla colaboradores)
-            $SelectedColaborador = null;
-            $colaboradorExists = false;
-            if($request->type == 2) {
-                if(isset($request->colaborador_id)) {
-                    $colaborador = Colaboradores::with('candidato')->whereNot('estado', 2)->where('id', $request->colaborador_id)->first();
-                    if($colaborador){
-                        $SelectedColaborador = $colaborador;
-                        $colaboradorExists = true;
-                    }else{
-                        $errors['colaborador_id'] = 'No existe un colaborador con ese id.';
-                    }
-                }
-            }
+            // $SelectedColaborador = null;
+            // $colaboradorExists = false;
+            // if($request->type == 2) {
+            //     if(isset($request->colaborador_id)) {
+            //         $colaborador = Colaboradores::with('candidato')->whereNot('estado', 2)->where('id', $request->colaborador_id)->first();
+            //         if($colaborador){
+            //             $SelectedColaborador = $colaborador;
+            //             $colaboradorExists = true;
+            //         }else{
+            //             $errors['colaborador_id'] = 'No existe un colaborador con ese id.';
+            //         }
+            //     }
+            // }
 
             //AreasId (Requerido si el tipo es igual a 2, array, minimo 1)
-            if($request->type == 2){
-                if(!isset($request->areas_id)){
-                    $errors['areas_id'] = 'El área es requerida si el usuario es un jefe de Área.';
-                } else if(count($request->areas_id) < 1) {
-                    $errors['areas_id'] = 'Debe seleccionar al menos un área.';
-                }
-            }
+            // if($request->type == 2){
+            //     if(!isset($request->areas_id)){
+            //         $errors['areas_id'] = 'El área es requerida si el usuario es un jefe de Área.';
+            //     } else if(count($request->areas_id) < 1) {
+            //         $errors['areas_id'] = 'Debe seleccionar al menos un área.';
+            //     }
+            // }
 
             if(!empty($errors)) {
                 return redirect()->route('accounts.create')->withErrors($errors)->withInput();
@@ -218,22 +218,23 @@ class AccountsController extends Controller
                 UsuarioAdministrador::create([
                     'user_id' => $user->id
                 ]);
-            } else if($request->type == 2){
-                if($colaboradorExists){
-                    //Se actualiza el colaborador para que tenga los datos del usuario creado
-                    $candidato = $SelectedColaborador->candidato;
-                    $candidato->update([
-                        'nombre' => $user->name,
-                        'apellido' => $user->apellido,
-                        'correo' => $user->email,
-                    ]);
-                }
-                foreach($request->areas_id as $area_id) {
-                    UsuarioJefeArea::create([
-                        'user_id' => $user->id,
-                        'area_id' => $area_id,
-                    ]);
-                }
+            } else {
+                // if($colaboradorExists){
+                //     //Se actualiza el colaborador para que tenga los datos del usuario creado
+                //     $candidato = $SelectedColaborador->candidato;
+                //     $candidato->update([
+                //         'nombre' => $user->name,
+                //         'apellido' => $user->apellido,
+                //         'correo' => $user->email,
+                //     ]);
+                // }
+                // foreach($request->areas_id as $area_id) {
+                //     UsuarioJefeArea::create([
+                //         'user_id' => $user->id,
+                //         'area_id' => $area_id,
+                //     ]);
+                // }
+                return redirect()->back()->with('error', 'Error al crear el usuario. Si el problema persite, contacte a su equipo de soporte.');
             }
             //Crear Usuario con clave mostrable\
             UsuariosPasswordsController::registrar($user->id, $request->password);
