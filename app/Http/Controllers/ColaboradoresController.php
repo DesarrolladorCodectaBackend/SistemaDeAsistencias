@@ -18,6 +18,7 @@ use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_de_Clases;
 use App\Models\Horarios_Presenciales;
 use App\Models\PagoColaborador;
+use App\Models\Distrito;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Maquina_reservada;
@@ -150,6 +151,7 @@ class ColaboradoresController extends Controller
         }
         $countColaboradores = Colaboradores::with('candidato')->whereNot('estado', 2)->get()->count();
         $colaboradores = Colaboradores::with('candidato', 'especialista')->whereNot('estado', 2)->paginate(12);
+        $distritos = Distrito::get();
 
         $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
 
@@ -208,6 +210,7 @@ class ColaboradoresController extends Controller
             'Allactividades' => $Allactividades,
             'horasTotales' => $horasTotales,
             'colaboradoresCol' => $colaboradoresCol,
+            'distritos' => $distritos
         ]);
     }
 
@@ -413,7 +416,11 @@ class ColaboradoresController extends Controller
                  $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@_';
                  $randomPassword = substr(str_shuffle(str_repeat($characters, 12)), 0, 12);
 
-                 $user = User::create([
+                if (empty($candidato->correo)) {
+                    return redirect()->back()->with('error', 'El correo no puede estar vacío.');
+                }
+
+                $user = User::create([
                      'name' => $candidato->nombre,
                      'apellido' => $candidato->apellido,
                      'email' => $candidato->correo,
@@ -443,14 +450,14 @@ class ColaboradoresController extends Controller
                  }
 
 
-                foreach($request->areas_id as $area_id){
-                    Colaboradores_por_Area::create([
-                        'colaborador_id' => $colaborador->id,
-                        'area_id' => $area_id,
-                        'semana_inicio_id' => $semana->id,
-                    ]);
-
-
+                if($request->areas_id){
+                    foreach($request->areas_id as $area_id){
+                        Colaboradores_por_Area::create([
+                            'colaborador_id' => $colaborador->id,
+                            'area_id' => $area_id,
+                            'semana_inicio_id' => $semana->id,
+                        ]);
+                    }
                 }
 
                 foreach ($request->horarios as $horario) {
@@ -471,14 +478,13 @@ class ColaboradoresController extends Controller
             //Se redirige a la vista de colaboradores
             return redirect()->route('colaboradores.index');
         } catch (Exception $e) {
-            return $e;
+            // return $e;
             DB::rollBack();
-            return redirect()->route('colaboradores.index');
+            return redirect()->back()->with('error', 'Ocurrió un error al registrar al colaborador, si el problema persite, contacte a su equipo de soporte.');
 
         }
 
     }
-
 
     public function update(Request $request, $colaborador_id)
     {
@@ -861,7 +867,7 @@ class ColaboradoresController extends Controller
         $idCandidatosPorDni = Candidatos::searchByDni($busqueda)->pluck('id');
         $colaboradoresPorDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->paginate(12);
         $countColaboradoresDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->get()->count();
-
+        $distritos = Distrito::get();
         //Si existe un registro encontrado por el id
         if ($colaboradoresPorDni->count() > 0) {
             //Se asigna el valor del colaboradorPorId
@@ -920,7 +926,8 @@ class ColaboradoresController extends Controller
             'areasAll' => $areasAll,
             'Allactividades' => $Allactividades,
             'horasTotales' =>  $horasTotales,
-            'colaboradoresCol' => $colaboradoresCol
+            'colaboradoresCol' => $colaboradoresCol,
+            'distritos' => $distritos 
         ]);
 
     }
@@ -1185,7 +1192,7 @@ class ColaboradoresController extends Controller
             }
         } catch(Exception $e){
             DB::rollBack();
-            // return $e;
+            return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {

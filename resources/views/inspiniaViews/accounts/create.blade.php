@@ -82,9 +82,9 @@
                 <div class="ibox-content d-flex flex-column gap-5">
                     <div class="d-flex justify-content-between">
                         <h2>Agregar Nuevo Usuario</h2>
-                        <button id="btnModalColaboradores" type="button" href="#modalColaboradores"
+                        {{-- <button id="btnModalColaboradores" type="button" href="#modalColaboradores"
                             class="btn btn-secondary btn-sm text-white d-flex align-items-center" data-toggle="modal"
-                            disabled>Crear a base de colaborador</button>
+                            disabled>Crear a base de colaborador</button> --}}
                     </div>
                     <div>
                         <form method="POST" action="{{route('accounts.store')}}">
@@ -96,7 +96,6 @@
                                         <select onchange="handleTypeChange()" class="form-control" name="type"
                                             id="selectUserType">
                                             <option value="1">Administrador</option>
-                                            <option value="2">Jefe de Área</option>
                                         </select>
                                         @error('type')
                                         <span class="text-danger">{{ $message }}</span>

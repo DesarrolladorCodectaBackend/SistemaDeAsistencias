@@ -9,6 +9,7 @@ use App\Models\Candidatos;
 use App\Models\Carrera;
 use App\Models\Colaboradores;
 use App\Models\Especialista;
+use App\Models\Distrito;
 use App\Models\Sede;
 use App\Models\User;
 use Exception;
@@ -27,7 +28,7 @@ class ColaboradorEditController extends Controller
         $carreras = Carrera::get();
         $especialistas = Especialista::get();
         $actividades = Actividades::where('estado', 1)->get();
-
+        $distritos = Distrito::get();
         $colaborador = $candidato->colaborador;
 
         if ($colaborador && $colaborador->editable == 0) {
@@ -43,7 +44,8 @@ class ColaboradorEditController extends Controller
             'carreras' => $carreras,
             'actividades' => $actividades,
             'especialistas' => $especialistas,
-            'especialista' => $colaborador && $colaborador->especialista ? $colaborador->especialista->nombres : null
+            'especialista' => $colaborador && $colaborador->especialista ? $colaborador->especialista->nombres : null,
+            'distritos' => $distritos
         ]);
     }
 
@@ -128,10 +130,6 @@ class ColaboradorEditController extends Controller
             if(!empty($errors)) {
                return redirect()->route('colaboradorEdit.edit')->withErrors($errors)->withInput();
             }
-
-            // $candidato->update($request->only([
-            //     'nombre', 'apellido', 'dni', 'correo', 'celular', 'fecha_nacimiento', 'direccion', 'sede_id', 'ciclo_de_estudiante', 'carrera_id'
-            // ]));
 
             $candidato->update($request->all());
 

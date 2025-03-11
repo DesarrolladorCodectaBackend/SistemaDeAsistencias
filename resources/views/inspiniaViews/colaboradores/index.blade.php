@@ -9,6 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/colaboradores/index.css') }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>INSPINIA | Colaboradores</title>
 </head>
 
@@ -293,6 +296,10 @@
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Dirección:</p>
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->direccion ?? 'Sin Direccion'}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Distrito:</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->distrito ? $colaborador->candidato->distrito->nombre : 'No asignado'}}</p>
                                         </div>
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Institución - Sede:</p>
@@ -629,6 +636,13 @@
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">{{$colaborador->candidato->id_senati ?? 'Sin ID'}}</h5>
                                 </div>
+                                <small class="text-muted text-left">
+                                    <h3 class="text-dark">Distrito:</h3>
+                                </small>
+
+                                <div class="small m-t-xs text-left">
+                                    <h5 class="overflowing-text">{{$colaborador->candidato->distrito ? $colaborador->candidato->distrito->nombre : 'No asignado'}}</h5>
+                                </div>
 
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark">Correo:</h3>
@@ -636,6 +650,7 @@
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">{{$colaborador->candidato->correo ?? 'Sin correo'}}</h5>
                                 </div>
+
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark">Celular:</h3>
                                 </small>
@@ -798,6 +813,23 @@
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                     </div>
+
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Distrito:</h5>
+                                                                        </label>
+                                                                        <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
+                                                                            <option value="">Seleccione un distrito</option>
+                                                                            @foreach($distritos as $distrito)
+                                                                                <option value="{{ $distrito->id }}" 
+                                                                                    {{ isset($colaborador->candidato->distrito_id) && $colaborador->candidato->distrito_id == $distrito->id ? 'selected' : '' }}>
+                                                                                    {{ $distrito->nombre }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    
+                                                                    
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Institución - Sede:
                                                                             </h5>
@@ -1809,6 +1841,16 @@
 
     </script>
 
+    {{-- script para select2 --}}
+    <script>
+        $(document).ready(function() {
+            $('.select2-distrito').select2({
+                placeholder: "Buscar distrito...",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 
     <script>
         //JQuery para select multiple de areas

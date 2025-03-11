@@ -23,7 +23,8 @@ class Candidatos extends Model
         'correo',
         'celular',
         'icono',
-        'id_senati'
+        'id_senati',
+        'distrito_id'
     ];
 
     public function sede(){
@@ -54,6 +55,8 @@ class Candidatos extends Model
         return $candidatosPorDni;
     }
 
-
+    public function distrito() {
+        return $this->belongsTo(Distrito::class, 'distrito_id', 'id');
+    }
 
 }

@@ -436,11 +436,14 @@ class FunctionHelperController extends Controller
     public static function semanasColaborador($colaborador_id){
         //obtener primero colaborador Area
         $colaboradorArea = Colaboradores_por_Area::where('colaborador_id', $colaborador_id)->first();
-        $semanaActual = FunctionHelperController::findThisWeek();
-        $semanasTotales = Semanas::where('id', '>=', $colaboradorArea->semana_inicio_id)
+        if($colaboradorArea){
+            $semanaActual = FunctionHelperController::findThisWeek();
+            $semanasTotales = Semanas::where('id', '>=', $colaboradorArea->semana_inicio_id)
             ->where('id', '<', $semanaActual->id)->get();
 
-        return ["semanas" => $semanasTotales, "conteoSemanas" => $semanasTotales->count()];
+            return ["semanas" => $semanasTotales, "conteoSemanas" => $semanasTotales->count()];
+        }
+
     }
 
     public static function promedioColaboradorArea($colaborador_area_id, $semanas){

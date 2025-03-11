@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Inspina|Candidatos</title>
 </head>
@@ -268,6 +271,18 @@
                                             </div>
 
                                             <div class="form-group">
+                                                <label>Distrito</label>
+                                                <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
+                                                    <option value="">Seleccione un distrito</option>
+                                                    @foreach($distritos as $distrito)
+                                                        <option value="{{ $distrito->id }}">
+                                                            {{ $distrito->nombre }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
                                                 <label>ID Senati</label>
                                                 <input type="text"
                                                     placeholder="Ingrese su id" class="form-control"
@@ -411,6 +426,11 @@
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Dirección:</h5>
                                                 </label><label for="">{{$candidato->direccion ?? 'Sin dirección'}}</label>
+                                            </div>
+                                            <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Distrito:</h5>
+                                                </label><label for="">{{$candidato->distrito ? $candidato->distrito->nombre : 'No asignado'}}</label>
+
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Institución - Sede:</h5>
@@ -565,6 +585,12 @@
                                             <dd class="sm-2">{{$candidato->celular ?? 'Sin celular'}}</dd>
                                         </div>
                                     </dl>
+                                    <dl class="row mb-0">
+                                        <div class="col-sm-6 text-sm-left">
+                                            <dt>Distrito</dt>
+                                            <dd class="sm-2">{{$candidato->distrito ? $candidato->distrito->nombre : 'No asignado'}}</dd>
+                                        </div>
+                                    </dl>
 
                                     <div>
                                         <div class="d-flex justify-content-center align-items-center" style="display: flex; gap: 2px">
@@ -660,6 +686,20 @@
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
+
+                                                                    <div class="form-group">
+                                                                        <label>Distrito</label>
+                                                                        <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
+                                                                            <option value="">Seleccione un distrito</option>
+                                                                            @foreach($distritos as $distrito)
+                                                                                <option value="{{ $distrito->id }}" 
+                                                                                    {{ isset($candidato->distrito_id) && $candidato->distrito_id == $distrito->id ? 'selected' : '' }}>
+                                                                                    {{ $distrito->nombre }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>                                                                
+
                                                                     <div class="form-group"><label>Fecha de
                                                                             Nacimiento</label>
                                                                         <input type="date" placeholder="....."
@@ -997,7 +1037,15 @@
         });
     </script>
 
-
+    <script>
+        $(document).ready(function() {
+            $('.select2-distrito').select2({
+                placeholder: "Buscar distrito...",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 
     <script>
         const deleteAlertError = () => {

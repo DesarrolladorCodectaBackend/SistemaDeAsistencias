@@ -36,7 +36,8 @@ class DatabaseSeeder extends Seeder
             // UsuarioAdministradorSeeder::class,
             // UsuarioJefeAreaSeeder::class,
             // UsuariosPasswordSeeder::class
-            TipoTransaccionSeeder::class
+            // TipoTransaccionSeeder::class
+            DistritosSeeder::class
         ]);
         // \App\Models\User::factory(10)->create();
 

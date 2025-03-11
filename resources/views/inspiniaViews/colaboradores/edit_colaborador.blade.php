@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('css/colaboradores/edit-colab.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Editar Colaborador</title>
 </head>
 <body>
@@ -119,6 +122,21 @@
                     </div>
 
                     <div class="form-group">
+                        <label>
+                            <h5 class="m-t-none">Distrito:</h5>
+                        </label>
+                        <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
+                            <option value="">Seleccione un distrito</option>
+                            @foreach($distritos as $distrito)
+                                <option value="{{ $distrito->id }}" 
+                                    {{ isset($colaborador->candidato->distrito_id) && $colaborador->candidato->distrito_id == $distrito->id ? 'selected' : '' }}>
+                                    {{ $distrito->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="direccion">Dirección</label>
                         <input type="text" id="direccion" name="direccion" class="form-control" value="{{ old('direccion', $candidato->direccion) }}" {{ !$isEditable ? 'disabled' : '' }}>
                         @error('direccion')
@@ -192,7 +210,6 @@
                                 </option>
                             @endforeach
                         </select>
-
                     </div>
 
 
@@ -209,6 +226,17 @@
     <script>
         $(document).ready(function() {
             $('.multiple_actividades_select').select2();
+        });
+    </script>
+
+    {{-- script para select2 --}}
+    <script>
+        $(document).ready(function() {
+            $('.select2-distrito').select2({
+                placeholder: "Buscar distrito...",
+                allowClear: true,
+                width: '100%'
+            });
         });
     </script>
 </body>

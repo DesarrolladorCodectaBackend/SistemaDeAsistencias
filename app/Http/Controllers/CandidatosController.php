@@ -8,6 +8,7 @@ use App\Models\Institucion;
 use App\Models\Carrera;
 use App\Models\Area;
 use App\Models\User;
+use App\Models\Distrito;
 use App\Models\Sede;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCandidatosRequest;
@@ -24,12 +25,13 @@ class CandidatosController extends Controller
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
-        $candidatos = Candidatos::with('carrera', 'sede')->where("estado", 1)->paginate(6);
+        $candidatos = Candidatos::with('carrera', 'sede','distrito')->where("estado", 1)->paginate(6);
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
         $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
         $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
         $ciclosAll = [4,5,6,7,8,9,10];
+        $distritos = Distrito::orderBy('nombre', 'asc')->get();
 
 
         $sedes = $sedesAll->where('estado', 1);
@@ -50,6 +52,7 @@ class CandidatosController extends Controller
             'sedesAll' => $sedesAll,
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
+            'distritos' => $distritos
         ]);
     }
 
@@ -120,7 +123,8 @@ class CandidatosController extends Controller
                 'correo' => $request->correo,
                 'celular' => $request->celular,
                 'icono' => $nombreIcono,
-                'id_senati' => $request->id_senati
+                'id_senati' => $request->id_senati,
+                'distrito_id' => $request->distrito_id
             ]);
 
             DB::commit();
@@ -156,6 +160,13 @@ class CandidatosController extends Controller
 
             $candidato = Candidatos::findOrFail($candidato_id);
             $datosActualizar = $request->except(['icono']);
+            // Validación de Distrito
+            if (isset($request->distrito_id)) {
+                $distrito = Distrito::find($request->distrito_id);
+                if (!$distrito) {
+                    $errors['distrito_id'.$candidato_id] = 'El distrito seleccionado no existe.';
+                }
+            }
             $errors = [];
 
             // Validación de Nombre
@@ -288,7 +299,7 @@ class CandidatosController extends Controller
             DB::commit();
             return redirect($returnRoute);
         } catch (Exception $e) {
-            // return $e;
+            return $e;
             DB::rollBack();
             return redirect($returnRoute)->with('error', 'Ocurrió un error al actualizar, intente de nuevo. Si este error persiste, contacte a su equipo de soporte.');
         }
