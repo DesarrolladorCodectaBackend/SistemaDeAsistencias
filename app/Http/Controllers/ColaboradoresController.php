@@ -1175,9 +1175,11 @@ class ColaboradoresController extends Controller
                             $usuario_jefe_area->delete();
                         }
 
-                        $usuarioPassword = UsuariosPasswords::where('user_id', $user->id)->first();
-                        if ($usuarioPassword) {
-                            $usuarioPassword->delete();
+                        $usuarioPasswords = UsuariosPasswords::where('user_id', $user->id)->get();
+                        if ($usuarioPasswords) {
+                            foreach ($usuarioPasswords as $usuarioPassword) {
+                                $usuarioPassword->delete();
+                            }
                         }
 
                         $user->delete();
