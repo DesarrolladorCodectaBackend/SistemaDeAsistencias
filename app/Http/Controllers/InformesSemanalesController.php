@@ -67,7 +67,7 @@ class InformesSemanalesController extends Controller
             } else {
                 $informe = $request->file('informe_url');
                 $extensionVal = $informe->getClientOriginalExtension();
-                $extensiones = ['pdf', 'docx', 'doc'];
+                $extensiones = ['pdf'];
 
                 if (!in_array($extensionVal, $extensiones)) {
                     $errors['informe_url' . $semana_id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
@@ -99,7 +99,7 @@ class InformesSemanalesController extends Controller
         DB::commit();
         return redirect($returnRoute)->with('success', 'Informe guardado correctamente.');
     } catch (Exception $e) {
-        // return $e; 
+        // return $e;
         DB::rollBack();
         return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
             ->with('error', 'Ocurrió un error.');
@@ -145,7 +145,7 @@ class InformesSemanalesController extends Controller
 
 
             if ($request->hasFile('informe_url')) {
-                $extensiones = ['pdf', 'docx', 'doc'];
+                $extensiones = ['pdf'];
                 $extensionVal = $request->file('informe_url')->getClientOriginalExtension();
 
                 if (!in_array($extensionVal, $extensiones)) {
