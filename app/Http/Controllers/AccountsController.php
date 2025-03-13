@@ -280,161 +280,212 @@ class AccountsController extends Controller
     }
 
     public function update(Request $request, $user_id)
-    {
-        // return $request;
-        $access = FunctionHelperController::verifyAdminAccess();
-        if (!$access) {
-            return redirect('dashboard')->with('error', 'No tiene permisos para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
-        }
-        DB::beginTransaction();
-        try {
-            $user = User::findOrFail($user_id);
-            if ($user) {
-                $userData = FunctionHelperController::getUserRolById($user_id);
-                //VALIDACIONES
-                $errors = [];
-                //Name(Requerido, String, Minimo 1)
-                if (!isset($request->name)) {
-                    $errors['name'.$user_id] = 'El nombre es un campo requerido';
-                } else{
-                    if(!is_string($request->name)){
-                        $errors['name'.$user_id] = 'El nombre debe ser un texto';
-                    }else{
-                        if(strlen($request->name) < 1){
-                            $errors['name'.$user_id] = 'El nombre debe ser mayor a 1 caracter';
-                        }
-                    }
-                }
-                //Apellido(Requerido, String, Minimo 1)
-                if (!isset($request->apellido)) {
-                    $errors['apellido'.$user_id] = 'El apellido es un campo requerido';
-                } else{
-                    if(!is_string($request->apellido)){
-                        $errors['apellido'.$user_id] = 'El apellido debe ser un texto';
-                    }else{
-                        if(strlen($request->apellido) < 1){
-                            $errors['apellido'.$user_id] = 'El apellido debe ser mayor a 1 caracter';
-                        }
-                    }
-                }
-                //Contraseña (Required, min: 8, max:100)
-                if(!isset($request->password)) {
-                    $errors['password'] = 'La contraseña es requerida.';
-                } else{
-                    if(strlen($request->password) < 8) {
-                        $errors['password'] = 'La contraseña debe tener al menos 8 caracter.';
-                    } else if (strlen($request->password) > 100) {
-                        $errors['password'] = 'La contraseña no debe tener más de 100 caracteres.';
-                    }
-                }
-                //Email(Requerido, String, Minimo 1)
-                if (!isset($request->email)) {
-                    $errors['email'.$user_id] = 'El email es un campo requerido';
-                } else{
-                    if(!is_string($request->email)){
-                        $errors['email'.$user_id] = 'El email debe ser un texto';
-                    }else{
-                        if(strlen($request->email) < 1){
-                            $errors['email'.$user_id] = 'El email debe ser mayor a 1 caracter';
-                        }
-                    }
-                    $sameUserEmail = User::where('email', $request->email)->whereNot('id', $user_id)->first();
-                    if($sameUserEmail){
-                        $errors['email'.$user_id] = 'ya hay un usuario registrado con ese email';
-                    }
-                    $candidato = FunctionHelperController::findUserCandidato(1, $user->email);
-                    if($candidato != null){
-                        $conflict = FunctionHelperController::verifyEmailCandidatoConflict($request->email, $candidato->id);
-                        if($conflict){
-                            $errors['email'.$user_id] = 'ya hay un colaborador usuario registrado con ese email';
-                        }
-                    }
-                    if($userData['isAdmin']){
-                        $conflict = FunctionHelperController::verifyEmailCandidatoConflict($request->email);
-                        if($conflict){
-                            $errors['email'.$user_id] = 'ya hay un colaborador registrado con ese email';
-                        }
-                    }
-                }
-                if(!empty($errors)) {
-                    $errors['user'] = $user_id;
-                    // return $errors;
-                    return redirect()->route('accounts.index')->with('userError', $user_id)->withErrors($errors)->withInput();
-                }
-
-
-                $areas = [];
-                if(isset($request->areas_id)){
-                    $areas = $request->areas_id;
-                }
-
-                //Si la contraseña es diferente cambiarla
-                if (!Hash::check($request->password, $user->password)) {
-                    $user->update([
-                        "password" => Hash::make($request->password)
-                    ]);
-
-                    UsuariosPasswordsController::registrar($user->id, $request->password);
-                }
-
-                //Ver si es un administrador o si es un Jefe
-                $userData = FunctionHelperController::getUserRolById($user_id);
-                if($userData['isBoss']){
-                    //Buscar el colaborador asociado por el email
-                    FunctionHelperController::modifyColabByUser($user, $request);
-                    //Modificar Areas
-                    foreach($areas as $area_id){
-                        $usuariosArea = UsuarioJefeArea::where('user_id', $user_id)->where('area_id', $area_id)->first();
-                        if (!$usuariosArea) {
-                            UsuarioJefeArea::create([
-                                'user_id' => $user->id,
-                                'area_id' => $area_id,
-                                'estado' => 1,
-                            ]);
-                        } else if ($usuariosArea->estado == 0) {
-                            $usuariosArea->update(['estado' => 1]);
-                        }
-                    }
-                    $usuariosAreasInactivas = UsuarioJefeArea::where('user_id', $user_id)->where('estado', 1)->whereNotIn('area_id', $areas)->get();
-                    foreach($usuariosAreasInactivas as $inactiveUser){
-                        $inactiveUser->update(['estado' => 0]);;
-                    }
-
-                } else if($userData['isAdmin']){
-
-                    $user->update([
-                        'name' => $request->name,
-                        'apellido' => $request->apellido,
-                        'email' => $request->email
-                    ]);
-
-
-                }else {
-                    $oldEmail = $user->email;
-                    $user->update([
-                        'name' => $request->name,
-                        'apellido' => $request->apellido,
-                        'email' => $request->email
-                    ]);
-
-                    $candidato = Candidatos::where('correo', $oldEmail)->first();
-                    if ($candidato) {
-                        $candidato->update(['correo' => $request->email]);
-                    }
-                }
-                // return $userData;
-
-                DB::commit();
-                return redirect()->route('accounts.index')->with('success', 'Se actualizó correctamente al usuario.');
-            } else{
-                return redirect()->route('accounts.index')->with('error', 'No se encontró un usuario con ese id.');
-            }
-        } catch (Exception $e) {
-            DB::rollBack();
-            // return $e;
-            return redirect()->route('accounts.index')->with('error', 'Ocurrió un error al realizar la acción. Si el error persiste comuniquese con su equipo de soporte.');
-        }
+{
+    // return $request;
+    $access = FunctionHelperController::verifyAdminAccess();
+    if (!$access) {
+        return redirect('dashboard')->with('error', 'No tiene permisos para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
     }
+    DB::beginTransaction();
+    try {
+        $user = User::findOrFail($user_id);
+        if ($user) {
+            $userData = FunctionHelperController::getUserRolById($user_id);
+            $oldEmail = $user->email; // Guardamos el email original para comparar después
+
+            //VALIDACIONES
+            $errors = [];
+            //Name(Requerido, String, Minimo 1)
+            if (!isset($request->name)) {
+                $errors['name'.$user_id] = 'El nombre es un campo requerido';
+            } else{
+                if(!is_string($request->name)){
+                    $errors['name'.$user_id] = 'El nombre debe ser un texto';
+                }else{
+                    if(strlen($request->name) < 1){
+                        $errors['name'.$user_id] = 'El nombre debe ser mayor a 1 caracter';
+                    }
+                }
+            }
+            //Apellido(Requerido, String, Minimo 1)
+            if (!isset($request->apellido)) {
+                $errors['apellido'.$user_id] = 'El apellido es un campo requerido';
+            } else{
+                if(!is_string($request->apellido)){
+                    $errors['apellido'.$user_id] = 'El apellido debe ser un texto';
+                }else{
+                    if(strlen($request->apellido) < 1){
+                        $errors['apellido'.$user_id] = 'El apellido debe ser mayor a 1 caracter';
+                    }
+                }
+            }
+            //Contraseña (Required, min: 8, max:100)
+            if(!isset($request->password)) {
+                $errors['password'] = 'La contraseña es requerida.';
+            } else{
+                if(strlen($request->password) < 8) {
+                    $errors['password'] = 'La contraseña debe tener al menos 8 caracter.';
+                } else if (strlen($request->password) > 100) {
+                    $errors['password'] = 'La contraseña no debe tener más de 100 caracteres.';
+                }
+            }
+            //Email(Requerido, String, Minimo 1)
+            if (!isset($request->email)) {
+                $errors['email'.$user_id] = 'El email es un campo requerido';
+            } else{
+                if(!is_string($request->email)){
+                    $errors['email'.$user_id] = 'El email debe ser un texto';
+                }else{
+                    if(strlen($request->email) < 1){
+                        $errors['email'.$user_id] = 'El email debe ser mayor a 1 caracter';
+                    }
+                }
+                $sameUserEmail = User::where('email', $request->email)->whereNot('id', $user_id)->first();
+                if($sameUserEmail){
+                    $errors['email'.$user_id] = 'ya hay un usuario registrado con ese email';
+                }
+                $candidato = FunctionHelperController::findUserCandidato(1, $user->email);
+                if($candidato != null){
+                    $conflict = FunctionHelperController::verifyEmailCandidatoConflict($request->email, $candidato->id);
+                    if($conflict){
+                        $errors['email'.$user_id] = 'ya hay un colaborador usuario registrado con ese email';
+                    }
+                }
+                if($userData['isAdmin']){
+                    $conflict = FunctionHelperController::verifyEmailCandidatoConflict($request->email);
+                    if($conflict){
+                        $errors['email'.$user_id] = 'ya hay un colaborador registrado con ese email';
+                    }
+                }
+            }
+            if(!empty($errors)) {
+                $errors['user'] = $user_id;
+                // return $errors;
+                return redirect()->route('accounts.index')->with('userError', $user_id)->withErrors($errors)->withInput();
+            }
+
+            $areas = [];
+            if(isset($request->areas_id)){
+                $areas = $request->areas_id;
+            }
+
+            // Variables para verificar cambios en email o contraseña
+            $passwordChanged = false;
+            $emailChanged = false;
+
+            //Si la contraseña es diferente cambiarla
+            if (!Hash::check($request->password, $user->password)) {
+                $user->update([
+                    "password" => Hash::make($request->password)
+                ]);
+
+                UsuariosPasswordsController::registrar($user->id, $request->password);
+                $passwordChanged = true;
+            }
+
+            //Ver si es un administrador o si es un Jefe
+            $userData = FunctionHelperController::getUserRolById($user_id);
+            if($userData['isBoss']){
+                //Buscar el colaborador asociado por el email
+                FunctionHelperController::modifyColabByUser($user, $request);
+
+                // Verificar si el email cambió
+                if ($oldEmail != $request->email) {
+                    $emailChanged = true;
+                }
+
+                //Modificar Areas
+                foreach($areas as $area_id){
+                    $usuariosArea = UsuarioJefeArea::where('user_id', $user_id)->where('area_id', $area_id)->first();
+                    if (!$usuariosArea) {
+                        UsuarioJefeArea::create([
+                            'user_id' => $user->id,
+                            'area_id' => $area_id,
+                            'estado' => 1,
+                        ]);
+                    } else if ($usuariosArea->estado == 0) {
+                        $usuariosArea->update(['estado' => 1]);
+                    }
+                }
+                $usuariosAreasInactivas = UsuarioJefeArea::where('user_id', $user_id)->where('estado', 1)->whereNotIn('area_id', $areas)->get();
+                foreach($usuariosAreasInactivas as $inactiveUser){
+                    $inactiveUser->update(['estado' => 0]);;
+                }
+
+            } else if($userData['isAdmin']){
+                // Verificar si el email cambió
+                if ($oldEmail != $request->email) {
+                    $emailChanged = true;
+                }
+
+                $user->update([
+                    'name' => $request->name,
+                    'apellido' => $request->apellido,
+                    'email' => $request->email
+                ]);
+
+            } else {
+                $oldEmail = $user->email;
+
+                // Verificar si el email cambió
+                if ($oldEmail != $request->email) {
+                    $emailChanged = true;
+                }
+
+                $user->update([
+                    'name' => $request->name,
+                    'apellido' => $request->apellido,
+                    'email' => $request->email
+                ]);
+
+                $candidato = Candidatos::where('correo', $oldEmail)->first();
+                if ($candidato) {
+                    $candidato->update(['correo' => $request->email]);
+                }
+            }
+
+            // Enviar email si hay cambios en el correo o la contraseña
+            if ($emailChanged || $passwordChanged) {
+                $emailToUse = $emailChanged ? $request->email : $oldEmail;
+
+                if (filter_var($emailToUse, FILTER_VALIDATE_EMAIL)) {
+                    // Determinar el rol para el mensaje
+                    $rolUsuario = 'Usuario';
+                    if ($userData['isAdmin']) {
+                        $rolUsuario = 'Administrador';
+                    } elseif ($userData['isBoss']) {
+                        $rolUsuario = 'Jefe';
+                    } elseif ($candidato != null) {
+                        $rolUsuario = 'Colaborador';
+                    }
+
+                    // Enviar email con las credenciales actualizadas
+                    Mail::to($emailToUse)->send(
+                        new UsuarioCreadoMailable(
+                            $request->email,
+                            $request->password,
+                            $request->name . " " . $request->apellido,
+                            $rolUsuario
+                        )
+                    );
+                } else {
+                    throw new Exception('El correo electrónico no es válido.');
+                }
+            }
+
+            // return $userData;
+
+            DB::commit();
+            return redirect()->route('accounts.index')->with('success', 'Se actualizó correctamente al usuario.');
+        } else{
+            return redirect()->route('accounts.index')->with('error', 'No se encontró un usuario con ese id.');
+        }
+    } catch (Exception $e) {
+        DB::rollBack();
+        // return $e;
+        return redirect()->route('accounts.index')->with('error', 'Ocurrió un error al realizar la acción. Si el error persiste comuniquese con su equipo de soporte.');
+    }
+}
 
     public function changeToJefeArea($user_id) {
         $access = FunctionHelperController::verifyAdminAccess();
