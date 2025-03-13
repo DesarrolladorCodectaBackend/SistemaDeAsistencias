@@ -183,6 +183,7 @@ Route::middleware('auth')->group(function () {
     Route::put('colaboradores/editState/{colaborador_id}', [ColaboradoresController::class, 'colabEditState'])->name('colaboradores.editState');
 
     Route::post('colaboradores/createEmailPassword/{colaborador_id}', [ColaboradoresController::class, 'createEmailPassword'])->name('colaboradoresEmail.store');
+    Route::put('colaboradores/editAll/', [ColaboradoresController::class, 'activeEditAll'])->name('colaboradores.editAll');
 
     //HORARIO DE CLASES
     Route::resource('horarioClase', HorarioDeClasesController::class);

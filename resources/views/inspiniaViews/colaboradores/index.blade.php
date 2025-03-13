@@ -53,6 +53,7 @@
                             <i class="fa fa-long-arrow-left"></i> Agregar
                         </a>
                         <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar </a>
+                        <a href="#" class="btn btn-warning" onclick="confirmEditAll()">Activar Edición</a>
                     </div>
                     <div id="modal-filtrar" class="modal fade" aria-hidden="true">
                         <div class="modal-dialog">
@@ -821,15 +822,15 @@
                                                                         <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
                                                                             <option value="">Seleccione un distrito</option>
                                                                             @foreach($distritos as $distrito)
-                                                                                <option value="{{ $distrito->id }}" 
+                                                                                <option value="{{ $distrito->id }}"
                                                                                     {{ isset($colaborador->candidato->distrito_id) && $colaborador->candidato->distrito_id == $distrito->id ? 'selected' : '' }}>
                                                                                     {{ $distrito->nombre }}
                                                                                 </option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
-                                                                    
-                                                                    
+
+
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Institución - Sede:
                                                                             </h5>
@@ -1418,6 +1419,51 @@
            });
        });
    </script>
+
+<script>
+    function confirmEditAll() {
+        Swal.fire({
+            title: "¿Deseas activar la edición para todos los colaboradores?",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                let form = document.createElement('form');
+                form.method = 'POST';
+
+                let routeTemplate = "<?php echo route('colaboradores.editAll'); ?>";
+                form.action = routeTemplate;
+
+                form.innerHTML = `
+                    @csrf @method("PUT")
+                `;
+
+                document.body.appendChild(form);
+                form.submit();
+
+            } else {
+                Swal.fire({
+                    title: "Acción cancelada",
+                    text: "No se activó la edición",
+                    icon: "info",
+                    customClass: {
+                        content: 'swal-content'
+                    }
+                });
+
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .swal2-html-container {
+                        color: #FFFFFF;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+    }
+</script>
 
     <script>
         function activeEdit(id) {

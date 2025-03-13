@@ -266,135 +266,147 @@ class ColaboradoresController extends Controller
     //FUNCTION getObjetoColabodaor
 
     public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '', string $pagos = 'false')
-    {
-        $access = FunctionHelperController::verifyAdminAccess();
-        if(!$access){
-            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
-        }
-        // Validamos los request de los filtros que queremos aplicar
-        $ciclos = $ciclos ? explode(',', $ciclos): [];
-        $estados = explode(',', $estados);
-        $areas = $areas ? explode(',', $areas) : [];
-        $carreras = $carreras ? explode(',', $carreras) : [];
-        $instituciones = $instituciones ? explode(',', $instituciones) : [];
-        $sedes = $sedes ? explode(',', $sedes) : [];
-
-        $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
-        $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
-        $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
-        $areasAll = Area::orderBy('especializacion', 'asc')->get();
-
-        $especialistas = Especialista::where('estado', 1)->get();
-
-        $ciclosAll = [4,5,6,7,8,9,10];
-
-        $sedesFiltradas = $sedesAll->where('estado', 1);
-        $institucionesFiltradas = $institucionesAll->where('estado', 1);
-        $carrerasFiltradas = $carrerasAll->where('estado', 1);
-        $areasFiltradas = $areasAll->where('estado', 1);
-
-        $requestCarreras = empty($carreras) ? $carrerasAll->pluck('id')->toArray() : $carreras;
-        $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
-        $requestAreas = empty($areas) ? $areasAll->pluck('id')->toArray() : $areas;
-        $estadoAreas = empty($areas) ? [1,0] : [1];
-        $requestCiclos = empty($ciclos) ? $ciclosAll : $ciclos;
-
-        // justsedes
-        $requestSedes = empty($sedes) ? $sedesAll->pluck('id') : $sedes;
-
-        // Obtenemos a los colaboradores filtrados por áreas
-        $colaboradoresAreaId = Colaboradores_por_Area::with('colaborador')
-            ->whereIn('area_id', $requestAreas)
-            ->whereIn('estado', $estadoAreas)
-            ->get()
-            ->pluck('colaborador_id')->toArray();
-
-        $colaboradoresApoyoArea = ColaboradoresApoyoAreas::whereIn('area_id', $requestAreas)->whereIn('estado', $estadoAreas)->get()->pluck('colaborador_id')->toArray();
-
-
-
-
-        $colaboradoresArea = Colaboradores::whereIn('id', $colaboradoresAreaId);
-        // return $colaboradoresArea;
-
-        $colaboradoresAreaId = array_merge($colaboradoresAreaId, $colaboradoresApoyoArea);
-        //filtramos por los estados
-        $colaboradoresCandidatoId = $colaboradoresArea->whereIn('estado', $estados)->pluck('candidato_id');
-
-        //filtrar los candidatos por la carrera y la sede - institucion
-        $sedesInstitucionesId = Sede::whereIn('institucion_id', $requestInstituciones)->pluck('id');
-
-
-        // just sedes
-        $sedesId = Sede::whereIn('id', $requestSedes)->pluck('id');
-
-
-
-        // return $sedesId;
-
-        $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
-            ->whereIn('carrera_id', $requestCarreras) //filtrar por la carrera
-            ->whereIn('sede_id', $sedesInstitucionesId) //filtrar por la sede
-            ->whereIn('sede_id', $sedesId)
-            ->whereIn('ciclo_de_estudiante', $requestCiclos)->pluck('id');
-
-        // return $colaboradoresArea;
-
-        $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->paginate(12);
-        $countColaboradores = Colaboradores::whereIn('candidato_id', $candidatosFiltradosId)->get()->count();
-        $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
-
-
-        // return $estados;
-        foreach($estados as $estado) {
-            if(count($estados) === 1){
-                if($estado === "2"){
-                    $colaboradores = Colaboradores::with('candidato')->whereIn('candidato_id', $candidatosFiltradosId)->orderBy('updated_at', 'desc')->paginate(12);
-                }
-            }
-        }
-
-        $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
-        $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
-        // $colaboradores->data = FunctionHelperController::colaboradoresConArea($colaboradores);
-        $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
-        $colaboradores->data = $colaboradoresConArea;
-        $pageData = FunctionHelperController::getPageData($colaboradores);
-        $hasPagination = true;
-        $Allactividades = Actividades::where('estado', 1)->get();
-
-          // horas practicadas de cada colaborador
-          $horasTotales = $this->getHoursColab();
-          foreach ($colaboradores->data as &$colaborador) {
-              $horasPracticas = collect($horasTotales)
-                  ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
-              $colaborador->horasPracticas = $horasPracticas;
-              $correo = $colaborador->candidato->correo;
-              $colaborador->hasUser = User::where('email', $correo)->exists();
-          }
-        return view('inspiniaViews.colaboradores.index', [
-            'colaboradores' => $colaboradores,
-            'countColaboradores' => $countColaboradores,
-            'hasPagination' => $hasPagination,
-            'pageData' => $pageData,
-
-            'especialistas' => $especialistas,
-            'sedes' => $sedesFiltradas,
-            'instituciones' => $institucionesFiltradas,
-            'carreras' => $carrerasFiltradas,
-            'areas' => $areasFiltradas,
-
-            'sedesAll' => $sedesAll,
-            'institucionesAll' => $institucionesAll,
-            'carrerasAll' => $carrerasAll,
-            'areasAll' => $areasAll,
-            'Allactividades' => $Allactividades,
-
-            'horasTotales' => $horasTotales,
-            'ciclosAll' => $ciclosAll,
-            'colaboradoresCol' => $colaboradoresCol
-        ]);
+{
+    $access = FunctionHelperController::verifyAdminAccess();
+    if(!$access){
+        return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
     }
+    $distritos = Distrito::with('candidato')->get();
+    // Validamos los request de los filtros que queremos aplicar
+    $ciclos = $ciclos ? explode(',', $ciclos): [];
+    $estados = explode(',', $estados);
+    $areas = $areas ? explode(',', $areas) : [];
+    $carreras = $carreras ? explode(',', $carreras) : [];
+    $instituciones = $instituciones ? explode(',', $instituciones) : [];
+    $sedes = $sedes ? explode(',', $sedes) : [];
+
+    $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
+    $institucionesAll = Institucion::orderBy('nombre', 'asc')->get();
+    $carrerasAll = Carrera::orderBy('nombre', 'asc')->get();
+    $areasAll = Area::orderBy('especializacion', 'asc')->get();
+
+    $especialistas = Especialista::where('estado', 1)->get();
+
+    $ciclosAll = [4,5,6,7,8,9,10];
+
+    $sedesFiltradas = $sedesAll->where('estado', 1);
+    $institucionesFiltradas = $institucionesAll->where('estado', 1);
+    $carrerasFiltradas = $carrerasAll->where('estado', 1);
+    $areasFiltradas = $areasAll->where('estado', 1);
+
+    $requestCarreras = empty($carreras) ? $carrerasAll->pluck('id')->toArray() : $carreras;
+    $requestInstituciones = empty($instituciones) ? $institucionesAll->pluck('id')->toArray() : $instituciones;
+    $requestAreas = empty($areas) ? $areasAll->pluck('id')->toArray() : $areas;
+    $estadoAreas = empty($areas) ? [1,0] : [1];
+    $requestCiclos = empty($ciclos) ? $ciclosAll : $ciclos;
+
+    // justsedes
+    $requestSedes = empty($sedes) ? $sedesAll->pluck('id') : $sedes;
+
+    // Obtenemos a los colaboradores filtrados por áreas
+    $colaboradoresAreaId = Colaboradores_por_Area::with('colaborador')
+        ->whereIn('area_id', $requestAreas)
+        ->whereIn('estado', $estadoAreas)
+        ->get()
+        ->pluck('colaborador_id')->toArray();
+
+    $colaboradoresApoyoArea = ColaboradoresApoyoAreas::whereIn('area_id', $requestAreas)
+        ->whereIn('estado', $estadoAreas)
+        ->get()
+        ->pluck('colaborador_id')
+        ->toArray();
+
+    // Unimos los IDs de colaboradores de ambas tablas
+    $colaboradoresAreaId = array_merge($colaboradoresAreaId, $colaboradoresApoyoArea);
+
+    // Filtramos por los estados
+    $colaboradoresArea = Colaboradores::whereIn('id', $colaboradoresAreaId)
+        ->whereIn('estado', $estados)
+        ->get();
+
+    $colaboradoresCandidatoId = $colaboradoresArea->pluck('candidato_id');
+
+    // Creamos un array unificado de sedes válidas
+    $validSedesIds = [];
+
+    // Si no hay filtros específicos, usamos todas las sedes
+    if(empty($sedes) && empty($instituciones)) {
+        $validSedesIds = $sedesAll->pluck('id')->toArray();
+    } else {
+        // Si hay instituciones, obtenemos sus sedes
+        if(!empty($instituciones)) {
+            $sedesInstitucionesId = Sede::whereIn('institucion_id', $requestInstituciones)->pluck('id')->toArray();
+            $validSedesIds = array_merge($validSedesIds, $sedesInstitucionesId);
+        }
+
+        // Si hay sedes específicas, las añadimos
+        if(!empty($sedes)) {
+            $validSedesIds = array_merge($validSedesIds, $sedes);
+        }
+
+        // Eliminamos duplicados
+        $validSedesIds = array_unique($validSedesIds);
+    }
+
+    // Filtramos los candidatos con un solo whereIn para sede_id
+    $candidatosFiltradosId = Candidatos::whereIn('id', $colaboradoresCandidatoId)
+        ->whereIn('carrera_id', $requestCarreras)
+        ->whereIn('sede_id', $validSedesIds)
+        ->whereIn('ciclo_de_estudiante', $requestCiclos)
+        ->pluck('id');
+
+    // Consulta base para los colaboradores
+    $colaboradoresQuery = Colaboradores::with('candidato')
+        ->whereIn('candidato_id', $candidatosFiltradosId);
+
+    // Aplicamos ordenamiento especial solo si estado es 2 y es el único estado
+    if(count($estados) === 1 && $estados[0] === "2") {
+        $colaboradoresQuery = $colaboradoresQuery->orderBy('updated_at', 'desc');
+    }
+
+    $colaboradores = $colaboradoresQuery->paginate(12);
+    $countColaboradores = Colaboradores::whereIn('candidato_id', $candidatosFiltradosId)->count();
+    $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
+
+    $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
+    $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
+    $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
+    $colaboradores->data = $colaboradoresConArea;
+    $pageData = FunctionHelperController::getPageData($colaboradores);
+    $hasPagination = true;
+    $Allactividades = Actividades::where('estado', 1)->get();
+
+    // horas practicadas de cada colaborador
+    $horasTotales = $this->getHoursColab();
+    foreach ($colaboradores->data as &$colaborador) {
+        $horasPracticas = collect($horasTotales)
+            ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+        $colaborador->horasPracticas = $horasPracticas;
+        $correo = $colaborador->candidato->correo;
+        $colaborador->hasUser = User::where('email', $correo)->exists();
+    }
+
+    return view('inspiniaViews.colaboradores.index', [
+        'colaboradores' => $colaboradores,
+        'countColaboradores' => $countColaboradores,
+        'hasPagination' => $hasPagination,
+        'pageData' => $pageData,
+        'distritos' => $distritos,
+        'especialistas' => $especialistas,
+        'sedes' => $sedesFiltradas,
+        'instituciones' => $institucionesFiltradas,
+        'carreras' => $carrerasFiltradas,
+        'areas' => $areasFiltradas,
+        'sedesAll' => $sedesAll,
+        'institucionesAll' => $institucionesAll,
+        'carrerasAll' => $carrerasAll,
+        'areasAll' => $areasAll,
+        'Allactividades' => $Allactividades,
+        'horasTotales' => $horasTotales,
+        'ciclosAll' => $ciclosAll,
+        'colaboradoresCol' => $colaboradoresCol
+    ]);
+}
 
     public function store(StoreColaboradoresRequest $request)
     {
@@ -839,45 +851,55 @@ class ColaboradoresController extends Controller
         }
     }
 
-    public function search(string $busqueda = '')
-    {
+        public function search(string $busqueda = ''){
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
 
-        //asignar a variable
-        // $busqueda = $request->busqueda;
-
-        //Obtener colaboradores con nombre
-        //Filtrar por id
-        // $colaboradorPorId = Colaboradores::with('candidato')->where('id', $busqueda)->paginate(12);
-
-        //Obtener todos los colabs con candidato por function query
         $colaboradoresTotales = Colaboradores::with([
             'candidato' => function ($query) {
-                $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'sede_id', 'carrera_id', 'icono', 'correo', 'celular'); }
+                $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'sede_id', 'carrera_id', 'icono', 'correo', 'celular', 'distrito_id'); }
         ]);
-        //Filtrar por nombre y apellido de candidato
 
+        // buscar por nombre
         $idCandidatosPorNombre = Candidatos::searchByName($busqueda)->pluck('id');
         $colaboradoresPorNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->paginate(12);
         $countColaboradoresNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->get()->count();
 
+        // buscar por DNI
         $idCandidatosPorDni = Candidatos::searchByDni($busqueda)->pluck('id');
         $colaboradoresPorDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->paginate(12);
         $countColaboradoresDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->get()->count();
+
+        // buscar por distrito
+        $idCandidatosPorDistrito = Candidatos::whereHas('distrito', function($query) use ($busqueda) {
+            $query->whereRaw("LOWER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                nombre, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u'))
+                LIKE ?", ['%' . strtolower(
+                    str_replace(['á','é','í','ó','ú','Á','É','Í','Ó','Ú'],
+                                ['a','e','i','o','u','a','e','i','o','u'],
+                                $busqueda)
+                ) . '%']);
+        })->pluck('id');
+
+        $colaboradoresPorDistrito = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDistrito)->paginate(12);
+        $countColaboradoresDistrito = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDistrito)->get()->count();
+
         $distritos = Distrito::get();
-        //Si existe un registro encontrado por el id
+
+
         if ($colaboradoresPorDni->count() > 0) {
-            //Se asigna el valor del colaboradorPorId
             $colaboradores = $colaboradoresPorDni;
             $countColaboradores = $countColaboradoresDni;
-        } else { //Si no existe
-            //Se asigna el valor de los colaboradoresPorNombre
+        } elseif ($colaboradoresPorNombre->count() > 0) {
             $colaboradores = $colaboradoresPorNombre;
             $countColaboradores = $countColaboradoresNombre;
+        } else {
+            $colaboradores = $colaboradoresPorDistrito;
+            $countColaboradores = $countColaboradoresDistrito;
         }
+
         $especialistas = Especialista::where('estado', 1)->get();
 
         $ciclosAll = [4,5,6,7,8,9,10];
@@ -893,21 +915,21 @@ class ColaboradoresController extends Controller
 
         $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
 
-
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
         $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
-          // horas practicadas de cada colaborador
-          $horasTotales = $this->getHoursColab();
-          foreach ($colaboradores->data as &$colaborador) {
-              $horasPracticas = collect($horasTotales)
-                  ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
-              $colaborador->horasPracticas = $horasPracticas;
-          }
-        //return $colaboradoresConArea;
+
+        // horas practicadas de cada colaborador
+        $horasTotales = $this->getHoursColab();
+        foreach ($colaboradores->data as &$colaborador) {
+            $horasPracticas = collect($horasTotales)
+                ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+            $colaborador->horasPracticas = $horasPracticas;
+        }
+
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
@@ -927,9 +949,8 @@ class ColaboradoresController extends Controller
             'Allactividades' => $Allactividades,
             'horasTotales' =>  $horasTotales,
             'colaboradoresCol' => $colaboradoresCol,
-            'distritos' => $distritos 
+            'distritos' => $distritos
         ]);
-
     }
 
     public function despedirColaborador(Request $request, $colaborador_id){
@@ -1175,9 +1196,11 @@ class ColaboradoresController extends Controller
                             $usuario_jefe_area->delete();
                         }
 
-                        $usuarioPassword = UsuariosPasswords::where('user_id', $user->id)->first();
-                        if ($usuarioPassword) {
-                            $usuarioPassword->delete();
+                        $usuarioPasswords = UsuariosPasswords::where('user_id', $user->id)->get();
+                        if ($usuarioPasswords) {
+                            foreach ($usuarioPasswords as $usuarioPassword) {
+                                $usuarioPassword->delete();
+                            }
                         }
 
                         $user->delete();
@@ -1280,7 +1303,7 @@ class ColaboradoresController extends Controller
             return redirect()->route('colaboradores.index')->with('success', 'El colaborador ha sido creado con éxito y se ha enviado un correo con las credenciales.');
 
         } catch (Exception $e) {
-            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar al colaborador: ' . $e->getMessage());
+            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
         }
     }
 
@@ -1329,7 +1352,29 @@ class ColaboradoresController extends Controller
             return redirect()->route('colaboradores.index')->with('success', 'Pagos actualizados correctamente.');
         } catch (Exception $e) {
             DB::rollback();
-            return redirect()->route('colaboradores.index')->with('error', 'Error al actualizar pagos.');
+            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
+        }
+    }
+
+    public function activeEditAll() {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        DB::beginTransaction();
+        try {
+            
+            Colaboradores::query()->update(['editable' => 1]);
+            DB::commit();
+            return redirect()->route('colaboradores.index')->with('success', 'Se activó la edición para todos los colaboradores.');
+
+        } catch (Exception $e) {
+
+            // return $e;
+            DB::rollback();
+            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
+
         }
     }
 }

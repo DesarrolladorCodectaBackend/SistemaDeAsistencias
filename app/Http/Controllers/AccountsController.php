@@ -91,16 +91,16 @@ class AccountsController extends Controller
         //Usuarios
         $usersEmails = User::get()->pluck('email');
         //Colaboradores jefes de area
-        $colabsCandUsuariosId = Candidatos::whereIn('correo', $usersEmails)->get()->pluck('id');
-        $colaboradoresJefesId = Colaboradores_por_Area::where('estado', 1)->where('jefe_area', 1)->get()->pluck('colaborador_id')->unique();
-        $colaboradores = Colaboradores::with('candidato')->whereIn('id', $colaboradoresJefesId)->whereNotIn('candidato_id', $colabsCandUsuariosId)->get();
+        // $colabsCandUsuariosId = Candidatos::whereIn('correo', $usersEmails)->get()->pluck('id');
+        // $colaboradoresJefesId = Colaboradores_por_Area::where('estado', 1)->where('jefe_area', 1)->get()->pluck('colaborador_id')->unique();
+        // $colaboradores = Colaboradores::with('candidato')->whereIn('id', $colaboradoresJefesId)->whereNotIn('candidato_id', $colabsCandUsuariosId)->get();
         //Agregarles sus areas que lideran
-        foreach($colaboradores as $colaborador){
-            $areasJefe = Colaboradores_por_Area::with('area')->where('estado', 1)->where('jefe_area', 1)->where('colaborador_id', $colaborador->id)->get()->pluck('area');
-            $colaborador->areas = $areasJefe;
-        }
+        // foreach($colaboradores as $colaborador){
+        //     $areasJefe = Colaboradores_por_Area::with('area')->where('estado', 1)->where('jefe_area', 1)->where('colaborador_id', $colaborador->id)->get()->pluck('area');
+        //     $colaborador->areas = $areasJefe;
+        // }
         // return $colaboradores;
-        $areas = Area::where(["estado" => 1])->get();
+        // $areas = Area::where(["estado" => 1])->get();
         return view('inspiniaViews.accounts.create', ["colaboradores" => $colaboradores, "areas" => $areas]);
     }
 
