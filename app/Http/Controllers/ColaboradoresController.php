@@ -888,7 +888,7 @@ class ColaboradoresController extends Controller
 
         $distritos = Distrito::get();
 
-      
+
         if ($colaboradoresPorDni->count() > 0) {
             $colaboradores = $colaboradoresPorDni;
             $countColaboradores = $countColaboradoresDni;
@@ -1303,7 +1303,7 @@ class ColaboradoresController extends Controller
             return redirect()->route('colaboradores.index')->with('success', 'El colaborador ha sido creado con éxito y se ha enviado un correo con las credenciales.');
 
         } catch (Exception $e) {
-            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar al colaborador: ' . $e->getMessage());
+            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
         }
     }
 
@@ -1352,7 +1352,29 @@ class ColaboradoresController extends Controller
             return redirect()->route('colaboradores.index')->with('success', 'Pagos actualizados correctamente.');
         } catch (Exception $e) {
             DB::rollback();
-            return redirect()->route('colaboradores.index')->with('error', 'Error al actualizar pagos.');
+            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
+        }
+    }
+
+    public function activeEditAll() {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        DB::beginTransaction();
+        try {
+            
+            Colaboradores::query()->update(['editable' => 1]);
+            DB::commit();
+            return redirect()->route('colaboradores.index')->with('success', 'Se activó la edición para todos los colaboradores.');
+
+        } catch (Exception $e) {
+
+            // return $e;
+            DB::rollback();
+            return redirect()->route('colaboradores.index')->with('error', 'Ocurrió un error al registrar el pago, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
+
         }
     }
 }
