@@ -851,45 +851,55 @@ class ColaboradoresController extends Controller
         }
     }
 
-    public function search(string $busqueda = '')
-    {
+        public function search(string $busqueda = ''){
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
 
-        //asignar a variable
-        // $busqueda = $request->busqueda;
-
-        //Obtener colaboradores con nombre
-        //Filtrar por id
-        // $colaboradorPorId = Colaboradores::with('candidato')->where('id', $busqueda)->paginate(12);
-
-        //Obtener todos los colabs con candidato por function query
         $colaboradoresTotales = Colaboradores::with([
             'candidato' => function ($query) {
-                $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'sede_id', 'carrera_id', 'icono', 'correo', 'celular'); }
+                $query->select('id', 'nombre', 'apellido', 'dni', 'direccion', 'fecha_nacimiento', 'ciclo_de_estudiante', 'estado', 'sede_id', 'carrera_id', 'icono', 'correo', 'celular', 'distrito_id'); }
         ]);
-        //Filtrar por nombre y apellido de candidato
 
+        // buscar por nombre
         $idCandidatosPorNombre = Candidatos::searchByName($busqueda)->pluck('id');
         $colaboradoresPorNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->paginate(12);
         $countColaboradoresNombre = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorNombre)->get()->count();
 
+        // buscar por DNI
         $idCandidatosPorDni = Candidatos::searchByDni($busqueda)->pluck('id');
         $colaboradoresPorDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->paginate(12);
         $countColaboradoresDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->get()->count();
+
+        // buscar por distrito
+        $idCandidatosPorDistrito = Candidatos::whereHas('distrito', function($query) use ($busqueda) {
+            $query->whereRaw("LOWER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                nombre, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u'))
+                LIKE ?", ['%' . strtolower(
+                    str_replace(['á','é','í','ó','ú','Á','É','Í','Ó','Ú'],
+                                ['a','e','i','o','u','a','e','i','o','u'],
+                                $busqueda)
+                ) . '%']);
+        })->pluck('id');
+
+        $colaboradoresPorDistrito = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDistrito)->paginate(12);
+        $countColaboradoresDistrito = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDistrito)->get()->count();
+
         $distritos = Distrito::get();
-        //Si existe un registro encontrado por el id
+
+      
         if ($colaboradoresPorDni->count() > 0) {
-            //Se asigna el valor del colaboradorPorId
             $colaboradores = $colaboradoresPorDni;
             $countColaboradores = $countColaboradoresDni;
-        } else { //Si no existe
-            //Se asigna el valor de los colaboradoresPorNombre
+        } elseif ($colaboradoresPorNombre->count() > 0) {
             $colaboradores = $colaboradoresPorNombre;
             $countColaboradores = $countColaboradoresNombre;
+        } else {
+            $colaboradores = $colaboradoresPorDistrito;
+            $countColaboradores = $countColaboradoresDistrito;
         }
+
         $especialistas = Especialista::where('estado', 1)->get();
 
         $ciclosAll = [4,5,6,7,8,9,10];
@@ -905,21 +915,21 @@ class ColaboradoresController extends Controller
 
         $colaboradoresCol = $this->asignarColorJefesArea($colaboradores);
 
-
         $colaboradores = $this->getColaboradoresPromedioStatus($colaboradores);
         $colabsActividades = AreaRecreativaController::getColabActividades($colaboradores->items());
         $colaboradoresConArea = FunctionHelperController::colaboradoresConArea($colabsActividades);
         $colaboradores->data = $colaboradoresConArea;
         $pageData = FunctionHelperController::getPageData($colaboradores);
         $hasPagination = true;
-          // horas practicadas de cada colaborador
-          $horasTotales = $this->getHoursColab();
-          foreach ($colaboradores->data as &$colaborador) {
-              $horasPracticas = collect($horasTotales)
-                  ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
-              $colaborador->horasPracticas = $horasPracticas;
-          }
-        //return $colaboradoresConArea;
+
+        // horas practicadas de cada colaborador
+        $horasTotales = $this->getHoursColab();
+        foreach ($colaboradores->data as &$colaborador) {
+            $horasPracticas = collect($horasTotales)
+                ->firstWhere('colaborador_id', $colaborador->id)['horasPracticas'] ?? 0;
+            $colaborador->horasPracticas = $horasPracticas;
+        }
+
         $Allactividades = Actividades::where('estado', 1)->get();
         return view('inspiniaViews.colaboradores.index', [
             'colaboradores' => $colaboradores,
@@ -941,7 +951,6 @@ class ColaboradoresController extends Controller
             'colaboradoresCol' => $colaboradoresCol,
             'distritos' => $distritos
         ]);
-
     }
 
     public function despedirColaborador(Request $request, $colaborador_id){

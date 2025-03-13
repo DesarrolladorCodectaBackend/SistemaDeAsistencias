@@ -431,31 +431,44 @@ class CandidatosController extends Controller
 }
 
 
-    public function search(string $busqueda = '')
-    {
+    public function search(string $busqueda = ''){
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
 
         $distritos = Distrito::with('candidato')->get();
-        //Filtrar por id
-        // $candidatosPorDni = Candidatos::with('carrera', 'sede')->where('dni', $busqueda)->paginate(6);
 
-        //Filtrar por nombre y apellido de candidato
-        $candidatosPorDni = Candidatos::with('sede', 'carrera')
+        // buscar por DNI
+        $candidatosPorDni = Candidatos::with('sede', 'carrera', 'distrito')
             ->where(DB::raw("dni"), 'like', '%' . $busqueda . '%')
             ->paginate(6);
 
-        $candidatosPorNombre = Candidatos::with('sede', 'carrera')
-            ->where(DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', '%' . $busqueda . '%')
+        // buscar por nombre y apellido
+        $candidatosPorNombre = Candidatos::with('sede', 'carrera', 'distrito')
+            ->where(DB::raw("LOWER(CONCAT(nombre, ' ', apellido))"), 'like', '%' . strtolower($busqueda) . '%')
             ->paginate(6);
 
-        //Si existe un registro encontrado por el id
+        // buscar por distrito
+        $candidatosPorDistrito = Candidatos::with('sede', 'carrera', 'distrito')
+            ->whereHas('distrito', function($query) use ($busqueda) {
+                // Convertir a minúsculas y eliminar acentos para la comparación
+                $query->whereRaw("LOWER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+                    nombre, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u'))
+                    LIKE ?", ['%' . strtolower(
+                        str_replace(['á','é','í','ó','ú','Á','É','Í','Ó','Ú'],
+                                    ['a','e','i','o','u','a','e','i','o','u'],
+                                    $busqueda)
+                    ) . '%']);
+            })
+            ->paginate(6);
+
         if ($candidatosPorDni->count() > 0) {
             $candidatos = $candidatosPorDni;
-        } else { //Si no existe
+        } elseif ($candidatosPorNombre->count() > 0) {
             $candidatos = $candidatosPorNombre;
+        } else {
+            $candidatos = $candidatosPorDistrito;
         }
 
         $sedesAll = Sede::with('institucion')->orderBy('nombre', 'asc')->get();
@@ -470,8 +483,6 @@ class CandidatosController extends Controller
         $hasPagination = true;
         $pageData = FunctionHelperController::getPageData($candidatos);
 
-        //return $colaboradoresConArea;
-
         return view('inspiniaViews.candidatos.index', [
             'distritos' => $distritos,
             'candidatos' => $candidatos,
@@ -485,7 +496,6 @@ class CandidatosController extends Controller
             'institucionesAll' => $institucionesAll,
             'carrerasAll' => $carrerasAll,
         ]);
-
     }
 
     public function reActivate(Request $request, $candidato_id){
