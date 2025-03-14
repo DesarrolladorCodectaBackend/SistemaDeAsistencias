@@ -299,7 +299,7 @@ class CandidatosController extends Controller
             DB::commit();
             return redirect($returnRoute);
         } catch (Exception $e) {
-            return $e;
+            // return $e;
             DB::rollBack();
             return redirect($returnRoute)->with('error', 'Ocurrió un error al actualizar, intente de nuevo. Si este error persiste, contacte a su equipo de soporte.');
         }
