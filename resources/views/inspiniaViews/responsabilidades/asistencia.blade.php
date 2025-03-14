@@ -115,7 +115,13 @@
 
         @foreach($semanasMes as $index => $semana)
 
-        <section id="semana{{$index+1}}" style="display: none">
+        <style>
+            .section-calificar {
+                height: 100% !important;
+                object-fit: cover;
+            }
+        </style>
+        <section id="semana{{$index+1}}" style="display: none" class="section-calificar">
             <table class="juntar">
                 <tr>
                     <th> {{$mes}} </th>
@@ -450,7 +456,12 @@
             </tbody>
         </form>
     </table>
-    <div class="text-center">
+    <style>
+        .btn-calificar {
+            /* height: 100%; */
+        }
+    </style>
+    <div class="text-center btn-calificar">
         <button onclick="habilitarEdicion({{$index+1}})" class="ladda-button btn btn-success mr-2">Editar</button>
         <a href="#" id="BtnGuardar{{$index+1}}" class="ladda-button btn btn-primary mr-2 disabled"
             onclick="document.getElementById('cumplioUpdate{{$index+1}}').submit();" disabled>Guardar
@@ -507,7 +518,7 @@
             </tbody>
         </form>
     </table>
-    <div class="text-center">
+    <div class="text-center btn-calificar">
         <a href="#" class="ladda-button btn btn-primary mr-5"
             onclick="document.getElementById('cumplioStore{{$index+1}}').submit();">Guardar
         </a>
@@ -821,7 +832,6 @@
     @endif
 
 
-    @include('components.inspinia.footer-inspinia')
     </div>
     </div>
 
