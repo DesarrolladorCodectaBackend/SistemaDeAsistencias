@@ -141,12 +141,16 @@
                             <h3 class="p-0 m-0">
                                 {{$area->especializacion}}
                             </h3>
-                            <p title="La evaluación de nuevas semanas se liberan cada lunes."
+                            {{-- <p title="La evaluación de nuevas semanas se liberan cada domingo."
                                 class="p-0 m-0 font-italic {{$semana->disponible ? 'text-success' : 'text-danger'}}">
                                 {{
                                     $semana->disponible ? '(Esta semana está disponible para ser evaluada)'
                                     : '(Esta semana no puede ser evaluada aún)'
                                 }}
+                            </p> --}}
+                            <p title="La evaluación de nuevas semanas se liberan cada domingo."
+                                class="p-0 m-0 font-italic text-success">
+                                Activado los domingos
                             </p>
                         </div>
                         <div style="width: 10%">

@@ -319,14 +319,29 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
             $thisWeekMonday = Carbon::today()->startOfWeek()->toDateString();
             $thisSemana = Semanas::where('fecha_lunes', $thisWeekMonday)->first();
-
-
             $semana = Semanas::find($request->semana_id);
 
-            if ($semana->id >= $thisSemana->id) {
-                DB::rollBack();
-                return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
-                    ->with('EvaluacionWarning', 'No se puede evaluar semanas que aún no concluyen.')->with('current_semana_id', $request->index);
+
+
+            $today = Carbon::today();
+            $isSunday = $today->dayOfWeek == Carbon::SUNDAY;
+
+            // Si es domingo, permitimos calificar la semana actual
+            if ($isSunday) {
+                $nextWeekMonday = $today->copy()->addDay()->toDateString();
+                $nextSemana = Semanas::where('fecha_lunes', $nextWeekMonday)->first();
+
+                if ($semana->id >= ($nextSemana ? $nextSemana->id : PHP_INT_MAX)) {
+                    DB::rollBack();
+                    return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                        ->with('EvaluacionWarning', 'No se puede evaluar semanas que aún no concluyen.')->with('current_semana_id', $request->index);
+                }
+            } else {
+                if ($semana->id >= $thisSemana->id) {
+                    DB::rollBack();
+                    return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
+                        ->with('EvaluacionWarning', 'No se puede evaluar semanas que aún no concluyen.')->with('current_semana_id', $request->index);
+                }
             }
 
             $responsabilidades = Responsabilidades_semanales::get();
@@ -611,7 +626,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
 
                 foreach ($colaboradoresAreaId as $colabAreaId) {
                     $activo = RegistroActividadController::verifyColaboradorInactivity($colabAreaId, $semana->id);
-                    
+
                     // Si el colaborador está activo, añadirlo al array temporal
                     if ($activo === true) {
                         $colaboradoresActivosId[] = $colabAreaId;
