@@ -167,7 +167,12 @@
 
                                                             <div class="form-group">
                                                                 @if ($libro->colaborador_actual)
-                                                                    <label>Prestado a <strong>{{ $libro->colaborador_actual->candidato->nombre . " " . $libro->colaborador_actual->candidato->apellido }}</strong></label>
+                                                                    <div><label>Prestado a <strong>{{ $libro->colaborador_actual->candidato->nombre . " " . $libro->colaborador_actual->candidato->apellido }}</strong></label></div>
+                                                                    @if ($libro->ultimoPrestamo)
+                                                                       <div> <label>Fecha préstamo: <strong>{{ $libro->ultimoPrestamo->fecha_prestamo }}</strong></label></div>
+                                                                    @else
+                                                                        <div><label><strong>Sin fecha de préstamo</strong></label></div>
+                                                                    @endif
                                                                 @else
                                                                     Disponible
                                                                 @endif

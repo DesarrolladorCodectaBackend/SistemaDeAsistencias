@@ -31,6 +31,8 @@ class LibroController extends Controller
                 : null;
 
             $libro->setAttribute('colaborador_actual', $colaborador);
+            $libro->setAttribute('ultimoPrestamo', $ultimoPrestamo);
+
         }
 
         return view('inspiniaViews.libros.index',[
