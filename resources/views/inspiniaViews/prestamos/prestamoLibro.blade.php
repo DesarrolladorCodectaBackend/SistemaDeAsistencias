@@ -4,6 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>INSPINIA | Préstamos</title>
 
 </head>
@@ -40,12 +45,28 @@
                     <div class="text-center">
                     <a data-toggle="modal"  class="btn btn-success"  href="#modal-form-add" > Agregar <i class="fa fa-long-arrow-right"></i></a>
                     </div>
+
+
+                    <style>
+                        .modal {
+                            z-index: 1050;
+                        }
+
+                        .select2-container {
+                            z-index: 9999 !important; /
+                        }
+
+                        .customModal {
+                            width: 100% !important;
+                        }
+                    </style>
+                    {{-- modalStore prestamo --}}
                     <div id="modal-form-add" class="modal fade" aria-hidden="true">
-                        <div class="modal-dialog modal-custom">
+                        <div class="modal-dialog modal-custom modal-lg">
                             <div class="modal-content">
-                                <div class="modal-body">
-                                    <div class="row d-flex justify-content-center">
-                                        <div class="col-sm-6">
+                                <div class="modal-body customModal">
+                                    <div class="row d-flex justify-content-center customModal">
+                                        <div class="col-sm-6 customModal">
                                             {{-- Envío formulario --}}
                                             <form role="form" action="{{ route('libroPrestamo.store') }}" method="post">
                                                 @csrf
@@ -56,15 +77,30 @@
                                                     <input type="date" placeholder="....." class="form-control" name="fecha_prestamo" id="fecha_prestamo" value="{{ \Carbon\Carbon::now()->toDateString() }}" readonly>
                                                 </div>
 
-                                                <div class="form-group">
+                                                {{-- <div class="form-group">
                                                     <label for="libro_id">Libro</label>
-                                                    <select name="libro_id" id="libro_id" class="form-control" required>
-                                                        <option value="" disabled selected>Seleccione un libro</option>
+                                                    <select name="libro_id select2-libro" id="libro_id" class="form-control" required>
+                                                        <option value="" selected>Seleccione un libro</option>
                                                         @foreach($libros as $libro)
                                                             <option value="{{ $libro->id }}">{{ $libro->titulo }} - {{ $libro->autor }}</option>
                                                         @endforeach
                                                     </select>
+                                                </div> --}}
+
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label>Libros</label>
+                                                    </div>
+                                                    <select class="form-control select2-libro" name="libro_id" id="libro_id">
+                                                        <option value="">Seleccione un libro</option>
+                                                        @foreach($libros as $libro)
+                                                            <option value="{{ $libro->id }}">
+                                                                {{ $libro->titulo }} - {{ $libro->autor }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
+
                                                 <div class="col-sm-12 text-center">
                                                     <button class="btn btn-success btn-sm m-t-n-xs" type="submit"><i class="fa fa-check" ></i>&nbsp;Agregar</button>
                                                 </div>
@@ -243,6 +279,16 @@
     </div>
 </div>
 
+
+<script>
+    $(document).ready(function() {
+        $('.select2-libro').select2({
+            placeholder: "Buscar libro...",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
 
 <script>
 
