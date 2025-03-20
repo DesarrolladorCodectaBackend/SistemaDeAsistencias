@@ -70,7 +70,8 @@ class AccountsController extends Controller
                     }
                 }
 
-
+                $inicio = 1;
+                $conteo = $inicio + 1;
             }
 
 
