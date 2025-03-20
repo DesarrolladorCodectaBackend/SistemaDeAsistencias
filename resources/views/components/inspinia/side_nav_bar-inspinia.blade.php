@@ -110,10 +110,14 @@
                 </li>
             @endif
 
-            @if($userData['isColab'])
+            @if($userData['isColab'] || $userData['isBoss'])
                 <li>
                     <a href="{{ route('bibliotecaColab.index') }}"><i class="fa fa-list-alt"></i> <span
                             class="nav-label">Biblioteca</span></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-list-alt"></i> <span
+                            class="nav-label">Horarios</span></a>
                 </li>
             @endif
 

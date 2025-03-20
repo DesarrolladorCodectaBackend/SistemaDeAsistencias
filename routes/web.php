@@ -17,6 +17,7 @@ use App\Http\Controllers\CursosController;
 use App\Http\Controllers\FunctionHelperController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
+use App\Http\Controllers\HorarioColabAccountController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
@@ -279,6 +280,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/birthdays', [BirthdayController::class, 'index'])->name('cumplecolabs.index');
     Route::get('/cumpleaneros', [BirthdayController::class, 'getCumpleanerosHoy'])->name('cumpleaneros.json');
+
+    // ColaboradorAccount
+    Route::get('/colaborador-horario', [HorarioColabAccountController::class, 'index'])->name('colabAccount.index');
 });
 
 require __DIR__ . '/auth.php';

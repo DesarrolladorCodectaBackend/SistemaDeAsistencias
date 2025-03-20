@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreHorario_de_ClasesRequest;
+use App\Models\Candidatos;
 use App\Models\Colaboradores;
 use App\Models\Horario_de_Clases;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HorarioColabAccountController extends Controller
@@ -14,6 +16,18 @@ class HorarioColabAccountController extends Controller
     public function index()
     {
         try {
+
+            if (Auth::check()) {
+                $user = Auth::user();
+                $userEmail = $user->email;
+                $candidato = Candidatos::where('correo', $userEmail)->first();
+
+                if ($candidato) {
+                    $colaborador = Colaboradores::where('id', $candidato->id)->first();
+                }
+            }
+
+
             $horario_de_clases = Horario_de_Clases::with('colaboradores')->get();
 
             if (count($horario_de_clases) == 0) {
@@ -168,8 +182,6 @@ class HorarioColabAccountController extends Controller
             DB::rollback();
             return redirect()->route('colaboradores.horarioClase')->with('error', 'Ocurrió un error al crear una reunión, intente de nuevo. Si este error persiste, contacte a su equipo de soporte.');
         }
-
-
 
     }
 }
