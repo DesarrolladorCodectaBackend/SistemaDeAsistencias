@@ -680,11 +680,11 @@ class AreaController extends Controller
 
     public function showArea($area_id)
     {
-        $access = FunctionHelperController::verifyAreaAccess($area_id);
+        // $access = FunctionHelperController::verifyAreaAccess($area_id);
 
-        if (!$access) {
-            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para visualizar esa area. No lo intente denuevo o puede ser baneado.');
-        }
+        // if (!$access) {
+        //     return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para visualizar esa area. No lo intente denuevo o puede ser baneado.');
+        // }
 
         $area = Area::findOrFail($area_id);
         if ($area) {

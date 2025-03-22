@@ -21,7 +21,7 @@ class HomePageController extends Controller
 
         $userData = FunctionHelperController::getUserRol();
         $returning = [];
-        
+
         if($userData['isAdmin']){
             $areasProm = $this->getMonthPromAreas();
             $reunionesProgramadas = $this->getTodayProgramReu();
@@ -41,6 +41,18 @@ class HomePageController extends Controller
             }
 
             $returning['selectedAreas'] = $selectedAreas;
+        }
+
+        if ($userData['isColab'] && isset($userData['colabsArea']) && $userData['colabsArea']) {
+            $areasColabId = is_array($userData['colabsArea']) ? collect($userData['colabsArea'])->pluck('area_id') : collect([$userData['colabsArea']->area_id]);
+
+            $selectedAreasColab = Area::whereIn('id', $areasColabId)
+                ->withCount(['colaborador_por_area' => function ($query) {
+                    $query->where('estado', 1);
+                }])
+                ->get();
+
+            $returning['selectedAreasColab'] = $selectedAreasColab;
         }
         // return $returning;
         return view('dashboard', $returning);
@@ -74,7 +86,7 @@ class HomePageController extends Controller
                 }
             }
         }
-        
+
         $Meses = FunctionHelperController::getMonths();
         $semanasTotales = Semanas::get();
 
@@ -91,7 +103,7 @@ class HomePageController extends Controller
                 }
             }
         }
-        
+
         $totalSemanas = count($semanasMes);
         $areasProm = [];
         foreach ($areas as $area) {
@@ -121,7 +133,7 @@ class HomePageController extends Controller
                     }
                 }
                 $colaboradoresActivosToAdd = Colaboradores_por_Area::whereIn('id', $colaboradoresActivosId)->get();
-                
+
                 foreach ($colaboradoresActivosToAdd as $colaboradorActivoToAdd) {
                     $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->where("colaborador_area_id", $colaboradorActivoToAdd->id)->first();
                     // return $semanaCumplida;
@@ -136,7 +148,7 @@ class HomePageController extends Controller
                                 break;
                             }
                         }
-                        
+
                         // Si el colaborador no está en $colaboradoresMes, agregarlo
                         if (!$existe) {
                             $candidato = $colaboradorActivoToAdd->colaborador->candidato;
@@ -166,10 +178,10 @@ class HomePageController extends Controller
                     $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $semanaId)
                         ->where('colaborador_area_id', $colaboradorMes['id'])
                         ->get();
-                    
+
                     foreach ($registrosCumplidosSemana as $registro) {
                         $valorCumplio = $registro->cumplio == 1 ? 20 : 0;
-                        
+
                         foreach($responsabilidades as $responsabilidad){
                             if($responsabilidad->id == $registro->responsabilidad_id) {
                                 $nombreResponsabilidad = $responsabilidad->nombre;
@@ -182,9 +194,9 @@ class HomePageController extends Controller
                 $colaboradorMes['sumNotas'] = $sumNotes;
             }
             unset($colaboradorMes); // Unset the reference
-    
+
             // return $colaboradoresMes;
-            
+
             //Dividir la suma maxima de las notas por la cantidad de semanas para obtener el promedio de cada responsabilidad
             foreach ($colaboradoresMes as $index => $colaboradorMes) {
                 // Inicializar promNotes con todas las responsabilidades en 0
@@ -196,7 +208,7 @@ class HomePageController extends Controller
                 $colaboradoresMes[$index]['promedio'] = $PromNotas;
                 //Total suma de todas las responsabilidades entre el conteo de estas para obtener el promedio general del colaborador en el mes
                 $colaboradoresMes[$index]['total'] = number_format((array_sum($PromNotas))/$responsabilidades->count(),1);
-                
+
             }
             if(count($colaboradoresMes) > 0){
                 $areaTotal = 0;
@@ -231,7 +243,7 @@ class HomePageController extends Controller
             $day = date('d', strtotime($horario->fecha));
 
             $month = $month -1;
-    
+
             $horariosFormateados = [
                 'hora_inicial' => $horaInicial,
                 'hora_final' => $horaFinal,
@@ -248,15 +260,15 @@ class HomePageController extends Controller
     function getAreasToday(){
         $dia_today = Carbon::now()->format('l');
         $dias = [
-            "Monday" => "Lunes", 
-            "Tuesday" => "Martes", 
-            "Wednesday" => "Miércoles", 
-            "Thursday" => "Jueves", 
-            "Friday" => "Viernes", 
-            "Saturday" => "Sábado", 
+            "Monday" => "Lunes",
+            "Tuesday" => "Martes",
+            "Wednesday" => "Miércoles",
+            "Thursday" => "Jueves",
+            "Friday" => "Viernes",
+            "Saturday" => "Sábado",
             "Sunday" => "Domingo"
         ];
-        
+
         $dia_español = $dias[$dia_today];
         $horariosToday = Horarios_Presenciales::where('dia', $dia_español)->get();
         $horariosAreasToday = Horario_Presencial_Asignado::with('area', 'horario_presencial')->whereIn('horario_presencial_id', $horariosToday->pluck('id'))->get();
@@ -265,7 +277,7 @@ class HomePageController extends Controller
             if($horario->area->estado == 1){
                 $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
                 $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-                $areasToday[] = 
+                $areasToday[] =
                     [
                         'especializacion' => $horario->area->especializacion,
                         'color' => $horario->area->color_hex,
@@ -275,7 +287,7 @@ class HomePageController extends Controller
                     ];
             }
         }
-        
+
         return $areasToday;
     }
 
