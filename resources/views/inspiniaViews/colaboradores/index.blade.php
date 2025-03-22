@@ -1179,16 +1179,14 @@
             @endif
             <style>
                 .swal2-container {
-                    position: fixed;  /* O usa absolute si lo prefieres */
+                    position: fixed;  
                     z-index: 9999999999999;
                 }
 
-                /* Increase width for the select2 container */
                 .select2-container {
-                min-width: 400px !important; /* Ensure there's enough space */
+                min-width: 400px !important;
                 }
 
-                /* Improve the selected option display */
                 .select2-selection__choice {
                 padding: 2px 23px !important;
                 margin: 4px 4px 4px 0 !important;
@@ -1198,21 +1196,18 @@
                 font-size: 14px !important;
                 }
 
-                /* Ensure text is fully visible */
                 .select2-selection__choice__display {
                 word-break: normal !important;
                 white-space: normal !important;
                 overflow: visible !important;
                 }
 
-                /* Fix the overall select box appearance */
                 .select2-container--default .select2-selection--multiple {
                 min-height: 38px !important;
                 border: 1px solid #ced4da !important;
                 padding: 2px !important;
                 }
 
-                /* Make sure the text is aligned properly */
                 .select2-selection__rendered {
                 display: flex !important;
                 flex-wrap: wrap !important;
