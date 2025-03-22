@@ -8,6 +8,7 @@ use App\Http\Controllers\BirthdayController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\ColabAccountController;
 use App\Http\Controllers\ColaboradorEditController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\CursosController;
 use App\Http\Controllers\FunctionHelperController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
+use App\Http\Controllers\HorarioColabAccountController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
@@ -270,6 +272,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/biblioteca/store', [LibroController::class, 'store'])->name('libro.store');
     Route::put('/biblioteca/update/{libro_id}', [LibroController::class, 'update'])->name('libro.update');
     // Route::post('/biblioteca/active-inactive/{libro_id}', [LibroController::class, 'activeInactive'])->name('libro.activarInactivar');
+    Route::get('/libros-disponibles/', [ColabAccountController::class, 'index'])->name('bibliotecaColab.index');
 
     Route::get('/biblioteca/{colaborador_id}', [PrestamoLibroController::class, 'colabLibros'])->name('libro.colabLibro');
     Route::post('/biblioteca/prestamo/store', [PrestamoLibroController::class, 'store'])->name('libroPrestamo.store');
@@ -277,6 +280,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/birthdays', [BirthdayController::class, 'index'])->name('cumplecolabs.index');
     Route::get('/cumpleaneros', [BirthdayController::class, 'getCumpleanerosHoy'])->name('cumpleaneros.json');
+
+    // ColaboradorAccount
+    Route::get('/colaborador-horario', [HorarioColabAccountController::class, 'index'])->name('colabAccount.index');
 });
 
 require __DIR__ . '/auth.php';

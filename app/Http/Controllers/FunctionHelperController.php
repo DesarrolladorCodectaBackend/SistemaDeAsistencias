@@ -15,6 +15,7 @@ use App\Models\Semanas;
 use App\Models\Transaccion;
 use App\Models\User;
 use App\Models\UsuarioAdministrador;
+use App\Models\UsuarioColaborador;
 use App\Models\UsuarioJefeArea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,7 +33,17 @@ class FunctionHelperController extends Controller
         $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
         $isBoss = false;
         if($jefeArea->count() > 0){$isBoss = true;}
-        $colaborador = Candidatos::where('correo', $user->email)->first();
+        // $colaborador = Candidatos::where('correo', $user->email)->first();
+        // traerColabsArea
+        // $colabs = Colaboradores::where('candidato_id', $colaborador->id)->get();
+        // $colabArea = UsuarioColaborador::where('user_id', $user->id)->first();
+        $candidato = Candidatos::where('correo', $user->email)->first();
+        $colaborador = $candidato ? Colaboradores::where('candidato_id', $candidato->id)->first() : null;
+        $colabArea = $colaborador
+        ? Colaboradores_por_Area::where('colaborador_id', $colaborador->id)
+            ->where('jefe_area', 0)
+            ->first()
+        : null;
         $isColab = false;
         if($colaborador) {
             $isColab = true;
@@ -42,6 +53,8 @@ class FunctionHelperController extends Controller
             "user" => $user,
             "administrador" => $administrador,
             "Jefeareas" => $jefeArea,
+            "colaboradores" => $colaborador,
+            "colabsArea" => $colabArea,
             "isAdmin" => $isAdmin,
             "isBoss" => $isBoss,
             "isColab" => $isColab

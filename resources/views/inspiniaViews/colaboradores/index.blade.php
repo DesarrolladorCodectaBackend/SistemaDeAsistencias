@@ -362,7 +362,7 @@
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Actividades favoritas:</p>
                                             <ol class="custom-list">
                                                 @foreach($colaborador->actividadesFavoritas as $actividades)
-                                                <li style='font-size: 0.9rem;' class="overflowing-skipt">{{$actividades}}</li>
+                                                    <li style='font-size: 0.9rem;' class="overflowing-skipt">{{$actividades}}</li>
                                                 @endforeach
                                             </ol>
                                         </div>
@@ -508,11 +508,26 @@
                         list-style-position: inside; /* Esto coloca los números dentro del contenedor, evitando el sangrado */
                         padding-left: 0; /* Elimina el relleno a la izquierda del <ol> */
                         margin-left: 0; /* Elimina el margen a la izquierda del <ol> */
+                        /* width: 100%; */
                     }
 
                     ol.custom-list li {
                         margin: 0; /* Elimina el margen de los elementos <li> */
                         padding-left: 0; /* Opcional: Agrega un poco de espacio a la izquierda para el número, si es necesario */
+                        /* width: 100%; */
+                    }
+
+                    .overflowing-skipt {
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden; /* Oculta cualquier desbordamiento */
+    text-overflow: ellipsis; /* Agrega "..." cuando el texto es muy largo */
+    max-width: 100%; /* Asegura que se ajuste al contenedor */
+    display: inline-block; /* Evita comportamiento inesperado con listas */
+}
+
+
+                    .select2-selection__choice__remove {
+                        paddin: 2em;
                     }
 
                     /* .text-center {
@@ -1164,11 +1179,43 @@
             @endif
             <style>
                 .swal2-container {
-        position: fixed;  /* O usa absolute si lo prefieres */
-        z-index: 9999999999999;
-    }
+                    position: fixed;  
+                    z-index: 9999999999999;
+                }
 
-                </style>
+                .select2-container {
+                min-width: 400px !important;
+                }
+
+                .select2-selection__choice {
+                padding: 2px 23px !important;
+                margin: 4px 4px 4px 0 !important;
+                background-color: #f1f1f1 !important;
+                border: 1px solid #aaa !important;
+                border-radius: 4px !important;
+                font-size: 14px !important;
+                }
+
+                .select2-selection__choice__display {
+                word-break: normal !important;
+                white-space: normal !important;
+                overflow: visible !important;
+                }
+
+                .select2-container--default .select2-selection--multiple {
+                min-height: 38px !important;
+                border: 1px solid #ced4da !important;
+                padding: 2px !important;
+                }
+
+                .select2-selection__rendered {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                align-items: center !important;
+                }
+
+
+            </style>
 
         </div>
 
@@ -1907,8 +1954,11 @@
             $('.multiple_apoyo_select').select2();
         });
         $(document).ready(function() {
-            $('.multiple_actividades_select').select2();
-        });
+    $('.multiple_actividades_select').select2({
+        width: '100px'
+    });
+});
+
     </script>
 
     <script>

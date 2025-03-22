@@ -110,6 +110,17 @@
                 </li>
             @endif
 
+            @if($userData['isColab'] || $userData['isBoss'])
+                <li>
+                    <a href="{{ route('bibliotecaColab.index') }}"><i class="fa fa-list-alt"></i> <span
+                            class="nav-label">Biblioteca</span></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-list-alt"></i> <span
+                            class="nav-label">Horarios</span></a>
+                </li>
+            @endif
+
             @if($userData['isAdmin'])
                 <li id="maquinas">
                     <a href="{{route('maquinas.index')}}"><i class="fa fa-desktop"></i> <span class="nav-label">Máquinas</span></a>
@@ -153,7 +164,7 @@
                             <span id="notificationsCountBirthdayBContainer" class="label label-primary badge-cumple" ></span>
 
                     </a>
-                   
+
                     <style>
                         .badge-cumple {
 position: absolute;
