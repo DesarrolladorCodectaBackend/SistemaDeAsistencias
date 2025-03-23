@@ -33,10 +33,7 @@ class FunctionHelperController extends Controller
         $jefeArea = UsuarioJefeArea::where('user_id', $user->id)->where('estado', 1)->get();
         $isBoss = false;
         if($jefeArea->count() > 0){$isBoss = true;}
-        // $colaborador = Candidatos::where('correo', $user->email)->first();
-        // traerColabsArea
-        // $colabs = Colaboradores::where('candidato_id', $colaborador->id)->get();
-        // $colabArea = UsuarioColaborador::where('user_id', $user->id)->first();
+        
         $candidato = Candidatos::where('correo', $user->email)->first();
         $colaborador = $candidato ? Colaboradores::where('candidato_id', $candidato->id)->first() : null;
         $colabArea = $colaborador
