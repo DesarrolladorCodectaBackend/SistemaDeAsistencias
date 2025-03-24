@@ -135,29 +135,31 @@
                 @endif
 
                 @if($userData['isColab'])
-                    @foreach($selectedAreasColab as $area)
-                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="ibox">
-                                <div class="ibox-content product-box">
-                                    <div class="product-imitation" style="object-fit: cover; padding: 0px; height: 225px;" onclick="onClickArea('{{ $area->id }}')">
-                                        <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" style="height: 100%; width: 100%; object-fit: cover" class="img-cover">
-                                    </div>
-                                    <div class="product-desc">
-                                        <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant. Integrantes: {{$area->count_colabs}}</small>
-                                        <a href="#" class="product-name">{{ $area->especializacion }}</a>
-                                        <div class="small m-t-xs">
-                                            {{ $area->descripcion }}
+                    @isset($selectedAreasColab)
+                        @foreach($selectedAreasColab as $area)
+                            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                <div class="ibox">
+                                    <div class="ibox-content product-box">
+                                        <div class="product-imitation" style="object-fit: cover; padding: 0px; height: 225px;" onclick="onClickArea('{{ $area->id }}')">
+                                            <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" style="height: 100%; width: 100%; object-fit: cover" class="img-cover">
                                         </div>
-                                        <div class="m-t text-left d-flex justify-content-center align-items-center gap-10">
-                                            <a href="{{route('areas.showArea', $area->id)}}" class="btn btn-success text-white">
-                                                Ver Área
-                                            </a>
+                                        <div class="product-desc">
+                                            <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant. Integrantes: {{$area->count_colabs}}</small>
+                                            <a href="#" class="product-name">{{ $area->especializacion }}</a>
+                                            <div class="small m-t-xs">
+                                                {{ $area->descripcion }}
+                                            </div>
+                                            <div class="m-t text-left d-flex justify-content-center align-items-center gap-10">
+                                                <a href="{{route('areas.showArea', $area->id)}}" class="btn btn-success text-white">
+                                                    Ver Área
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    @endisset
                 @endif
             </div>
         </div>

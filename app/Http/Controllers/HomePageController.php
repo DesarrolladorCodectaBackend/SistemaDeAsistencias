@@ -22,6 +22,8 @@ class HomePageController extends Controller
         $userData = FunctionHelperController::getUserRol();
         $returning = [];
 
+        // $returning['selectedAreasColab'] = [];
+
         if($userData['isAdmin']){
             $areasProm = $this->getMonthPromAreas();
             $reunionesProgramadas = $this->getTodayProgramReu();
