@@ -172,7 +172,7 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="modalColaboradores" aria-hidden="true">
+                {{-- <div class="modal fade" id="modalColaboradores" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -190,7 +190,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
 
 
@@ -265,64 +265,9 @@
     });
 
 
-    const handleColabSelect = () => {
-        const selectedColabId = document.getElementById('colaboradorSelectedId').value;
-
-        if (selectedColabId) {
-            // Aquí obtienes los datos del colaborador según su ID
-            const colaborador = @json($colaboradores->keyBy('id')); // Suponiendo que `$colaboradores` es un array de objetos en tu backend
-            const selectedColab = colaborador[selectedColabId];
-            const areasJefe = selectedColab.areas;
-
-            // Asigna los valores a los campos correspondientes
-            let email = document.getElementById('email');
-            let name = document.getElementById('name');
-            let apellido = document.getElementById('apellido');
-            let selectAreas = document.getElementById('selectAreas');
-
-            email.value = selectedColab.candidato.correo;
-            name.value = selectedColab.candidato.nombre;
-            apellido.value = selectedColab.candidato.apellido;
-            //agregar valores al select...
-            Array.from(selectAreas.options).forEach(option => {
-                option.selected = false;
-            });
-
-            Array.from(selectAreas.options).forEach(option => {
-                //Verificar que sea el mismo area del colaborador
-                areasJefe.forEach(areaJefe => {
-                    if(areaJefe.id == option.value) option.selected = true;
-                });
-            });
-
-            $('.multiple_areas_select').trigger('change');
-            // Almacena en caché los valores para el formulario
-            cacheEmail = email.value;
-            cacheNombre = name.value;
-            cacheApellido = apellido.value;
-            cacheColabId = selectedColab.id;
-            cacheAreas = areasJefe;
-
-            renderColabInput(cacheColabId);
-            verifyCorrectInputs();
-        }
-    };
 
 
-    const renderColabInput = (colaborador_id) => {
-        const colabInputCont = document.getElementById('colabInputCont');
-        const toRender = `
-            <input id="colabInput" name="colaborador_id" value="${colaborador_id}" hidden/>
-        `;
-        colabInputCont.innerHTML = toRender;
-    }
 
-    const destroyColabInput = () => {
-        const colabInput = document.getElementById('colabInput');
-        if (colabInput != null) {
-            colabInput.remove();
-        }
-    }
 
     const handleTypeChange = () => {
         const selectType = document.getElementById('selectUserType');
@@ -369,31 +314,7 @@
 
     }
 
-    const renderAreas = () => {
-        const areasJefe = document.getElementById('areasJefe');
-        const areas = @json($areas);
-        const optionAreas = areas.map((area) => `<option value="${area.id}">${area.especializacion}</option>`)
-        const toRender = `
-            <label id="lblAreas">Áreas Jefe</label>
-            <select id="selectAreas" onchange="verifyCorrectInputs()" class="form-control multiple_areas_select" name="areas_id[]" multiple required>
-                   ${optionAreas.join('')}
-            </select>
-        `;
-        areasJefe.innerHTML = toRender;
-        $(document).ready(function() {
-            $('.multiple_areas_select').select2();
-        });
-    }
-
-    const destroyAreas = () => {
-        const lblAreas = document.getElementById('lblAreas');
-        const selectAreas = document.getElementById('selectAreas');
-        const select2Container = document.querySelector('.select2-container');
-        lblAreas.remove();
-        selectAreas.remove();
-        select2Container.remove();
-    }
-
+   
     const verifySamePassword = () => {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm_password').value;
