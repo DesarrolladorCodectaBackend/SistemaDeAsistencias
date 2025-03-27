@@ -48,7 +48,7 @@
                     </div>
                 @endif
             <div class="row">
-                
+
 
                 <div class="col-lg-12">
                     <div class="tabs-container">
@@ -390,8 +390,10 @@
         }
     </style>
 
-    <script>
-        function confirmDelete(id) {
+<script src="js/asistencia/areas/gestReuniones.js"></script>
+
+<script>
+function confirmDelete(id) {
         alertify.confirm("¿Deseas eliminar este registro?", function(e) {
             if (e) {
                 let form = document.createElement('form')
@@ -437,42 +439,7 @@
         celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
         celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
     }
-    console.log(dias[6]);
-
-    function construirSelectDia(name) {
-        var select = '<select class="form-control" name="' + name + '">';
-        for (var i = 0; i < dias.length; i++) {
-            select += '<option value="' + dias[i] + '">' + dias[i] + '</option>';
-        }
-
-        select += '</select>';
-        return select
-    }
-
-    function construirSelectDisponibilidad(name) {
-        var select = '<select class="form-control" name="' + name + '">';
-        for (var i = 0; i < disponibilidades.length; i++) {
-            select += '<option value="' + disponibilidades[i] + '">' + disponibilidades[i] + '</option>';
-        }
-
-        select += '</select>';
-        return select
-    }
-
-    function construirSelectHora(name) {
-        var select = '<select class="form-control" name="' + name + '">';
-        for (var i = 0; i < horas.length; i++) {
-            select += '<option value="' + horas[i] + '">' + horas[i] + '</option>';
-        }
-        select += '</select>';
-        return select;
-    }
-
-    function eliminarFila(boton) {
-        var fila = boton.parentNode.parentNode;
-        fila.parentNode.removeChild(fila);
-    }
-    </script>
+</script>
 
 
 

@@ -585,6 +585,17 @@
     @endif
 
 
+    {{-- MODAL ERRORES --}}
+    <script>
+        const deleteAlert = (id) => {
+            let alertError = document.getElementById(id);
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error(`Elemento con ID '${id}' no encontrado.`);
+            }
+        }
+    </script>
 
     {{-- tarjetas validaciones errores y warnings --}}
     <script>
@@ -680,17 +691,7 @@
 
     </script>
 
-    {{-- MODAL ERRORES --}}
-    <script>
-        const deleteAlert = (id) => {
-            let alertError = document.getElementById(id);
-            if (alertError) {
-                alertError.remove();
-            } else{
-                console.error(`Elemento con ID '${id}' no encontrado.`);
-            }
-        }
-    </script>
+
 
 
 

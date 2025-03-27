@@ -305,7 +305,7 @@
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
-    <script src={{ asset('js/asistencia/cuentas/create.js') }}>
+    <script src={{ asset('js/asistencia/cuentas/index.js') }}>
 
     </script>
 

@@ -640,30 +640,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-
-        function cerrarCaja() {
-            fetch("{{ route('caja.cerrar') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Content-Type": "application/json",
-                },
-            }).then(() => location.reload());
-        }
-
-        function abrirCaja() {
-            fetch("{{ route('caja.abrir') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Content-Type": "application/json",
-                },
-            }).then(() => location.reload());
-        }
-
-    </script>
-
+    
     <script>
         document.getElementById('filtrar-form').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -691,7 +668,29 @@
                 console.error("Error al filtrar:", error);
             });
         });
+
+        function cerrarCaja() {
+            fetch("{{ route('caja.cerrar') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json",
+                },
+            }).then(() => location.reload());
+        }
+
+        function abrirCaja() {
+            fetch("{{ route('caja.abrir') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json",
+                },
+            }).then(() => location.reload());
+        }
     </script>
+
+
 
     <script>
         $(document).on("click", ".seleccionar-usuario", function () {

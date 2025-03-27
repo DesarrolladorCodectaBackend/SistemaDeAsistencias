@@ -355,24 +355,7 @@
         });
     </script>
 
-    <script>
-        /*
-        function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/salones/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
-        */
-    </script>
+   
 
 
 </body>

@@ -265,8 +265,12 @@
             display: none;
         }
     </style>
-    <script>
-        function confirmDelete(id, area_id) {
+
+
+    <script src="{{ asset('js/asistencia/areas/gestHorarios.js') }}"></script>
+
+<script>
+     function confirmDelete(id, area_id) {
             Swal.fire({
                     title: "¿Deseas eliminar este horario?",
                     showCancelButton: true,
@@ -310,271 +314,168 @@
                     });
 
         }
+</script>
 
-        function toggleCheckbox(event, id, type) {
-            if (event.target.tagName !== 'INPUT') {
-                const checkbox = document.getElementById(id);
-                checkbox.checked = !checkbox.checked;
-                if (type.includes("update")) {
-                    updateSubmitButton(type);
-                } else if (type.includes("store")) {
-                    updateStoreSubmitButton();
-                }
-            }
-            uncheckOthers(id, type);
-        }
+<script>
+    $(document).ready(function() {
 
-        function uncheckOthers(id, type) {
-            const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
-            checkboxes.forEach(checkbox => {
-                if (checkbox.id !== id) {
-                    checkbox.checked = false;
-                }
-            });
-        }
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
 
-        function updateSubmitButton(type) {
-            const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
-            const submitButton = document.getElementById(`submit-button-${type}`);
-            let isAnyChecked = false;
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    isAnyChecked = true;
-                }
-            });
-            submitButton.disabled = !isAnyChecked;
-        }
-
-        function updateStoreSubmitButton() {
-            const formContainers = document.querySelectorAll('.storeForm');
-            let allFormsValid = true;
-
-            formContainers.forEach(container => {
-                const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-                let isAnyChecked = false;
-                checkboxes.forEach(checkbox => {
-                    if (checkbox.checked) {
-                        isAnyChecked = true;
-                    }
-                });
-                if (!isAnyChecked) {
-                    allFormsValid = false;
-                }
+        /* initialize the external events -----------------------------------------------------------------*/
+        $('#external-events div.external-event').each(function() {
+            $(this).data('event', {
+                title: $.trim($(this).text()),
+                stick: true
             });
 
-            const submitButton = document.getElementById('submit-store-button');
-            submitButton.disabled = !allFormsValid;
-        }
-    </script>
-
-    <script>
-        let formCounter = 1;
-
-        function addNewForm() {
-            const originalForm = document.querySelector('.storeForm');
-            const newForm = originalForm.cloneNode(true);
-
-            const formIndex = formCounter++;
-
-            newForm.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
-                checkbox.checked = false;
-                checkbox.classList.remove(`horario-checkbox-store-0`);
-                checkbox.classList.add(`horario-checkbox-store-${formIndex}`);
-                checkbox.id = checkbox.id.replace('-0', `-${formIndex}`);
-            });
-
-            newForm.querySelectorAll('.product-box').forEach((box, index) => {
-                const horarioId = box.querySelector('input[type="checkbox"]').value;
-                box.setAttribute('onclick', `toggleCheckbox(event, 'checkbox-store-${horarioId}-${formIndex}', 'store-${formIndex}')`);
-            });
-
-            newForm.setAttribute('data-form-index', formIndex);
-
-            const deleteButton = document.createElement('button');
-            deleteButton.type = 'button';
-            deleteButton.className = 'btn btn-danger btn-sm';
-            deleteButton.textContent = 'Eliminar';
-            deleteButton.setAttribute('onclick', 'removeForm(this)');
-            newForm.prepend(deleteButton);
-
-            document.querySelector('#storeFormContainer').appendChild(newForm);
-
-            updateStoreSubmitButton();
-
-        }
-
-        function removeForm(button) {
-            const formContainer = button.closest('.storeForm');
-            formContainer.remove();
-        }
-
-    </script>
-
-
-
-
-    <script>
-        $(document).ready(function() {
-
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green'
-            });
-
-            /* initialize the external events -----------------------------------------------------------------*/
-            $('#external-events div.external-event').each(function() {
-                $(this).data('event', {
-                    title: $.trim($(this).text()),
-                    stick: true
-                });
-
-                $(this).draggable({
-                    zIndex: 1111999,
-                    revert: true,
-                    revertDuration: 0
-                });
-            });
-
-            /* initialize the calendar -----------------------------------------------------------------*/
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
-            var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
-            const area = <?php echo json_encode($area); ?>;
-
-            var eventosHorarios = horariosFormateados.map(function(horario) {
-                var numeroDia;
-                if(horario.dia == "Lunes"){
-                    numeroDia = 5;
-                } else if(horario.dia == "Martes"){
-                    numeroDia = 6;
-                } else if(horario.dia == "Miércoles"){
-                    numeroDia = 7;
-                } else if(horario.dia == "Jueves"){
-                    numeroDia = 8;
-                } else if(horario.dia == "Viernes"){
-                    numeroDia = 9;
-                } else if(horario.dia == "Sábado"){
-                    numeroDia = 10;
-                } else if(horario.dia == "Domingo"){
-                    numeroDia = 4;
-                } else{
-                    numeroDia = 4;
-                }
-                return {
-                    title: area.especializacion,
-                    start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
-                    end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
-                    allDay: false,
-                    color: area.color_hex,
-                    editable: false
-                };
-            });
-
-
-            var eventos = [{
-                    title: 'Domingo',
-                    start: new Date(2024, 1, 4, 0, 0),
-                    end: new Date(2024, 1, 4, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Lunes',
-                    start: new Date(2024, 1, 5, 9, 0),
-                    end: new Date(2024, 1, 5, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Martes',
-                    start: new Date(2024, 1, 6, 9, 0),
-                    end: new Date(2024, 1, 6, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Miércoles',
-                    start: new Date(2024, 1, 7, 9, 0),
-                    end: new Date(2024, 1, 7, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Jueves',
-                    start: new Date(2024, 1, 8, 9, 0),
-                    end: new Date(2024, 1, 8, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Viernes',
-                    start: new Date(2024, 1, 9, 9, 0),
-                    end: new Date(2024, 1, 9, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Sabado',
-                    start: new Date(2024, 1, 10, 9, 0),
-                    end: new Date(2024, 1, 10, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                }
-            ].concat(eventosHorarios);
-
-            $('#calendar').fullCalendar({
-                locale: 'es',
-                defaultView: 'agendaWeek',
-                weekNumbers: false,
-                weekNumbersWithinDays: 7,
-                viewRender: function(view, element) {
-                    var startDate = moment('2024-02-04');
-                    var endDate = moment(startDate).add(6, 'weeks');
-                    if (view.end.isAfter(endDate)) {
-                        $('#calendar').fullCalendar('gotoDate', startDate);
-                    }
-                },
-                header: {
-                    left: '',
-                    center: 'title',
-                    right: ''
-                },
-                allDayText: 'Hora/Area',
-                slotDuration: '00:30:00',
-                slotLabelInterval: '01:00',
-                minTime: '08:00:00',
-                maxTime: '18:00:01',
-                contentHeight: 'auto',
-                eventOverlap: true,
-                slotEventOverlap: false,
-                editable: true,
-                droppable: true,
-                allDaySlot: true,
-                drop: function() {
-                    if ($('#drop-remove').is(':checked')) {
-                        $(this).remove();
-                    }
-                },
-                events: eventos,
-                eventRender: function(event, element) {
-                    var daysToShow = 4;
-                    var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
-                    element.css('width', columnWidth);
-                }
+            $(this).draggable({
+                zIndex: 1111999,
+                revert: true,
+                revertDuration: 0
             });
         });
-    </script>
+
+        /* initialize the calendar -----------------------------------------------------------------*/
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+        var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
+        const area = <?php echo json_encode($area); ?>;
+
+        var eventosHorarios = horariosFormateados.map(function(horario) {
+            var numeroDia;
+            if(horario.dia == "Lunes"){
+                numeroDia = 5;
+            } else if(horario.dia == "Martes"){
+                numeroDia = 6;
+            } else if(horario.dia == "Miércoles"){
+                numeroDia = 7;
+            } else if(horario.dia == "Jueves"){
+                numeroDia = 8;
+            } else if(horario.dia == "Viernes"){
+                numeroDia = 9;
+            } else if(horario.dia == "Sábado"){
+                numeroDia = 10;
+            } else if(horario.dia == "Domingo"){
+                numeroDia = 4;
+            } else{
+                numeroDia = 4;
+            }
+            return {
+                title: area.especializacion,
+                start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
+                end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
+                allDay: false,
+                color: area.color_hex,
+                editable: false
+            };
+        });
 
 
+        var eventos = [{
+                title: 'Domingo',
+                start: new Date(2024, 1, 4, 0, 0),
+                end: new Date(2024, 1, 4, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Lunes',
+                start: new Date(2024, 1, 5, 9, 0),
+                end: new Date(2024, 1, 5, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Martes',
+                start: new Date(2024, 1, 6, 9, 0),
+                end: new Date(2024, 1, 6, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Miércoles',
+                start: new Date(2024, 1, 7, 9, 0),
+                end: new Date(2024, 1, 7, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Jueves',
+                start: new Date(2024, 1, 8, 9, 0),
+                end: new Date(2024, 1, 8, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Viernes',
+                start: new Date(2024, 1, 9, 9, 0),
+                end: new Date(2024, 1, 9, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Sabado',
+                start: new Date(2024, 1, 10, 9, 0),
+                end: new Date(2024, 1, 10, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            }
+        ].concat(eventosHorarios);
+
+        $('#calendar').fullCalendar({
+            locale: 'es',
+            defaultView: 'agendaWeek',
+            weekNumbers: false,
+            weekNumbersWithinDays: 7,
+            viewRender: function(view, element) {
+                var startDate = moment('2024-02-04');
+                var endDate = moment(startDate).add(6, 'weeks');
+                if (view.end.isAfter(endDate)) {
+                    $('#calendar').fullCalendar('gotoDate', startDate);
+                }
+            },
+            header: {
+                left: '',
+                center: 'title',
+                right: ''
+            },
+            allDayText: 'Hora/Area',
+            slotDuration: '00:30:00',
+            slotLabelInterval: '01:00',
+            minTime: '08:00:00',
+            maxTime: '18:00:01',
+            contentHeight: 'auto',
+            eventOverlap: true,
+            slotEventOverlap: false,
+            editable: true,
+            droppable: true,
+            allDaySlot: true,
+            drop: function() {
+                if ($('#drop-remove').is(':checked')) {
+                    $(this).remove();
+                }
+            },
+            events: eventos,
+            eventRender: function(event, element) {
+                var daysToShow = 4;
+                var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
+                element.css('width', columnWidth);
+            }
+        });
+        });
+</script>
 
 </body>
 

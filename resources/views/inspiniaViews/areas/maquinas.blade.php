@@ -117,19 +117,19 @@
 
     <script>
         function confirmLiberation(area_id, maquina_id) {
-        alertify.confirm("¿Deseas Liberar esta máquina de su colaborador?", function(e) {
-            if (e) {
-                let form = document.createElement('form')
-                form.method = 'POST'
-                form.action = `/area/maquinas/LiberarMaquina/${area_id}/${maquina_id}`
-                form.innerHTML = '@csrf @method('DELETE')'
-                document.body.appendChild(form)
-                form.submit()
-            } else {
-                return false
-            }
-        });
-    }
+            alertify.confirm("¿Deseas Liberar esta máquina de su colaborador?", function(e) {
+                if (e) {
+                    let form = document.createElement('form')
+                    form.method = 'POST'
+                    form.action = `/area/maquinas/LiberarMaquina/${area_id}/${maquina_id}`
+                    form.innerHTML = '@csrf @method('DELETE')'
+                    document.body.appendChild(form)
+                    form.submit()
+                } else {
+                    return false
+                }
+            });
+        }
     </script>
 
 </body>
