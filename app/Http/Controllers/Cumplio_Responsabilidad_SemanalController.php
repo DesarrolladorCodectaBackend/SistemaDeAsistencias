@@ -297,8 +297,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         try {
 
             $request->validate([
-                'colaborador_area_id.*' => 'required|integer|min:1|max:100',
-                'responsabilidad_id.*' => 'required|integer|min:1|max:255',
+                'colaborador_area_id.*' => 'required|integer|min:1',
+                'responsabilidad_id.*' => 'required|integer|min:1',
                 'semana_id' => 'required|integer|min:1|max:100',
                 'cumplio.*' => 'required|boolean|min:0|max:1',
                 'year' => 'required|integer',

@@ -156,7 +156,7 @@
                                             </x-uiverse.tooltip>
 
                                         </form>
-                                    
+
                                     </div>
                                 </div>
                             </div>
@@ -317,6 +317,9 @@
         });
     </script>
 
+    <script src="{{ asset('js/asistencia/areas/index.js') }}"></script>
+
+
     <script>
         function confirmState(id) {
             Swal.fire({
@@ -372,27 +375,8 @@
                     });
 
     }
+    
     </script>
-    <script>
-        const onClickArea = (area_id) => {
-            const modalId = `#modal-form${area_id}`;
-
-            const modalElement = document.querySelector(modalId);
-            if (modalElement) {
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-            }
-        }
-        const hiddenFileInput = document.getElementById('icono');
-        const iconUploadButton = document.getElementById('icon-upload');
-
-        iconUploadButton.addEventListener('click', function() {
-            hiddenFileInput.click();
-        });
-    </script>
-
-
-
 
 </body>
 

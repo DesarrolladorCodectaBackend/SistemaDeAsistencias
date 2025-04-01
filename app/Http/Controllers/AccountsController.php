@@ -102,7 +102,7 @@ class AccountsController extends Controller
         // }
         // return $colaboradores;
         // $areas = Area::where(["estado" => 1])->get();
-        return view('inspiniaViews.accounts.create', ["colaboradores" => $colaboradores, "areas" => $areas]);
+        return view('inspiniaViews.accounts.create');
     }
 
     public function store(Request $request){

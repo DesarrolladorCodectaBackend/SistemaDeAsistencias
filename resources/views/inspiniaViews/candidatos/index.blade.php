@@ -692,13 +692,13 @@
                                                                         <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
                                                                             <option value="">Seleccione un distrito</option>
                                                                             @foreach($distritos as $distrito)
-                                                                                <option value="{{ $distrito->id }}" 
+                                                                                <option value="{{ $distrito->id }}"
                                                                                     {{ isset($candidato->distrito_id) && $candidato->distrito_id == $distrito->id ? 'selected' : '' }}>
                                                                                     {{ $distrito->nombre }}
                                                                                 </option>
                                                                             @endforeach
                                                                         </select>
-                                                                    </div>                                                                
+                                                                    </div>
 
                                                                     <div class="form-group"><label>Fecha de
                                                                             Nacimiento</label>
@@ -850,7 +850,18 @@
 
     </div>
     </div>
+    <style>
+        .select2-container.select2-container--default.select2-container--open {
+            z-index: 9999 !important;
+            width: 100% !important;
+        }
 
+        .select2-container {
+            display: inline !important;
+        }
+
+
+    </style>
     @if ($errors->any())
         <script>
             // Reabrir el modal de creación si el error proviene del formulario de creación
@@ -868,174 +879,49 @@
 
 
 
-    <style>
-        .select2-container.select2-container--default.select2-container--open {
-            z-index: 9999 !important;
-            width: 100% !important;
-        }
+<script src="{{ asset('js/asistencia/candidatos.js') }}"></script>
 
-        .select2-container {
-            display: inline !important;
-        }
+<script>
+     function prepareSearchActionURL(event) {
+            let busqueda = document.getElementById('searchInput').value;
 
+            if(busqueda.trim().length > 0) {
+                let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#searchCandidatos').action = actionUrl;
 
-    </style>
-
-
-    <script>
-         // limiteCel
-         function limitCel(input) {
-            // Asegura que solo se permitan 8 caracteres
-            if (input.value.length > 9) {
-                input.value = input.value.slice(0, 9); // Limita a 8 caracteres
-            }
-
-            // Obtener el ID del candidato para el contador correspondiente
-            let counterId;
-            if (input.id.includes('store')) {
-                counterId = 'cel-counter-store'; // Para el campo de creación
-            } else {
-                const candidateId = input.id.split('-')[2]; // Para los campos de actualización
-                counterId = `cel-counter-update-${candidateId}`;
-            }
-
-            const counter = document.getElementById(counterId);
-
-            // Actualiza el contador de caracteres
-            counter.textContent = `${input.value.length}/9`;
-
-            // Cambia el color del borde según el número de caracteres
-            if (input.value.length >= 1 && input.value.length < 9) {
-                input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
-            } else if (input.value.length === 9) {
-                input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
-            } else {
-                input.style.borderColor = ''; // Restablece el borde si no está en el rango
+                return true;
+            } else{
+                event.preventDefault();
+                return false;
             }
         }
 
-        // Inicializa el contador y el borde al cargar la página
-        document.addEventListener("DOMContentLoaded", function() {
-            // Para Store (Crear)
-            const inputStore = document.getElementById('cel-store');
-            const counterStore = document.getElementById('cel-counter-store');
-            if (inputStore) {
-                const initialValueStore = inputStore.value || '';
-                counterStore.textContent = `${initialValueStore.length}/9`;
+        function prepareFilterActionURL() {
+            let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
+            let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
+            let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+            let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
+            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
 
-                if (initialValueStore.length >= 1 && initialValueStore.length < 9) {
-                    inputStore.style.borderColor = 'red';
-                } else if (initialValueStore.length === 9) {
-                    inputStore.style.borderColor = 'green';
-                }
+            estados = estados.length ? estados.join(',') : '1';
+            carreras = carreras.length ? carreras.join(',') : '0';
+            instituciones = instituciones.length ? instituciones.join(',') : '0';
+            ciclos = ciclos.length ? ciclos.join(',') : '0';
+            sedes = sedes.length ? sedes.join(',') : '0';
 
-                inputStore.addEventListener('input', function() {
-                    limitCel(inputStore);
-                });
+
+
+            if(estados != null && carreras != null && instituciones != null && ciclos != null, sedes != null) {
+                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
+                console.log(actionUrl);
+                document.querySelector('#filtrarCandidatos').action = actionUrl;
+
+                return true;
             }
-
-            // Para Update (Actualizar)
-            const inputsUpdate = document.querySelectorAll('[id^="cel-update-"]');
-
-            inputsUpdate.forEach(inputUpdate => {
-                const candidateId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
-                const counterUpdate = document.getElementById(`cel-counter-update-${candidateId}`);
-
-                // Inicializa el contador y el borde según el valor inicial
-                const initialValueUpdate = inputUpdate.value || '';
-                counterUpdate.textContent = `${initialValueUpdate.length}/9`;
-
-                if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 9) {
-                    inputUpdate.style.borderColor = 'red';
-                } else if (initialValueUpdate.length === 9) {
-                    inputUpdate.style.borderColor = 'green';
-                }
-
-                // Agregar event listener al input
-                inputUpdate.addEventListener('input', function() {
-                    limitCel(inputUpdate);
-                });
-            });
-        });
-
-
-
-        // limiteDNI
-        function limitDNI(input) {
-            // Asegura que solo se permitan 8 caracteres
-            if (input.value.length > 8) {
-                input.value = input.value.slice(0, 8); // Limita a 8 caracteres
-            }
-
-            // Obtener el ID del candidato para el contador correspondiente
-            let counterId;
-            if (input.id.includes('store')) {
-                counterId = 'dni-counter-store'; // Para el campo de creación
-            } else {
-                const candidateId = input.id.split('-')[2]; // Para los campos de actualización
-                counterId = `dni-counter-update-${candidateId}`;
-            }
-
-            const counter = document.getElementById(counterId);
-
-            // Actualiza el contador de caracteres
-            counter.textContent = `${input.value.length}/8`;
-
-            // Cambia el color del borde según el número de caracteres
-            if (input.value.length >= 1 && input.value.length < 8) {
-                input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
-            } else if (input.value.length === 8) {
-                input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
-            } else {
-                input.style.borderColor = ''; // Restablece el borde si no está en el rango
-            }
-            console.log(input.value);
         }
+</script>
 
-        // Inicializa el contador y el borde al cargar la página
-        document.addEventListener("DOMContentLoaded", function() {
-            // Para Store (Crear)
-            const inputStore = document.getElementById('dni-store');
-            const counterStore = document.getElementById('dni-counter-store');
-            if (inputStore) {
-                const initialValueStore = inputStore.value || '';
-                counterStore.textContent = `${initialValueStore.length}/8`;
-
-                if (initialValueStore.length >= 1 && initialValueStore.length < 8) {
-                    inputStore.style.borderColor = 'red';
-                } else if (initialValueStore.length === 8) {
-                    inputStore.style.borderColor = 'green';
-                }
-
-                inputStore.addEventListener('input', function() {
-                    limitDNI(inputStore);
-                });
-            }
-
-            // Para Update (Actualizar)
-            const inputsUpdate = document.querySelectorAll('[id^="dni-update-"]');
-
-            inputsUpdate.forEach(inputUpdate => {
-                const candidateId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
-                const counterUpdate = document.getElementById(`dni-counter-update-${candidateId}`);
-
-                // Inicializa el contador y el borde según el valor inicial
-                const initialValueUpdate = inputUpdate.value || '';
-                counterUpdate.textContent = `${initialValueUpdate.length}/8`;
-
-                if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 8) {
-                    inputUpdate.style.borderColor = 'red';
-                } else if (initialValueUpdate.length === 8) {
-                    inputUpdate.style.borderColor = 'green';
-                }
-
-                // Agregar event listener al input
-                inputUpdate.addEventListener('input', function() {
-                    limitDNI(inputUpdate);
-                });
-            });
-        });
-    </script>
 
     <script>
         $(document).ready(function() {
@@ -1048,31 +934,7 @@
     </script>
 
     <script>
-        const deleteAlertError = () => {
-            let alertError = document.getElementById('alert-error');
-            if (alertError) {
-                alertError.remove();
-            } else{
-                console.error("Elemento con ID 'alert-error' no encontrado.");
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            const personal = document.getElementById('personalCont');
-            if (personal) {
-                personal.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
-            }
-        });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const candidato = document.getElementById('candidatos');
-            if (candidato) {
-                candidato.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'candidato' no se encontró en el DOM.");
-            }
-        });
     </script>
     <script>
         const hiddenFileInput = document.getElementById('icono');
@@ -1084,32 +946,6 @@
     </script>
 
     <script>
-        function showModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('show');
-                modal.style.display = 'block'; // Asegúrate de que el modal se muestre
-            }
-        }
-
-        function hideModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('show');
-                modal.style.display = 'none'; // Asegúrate de que el modal se oculte
-            }
-        }
-
-        function abrirModalCreacion(index) {
-            ocultarTodosLosModales();
-            showModal('modal-create-form-' + index);
-        }
-
-
-        function abrirModalEdicion(id) {
-            hideModal('modal-form-view' + id);
-            showModal('modal-form-update' + id);
-        }
 
 
 
@@ -1286,136 +1122,10 @@
             // });
         }
 
-        function updateSelectAll(checkboxGroup, selectAllId) {
-            const selectAllCheckbox = document.getElementById(selectAllId);
-            const checkboxes = document.querySelectorAll(checkboxGroup);
-            selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        }
-
-        document.getElementById('select-all-estados').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-estados-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-        document.getElementById('select-all-carreras').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-carreras-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-        document.getElementById('select-all-instituciones').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-institucion-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-        // sedes
-        document.getElementById('select-all-sedes').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-
-
-        document.querySelectorAll('input[id^="checkbox-estados-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-estados-"]', 'select-all-estados');
-            });
-        });
-
-        document.querySelectorAll('input[id^="checkbox-carreras-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-carreras-"]', 'select-all-carreras');
-            });
-        });
-
-        document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
-            });
-        });
-
-
-        // sedes
-        document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
-            });
-        })
 
 
     </script>
     <script>
-        function prepareSearchActionURL(event) {
-            let busqueda = document.getElementById('searchInput').value;
-
-            if(busqueda.trim().length > 0) {
-                let actionUrl = `{{ url('candidatos/search/${busqueda}') }}`;
-                console.log(actionUrl);
-                document.querySelector('#searchCandidatos').action = actionUrl;
-
-                return true;
-            } else{
-                event.preventDefault();
-                return false;
-            }
-        }
-
-        function prepareFilterActionURL() {
-            let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
-            let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
-            let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
-            let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
-            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
-
-            estados = estados.length ? estados.join(',') : '1';
-            carreras = carreras.length ? carreras.join(',') : '0';
-            instituciones = instituciones.length ? instituciones.join(',') : '0';
-            ciclos = ciclos.length ? ciclos.join(',') : '0';
-            sedes = sedes.length ? sedes.join(',') : '0';
-
-
-
-            if(estados != null && carreras != null && instituciones != null && ciclos != null, sedes != null) {
-                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
-                console.log(actionUrl);
-                document.querySelector('#filtrarCandidatos').action = actionUrl;
-
-                return true;
-            }
-        }
-
-    document.getElementById('select-all-estados').addEventListener('change', function() {
-        let checkboxes = document.querySelectorAll('.estado-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
-
-    document.getElementById('select-all-carreras').addEventListener('change', function() {
-        let checkboxes = document.querySelectorAll('.carrera-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
-
-    document.getElementById('select-all-instituciones').addEventListener('change', function() {
-        let checkboxes = document.querySelectorAll('.institucion-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
-
-    document.getElementById('select-all-ciclos').addEventListener('change', function () {
-        let checkboxes = document.querySelectorAll('.ciclo-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
-
-    //sedes
-    document.getElementById('select-all-sedes').addEventListener('change', function () {
-        let checkboxes = document.querySelectorAll('.sede-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-        });
 
     </script>
 
