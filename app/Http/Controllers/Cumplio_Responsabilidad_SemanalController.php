@@ -297,8 +297,8 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
         try {
 
             $request->validate([
-                'colaborador_area_id.*' => 'required|integer|min:1|max:100',
-                'responsabilidad_id.*' => 'required|integer|min:1|max:255',
+                'colaborador_area_id.*' => 'required|integer|min:1',
+                'responsabilidad_id.*' => 'required|integer|min:1',
                 'semana_id' => 'required|integer|min:1|max:100',
                 'cumplio.*' => 'required|boolean|min:0|max:1',
                 'year' => 'required|integer',
@@ -374,7 +374,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             DB::commit();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('success', 'Se guardó correctamente.');
         } catch (Exception $e) {
-            // return $e;
+            return $e;
             DB::rollback();
             return redirect()->route('responsabilidades.asis', ['year' => $request->$year, 'mes' => $request->$mes, 'area_id' => $request->$area_id])
                 ->with('error', 'Ocurrió un error.');
