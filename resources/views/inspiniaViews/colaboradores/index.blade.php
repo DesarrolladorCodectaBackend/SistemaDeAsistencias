@@ -1262,10 +1262,466 @@
 
 
     </style>
-    {{-- <script src="{{ asset('js/InspiniaViewsJS/indexColaboradores.js') }}"></script> --}}
 
-    <script src="{{ asset('js/colaboradores.js') }}"></script>
+    <script src="{{ asset('js/asistencia/colaboradores.js') }}"></script>
+    <script>
+        function confirmState(id) {
+            Swal.fire({
+                title: "¿Deseas cambiar el estado del colaborador?",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
 
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    // form.action = `/colaboradores/activar-inactivar/${id}`;
+
+                    let routeTemplate = "<?php echo route('colaboradores.activarInactivar', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    form.innerHTML = `
+                        @csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
+
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+
+                    Swal.fire({
+                        title: "Acción cancelada",
+                        text: "El colaborador no fue cambiado de estado",
+                        icon: "info",
+                        customClass: {
+                            content: 'swal-content'
+                        }
+                    });
+
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                        .swal2-html-container {
+                            color: #FFFFFF;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function confirmEditAll() {
+        Swal.fire({
+            title: "¿Deseas activar la edición para todos los colaboradores?",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                let form = document.createElement('form');
+                form.method = 'POST';
+
+                let routeTemplate = "<?php echo route('colaboradores.editAll'); ?>";
+                form.action = routeTemplate;
+
+                form.innerHTML = `
+                    @csrf @method("PUT")
+                `;
+
+                document.body.appendChild(form);
+                form.submit();
+
+            } else {
+                Swal.fire({
+                    title: "Acción cancelada",
+                    text: "No se activó la edición",
+                    icon: "info",
+                    customClass: {
+                        content: 'swal-content'
+                    }
+                });
+
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .swal2-html-container {
+                        color: #FFFFFF;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+    }
+        function activeEdit(id) {
+            Swal.fire({
+                    title: "¿Deseas activar la edición?",
+                    showCancelButton: true,
+                    confirmButtonText: "Activar",
+                    cancelButtonText: "Cancelar",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+
+                    let routeTemplate = "<?php echo route('colaboradores.editState', ':id'); ?>";
+
+
+                    form.action = routeTemplate.replace(':id', id);
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "La edición no fue activada",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    // console.log(result);
+                    });
+
+        }
+
+        function confirmDespedir(id) {
+            Swal.fire({
+                    title: "¿Deseas despedir a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Despedir",
+                    cancelButtonText: "Cancelar",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+
+                    let routeTemplate = "<?php echo route('colaboradores.despedirColaborador', ':id'); ?>";
+
+
+                    form.action = routeTemplate.replace(':id', id);
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
+
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue despedido",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    // console.log(result);
+                    });
+
+        }
+
+
+
+
+
+        function  confirmRecontratar(id, currentURL){
+            Swal.fire({
+                    title: "¿Deseas re contratar a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Re contratar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    // form.action = `/colaboradores/recontratarColaborador/${id}`;
+
+                    let routeTemplate = "<?php echo route('colaboradores.recontratarColaborador', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+        }
+
+
+        function confirmDelete(id, currentURL) {
+            Swal.fire({
+                    title: "¿Deseas eliminar este registro? Se eliminará todo lo relacionado a este colaborador",
+                    showCancelButton: true,
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    // form.action = `/colaboradores/${id}`;
+
+                    let routeTemplate = "<?php echo route('colaboradores.destroy', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    form.innerHTML = `@csrf @method("DELETE")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+
+
+        }
+    </script>
+
+    <script>
+         function prepareSearchActionURL(event) {
+            // preventDefault();
+
+            let busqueda = document.getElementById('searchInput').value;
+
+            if(busqueda.trim().length > 0){
+                // console.log(busqueda);
+
+                let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
+                // console.log(actionUrl);
+                document.querySelector('#searchColaboradores').action = actionUrl;
+
+                return true;
+            } else{
+                event.preventDefault();
+                return false;
+            }
+
+        }
+
+        function prepareFilterActionURL() {
+            let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
+            let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
+            let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
+            let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+            let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
+            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
+
+            estados = estados.length ? estados.join(',') : '1';
+            areas = areas.length ? areas.join(',') : '0';
+            carreras = carreras.length ? carreras.join(',') : '0';
+            instituciones = instituciones.length ? instituciones.join(',') : '0';
+            ciclos = ciclos.length ? ciclos.join(',') : '0';
+            sedes = sedes.length ? sedes.join(',') : '0';
+
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
+                // console.log(actionUrl);
+                document.querySelector('#filtrarColaboradores').action = actionUrl;
+
+                return true;
+            }
+
+        }
+
+        document.getElementById('select-all-estados').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.estado-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        document.getElementById('select-all-areas').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.area-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+        document.getElementById('select-all-carreras').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.carrera-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        document.getElementById('select-all-instituciones').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.institucion-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        document.getElementById('select-all-ciclos').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.ciclo-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        //sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.sede-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+
+
+        function updateSelectAll(checkboxGroup, selectAllId) {
+            const selectAllCheckbox = document.getElementById(selectAllId);
+            const checkboxes = document.querySelectorAll(checkboxGroup);
+            selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+        }
+
+        document.getElementById('select-all-areas').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-areas-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-estados').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-estados-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-carreras').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-carreras-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-ciclos').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-ciclos-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.getElementById('select-all-instituciones').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-institucion-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        // sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        document.querySelectorAll('input[id^="checkbox-areas-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-areas-"]', 'select-all-areas');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-estados-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-estados-"]', 'select-all-estados');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-carreras-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-carreras-"]', 'select-all-carreras');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-ciclos-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-ciclos-"]', 'select-all-ciclos');
+            });
+        });
+
+        document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
+            });
+        });
+
+        // sedes
+        document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
+            });
+        })
+    </script>
 </body>
 
 </html>
