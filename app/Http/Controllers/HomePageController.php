@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Colaboradores;
 use App\Models\Colaboradores_por_Area;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_Presencial_Asignado;
@@ -28,10 +29,13 @@ class HomePageController extends Controller
             $areasProm = $this->getMonthPromAreas();
             $reunionesProgramadas = $this->getTodayProgramReu();
             $areas = $this->getAreasToday();
+            $asistencia = $this->getAsistenciaDiaria();
 
             $returning['areasProm'] = $areasProm;
             $returning['reunionesProgramadas'] = $reunionesProgramadas;
             $returning['areas'] = $areas;
+            $returning['asistencia'] = $asistencia;
+            // return $asistencia;
         }
 
         if($userData['isBoss']){
@@ -60,9 +64,69 @@ class HomePageController extends Controller
         return view('dashboard', $returning);
     }
 
-    function getInasistenciaColab() {
-        
+    public function getAsistenciaDiaria() {
+        $previousWeekMonday = Carbon::today()->startOfWeek()->subWeek()->toDateString();
+        $previousWeek = Semanas::where('fecha_lunes', $previousWeekMonday)->first();
+        if (!$previousWeek) {
+            return [
+                'asistieron' => 0,
+                'faltaron' => 0,
+                'faltantes' => [],
+                'semana' => $previousWeekMonday
+            ];
+        }
+        $responsabilidadAsistencia = Responsabilidades_semanales::where('nombre', 'Asistencia diaria')->first();
+
+        if (!$responsabilidadAsistencia) {
+            return [
+                'asistieron' => 0,
+                'faltaron' => 0,
+                'faltantes' => [],
+                'semana' => $previousWeek->fecha_lunes
+            ];
+        }
+
+        $colaboradoresActivos = Colaboradores_por_Area::where('estado', 1)->get();
+        $idsColaboradoresActivos = $colaboradoresActivos->pluck('id')->toArray();
+
+        $registrosAsistencia = Cumplio_Responsabilidad_Semanal::where('responsabilidad_id', $responsabilidadAsistencia->id)
+                                ->where('semana_id', $previousWeek->id)
+                                ->whereIn('colaborador_area_id', $idsColaboradoresActivos)
+                                ->get();
+
+        $asistencias = $registrosAsistencia->where('cumplio', 1)->pluck('colaborador_area_id')->toArray();
+        $ausencias = $registrosAsistencia->where('cumplio', 0)->pluck('colaborador_area_id')->toArray();
+
+        $asistieron = count($asistencias);
+        $faltaron = count($ausencias);
+
+        $faltantes = [];
+
+        foreach ($colaboradoresActivos as $colaboradorArea) {
+            if (in_array($colaboradorArea->id, $ausencias)) {
+                $colaborador = Colaboradores::with('candidato')->find($colaboradorArea->colaborador_id);
+                if ($colaborador && $colaborador->candidato) {
+                    $area = Area::find($colaboradorArea->area_id);
+                    if ($area) {
+                        $faltantes[] = [
+                            'id' => $colaborador->id,
+                            'nombre' => $colaborador->candidato->nombre . ' ' . $colaborador->candidato->apellido,
+                            'area' => $area->especializacion ?? 'Sin área',
+                            'estado' => 'Ausente' 
+                        ];
+                    }
+                }
+            }
+        }
+
+        return [
+            'asistieron' => $asistieron,
+            'faltaron' => $faltaron,
+            'faltantes' => $faltantes,
+            'semana' => $previousWeek->fecha_lunes
+        ];
     }
+
 
     function getMonthPromAreas() {
         $areas = Area::where('estado', 1)->get();

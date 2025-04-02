@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
     <title>DASHBOARD</title>
 </head>
 
@@ -68,42 +70,90 @@
             @endif
             <div class="row">
                 @if($userData['isAdmin'])
-                <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="ibox">
-                                <div class="ibox-title">
-                                    <h5>Reuniones del día</h5>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="ibox">
+                                    <div class="ibox-title">
+                                        <h5>Reuniones del día</h5>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <div id="ReunionesCalendar"></div>
+                                    </div>
                                 </div>
-                                <div class="ibox-content">
-                                    <div id="ReunionesCalendar"></div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="ibox">
+                                    <div class="ibox-title">
+                                        <h5>Áreas de hoy</h5>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <div id="AreasCalendar"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="ibox">
-                                <div class="ibox-title">
-                                    <h5>Áreas de hoy</h5>
-                                </div>
-                                <div class="ibox-content">
-                                    <div id="AreasCalendar"></div>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Promedios Áreas</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <div style="width: 100%; overflow-x: scroll;">
+                                    <div id="areasMetrics" style="height: 500px;" style="width: 1000px;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="ibox ">
-                        <div class="ibox-title">
-                            <h5>Promedios Áreas</h5>
-                        </div>
-                        <div class="ibox-content">
-                            <div style="width: 100%; overflow-x: scroll;">
-                                <div id="areasMetrics" style="height: 500px;" style="width: 1000px;"></div>
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h5>Asistencia Diaria</h5>
+                            </div>
+                            <div class="ibox-content">
+                                    <div id="chartdiv" style="width: 100%; height: 350px;"></div>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h5>Colaboradores Ausentes</h5>
+                            </div>
+                            <div class="ibox-content">
+                                @if(isset($asistencia) && count($asistencia['faltantes']) > 0)
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Área</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($asistencia['faltantes'] as $faltante)
+                                                    <tr>
+                                                            <td>{{ $faltante['nombre'] }}</td>
+                                                            <td>{{ $faltante['area'] }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @else
+                                        <div class="alert alert-success">
+                                            ¡Todos los colaboradores están presentes hoy!
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+
+
                 @endif
                 @if($userData['isBoss'] )
                     @foreach($selectedAreas as $area)
@@ -161,6 +211,8 @@
                         @endforeach
                     @endisset
                 @endif
+
+
             </div>
         </div>
 
@@ -184,175 +236,254 @@
     }
 </style>
 @if($userData['isAdmin'])
-<script>
-    // Datos para el calendario de reuniones
-    $(document).ready(function() {
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green'
-            });
 
-            // initialize the external events
-            $('#external-events div.external-event').each(function() {
-                $(this).data('event', {
-                    title: $.trim($(this).text()),
-                    stick: true
-                });
+    <script>
+        am5.ready(function() {
+            if(document.getElementById("chartdiv") && typeof am5 !== 'undefined') {
+                var chartDiv = document.getElementById("chartdiv");
+                chartDiv.innerHTML = "";
 
-                $(this).draggable({
-                    zIndex: 1111999,
-                    revert: true,
-                    revertDuration: 0
-                });
-            });
+                var asistieron = {{ $asistencia['asistieron'] ?? 0 }};
+                var faltaron = {{ $asistencia['faltaron'] ?? 0 }};
+                var total = asistieron + faltaron;
 
-            // initialize the calendar
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
+                var porcentajeAsistencia = total > 0 ? Math.round((asistieron / total) * 100) : 0;
+                var porcentajeFalta = total > 0 ? Math.round((faltaron / total) * 100) : 0;
 
-            var reunionesProgramadas = <?php echo json_encode($reunionesProgramadas); ?>;
-
-            var eventosHorarios = reunionesProgramadas.map(function(reunion) {
-                let hf = reunion.horario_modificado;
-                return {
-                    title: reunion.descripcion,
-                    start: new Date(hf.year, hf.month, hf.day, hf.hora_inicial, 0),
-                    end: new Date(hf.year, hf.month, hf.day, hf.hora_final, 0),
-                    allDay: false,
-                    editable: false,
-                    url: hf.url
-                };
-            });
-
-            $('#ReunionesCalendar').fullCalendar({
-                header: {
-                    left: '',
-                    center: 'title',
-                    right: ''
-                },
-                editable: false,
-                droppable: false,
-                defaultView: 'agendaDay',
-                timeFormat: 'h:mm A',
-                columnHeaderFormat: 'ddd M/D',
-                drop: function() {
-                    if ($('#drop-remove').is(':checked')) {
-                        $(this).remove();
-                    }
-                },
-                events: eventosHorarios,
-            });
-        });
-</script>
-<script>
-    // Datos para las áreas asistentes
-    $(document).ready(function() {
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green'
-            });
-
-            // initialize the external events
-            $('#external-events div.external-event').each(function() {
-                $(this).data('event', {
-                    title: $.trim($(this).text()),
-                    stick: true
-                });
-
-                $(this).draggable({
-                    zIndex: 1111999,
-                    revert: true,
-                    revertDuration: 0
-                });
-            });
-
-            // initialize the calendar
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
-
-            var areas = <?php echo json_encode($areas); ?>;
-
-            var eventosHorarios = areas.map(function(area) {
-                return {
-                    title: area.especializacion,
-                    start: new Date(y, m, d, area.hora_inicial, 0),
-                    end: new Date(y, m, d, area.hora_final, 0),
-                    allDay: false,
-                    color: area.color,
-                    editable: false,
-                    url: area.url
-                };
-            });
-
-            $('#AreasCalendar').fullCalendar({
-                header: {
-                    left: '',
-                    center: 'title',
-                    right: ''
-                },
-                editable: false,
-                droppable: false,
-                defaultView: 'agendaDay',
-                timeFormat: 'h:mm A',
-                columnHeaderFormat: 'ddd M/D',
-                drop: function() {
-                    if ($('#drop-remove').is(':checked')) {
-                        $(this).remove();
-                    }
-                },
-                events: eventosHorarios,
-            });
-        });
-</script>
-<script>
-    // Datos de ejemplo para el gráfico de barras
-    let areasProm = <?php echo json_encode($areasProm); ?>;
-    // Array Nombres áreas
-    let nombresAreas = areasProm.map(areaProm => areaProm.area.especializacion);
-    let coloresAreas = areasProm.map(areaProm => areaProm.area.color_hex);
-    let promediosAreas = areasProm.map(areaProm => areaProm.promedio);
-
-    new Chartist.Bar('#areasMetrics',
-        {
-            labels: nombresAreas/*.concat(nombresAreas).concat(nombresAreas).concat(nombresAreas).concat(nombresAreas)*/, //Nombres de las áreas en la parte inferior
-            series: [
-                promediosAreas/*.concat(promediosAreas).concat(promediosAreas).concat(promediosAreas).concat(promediosAreas)*/,  // Notas de cada área
-            ]
-        }, {
-            stackBars: false,
-            axisY: {
-                low: 0,           // Valor mínimo
-                high: 20,         // Valor máximo
-                onlyInteger: true, // Para asegurarse de que sólo haya enteros en la escala
-                labelInterpolationFnc: function(value) {
-                    return value;  // Mostrar los valores tal cual
+                if (total === 0) {
+                    chartDiv.innerHTML = "<p class='text-center'>No hay datos de asistencia disponibles</p>";
+                    return;
                 }
-            }
-        }).on('draw', function(data) {
-            if (data.type === 'bar') {
-                // Cambiar el ancho de las barras
-                data.element.attr({
-                    style: 'stroke: ' + coloresAreas[data.index] + '; stroke-width: 40px'
+
+                var root = am5.Root.new("chartdiv");
+
+                root.setThemes([am5themes_Animated.new(root)]);
+
+                var chart = root.container.children.push(am5percent.PieChart.new(root, {
+                    radius: am5.percent(90),
+                    innerRadius: am5.percent(50),
+                    layout: root.horizontalLayout
+                }));
+
+                var series = chart.series.push(am5percent.PieSeries.new(root, {
+                    valueField: "value",
+                    categoryField: "category",
+                    legendValueText: "{value} ({valuePercentTotal.formatNumber('0.0')}%)"
+                }));
+
+                series.slices.template.adapters.add("fill", function(fill, target) {
+                    var categoryValue = target.dataItem.get("category");
+                    if (categoryValue === "Asistieron") {
+                        return am5.color(0x28a745);
+                    }
+                    return am5.color(0xdc3545);
                 });
-                // Verifica que el valor existe antes de crear el texto
-                if (typeof data.value !== 'undefined') {
-                    // Agregar el valor encima de cada barra
-                    data.group.append(new Chartist.Svg('text', {
-                        x: data.x1 + (data.element.width() / 2),
-                        y: data.y1 - 10, // Ajustar la posición vertical del texto
-                        style: 'text-anchor: middle',
-                        'font-size': '12px',
-                        'font-weight': 'bold',
-                        fill: '#000' // Color del texto
-                    }, 'ct-bar-label').text(data.value));
-                }
+
+                series.data.setAll([
+                    { category: "Asistieron", value: asistieron },
+                    { category: "Faltaron", value: faltaron }
+                ]);
+
+                var label = chart.seriesContainer.children.push(am5.Label.new(root, {
+                    textAlign: "center",
+                    centerY: am5.p50,
+                    centerX: am5.p50,
+                    text: porcentajeAsistencia + "%\nAsistencia",
+                    fontSize: 20,
+                    fontWeight: "bold"
+                }));
+
+                series.labels.template.setAll({
+                    fontSize: 12,
+                    text: "{category}: {value}",
+                    radius: 10
+                });
+
+                var legend = chart.children.push(am5.Legend.new(root, {
+                    centerX: am5.p50,
+                    x: am5.p50,
+                    marginTop: 15,
+                    marginBottom: 15
+                }));
+
+                legend.data.setAll(series.dataItems);
+
+                chart.appear(1000, 100);
+
+                root._logo.dispose();
             }
         });
-</script>
+    </script>
+
+    <script>
+        // Datos para el calendario de reuniones
+        $(document).ready(function() {
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green',
+                    radioClass: 'iradio_square-green'
+                });
+
+                // initialize the external events
+                $('#external-events div.external-event').each(function() {
+                    $(this).data('event', {
+                        title: $.trim($(this).text()),
+                        stick: true
+                    });
+
+                    $(this).draggable({
+                        zIndex: 1111999,
+                        revert: true,
+                        revertDuration: 0
+                    });
+                });
+
+                // initialize the calendar
+                var date = new Date();
+                var d = date.getDate();
+                var m = date.getMonth();
+                var y = date.getFullYear();
+
+                var reunionesProgramadas = <?php echo json_encode($reunionesProgramadas); ?>;
+
+                var eventosHorarios = reunionesProgramadas.map(function(reunion) {
+                    let hf = reunion.horario_modificado;
+                    return {
+                        title: reunion.descripcion,
+                        start: new Date(hf.year, hf.month, hf.day, hf.hora_inicial, 0),
+                        end: new Date(hf.year, hf.month, hf.day, hf.hora_final, 0),
+                        allDay: false,
+                        editable: false,
+                        url: hf.url
+                    };
+                });
+
+                $('#ReunionesCalendar').fullCalendar({
+                    header: {
+                        left: '',
+                        center: 'title',
+                        right: ''
+                    },
+                    editable: false,
+                    droppable: false,
+                    defaultView: 'agendaDay',
+                    timeFormat: 'h:mm A',
+                    columnHeaderFormat: 'ddd M/D',
+                    drop: function() {
+                        if ($('#drop-remove').is(':checked')) {
+                            $(this).remove();
+                        }
+                    },
+                    events: eventosHorarios,
+                });
+            });
+    </script>
+    <script>
+        // Datos para las áreas asistentes
+        $(document).ready(function() {
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green',
+                    radioClass: 'iradio_square-green'
+                });
+
+                // initialize the external events
+                $('#external-events div.external-event').each(function() {
+                    $(this).data('event', {
+                        title: $.trim($(this).text()),
+                        stick: true
+                    });
+
+                    $(this).draggable({
+                        zIndex: 1111999,
+                        revert: true,
+                        revertDuration: 0
+                    });
+                });
+
+                // initialize the calendar
+                var date = new Date();
+                var d = date.getDate();
+                var m = date.getMonth();
+                var y = date.getFullYear();
+
+                var areas = <?php echo json_encode($areas); ?>;
+
+                var eventosHorarios = areas.map(function(area) {
+                    return {
+                        title: area.especializacion,
+                        start: new Date(y, m, d, area.hora_inicial, 0),
+                        end: new Date(y, m, d, area.hora_final, 0),
+                        allDay: false,
+                        color: area.color,
+                        editable: false,
+                        url: area.url
+                    };
+                });
+
+                $('#AreasCalendar').fullCalendar({
+                    header: {
+                        left: '',
+                        center: 'title',
+                        right: ''
+                    },
+                    editable: false,
+                    droppable: false,
+                    defaultView: 'agendaDay',
+                    timeFormat: 'h:mm A',
+                    columnHeaderFormat: 'ddd M/D',
+                    drop: function() {
+                        if ($('#drop-remove').is(':checked')) {
+                            $(this).remove();
+                        }
+                    },
+                    events: eventosHorarios,
+                });
+            });
+    </script>
+    <script>
+        // Datos de ejemplo para el gráfico de barras
+        let areasProm = <?php echo json_encode($areasProm); ?>;
+        // Array Nombres áreas
+        let nombresAreas = areasProm.map(areaProm => areaProm.area.especializacion);
+        let coloresAreas = areasProm.map(areaProm => areaProm.area.color_hex);
+        let promediosAreas = areasProm.map(areaProm => areaProm.promedio);
+
+        new Chartist.Bar('#areasMetrics',
+            {
+                labels: nombresAreas/*.concat(nombresAreas).concat(nombresAreas).concat(nombresAreas).concat(nombresAreas)*/, //Nombres de las áreas en la parte inferior
+                series: [
+                    promediosAreas/*.concat(promediosAreas).concat(promediosAreas).concat(promediosAreas).concat(promediosAreas)*/,  // Notas de cada área
+                ]
+            }, {
+                stackBars: false,
+                axisY: {
+                    low: 0,           // Valor mínimo
+                    high: 20,         // Valor máximo
+                    onlyInteger: true, // Para asegurarse de que sólo haya enteros en la escala
+                    labelInterpolationFnc: function(value) {
+                        return value;  // Mostrar los valores tal cual
+                    }
+                }
+            }).on('draw', function(data) {
+                if (data.type === 'bar') {
+                    // Cambiar el ancho de las barras
+                    data.element.attr({
+                        style: 'stroke: ' + coloresAreas[data.index] + '; stroke-width: 40px'
+                    });
+                    // Verifica que el valor existe antes de crear el texto
+                    if (typeof data.value !== 'undefined') {
+                        // Agregar el valor encima de cada barra
+                        data.group.append(new Chartist.Svg('text', {
+                            x: data.x1 + (data.element.width() / 2),
+                            y: data.y1 - 10, // Ajustar la posición vertical del texto
+                            style: 'text-anchor: middle',
+                            'font-size': '12px',
+                            'font-weight': 'bold',
+                            fill: '#000' // Color del texto
+                        }, 'ct-bar-label').text(data.value));
+                    }
+                }
+            });
+    </script>
 @endif
 <script>
     const deleteAlertError = () => {
