@@ -323,9 +323,9 @@
             series.slices.template.adapters.add("fill", function(fill, target) {
                 var categoryValue = target.dataItem.get("category");
                 if (categoryValue === "Asistieron") {
-                    return am5.color(0x28a745);
+                    return am5.color(0x1BB394);
                 }
-                return am5.color(0xdc3545);
+                return am5.color(0xED5565);
             });
 
             series.data.setAll([
