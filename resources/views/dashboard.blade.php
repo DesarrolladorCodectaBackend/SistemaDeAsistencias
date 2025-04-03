@@ -165,7 +165,6 @@
                         </div>
                     </div>
 
-                    <!-- Columna Derecha: Tabla de Ausentes -->
                     <div class="col-sm-12 col-md-6 col-lg-6 ">
                         <div class="ibox">
                             <div class="ibox-title">
