@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\UsuarioAdministrador;
 use App\Models\UsuarioJefeArea;
+use Illuminate\Support\Facades\DB;
 
 class HomePageController extends Controller
 {
@@ -29,7 +30,7 @@ class HomePageController extends Controller
             $areasProm = $this->getMonthPromAreas();
             $reunionesProgramadas = $this->getTodayProgramReu();
             $areas = $this->getAreasToday();
-            $asistencia = $this->getAsistenciaDiaria();
+            $asistencia = $this->getAsistenciaMesAnterior();
 
             $returning['areasProm'] = $areasProm;
             $returning['reunionesProgramadas'] = $reunionesProgramadas;
@@ -64,17 +65,28 @@ class HomePageController extends Controller
         return view('dashboard', $returning);
     }
 
-    public function getAsistenciaDiaria() {
-        $previousWeekMonday = Carbon::today()->startOfWeek()->subWeek()->toDateString();
-        $previousWeek = Semanas::where('fecha_lunes', $previousWeekMonday)->first();
-        if (!$previousWeek) {
+    public function getAsistenciaMesAnterior() {
+        $inicioMesAnterior = Carbon::today()->subMonth()->startOfMonth()->toDateString();
+        $finMesAnterior = Carbon::today()->subMonth()->endOfMonth()->toDateString();
+
+        $semanasDelMesAnterior = Semanas::whereBetween('fecha_lunes', [$inicioMesAnterior, $finMesAnterior])
+                              ->orWhere(function($query) use ($inicioMesAnterior, $finMesAnterior) {
+                                  $query->where('fecha_lunes', '<', $inicioMesAnterior)
+                                        ->where(DB::raw('DATE_ADD(fecha_lunes, INTERVAL 6 DAY)'), '>=', $inicioMesAnterior);
+                              })
+                              ->get();
+
+        if ($semanasDelMesAnterior->isEmpty()) {
             return [
                 'asistieron' => 0,
                 'faltaron' => 0,
                 'faltantes' => [],
-                'semana' => $previousWeekMonday
+                'mes' => Carbon::today()->subMonth()->format('Y-m')
             ];
         }
+
+        $idsSemanasDelMesAnterior = $semanasDelMesAnterior->pluck('id')->toArray();
+
         $responsabilidadAsistencia = Responsabilidades_semanales::where('nombre', 'Asistencia diaria')->first();
 
         if (!$responsabilidadAsistencia) {
@@ -82,7 +94,7 @@ class HomePageController extends Controller
                 'asistieron' => 0,
                 'faltaron' => 0,
                 'faltantes' => [],
-                'semana' => $previousWeek->fecha_lunes
+                'mes' => Carbon::today()->subMonth()->format('Y-m')
             ];
         }
 
@@ -90,40 +102,54 @@ class HomePageController extends Controller
         $idsColaboradoresActivos = $colaboradoresActivos->pluck('id')->toArray();
 
         $registrosAsistencia = Cumplio_Responsabilidad_Semanal::where('responsabilidad_id', $responsabilidadAsistencia->id)
-                                ->where('semana_id', $previousWeek->id)
+                                ->whereIn('semana_id', $idsSemanasDelMesAnterior)
                                 ->whereIn('colaborador_area_id', $idsColaboradoresActivos)
                                 ->get();
 
-        $asistencias = $registrosAsistencia->where('cumplio', 1)->pluck('colaborador_area_id')->toArray();
-        $ausencias = $registrosAsistencia->where('cumplio', 0)->pluck('colaborador_area_id')->toArray();
+        $idsColaboradoresAsistieron = $registrosAsistencia->where('cumplio', 1)
+                                                         ->pluck('colaborador_area_id')
+                                                         ->unique()
+                                                         ->count();
 
-        $asistieron = count($asistencias);
-        $faltaron = count($ausencias);
+        $faltasPorColaborador = [];
+        $idsColaboradoresFaltaron = [];
 
-        $faltantes = [];
+        foreach ($idsColaboradoresActivos as $colaboradorId) {
+            $ausenciasColaborador = $registrosAsistencia->where('colaborador_area_id', $colaboradorId)
+                                                      ->where('cumplio', 0)
+                                                      ->count();
 
-        foreach ($colaboradoresActivos as $colaboradorArea) {
-            if (in_array($colaboradorArea->id, $ausencias)) {
-                $colaborador = Colaboradores::with('candidato')->find($colaboradorArea->colaborador_id);
-                if ($colaborador && $colaborador->candidato) {
-                    $area = Area::find($colaboradorArea->area_id);
-                    if ($area) {
-                        $faltantes[] = [
+            if ($ausenciasColaborador > 0) {
+                $idsColaboradoresFaltaron[] = $colaboradorId;
+
+                $colaboradorArea = $colaboradoresActivos->where('id', $colaboradorId)->first();
+                if ($colaboradorArea) {
+                    $colaborador = Colaboradores::with('candidato')->find($colaboradorArea->colaborador_id);
+                    if ($colaborador && $colaborador->candidato) {
+                        $area = Area::find($colaboradorArea->area_id);
+                        $faltasPorColaborador[] = [
                             'id' => $colaborador->id,
                             'nombre' => $colaborador->candidato->nombre . ' ' . $colaborador->candidato->apellido,
-                            'area' => $area->especializacion ?? 'Sin área',
-                            'estado' => 'Ausente' 
+                            'area' => $area ? ($area->especializacion ?? 'Sin área') : 'Sin área',
+                            'estado' => 'Ausente',
+                            'veces_faltadas' => $ausenciasColaborador
                         ];
                     }
                 }
             }
         }
 
+        $colaboradoresFaltaron = count(array_unique($idsColaboradoresFaltaron));
+
+        usort($faltasPorColaborador, function($a, $b) {
+            return $b['veces_faltadas'] - $a['veces_faltadas'];
+        });
+
         return [
-            'asistieron' => $asistieron,
-            'faltaron' => $faltaron,
-            'faltantes' => $faltantes,
-            'semana' => $previousWeek->fecha_lunes
+            'asistieron' => $idsColaboradoresAsistieron,
+            'faltaron' => $colaboradoresFaltaron,
+            'faltantes' => $faltasPorColaborador,
+            'mes' => Carbon::today()->subMonth()->format('Y-m')
         ];
     }
 

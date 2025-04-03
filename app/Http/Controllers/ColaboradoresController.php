@@ -1078,8 +1078,14 @@ class ColaboradoresController extends Controller
                     $reuniones_programadas = ReunionesProgramadas::whereIn('id', $colaboradores->pluck('id'))->get();
                     //pago_colaborador
                     $pago_colaborador = PagoColaborador::whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
+                    // colaborador_libro
+                    $colaborador_libro = ColaboradorLibro::with('libro')->whereIn('colaborador_id', $colaboradores->pluck('id'))->get();
 
-
+                    // si el colaborador no devolvió uno o varios libros
+                    $noDevueltoColab = ColaboradorLibro::whereIn('colaborador_id', $colaboradores->pluck('id'))->where('devuelto', 0)->get();
+                    if($noDevueltoColab->isNotEmpty()){
+                        return redirect()->route('colaboradores.index')->with('warning', 'El colaborador debe devolver los libros que se le prestó.');
+                    }
                     //ELIMINACIÓN EN CASCADA
                     //ahora procedemos a eliminarlos de los ultimos a los primeros
                     //asistencias_clase
@@ -1174,6 +1180,12 @@ class ColaboradoresController extends Controller
                         }
                     }
 
+                    // colaborador_libro
+                    if($colaborador_libro) {
+                        foreach($colaborador_libro as $colab_libro) {
+                            $colab_libro->delete();
+                        }
+                    }
                     //colaboradores
                     if($colaboradores){
                         foreach($colaboradores as $colab) {
@@ -1209,13 +1221,13 @@ class ColaboradoresController extends Controller
         }
             DB::commit();
             if($request->currentURL) {
-                return redirect($request->currentURL);
+                return redirect($request->currentURL)->with('success', 'Se eliminó al colaborador con éxito.');
             } else {
-                return redirect()->route('colaboradores.index');
+                return redirect()->route('colaboradores.index')->with('success', 'Se eliminó al colaborador con éxito.');
             }
         } catch(Exception $e){
             DB::rollBack();
-            return $e;
+            // return $e;
             if($request->currentURL) {
                 return redirect($request->currentURL)->with('error', 'Ocurrió un error al eliminar, intente denuevo. Si este error persiste, contacte a su equipo de soporte.');
             } else {
@@ -1364,7 +1376,7 @@ class ColaboradoresController extends Controller
 
         DB::beginTransaction();
         try {
-            
+
             Colaboradores::query()->update(['editable' => 1]);
             DB::commit();
             return redirect()->route('colaboradores.index')->with('success', 'Se activó la edición para todos los colaboradores.');
