@@ -107,21 +107,69 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-12 col-lg-12">
+                    <style>
+                        #chartdiv {
+                            width: 100% !important;
+                            height: 350px !important;
+                            /* display: flex !important;
+                            justify-content: center !important;
+                            align-items: center !important; */
+                        }
+
+                        canvas.am5-layer-0, canvas.am5-layer-30 {
+                            position: absolute !important;
+                        }
+
+                    </style>
+                    <div class="col-sm-12 col-md-6 col-lg-6">
                         <div class="ibox">
                             <div class="ibox-title">
-                                <h5>Asistencia Diaria</h5>
+                                @php
+                                    setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'Spanish_Spain', 'Spanish');
+                                @endphp
+                                <h5>Asistencia Diaria - Mes ({{ ucfirst(strftime('%B %Y', \Carbon\Carbon::today()->subMonth()->timestamp)) }})</h5>
+                            </div>
+                            <div class="ibox-content ">
+                                <div id="chartdiv"  class=""></div>
                             </div>
                             <div class="ibox-content">
-                                    <div id="chartdiv" style="width: 100%; height: 350px;"></div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="widget style1 navy-bg">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <i class="fa fa-user-check fa-3x"></i>
+                                                </div>
+                                                <div class="col-8 text-right">
+                                                    <span>Asistieron</span>
+                                                    <h2 class="font-bold">{{ $asistencia['asistieron'] ?? 0 }}</h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="widget style1 red-bg">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <i class="fa fa-user-times fa-3x"></i>
+                                                </div>
+                                                <div class="col-8 text-right">
+                                                    <span>Faltaron</span>
+                                                    <h2 class="font-bold">{{ $asistencia['faltaron'] ?? 0 }}</h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-12 col-lg-12">
+                    <!-- Columna Derecha: Tabla de Ausentes -->
+                    <div class="col-sm-12 col-md-6 col-lg-6 ">
                         <div class="ibox">
                             <div class="ibox-title">
-                                <h5>Colaboradores Ausentes</h5>
+                                <h5>Colaboradores Ausentes - {{ ucfirst(strftime('%B %Y', \Carbon\Carbon::today()->subMonth()->timestamp)) }}</h5>
                             </div>
                             <div class="ibox-content">
                                 @if(isset($asistencia) && count($asistencia['faltantes']) > 0)
@@ -131,26 +179,28 @@
                                                 <tr>
                                                     <th>Nombre</th>
                                                     <th>Área</th>
+                                                    <th>Faltas en el mes</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach($asistencia['faltantes'] as $faltante)
                                                     <tr>
-                                                            <td>{{ $faltante['nombre'] }}</td>
-                                                            <td>{{ $faltante['area'] }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    @else
-                                        <div class="alert alert-success">
-                                            ¡Todos los colaboradores están presentes hoy!
-                                        </div>
-                                    @endif
-                                </div>
+                                                        <td>{{ $faltante['nombre'] }}</td>
+                                                        <td>{{ $faltante['area'] }}</td>
+                                                        <td><span class="badge badge-danger">{{ $faltante['veces_faltadas'] }}</span></td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    <div class="alert alert-success">
+                                        <i class="fa fa-check-circle mr-2"></i> ¡No hubo ausencias registradas el mes pasado!
+                                    </div>
+                                @endif
                             </div>
                         </div>
+                    </div>
 
 
 
@@ -237,83 +287,83 @@
 </style>
 @if($userData['isAdmin'])
 
-    <script>
-        am5.ready(function() {
-            if(document.getElementById("chartdiv") && typeof am5 !== 'undefined') {
-                var chartDiv = document.getElementById("chartdiv");
-                chartDiv.innerHTML = "";
+<script>
+    am5.ready(function() {
+        if(document.getElementById("chartdiv") && typeof am5 !== 'undefined') {
+            var chartDiv = document.getElementById("chartdiv");
+            chartDiv.innerHTML = "";
 
-                var asistieron = {{ $asistencia['asistieron'] ?? 0 }};
-                var faltaron = {{ $asistencia['faltaron'] ?? 0 }};
-                var total = asistieron + faltaron;
+            var asistieron = {{ $asistencia['asistieron'] ?? 0 }};
+            var faltaron = {{ $asistencia['faltaron'] ?? 0 }};
+            var total = asistieron + faltaron;
 
-                var porcentajeAsistencia = total > 0 ? Math.round((asistieron / total) * 100) : 0;
-                var porcentajeFalta = total > 0 ? Math.round((faltaron / total) * 100) : 0;
+            var porcentajeAsistencia = total > 0 ? Math.round((asistieron / total) * 100) : 0;
+            var porcentajeFalta = total > 0 ? Math.round((faltaron / total) * 100) : 0;
 
-                if (total === 0) {
-                    chartDiv.innerHTML = "<p class='text-center'>No hay datos de asistencia disponibles</p>";
-                    return;
-                }
-
-                var root = am5.Root.new("chartdiv");
-
-                root.setThemes([am5themes_Animated.new(root)]);
-
-                var chart = root.container.children.push(am5percent.PieChart.new(root, {
-                    radius: am5.percent(90),
-                    innerRadius: am5.percent(50),
-                    layout: root.horizontalLayout
-                }));
-
-                var series = chart.series.push(am5percent.PieSeries.new(root, {
-                    valueField: "value",
-                    categoryField: "category",
-                    legendValueText: "{value} ({valuePercentTotal.formatNumber('0.0')}%)"
-                }));
-
-                series.slices.template.adapters.add("fill", function(fill, target) {
-                    var categoryValue = target.dataItem.get("category");
-                    if (categoryValue === "Asistieron") {
-                        return am5.color(0x28a745);
-                    }
-                    return am5.color(0xdc3545);
-                });
-
-                series.data.setAll([
-                    { category: "Asistieron", value: asistieron },
-                    { category: "Faltaron", value: faltaron }
-                ]);
-
-                var label = chart.seriesContainer.children.push(am5.Label.new(root, {
-                    textAlign: "center",
-                    centerY: am5.p50,
-                    centerX: am5.p50,
-                    text: porcentajeAsistencia + "%\nAsistencia",
-                    fontSize: 20,
-                    fontWeight: "bold"
-                }));
-
-                series.labels.template.setAll({
-                    fontSize: 12,
-                    text: "{category}: {value}",
-                    radius: 10
-                });
-
-                var legend = chart.children.push(am5.Legend.new(root, {
-                    centerX: am5.p50,
-                    x: am5.p50,
-                    marginTop: 15,
-                    marginBottom: 15
-                }));
-
-                legend.data.setAll(series.dataItems);
-
-                chart.appear(1000, 100);
-
-                root._logo.dispose();
+            if (total === 0) {
+                chartDiv.innerHTML = "<p class='text-center'>No hay datos de asistencia disponibles para el mes anterior</p>";
+                return;
             }
-        });
-    </script>
+
+            var root = am5.Root.new("chartdiv");
+
+            root.setThemes([am5themes_Animated.new(root)]);
+
+            var chart = root.container.children.push(am5percent.PieChart.new(root, {
+                radius: am5.percent(90),
+                innerRadius: am5.percent(50),
+                layout: root.horizontalLayout
+            }));
+
+            var series = chart.series.push(am5percent.PieSeries.new(root, {
+                valueField: "value",
+                categoryField: "category",
+                legendValueText: "{value} ({valuePercentTotal.formatNumber('0.0')}%)"
+            }));
+
+            series.slices.template.adapters.add("fill", function(fill, target) {
+                var categoryValue = target.dataItem.get("category");
+                if (categoryValue === "Asistieron") {
+                    return am5.color(0x28a745);
+                }
+                return am5.color(0xdc3545);
+            });
+
+            series.data.setAll([
+                { category: "Asistieron", value: asistieron },
+                { category: "Faltaron", value: faltaron }
+            ]);
+
+            var label = chart.seriesContainer.children.push(am5.Label.new(root, {
+                textAlign: "center",
+                centerY: am5.p50,
+                centerX: am5.p50,
+                text: porcentajeAsistencia + "%\nAsistencia",
+                fontSize: 20,
+                fontWeight: "bold"
+            }));
+
+            series.labels.template.setAll({
+                fontSize: 12,
+                text: "{category}: {value}",
+                radius: 10
+            });
+
+            var legend = chart.children.push(am5.Legend.new(root, {
+                centerX: am5.p50,
+                x: am5.p50,
+                marginTop: 15,
+                marginBottom: 15
+            }));
+
+            legend.data.setAll(series.dataItems);
+
+            chart.appear(1000, 100);
+
+            root._logo.dispose();
+        }
+    });
+</script>
 
     <script>
         // Datos para el calendario de reuniones
