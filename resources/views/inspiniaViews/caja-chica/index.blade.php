@@ -132,9 +132,9 @@
                                         <label class="form-label" for="nombres">Nombres:</label>
                                         <div class="d-flex">
                                             <input type="text" name="nombres" id="nombres" class="form-control">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuarios">
-                                            ...
-                                        </button>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuarios">
+                                                ...
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -183,7 +183,7 @@
             </div>
 
             {{-- modal seleccion usuario --}}
-            <div class="modal fade" id="modalUsuarios" tabindex="-1" aria-labelledby="modalUsuariosLabel" aria-hidden="true">
+           <div class="modal fade" id="modalUsuarios" tabindex="-1" aria-labelledby="modalUsuariosLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -198,6 +198,7 @@
                                         <th>ID</th>
                                         <th>Nombres</th>
                                         <th>Correo</th>
+                                        <th>DNI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -206,6 +207,7 @@
                                             <td>{{ $user->id }}</td>
                                             <td>{{ $user->name }} {{ $user->apellido }}</td>
                                             <td>{{ $user->email }}</td>
+                                            <td>{{ $user->dni }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -582,15 +584,22 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <label class="form-label"><b>Método de Pago:</b></label>
-                                                        <div class="btn-group" role="group" aria-label="Método de Pago">
-                                                            <input type="radio" class="btn-check" name="metodo_pago" id="yape{{ $colaborador->id }}" value="Yape" required>
+                                                        <div role="group" aria-label="Método de Pago" style="width: 100%;">
+                                                           <div class="row col-12 metodo-pago-row">
+                                                             <input type="radio" class="btn-check" name="metodo_pago" id="yape{{ $colaborador->id }}" value="Yape" required>
                                                             <label class="btn" for="yape{{ $colaborador->id }}">Yape</label>
 
                                                             <input type="radio" class="btn-check" name="metodo_pago" id="plin{{ $colaborador->id }}" value="Plin" required>
                                                             <label class="btn" for="plin{{ $colaborador->id }}">Plin</label>
+                                                           </div>
 
-                                                            <input type="radio" class="btn-check" name="metodo_pago" id="transferencia{{ $colaborador->id }}" value="Transferencia" required>
+                                                           <div class="row col-12 metodo-pago-row">
+                                                             <input type="radio" class="btn-check" name="metodo_pago" id="transferencia{{ $colaborador->id }}" value="Transferencia" required>
                                                             <label class="btn" for="transferencia{{ $colaborador->id }}">Transferencia</label>
+
+                                                            <input type="radio" class="btn-check" name="metodo_pago" id="efectivo{{ $colaborador->id }}" value="Efectivo" required>
+                                                            <label class="btn" for="efectivo{{ $colaborador->id }}">Efectivo</label>
+                                                           </div>
                                                         </div>
                                                     </div>
 
@@ -612,7 +621,7 @@
                                                 <div class="row mb-3">
                                                     <div class="col-md-4">
                                                         <label class="form-label"><b>Comprobante:</b></label>
-                                                        <input type="file" name="comprobante" class="form-control img-text" required>
+                                                        <input type="file" name="comprobante" class="form-control img-text">
                                                     </div>
                                                     <div class="col-md-8">
                                                         <label class="form-label"><b>Observaciones:</b></label>
@@ -640,7 +649,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         document.getElementById('filtrar-form').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -693,13 +702,30 @@
 
 
     <script>
-        $(document).on("click", ".seleccionar-usuario", function () {
-            let nombreCompleto = $(this).data("nombre");
-
-            $("#nombres").val(nombreCompleto);
-            // Cerrar el modal
-            $("#modalUsuarios").modal("hide");
+        // Script para seleccionar usuario y completar campos
+$(document).ready(function() {
+    // Filtrado de usuarios en el modal
+    $("#buscarUsuario").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#modalUsuarios tbody tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
+    });
+
+    // Selección de usuario
+    $(".seleccionar-usuario").on("click", function() {
+        // Obtener datos del usuario seleccionado
+        var nombre = $(this).data("nombre");
+        var dni = $(this).data("dni");
+
+        // Completar campos en el formulario principal
+        $("#nombres").val(nombre);
+        $("input[name='dni']").val(dni);
+
+        // Cerrar el modal
+        $("#modalUsuarios").modal("hide");
+    });
+});
     </script>
 
     <script>
