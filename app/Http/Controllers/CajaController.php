@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Candidatos;
 use App\Models\Colaboradores;
 use App\Models\IngresoEgresoTransaccion;
 use App\Models\PagoColaborador;
@@ -103,7 +104,14 @@ class CajaController extends Controller
             ->sum('monto');
 
         $users = User::get();
-
+        foreach ($users as $user) {
+        $candidato = Candidatos::where('correo', $user->email)->first();
+        if ($candidato) {
+            $user->dni = $candidato->dni;
+        } else {
+            $user->dni = 'No tiene DNI';
+        }
+    }
         return view('inspiniaViews.caja-chica.index', [
             'colaboradores' => $colaboradores,
             'pagoColab' => $pagoColab,
@@ -158,7 +166,7 @@ class CajaController extends Controller
                 'nro_pago' => $nro_pago,
                 'nombres' => $atributosColab->nombre ." ". $atributosColab->apellido,
                 'dni' => $atributosColab->dni ?? null,
-                    'descripcion' => $request->descripcion,
+                'descripcion' => $request->descripcion,
                 'observaciones' => $request->observaciones,
                 'monto' => $request->total_monto,
                 'tipo_transaccion_id' => $tipoColab->id,
@@ -203,7 +211,7 @@ class CajaController extends Controller
 
         }catch (Exception $e) {
 
-            return $e;
+            // return $e;
             DB::rollback();
             return redirect()->route('caja.index')->with('error', 'Error al registrar el pago.');
 

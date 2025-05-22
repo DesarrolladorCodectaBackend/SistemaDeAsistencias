@@ -6,6 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('css/caja-chica/index.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 para confirmaciones -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Editar Colaborador</title>
 </head>
 
@@ -28,79 +30,67 @@
             </div>
         </div>
 
-
         <main class="main-caja">
             <section class="section-caja m-3">
                 @if(session('warning'))
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <strong>Advertencia!</strong> {{ session('warning') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
 
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong>¡Éxito!</strong> {{ session('success') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @elseif(session('error'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong>Error!</strong> {{ session('error') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
             </section>
-
-
-
 
             <div class="transaccion-content m-3">
                 <div class="saldo-content col-2 d-flex" readonly>
                     <label class="saldo-text">Saldo Actual:</label>
                     <label class="saldo-text"> S/{{ $saldoActual->saldo_actual ?? 0 }} </label>
                 </div>
-                            <form id="filtrar-form">
-                                <div class="filter-fecha-caja-content">
-                                    <div>
-                                        <label for="fecha_inicio">Fecha Inicio:</label>
-                                        <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" required>
-                                    </div>
 
-                                    <div>
-                                        <label for="fecha_fin">Fecha Fin:</label>
-                                        <input type="date" id="fecha_fin" name="fecha_fin" required>
-                                    </div>
-
-                                    <div class="btn-filter-content">
-                                        <button type="submit" class="btn-filter-montos btn-success">Filtrar</button>
-                                    </div>
-
-                                </div>
-                            </form>
-
-
-                        <div class="total-ingresos-egresos-content row">
-                            <div class="text-center total-in-content">
-                                <h3>Total de Ingresos: S/<span id="total-ingresos">0</span></h3>
-                            </div>
-
-                            <div class="text-center total-e-content">
-                                <h3>Total de Egresos: S/<span id="total-egresos">0</span></h3>
-                            </div>
-
+                <form id="filtrar-form">
+                    <div class="filter-fecha-caja-content">
+                        <div>
+                            <label for="fecha_inicio">Fecha Inicio:</label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" required>
                         </div>
+
+                        <div>
+                            <label for="fecha_fin">Fecha Fin:</label>
+                            <input type="date" id="fecha_fin" name="fecha_fin" required>
+                        </div>
+
+                        <div class="btn-filter-content">
+                            <button type="submit" class="btn-filter-montos btn-success">Filtrar</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="total-ingresos-egresos-content row">
+                    <div class="text-center total-in-content">
+                        <h3>Total de Ingresos: S/<span id="total-ingresos">0</span></h3>
+                    </div>
+
+                    <div class="text-center total-e-content">
+                        <h3>Total de Egresos: S/<span id="total-egresos">0</span></h3>
+                    </div>
+                </div>
 
                 <div class="btns-transaccion-content">
                     @if($cajaAbierta)
                         <button class="btn btn-danger" onclick="cerrarCaja()">Cerrar Caja</button>
-
-                        <button type="button" class="btn btn-primary btn-add-registro" data-toggle="modal" data-target="#transaccionModal">
+                        <!-- CORREGIDO: Bootstrap 5 sintaxis -->
+                        <button type="button" class="btn btn-primary btn-add-registro" data-bs-toggle="modal" data-bs-target="#transaccionModal">
                             Agregar
                         </button>
                     @else
@@ -109,16 +99,13 @@
                 </div>
             </div>
 
-
             {{-- modal registro transaccion --}}
-            <div class="modal fade" id="transaccionModal" tabindex="-1" role="dialog" aria-labelledby="transaccionModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal fade" id="transaccionModal" tabindex="-1" aria-labelledby="transaccionModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title" id="transaccionModalLabel">Pagos Depósito-Caja</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                         </div>
                         <form method="POST" action="{{ route('caja.registroTransaccion') }}">
                             @csrf
@@ -132,9 +119,9 @@
                                         <label class="form-label" for="nombres">Nombres:</label>
                                         <div class="d-flex">
                                             <input type="text" name="nombres" id="nombres" class="form-control">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuarios">
-                                            ...
-                                        </button>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuarios">
+                                                ...
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -177,7 +164,6 @@
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
@@ -195,27 +181,33 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Nombres</th>
                                         <th>Correo</th>
+                                        <th>DNI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($users as $user)
-                                        <tr class="seleccionar-usuario" data-nombre="{{ $user->name }} {{ $user->apellido }}" data-dni="{{ $user->dni }}">
-                                            <td>{{ $user->id }}</td>
+                                    @foreach ($users as $index => $user)
+                                        <tr class="seleccionar-usuario usuario-fila {{ $index < count($users) - 3 ? 'd-none' : '' }}"
+                                            data-nombre="{{ $user->name }} {{ $user->apellido }}"
+                                            data-dni="{{ $user->dni }}"
+                                            data-filtro="{{ strtolower($user->name . ' ' . $user->apellido . ' ' . $user->email . ' ' . $user->dni) }}"
+                                            style="cursor: pointer;">
                                             <td>{{ $user->name }} {{ $user->apellido }}</td>
                                             <td>{{ $user->email }}</td>
+                                            <td>{{ $user->dni }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+                            <div id="noResultados" class="d-none text-center">
+                                <p>No se encontraron usuarios</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{-- tabla transacciones --}}
             <table class="table table-bordered" cellpadding="10" cellspacing="0" id="tabla-colaboradores">
                 <thead>
                     <tr>
@@ -582,15 +574,22 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <label class="form-label"><b>Método de Pago:</b></label>
-                                                        <div class="btn-group" role="group" aria-label="Método de Pago">
-                                                            <input type="radio" class="btn-check" name="metodo_pago" id="yape{{ $colaborador->id }}" value="Yape" required>
+                                                        <div role="group" aria-label="Método de Pago" style="width: 100%;">
+                                                           <div class="row col-12 metodo-pago-row">
+                                                             <input type="radio" class="btn-check" name="metodo_pago" id="yape{{ $colaborador->id }}" value="Yape" required>
                                                             <label class="btn" for="yape{{ $colaborador->id }}">Yape</label>
 
                                                             <input type="radio" class="btn-check" name="metodo_pago" id="plin{{ $colaborador->id }}" value="Plin" required>
                                                             <label class="btn" for="plin{{ $colaborador->id }}">Plin</label>
+                                                           </div>
 
-                                                            <input type="radio" class="btn-check" name="metodo_pago" id="transferencia{{ $colaborador->id }}" value="Transferencia" required>
+                                                           <div class="row col-12 metodo-pago-row">
+                                                             <input type="radio" class="btn-check" name="metodo_pago" id="transferencia{{ $colaborador->id }}" value="Transferencia" required>
                                                             <label class="btn" for="transferencia{{ $colaborador->id }}">Transferencia</label>
+
+                                                            <input type="radio" class="btn-check" name="metodo_pago" id="efectivo{{ $colaborador->id }}" value="Efectivo" required>
+                                                            <label class="btn" for="efectivo{{ $colaborador->id }}">Efectivo</label>
+                                                           </div>
                                                         </div>
                                                     </div>
 
@@ -612,7 +611,7 @@
                                                 <div class="row mb-3">
                                                     <div class="col-md-4">
                                                         <label class="form-label"><b>Comprobante:</b></label>
-                                                        <input type="file" name="comprobante" class="form-control img-text" required>
+                                                        <input type="file" name="comprobante" class="form-control img-text">
                                                     </div>
                                                     <div class="col-md-8">
                                                         <label class="form-label"><b>Observaciones:</b></label>
@@ -634,14 +633,17 @@
                     @endforeach
                 </tbody>
             </table>
-
         </main>
-
     </div>
 
+    <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
+    // JAVASCRIPT CORREGIDO - Gestión correcta de modales
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // Filtro de fechas
         document.getElementById('filtrar-form').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -669,84 +671,150 @@
             });
         });
 
-        function cerrarCaja() {
-            fetch("{{ route('caja.cerrar') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Content-Type": "application/json",
-                },
-            }).then(() => location.reload());
-        }
-
-        function abrirCaja() {
-            fetch("{{ route('caja.abrir') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Content-Type": "application/json",
-                },
-            }).then(() => location.reload());
-        }
-    </script>
-
-
-
-    <script>
-        $(document).on("click", ".seleccionar-usuario", function () {
-            let nombreCompleto = $(this).data("nombre");
-
-            $("#nombres").val(nombreCompleto);
-            // Cerrar el modal
-            $("#modalUsuarios").modal("hide");
+        // Gestión de apertura del modal de usuarios
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('[data-bs-target="#modalUsuarios"]')) {
+                // Ocultar el modal de transacción antes de abrir el de usuarios
+                var transaccionModal = bootstrap.Modal.getInstance(document.getElementById('transaccionModal'));
+                if (transaccionModal) {
+                    transaccionModal.hide();
+                }
+            }
         });
-    </script>
 
-    <script>
-        function confirmAnular(id) {
-            Swal.fire({
-                    title: "¿Deseas anular esta transacción?",
-                    showCancelButton: true,
-                    confirmButtonText: "Anular",
-                    cancelButtonText: "Cancelar",
-                }).then((result) => {
-                    if (result.isConfirmed) {
+        // Búsqueda de usuarios
+        document.getElementById('buscarUsuario').addEventListener('input', function() {
+            var value = this.value.toLowerCase();
+            var hasResults = false;
+            var filas = document.querySelectorAll('.usuario-fila');
 
-                    let form = document.createElement('form');
-                    form.method = 'POST';
-
-                    let routeTemplate = "<?php echo route('caja.anularTransaccionColab', ':id'); ?>";
-
-
-                    form.action = routeTemplate.replace(':id', id);
-                    form.innerHTML = `@csrf`;
-
-
-                    document.body.appendChild(form);
-                    form.submit();
+            if (value === '') {
+                filas.forEach(function(fila, index) {
+                    if (index < filas.length - 3) {
+                        fila.classList.add('d-none');
                     } else {
-
-                        Swal.fire({
-                            title: "Acción cancelada",
-                            text: "La transacción no fue cancelada",
-                            icon: "info",
-                            customClass: {
-                                content: 'swal-content'
-                            }
-                        });
-
-                        const style = document.createElement('style');
-                        style.innerHTML = `
-                            .swal2-html-container{
-                                color: #FFFFFF;
-                            }
-                        `;
-                        document.head.appendChild(style);
+                        fila.classList.remove('d-none');
                     }
-                    // console.log(result);
-                    });
+                });
+                hasResults = true;
+            } else {
+                filas.forEach(function(fila) {
+                    var filtro = fila.dataset.filtro;
+                    if (filtro.includes(value)) {
+                        fila.classList.remove('d-none');
+                        hasResults = true;
+                    } else {
+                        fila.classList.add('d-none');
+                    }
+                });
+            }
 
-        }
-    </script>
+            var noResultados = document.getElementById('noResultados');
+            if (hasResults) {
+                if (noResultados) noResultados.classList.add('d-none');
+            } else {
+                if (noResultados) noResultados.classList.remove('d-none');
+            }
+        });
+
+        // Selección de usuario
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.seleccionar-usuario')) {
+                var fila = e.target.closest('.seleccionar-usuario');
+                var nombre = fila.dataset.nombre;
+                var dni = fila.dataset.dni;
+
+                // Llenar los campos del formulario
+                document.getElementById('nombres').value = nombre;
+                document.querySelector('input[name="dni"]').value = dni;
+
+                // Cerrar modal de usuarios
+                var modalUsuarios = bootstrap.Modal.getInstance(document.getElementById('modalUsuarios'));
+                if (modalUsuarios) {
+                    modalUsuarios.hide();
+                }
+
+                // Esperar a que se cierre completamente el modal de usuarios y luego abrir el de transacción
+                document.getElementById('modalUsuarios').addEventListener('hidden.bs.modal', function() {
+                    var transaccionModal = new bootstrap.Modal(document.getElementById('transaccionModal'));
+                    transaccionModal.show();
+                }, { once: true }); // { once: true } para que solo se ejecute una vez
+            }
+        });
+
+        // Limpiar búsqueda al cerrar modal de usuarios
+        document.getElementById('modalUsuarios').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('buscarUsuario').value = '';
+            var filas = document.querySelectorAll('.usuario-fila');
+            filas.forEach(function(fila, index) {
+                if (index < filas.length - 3) {
+                    fila.classList.add('d-none');
+                } else {
+                    fila.classList.remove('d-none');
+                }
+            });
+            var noResultados = document.getElementById('noResultados');
+            if (noResultados) noResultados.classList.add('d-none');
+        });
+
+        // Manejar el caso cuando se cancela la selección de usuario (cerrar modal sin seleccionar)
+        document.getElementById('modalUsuarios').addEventListener('hide.bs.modal', function(e) {
+            // Si no se seleccionó usuario (campos vacíos), volver a mostrar modal de transacción
+            setTimeout(function() {
+                if (!document.getElementById('nombres').value) {
+                    var transaccionModal = new bootstrap.Modal(document.getElementById('transaccionModal'));
+                    transaccionModal.show();
+                }
+            }, 300); // Pequeño delay para evitar conflictos
+        });
+    });
+
+    // Funciones de caja
+    function cerrarCaja() {
+        fetch("{{ route('caja.cerrar') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json",
+            },
+        }).then(() => location.reload());
+    }
+
+    function abrirCaja() {
+        fetch("{{ route('caja.abrir') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json",
+            },
+        }).then(() => location.reload());
+    }
+
+    // Función de confirmación para anular
+    function confirmAnular(id) {
+        Swal.fire({
+            title: "¿Deseas anular esta transacción?",
+            showCancelButton: true,
+            confirmButtonText: "Anular",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                let routeTemplate = "<?php echo route('caja.anularTransaccionColab', ':id'); ?>";
+                form.action = routeTemplate.replace(':id', id);
+                form.innerHTML = `@csrf`;
+                document.body.appendChild(form);
+                form.submit();
+            } else {
+                Swal.fire({
+                    title: "Acción cancelada",
+                    text: "La transacción no fue cancelada",
+                    icon: "info"
+                });
+            }
+        });
+    }
+</script>
 </body>
 </html>

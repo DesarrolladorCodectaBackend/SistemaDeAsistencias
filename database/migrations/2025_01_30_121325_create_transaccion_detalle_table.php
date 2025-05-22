@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('transaccion_id')->references('id')->on('transacciones');
             $table->string('metodo_pago');
             $table->bigInteger('nro_operacion')->nullable();
-            $table->string('comprobante');
+            $table->string('comprobante')->nullable();
             $table->timestamps();
         });
     }

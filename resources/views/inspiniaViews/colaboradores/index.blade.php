@@ -1183,13 +1183,9 @@
                     z-index: 9999999999999;
                 }
 
-                .select2-container {
-                min-width: 400px !important;
-                }
+       
 
                 .select2-selection__choice {
-                padding: 2px 23px !important;
-                margin: 4px 4px 4px 0 !important;
                 background-color: #f1f1f1 !important;
                 border: 1px solid #aaa !important;
                 border-radius: 4px !important;
@@ -1203,16 +1199,12 @@
                 }
 
                 .select2-container--default .select2-selection--multiple {
-                min-height: 38px !important;
+
                 border: 1px solid #ced4da !important;
                 padding: 2px !important;
                 }
 
-                .select2-selection__rendered {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                align-items: center !important;
-                }
+
 
 
             </style>

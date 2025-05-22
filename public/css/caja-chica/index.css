@@ -159,6 +159,15 @@ input:checked + label[for^="transferencia"] {
     color: white;
 }
 
+label[for^="efectivo"] {
+    border-color: black;
+}
+input:checked + label[for^="efectivo"] {
+    background-color: #0daa08;
+    color: white;
+}
+
+
 .text-soles {
     display: flex;
     gap: 0.2em;
@@ -206,4 +215,17 @@ input:checked + label[for^="transferencia"] {
 .seleccionar-usuario:hover {
     border: 3px solid #3a3a3a;
     color: #1a1a1a;
+}
+
+.metodo-pago-row {
+    display: flex;
+    width: 100%;
+}
+
+.metodo-pago-row .btn {
+    width: 100%;
+}
+
+.metodo-pago-row .btn-check {
+    width: 100%;
 }
