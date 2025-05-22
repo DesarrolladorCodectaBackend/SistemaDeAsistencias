@@ -166,7 +166,7 @@ class CajaController extends Controller
                 'nro_pago' => $nro_pago,
                 'nombres' => $atributosColab->nombre ." ". $atributosColab->apellido,
                 'dni' => $atributosColab->dni ?? null,
-                    'descripcion' => $request->descripcion,
+                'descripcion' => $request->descripcion,
                 'observaciones' => $request->observaciones,
                 'monto' => $request->total_monto,
                 'tipo_transaccion_id' => $tipoColab->id,
