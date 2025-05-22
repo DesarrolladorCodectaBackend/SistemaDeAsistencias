@@ -107,7 +107,6 @@ class HomePageController extends Controller
                                 ->whereIn('colaborador_area_id', $idsColaboradoresActivos)
                                 ->get();
 
-        // Obtener registros de faltas justificadas
         $registrosJustificacion = [];
         if ($responsabilidadJustificacion) {
             $registrosJustificacion = Cumplio_Responsabilidad_Semanal::where('responsabilidad_id', $responsabilidadJustificacion->id)
@@ -116,7 +115,6 @@ class HomePageController extends Controller
                                     ->get();
         }
 
-        // Contar colaboradores que asistieron al menos una vez
         $idsColaboradoresAsistieron = $registrosAsistencia->where('cumplio', 1)
                                                          ->pluck('colaborador_area_id')
                                                          ->unique()
@@ -128,23 +126,17 @@ class HomePageController extends Controller
         foreach ($idsColaboradoresActivos as $colaboradorId) {
             $ausenciasReales = 0;
 
-            // Analizar cada semana para el colaborador
             foreach ($idsSemanasDelMesAnterior as $semanaId) {
-                // Buscar registro de asistencia para esta semana
                 $registroAsistencia = $registrosAsistencia->where('colaborador_area_id', $colaboradorId)
                                                          ->where('semana_id', $semanaId)
                                                          ->first();
 
-                // Buscar registro de justificación para esta semana
                 $registroJustificacion = $registrosJustificacion->where('colaborador_area_id', $colaboradorId)
                                                               ->where('semana_id', $semanaId)
                                                               ->first();
 
-                // Si hay registro de asistencia y cumplió = 0 (no asistió)
                 if ($registroAsistencia && $registroAsistencia->cumplio == 0) {
-                    // Verificar si tiene justificación (cumplió = 1)
                     if (!$registroJustificacion || $registroJustificacion->cumplio == 0) {
-                        // No tiene justificación válida, contar como ausencia real
                         $ausenciasReales++;
                     }
                 }
