@@ -265,8 +265,7 @@ class ColaboradoresController extends Controller
 
     //FUNCTION getObjetoColabodaor
 
-    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '', string $pagos = 'false')
-{
+    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '', string $pagos = 'false'){
     $access = FunctionHelperController::verifyAdminAccess();
     if(!$access){
         return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
@@ -826,7 +825,7 @@ class ColaboradoresController extends Controller
             if($colaborador->estado == 0){
                 $colaboradoresAreaActivos = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('estado', 1)->get();
                 foreach($colaboradoresAreaActivos as $colabArea){
-                    $colabArea->update(['estado' => false, "jefe_area" => 0]);
+                    $colabArea->update(["jefe_area" => 0]);
                     //Crear registro de inactivación
                     RegistroActividadController::crearRegistro($colabArea->id, false);
                 }
