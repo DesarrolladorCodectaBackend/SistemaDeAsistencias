@@ -269,7 +269,7 @@
             <div class="row">
                 @foreach($colaboradores->data as $index => $colaborador)
 
-                <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true">
+                <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true" >
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
@@ -387,7 +387,8 @@
                                                     class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
                                                     onclick="abrirModalEdicion({{$colaborador->id}});"
                                                     style="font-size: 20px; width: 60px;"
-                                                    href="#modal-form-update{{$colaborador->id}}"></a>
+                                                    {{-- href="#modal-form-update{{$colaborador->id}}" --}}
+                                                    href="javascript:void(0)"></a>
                                             </x-uiverse.tooltip>
                                         </div>
                                     </div>
@@ -1183,13 +1184,12 @@
                     z-index: 9999999999999;
                 }
 
-       
-
                 .select2-selection__choice {
                 background-color: #f1f1f1 !important;
                 border: 1px solid #aaa !important;
                 border-radius: 4px !important;
-                font-size: 14px !important;
+                font-size: 12px !important;
+                padding-left: 2em !important;
                 }
 
                 .select2-selection__choice__display {
@@ -1199,14 +1199,8 @@
                 }
 
                 .select2-container--default .select2-selection--multiple {
-
                 border: 1px solid #ced4da !important;
-                padding: 2px !important;
                 }
-
-
-
-
             </style>
 
         </div>
@@ -1256,6 +1250,60 @@
     </style>
 
     <script src="{{ asset('js/asistencia/colaboradores.js') }}"></script>
+
+    <script>
+$(document).ready(function() {
+    // Desactivar el comportamiento por defecto de Bootstrap para Escape
+    $.fn.modal.Constructor.prototype.escape = function() {};
+    
+    // Manejar Escape manualmente
+    $(document).on('keydown', function(e) {
+        if (e.keyCode === 27) { // Escape key
+            var $visibleModals = $('.modal.show');
+            if ($visibleModals.length > 0) {
+                // Obtener el modal que está más arriba
+                var $topModal = $visibleModals.last();
+                
+                // Cerrar solo ese modal
+                $topModal.modal('hide');
+                
+                // Prevenir propagación
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        }
+    });
+    
+    // Limpiar backdrops cuando se cierra cualquier modal
+    $('.modal').on('hidden.bs.modal', function () {
+        setTimeout(function() {
+            var visibleModals = $('.modal.show').length;
+            var backdrops = $('.modal-backdrop').length;
+            
+            if (backdrops > visibleModals) {
+                $('.modal-backdrop').slice(visibleModals).remove();
+            }
+            
+            if (visibleModals === 0) {
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('padding-right', '');
+            }
+        }, 50);
+    });
+});
+
+function abrirModalEdicion(colaboradorId) {
+    $('#modal-form-view' + colaboradorId).modal('hide');
+    
+    $('#modal-form-view' + colaboradorId).one('hidden.bs.modal', function() {
+        setTimeout(function() {
+            $('#modal-form-update' + colaboradorId).modal('show');
+        }, 100);
+    });
+}
+</script>
+
     <script>
         function confirmState(id) {
             Swal.fire({
