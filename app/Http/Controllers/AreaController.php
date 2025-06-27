@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
 use App\Models\User;
+use App\Models\AreaSemanaDesactivacion;
 use App\Models\UsuarioJefeArea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -725,6 +726,37 @@ class AreaController extends Controller
             $jefe_area->update(["jefe_area" => 0]);
         }
 
+    }
+
+    public function desactivarEvaluaciones(Request $request, $area_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        $fecha_inicio = $request->fecha_inicio;
+        $fecha_fin = $request->fecha_fin;
+        
+        $area = Area::findOrFail($area_id);
+        
+        DB::beginTransaction();
+        try {
+
+            AreaSemanaDesactivacion::create([
+                'area_id' => $area_id,
+                'fecha_inicio' => $fecha_inicio,
+                'fecha_fin' => $fecha_fin
+            ]);
+
+            DB::commit();
+            return redirect()->route('areas.index')->with('success','Evaluaciones desactivadas con éxito.');
+
+        } catch (Exception $e) {
+            
+            DB::rollBack();
+            return redirect()->route('areas.index')->with('error',$e);
+
+        }
     }
 
 }

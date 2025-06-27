@@ -283,6 +283,9 @@ Route::middleware('auth')->group(function () {
 
     // ColaboradorAccount
     Route::get('/colaborador-horario', [HorarioColabAccountController::class, 'index'])->name('colabAccount.index');
+
+    // Desactivar evaluaciones semanales por grupo
+    Route::post('area/evaluaciones/desactivacion-semanal/{area_id}', [AreaController::class, 'desactivarEvaluaciones'])->name('desactivarEvaluacion.area');
 });
 
 require __DIR__ . '/auth.php';

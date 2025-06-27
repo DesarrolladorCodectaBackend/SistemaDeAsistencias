@@ -10,7 +10,8 @@ class Semanas extends Model
     use HasFactory;
 
     protected $fillable = [
-        'fecha_lunes'
+        'fecha_lunes',
+        'caja_abierta'
     ];
 
     public function horario_virtual_colaborador(){
