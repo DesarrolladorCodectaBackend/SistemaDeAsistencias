@@ -113,13 +113,20 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             // Colección para las semanas que se contarán
             $semanasParaConteo = collect();
 
-            foreach ($semanasMes as $semana) {
-                // Verificar si la semana está desactivada
+          foreach ($semanasMes as $semana) {
+                // Calcular las fechas de la semana (lunes a domingo)
+                $fechaLunes = \Carbon\Carbon::parse($semana->fecha_lunes);
+                $fechaDomingo = $fechaLunes->copy()->addDays(6);
+
                 $desactivada = AreaSemanaDesactivacion::where('area_id', $area_id)
-                    ->where('fecha_inicio', '<=', $semana->fecha_lunes)
-                    ->where('fecha_fin', '>=', $semana->fecha_lunes)
-                    ->where('desactivada', true)
-                    ->exists();
+    ->where('fecha_inicio', '<=', $fechaDomingo)
+    ->where('fecha_fin', '>=', $fechaLunes)
+    ->where('desactivada', true)
+    ->where(function($query) use ($year) {
+        $query->whereYear('fecha_inicio', $year)
+              ->orWhereYear('fecha_fin', $year);
+    })
+    ->exists();
 
                 // Verificar si la semana tiene evaluaciones
                 $tieneEvaluaciones = $Cumplio_res_Area->where('semana_id', $semana->id)->isNotEmpty();

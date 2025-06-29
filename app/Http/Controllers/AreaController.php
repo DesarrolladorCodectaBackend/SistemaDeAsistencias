@@ -728,7 +728,68 @@ class AreaController extends Controller
 
     }
 
-    public function desactivarEvaluaciones(Request $request, $area_id) {
+    // public function desactivarEvaluaciones(Request $request, $area_id) {
+    //     $access = FunctionHelperController::verifyAdminAccess();
+    //     if (!$access) {
+    //         return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+    //     }
+
+    //     $fecha_inicio = $request->fecha_inicio;
+    //     $fecha_fin = $request->fecha_fin;
+
+    //     $area = Area::findOrFail($area_id);
+
+    //     DB::beginTransaction();
+    //     try {
+
+    //         AreaSemanaDesactivacion::create([
+    //             'area_id' => $area_id,
+    //             'fecha_inicio' => $fecha_inicio,
+    //             'fecha_fin' => $fecha_fin
+    //         ]);
+
+    //         DB::commit();
+    //         return redirect()->route('areas.index')->with('success','Evaluaciones desactivadas con éxito.');
+
+    //     } catch (Exception $e) {
+
+    //         DB::rollBack();
+    //         return redirect()->route('areas.index')->with('error','Ocurrió un error. Vuélvelo a intentarlo más tarde.');
+
+    //     }
+    // }
+
+    // public function updateDesactivacion(Request $request, $area_id) {
+
+    //     $access = FunctionHelperController::verifyAdminAccess();
+    //     if (!$access) {
+    //         return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+    //     }
+
+    //     $area = Area::findOrFail($area_id);
+
+    //     $fecha_inicio = $request->fecha_inicio;
+    //     $fecha_fin = $request->fecha_fin;
+
+    //     try {
+
+    //         $area->update([
+    //             'fecha_inicio' => $fecha_inicio,
+    //             'fecha_fin' => $fecha_fin
+    //         ]);
+
+    //         DB::commit();
+    //         return redirect()->route('areas.index')->with('success','Evaluaciones desactivadas con éxito.');
+
+    //     } catch (Exception $e) {
+
+    //         DB::rollBack();
+    //         return redirect()->route('areas.index')->with('error','Ocurrió un error. Vuélvelo a intentarlo más tarde.');
+
+    //     }
+
+
+    public function updateDesactivacion(Request $request, $area_id) {
         $access = FunctionHelperController::verifyAdminAccess();
         if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
@@ -736,11 +797,11 @@ class AreaController extends Controller
 
         $fecha_inicio = $request->fecha_inicio;
         $fecha_fin = $request->fecha_fin;
-        
-        $area = Area::findOrFail($area_id);
-        
+
         DB::beginTransaction();
         try {
+
+            // $desactivacion = AreaSemanaDesactivacion::where('area_id', $area_id)->first();
 
             AreaSemanaDesactivacion::create([
                 'area_id' => $area_id,
@@ -749,14 +810,14 @@ class AreaController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('areas.index')->with('success','Evaluaciones desactivadas con éxito.');
+            return redirect()->route('areas.index')->with('success','Evaluaciones desactivadas hasta el: '.$fecha_fin);
 
         } catch (Exception $e) {
-            
             DB::rollBack();
-            return redirect()->route('areas.index')->with('error',$e);
-
+            return redirect()->route('areas.index')->with('error','Ocurrió un error. Vuélvelo a intentarlo más tarde.');
         }
     }
 
 }
+
+

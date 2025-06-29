@@ -105,15 +105,12 @@
                                 </div>
                                 <div class="product-desc">
                                     {{-- CAMBIO DE ESTADO ÁREAS --}}
-
-
                                     <form action="{{ route('areas.activarInactivar', $area->id) }}" method="POST">
                                         @csrf
                                         @method('put')
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
 
                                     </form>
-
 
                                     <div>
                                         {{-- btn cambiar estado JS --}}
@@ -156,109 +153,133 @@
                                             </x-uiverse.tooltip>
 
                                         </form>
-                                      
-                                        <x-uiverse.tooltip nameTool="Evaluaciones">
-                                           <button 
-                                                type="button" 
-                                                id="btn-desactivar-evaluaciones-{{$area->id}}" 
-                                                class="btn btn-secondary fa fa-calendar" 
-                                                style="font-size: 20px;"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalDesactivarEvaluaciones{{$area->id}}"
-                                                onclick="abrirModalDesactivacion({{$area->id}}, '{{$area->nombre}}')">
-                                            </button>
-                                        </x-uiverse.tooltip>
 
-                                        {{-- desactivar evaluaciones --}}
-                                        <div class="modal fade" id="modalDesactivarEvaluaciones{{$area->id}}" tabindex="-1" 
-                                            aria-labelledby="modalDesactivarEvaluacionesLabel{{$area->id}}" aria-hidden="true"
-                                            data-bs-backdrop="static" data-bs-keyboard="false">
-                                            <div class="modal-dialog modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header text-dark">
-                                                        <h5 class="modal-title" id="modalDesactivarEvaluacionesLabel{{$area->id}}">
-                                                            <i class="fas fa-calendar-times me-2"></i>
-                                                            Desactivar Evaluaciones - {{$area->especializacion}}
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
-                                                    </div>
-                                                    
-                                                    <form method="POST" action="{{route('desactivarEvaluacion.area', $area->id)}}" id="formDesactivarEvaluaciones{{$area->id}}">
-                                                        @csrf
-                                                        <div class="modal-body">
-                                                            <div class="alert alert-info">
-                                                                Seleccione el período durante el cual las evaluaciones estarán desactivadas para esta área.
-                                                            </div>
-                                                            
-                                                            <div class="row">
-                                                                {{-- fecha_inicio --}}
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group mb-3">
-                                                                        <label for="fecha_inicio{{$area->id}}" class="form-label fw-bold">
-                                                                            <i class="fas fa-calendar-plus text-success me-1"></i>
-                                                                            Fecha de Inicio
-                                                                        </label>
-                                                                        <input type="date" 
-                                                                            class="form-control form-control-lg" 
-                                                                            id="fecha_inicio{{$area->id}}" 
-                                                                            name="fecha_inicio" 
-                                                                            required
-                                                                            min="{{date('Y-m-d')}}"
-                                                                            onchange="validarFechas({{$area->id}})">
-                                                                        <small class="form-text text-muted">
-                                                                            Fecha desde cuando se desactivarán las evaluaciones
-                                                                        </small>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                                {{-- fecha_fin --}}
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group mb-3">
-                                                                        <label for="fecha_fin{{$area->id}}" class="form-label fw-bold">
-                                                                            Fecha de Fin
-                                                                        </label>
-                                                                        <input type="date" 
-                                                                            class="form-control form-control-lg" 
-                                                                            id="fecha_fin{{$area->id}}" 
-                                                                            name="fecha_fin" 
-                                                                            required
-                                                                            min="{{date('Y-m-d')}}"
-                                                                            onchange="validarFechas({{$area->id}})">
-                                                                        <small class="form-text text-muted">
-                                                                            Fecha hasta cuando estarán desactivadas
-                                                                        </small>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            
-                                                            <div class="mt-3">
-                                                                <div class="card bg-light">
-                                                                    <div class="card-body">
-                                                                        <h6 class="card-title">
-                                                                            <i class="fas fa-clock me-1"></i>
-                                                                            Resumen del Período
-                                                                        </h6>
-                                                                        <p class="card-text" id="resumenPeriodo{{$area->id}}">
-                                                                            Seleccione las fechas para ver el resumen del período de desactivación.
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                                Cancelar
-                                                            </button>
-                                                            <button type="submit" class="btn btn-primary" id="btnConfirmarDesactivacion{{$area->id}}" disabled>
-                                                                Desactivar Evaluaciones
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {{-- Botón para abrir modal --}}
+<x-uiverse.tooltip nameTool="Evaluaciones">
+    @if($area->desactivacion)
+        <!-- Botón para editar desactivación existente -->
+        <button
+            type="button"
+            class="btn btn-warning fa fa-edit modal-trigger-btn"
+            style="font-size: 20px;"
+            data-area-id="{{$area->id}}"
+            data-area-nombre="{{$area->nombre}}"
+            data-tiene-desactivacion="true"
+            data-fecha-inicio="{{$area->desactivacion->fecha_inicio}}"
+            data-fecha-fin="{{$area->desactivacion->fecha_fin}}">
+        </button>
+    @else
+        <!-- Botón para crear nueva desactivación -->
+        <button
+            type="button"
+            class="btn btn-secondary fa fa-calendar modal-trigger-btn"
+            style="font-size: 20px;"
+            data-area-id="{{$area->id}}"
+            data-area-nombre="{{$area->nombre}}"
+            data-tiene-desactivacion="false">
+        </button>
+    @endif
+</x-uiverse.tooltip>
 
+{{-- Modal desactivar evaluaciones - ESTRUCTURA ÚNICA --}}
+<div class="modal fade" 
+     id="modalDesactivarEvaluaciones{{$area->id}}" 
+     tabindex="-1"
+     aria-labelledby="modalDesactivarEvaluacionesLabel{{$area->id}}" 
+     aria-hidden="true"
+     data-bs-backdrop="static" 
+     data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-dark">
+                <h5 class="modal-title" id="modalDesactivarEvaluacionesLabel{{$area->id}}">
+                    <i class="fas fa-calendar-times me-2"></i>
+                    Desactivar Evaluaciones - <span id="areaNombre{{$area->id}}">{{$area->especializacion}}</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar modal"></button>
+            </div>
+
+            {{-- FORMULARIO ÚNICO - RUTA CORREGIDA --}}
+            <form method="POST" id="formDesactivarEvaluaciones{{$area->id}}" action="{{ route('desactivarEvaluacionUpdate.area', $area->id) }}">
+                @csrf
+                {{-- El método se añadirá dinámicamente por JavaScript --}}
+                
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        Seleccione el período durante el cual las evaluaciones estarán desactivadas para esta área.
+                    </div>
+
+                    <div class="row">
+                        {{-- fecha_inicio --}}
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="fecha_inicio{{$area->id}}" class="form-label fw-bold">
+                                    <i class="fas fa-calendar-plus text-success me-1"></i>
+                                    Fecha de Inicio
+                                </label>
+                                <input type="date"
+                                    class="form-control form-control-lg"
+                                    id="fecha_inicio{{$area->id}}"
+                                    name="fecha_inicio"
+                                    required
+                                    min="{{date('Y-m-d')}}"
+                                    onchange="validarFechas({{$area->id}})">
+                                <small class="form-text text-muted">
+                                    Fecha desde cuando se desactivarán las evaluaciones
+                                </small>
+                            </div>
+                        </div>
+
+                        {{-- fecha_fin --}}
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="fecha_fin{{$area->id}}" class="form-label fw-bold">
+                                    <i class="fas fa-calendar-minus text-danger me-1"></i>
+                                    Fecha de Fin
+                                </label>
+                                <input type="date"
+                                    class="form-control form-control-lg"
+                                    id="fecha_fin{{$area->id}}"
+                                    name="fecha_fin"
+                                    required
+                                    min="{{date('Y-m-d')}}"
+                                    onchange="validarFechas({{$area->id}})">
+                                <small class="form-text text-muted">
+                                    Fecha hasta cuando estarán desactivadas
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Resumen del Período
+                                </h6>
+                                <p class="card-text" id="resumenPeriodo{{$area->id}}">
+                                    Seleccione las fechas para ver el resumen del período de desactivación.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="btnConfirmarDesactivacion{{$area->id}}" disabled>
+                        <i class="fas fa-ban me-1"></i>
+                        Desactivar Evaluaciones
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
                                     </div>
                                 </div>
@@ -478,85 +499,222 @@
                     });
 
     }
-    
+
     </script>
 <script>
-// Función para abrir modal (debugging)
-function abrirModalDesactivacion(areaId, areaNombre) {
-    console.log('Intentando abrir modal para área:', areaId, areaNombre);
+// JavaScript optimizado - Modal único con SweetAlert2
+document.addEventListener('DOMContentLoaded', function() {
     
-    // Verificar si Bootstrap está cargado
-    if (typeof bootstrap === 'undefined' && typeof $ === 'undefined') {
-        console.error('Bootstrap no está cargado');
-        alert('Error: Bootstrap no está cargado. Contacte al administrador.');
-        return;
-    }
-    
-    // Forzar apertura del modal si data-bs-toggle no funciona
-    try {
-        const modalElement = document.getElementById('modalDesactivarEvaluaciones' + areaId);
-        console.log('Modal element encontrado:', modalElement);
+    // Event listener para todos los botones que abren modales
+    document.addEventListener('click', function(e) {
+        const button = e.target.closest('.modal-trigger-btn');
+        if (!button) return;
         
-        if (modalElement) {
-            // Bootstrap 5
-            if (typeof bootstrap !== 'undefined') {
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-            }
-            // jQuery/Bootstrap 4 (fallback)
-            else if (typeof $ !== 'undefined') {
-                $('#modalDesactivarEvaluaciones' + areaId).modal('show');
-            }
-        } else {
-            console.error('Modal no encontrado:', 'modalDesactivarEvaluaciones' + areaId);
+        // Prevenir comportamiento por defecto
+        e.preventDefault();
+        e.stopPropagation();
+        
+        
+        const areaId = button.getAttribute('data-area-id');
+        const areaNombre = button.getAttribute('data-area-nombre');
+        const tieneDesactivacion = button.getAttribute('data-tiene-desactivacion') === 'true';
+        const fechaInicio = button.getAttribute('data-fecha-inicio') || '';
+        const fechaFin = button.getAttribute('data-fecha-fin') || '';
+
+
+        // Configurar el formulario ANTES de mostrar el modal
+        const form = document.getElementById('formDesactivarEvaluaciones' + areaId);
+        const btnSubmit = document.getElementById('btnConfirmarDesactivacion' + areaId);
+
+
+        // Remover input method anterior si existe
+        const existingMethod = form.querySelector('input[name="_method"]');
+        if (existingMethod) {
+            existingMethod.remove();
         }
-    } catch (error) {
-        console.error('Error al abrir modal:', error);
+
+        // CORRECCIÓN: Usar la ruta correcta para ambos casos
+        // Obtener la URL base desde el formulario existente
+        const baseAction = form.action;
+        
+        if (tieneDesactivacion) {
+            // Modo actualización - USAR PATCH
+            form.action = baseAction;
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'PATCH';
+            form.appendChild(methodInput);
+            btnSubmit.innerHTML = '<i class="fas fa-edit me-1"></i>Actualizar Desactivación';
+            btnSubmit.className = 'btn btn-warning';
+            
+            // Cargar fechas existentes
+            const fechaInicioInput = document.getElementById('fecha_inicio' + areaId);
+            const fechaFinInput = document.getElementById('fecha_fin' + areaId);
+            
+            if (fechaInicioInput) fechaInicioInput.value = fechaInicio;
+            if (fechaFinInput) fechaFinInput.value = fechaFin;
+            
+            validarFechas(areaId);
+        } else {
+           
+            // Modo creación - USAR POST
+            form.action = baseAction;
+            btnSubmit.innerHTML = '<i class="fas fa-ban me-1"></i>Desactivar Evaluaciones';
+            btnSubmit.className = 'btn btn-danger';
+            
+            // Limpiar campos
+            const fechaInicioInput = document.getElementById('fecha_inicio' + areaId);
+            const fechaFinInput = document.getElementById('fecha_fin' + areaId);
+            
+            if (fechaInicioInput) fechaInicioInput.value = '';
+            if (fechaFinInput) fechaFinInput.value = '';
+            
+            // Deshabilitar botón hasta que se llenen las fechas
+            btnSubmit.disabled = true;
+            
+            // Limpiar resumen
+            const resumen = document.getElementById('resumenPeriodo' + areaId);
+            if (resumen) {
+                resumen.innerHTML = 'Seleccione las fechas para ver el resumen del período de desactivación.';
+            }
+        }
+
+        // Mostrar el modal manualmente
+        showModal(areaId);
+    });
+
+    // Event listener para submit de formularios
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        if (!form.id || !form.id.startsWith('formDesactivarEvaluaciones')) return;
+        
+        e.preventDefault();
+
+        const areaId = form.id.replace('formDesactivarEvaluaciones', '');
+        const fechaInicio = document.getElementById(`fecha_inicio${areaId}`)?.value;
+        const fechaFin = document.getElementById(`fecha_fin${areaId}`)?.value;
+
+
+        if (!fechaInicio || !fechaFin) {
+            console.log('Fechas incompletas');
+            return;
+        }
+
+        // Validar que la fecha fin sea posterior a la fecha inicio
+        const inicio = new Date(fechaInicio);
+        const fin = new Date(fechaFin);
+        
+        if (fin <= inicio) {
+            console.log('Error: La fecha fin debe ser posterior a la fecha de inicio');
+            return;
+        }
+
+        
+        // Crear FormData para el envío
+        const formData = new FormData(form);
+       
+        form.submit();
+    });
+});
+
+// Función para mostrar modal
+function showModal(areaId) {
+    const modalElement = document.getElementById('modalDesactivarEvaluaciones' + areaId);
+
+
+    // Intentar usar Bootstrap 5 primero, luego Bootstrap 4
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        const modal = new bootstrap.Modal(modalElement, {
+            backdrop: 'static',
+            keyboard: true
+        });
+        modal.show();
+    } else if (typeof $ !== 'undefined' && $.fn.modal) {
+        // Bootstrap 4 con jQuery
+        $(modalElement).modal({
+            backdrop: 'static',
+            keyboard: true
+        }).modal('show');
+    } else {
+        console.error('Bootstrap no encontrado');
+    }
+}
+
+// Función para ocultar modal
+function hideModal(areaId) {
+    const modalElement = document.getElementById('modalDesactivarEvaluaciones' + areaId);
+  
+
+    // Intentar usar Bootstrap 5 primero, luego Bootstrap 4
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+            modalInstance.hide();
+        } else {
+            const modal = new bootstrap.Modal(modalElement);
+            modal.hide();
+        }
+    } else if (typeof $ !== 'undefined' && $.fn.modal) {
+        // Bootstrap 4 con jQuery
+        $(modalElement).modal('hide');
+    } else {
+        console.error('Bootstrap no encontrado');
     }
 }
 
 // Función de validación mejorada
 function validarFechas(areaId) {
-    console.log('Validando fechas para área:', areaId);
-    
-    const fechaInicio = document.getElementById('fecha_inicio' + areaId).value;
-    const fechaFin = document.getElementById('fecha_fin' + areaId).value;
+
+    const fechaInicio = document.getElementById('fecha_inicio' + areaId)?.value;
+    const fechaFin = document.getElementById('fecha_fin' + areaId)?.value;
     const btnConfirmar = document.getElementById('btnConfirmarDesactivacion' + areaId);
     const resumen = document.getElementById('resumenPeriodo' + areaId);
-    
+    const fechaFinInput = document.getElementById('fecha_fin' + areaId);
+
+    if (!btnConfirmar || !resumen) {
+        console.error('No se encontraron elementos necesarios para validación');
+        return;
+    }
+
+    // Establecer fecha mínima para fecha fin
+    if (fechaInicio && fechaFinInput) {
+        fechaFinInput.min = fechaInicio;
+    }
+
     if (fechaInicio && fechaFin) {
         const inicio = new Date(fechaInicio);
         const fin = new Date(fechaFin);
-        
+
         if (fin <= inicio) {
-            // Fecha fin debe ser posterior a fecha inicio
-            document.getElementById('fecha_fin' + areaId).setCustomValidity('La fecha fin debe ser posterior a la fecha de inicio');
+            if (fechaFinInput) {
+                fechaFinInput.setCustomValidity('La fecha fin debe ser posterior a la fecha de inicio');
+            }
             btnConfirmar.disabled = true;
             resumen.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>La fecha fin debe ser posterior a la fecha de inicio.</span>';
         } else {
-            // Validación correcta
-            document.getElementById('fecha_fin' + areaId).setCustomValidity('');
+            if (fechaFinInput) {
+                fechaFinInput.setCustomValidity('');
+            }
             btnConfirmar.disabled = false;
-            
-            // Calcular días
+
             const timeDiff = fin.getTime() - inicio.getTime();
             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-            
-            // Formatear fechas para mostrar
+
             const fechaInicioFormat = inicio.toLocaleDateString('es-ES', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
-            
+
             const fechaFinFormat = fin.toLocaleDateString('es-ES', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
-            
+
             resumen.innerHTML = `
                 <strong>Período seleccionado:</strong><br>
                 <i class="fas fa-play text-success me-1"></i> <strong>Inicio:</strong> ${fechaInicioFormat}<br>
@@ -568,39 +726,7 @@ function validarFechas(areaId) {
         btnConfirmar.disabled = true;
         resumen.innerHTML = 'Seleccione las fechas para ver el resumen del período de desactivación.';
     }
-    
-    // Actualizar min de fecha fin cuando cambia fecha inicio
-    if (fechaInicio) {
-        document.getElementById('fecha_fin' + areaId).min = fechaInicio;
-    }
 }
-
-// Event listener para confirmación
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('formDesactivarEvaluaciones{{$area->id}}');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            const fechaInicio = document.getElementById('fecha_inicio{{$area->id}}').value;
-            const fechaFin = document.getElementById('fecha_fin{{$area->id}}').value;
-            
-            const inicio = new Date(fechaInicio).toLocaleDateString('es-ES');
-            const fin = new Date(fechaFin).toLocaleDateString('es-ES');
-            
-            if (!confirm(`¿Está seguro de desactivar las evaluaciones del área "{{$area->nombre}}" desde el ${inicio} hasta el ${fin}?`)) {
-                e.preventDefault();
-            }
-        });
-    }
-});
-
-// Debug: Verificar cuando se carga la página
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM cargado. Verificando elementos...');
-    console.log('Botón:', document.getElementById('btn-desactivar-evaluaciones-{{$area->id}}'));
-    console.log('Modal:', document.getElementById('modalDesactivarEvaluaciones{{$area->id}}'));
-    console.log('Bootstrap disponible:', typeof bootstrap !== 'undefined');
-    console.log('jQuery disponible:', typeof $ !== 'undefined');
-});
 </script>
 
 <style>
