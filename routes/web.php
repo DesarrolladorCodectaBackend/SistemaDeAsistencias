@@ -287,7 +287,7 @@ Route::middleware('auth')->group(function () {
     // // Desactivar evaluaciones semanales por grupo
     // Route::post('area/evaluaciones/desactivacion-semanal/{area_id}', [AreaController::class, 'desactivarEvaluaciones'])->name('desactivarEvaluacion.area');
     // Route::patch('area/evaluaciones/update-desactivacion-semanal{area_id}', [AreaController::class, 'updateDesactivacion'])->name('desactivarEvaluacionUpdate.area');
-    Route::patch('area/evaluaciones/update-desactivacion-semanal/{area_id}', [AreaController::class, 'updateDesactivacion'])->name('desactivarEvaluacionUpdate.area');
+    Route::match(['post', 'patch'], 'area/evaluaciones/update-desactivacion-semanal/{area_id}', [AreaController::class, 'updateDesactivacion'])->name('desactivarEvaluacionUpdate.area');
 });
 
 require __DIR__ . '/auth.php';

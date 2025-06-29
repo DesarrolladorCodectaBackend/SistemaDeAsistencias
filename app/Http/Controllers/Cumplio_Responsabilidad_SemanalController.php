@@ -114,56 +114,59 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             $semanasParaConteo = collect();
 
           foreach ($semanasMes as $semana) {
-    // Calcular las fechas de la semana (lunes a domingo)
-    $fechaLunes = \Carbon\Carbon::parse($semana->fecha_lunes);
-    $fechaDomingo = $fechaLunes->copy()->addDays(6);
+                // Calcular las fechas de la semana (lunes a domingo)
+                $fechaLunes = \Carbon\Carbon::parse($semana->fecha_lunes);
+                $fechaDomingo = $fechaLunes->copy()->addDays(6);
 
-    // Verificar si la semana está desactivada en algún punto
-    $desactivada = AreaSemanaDesactivacion::where('area_id', $area_id)
-        ->where('fecha_inicio', '<=', $fechaDomingo)
-        ->where('fecha_fin', '>=', $fechaLunes)
-        ->where('desactivada', true)
-        ->exists();
+                $desactivada = AreaSemanaDesactivacion::where('area_id', $area_id)
+    ->where('fecha_inicio', '<=', $fechaDomingo)
+    ->where('fecha_fin', '>=', $fechaLunes)
+    ->where('desactivada', true)
+    ->where(function($query) use ($year) {
+        $query->whereYear('fecha_inicio', $year)
+              ->orWhereYear('fecha_fin', $year);
+    })
+    ->exists();
 
-    // Verificar si la semana tiene evaluaciones
-    $tieneEvaluaciones = $Cumplio_res_Area->where('semana_id', $semana->id)->isNotEmpty();
+                // Verificar si la semana tiene evaluaciones
+                $tieneEvaluaciones = $Cumplio_res_Area->where('semana_id', $semana->id)->isNotEmpty();
 
-    if ($tieneEvaluaciones) {
-        // Incluir la semana si tiene evaluaciones, incluso si está desactivada
-        $semanasParaConteo->push($semana);
-    } elseif (!$desactivada) {
-        // Si no está desactivada, verificar si tiene colaboradores activos
-        $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)
-            ->where('semana_inicio_id', '<=', $semana->id)
-            ->get();
+                if ($tieneEvaluaciones) {
+                    // Incluir la semana si tiene evaluaciones, incluso si está desactivada
+                    $semanasParaConteo->push($semana);
+                } elseif (!$desactivada) {
+                    // Si no está desactivada, verificar si tiene colaboradores activos
+                    $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)
+                        ->where('semana_inicio_id', '<=', $semana->id)
+                        ->get();
 
-        $countColabsActivos = 0;
+                    $countColabsActivos = 0;
 
-        foreach ($colaboradoresArea as $colabArea) {
-            $inactividades = RegistroActividadController::obtenerInactividad($colabArea->id);
-            $activo = true;
+                    foreach ($colaboradoresArea as $colabArea) {
+                        $inactividades = RegistroActividadController::obtenerInactividad($colabArea->id);
+                        $activo = true;
 
-            foreach ($inactividades as $inactividad) {
-                $semanasInactivas = $inactividad['semanas'];
-                foreach ($semanasInactivas as $semanaInactiva) {
-                    if ($semana->id === $semanaInactiva['id']) {
-                        $activo = false;
-                        break 2;
+                        foreach ($inactividades as $inactividad) {
+                            $semanasInactivas = $inactividad['semanas'];
+                            foreach ($semanasInactivas as $semanaInactiva) {
+                                if ($semana->id === $semanaInactiva['id']) {
+                                    $activo = false;
+                                    break 2;
+                                }
+                            }
+                        }
+
+                        if ($activo) {
+                            $countColabsActivos++;
+                        }
+                    }
+
+                    if ($countColabsActivos > 0) {
+                        // Incluir la semana si está activa y tiene al menos un colaborador activo
+                        $semanasParaConteo->push($semana);
                     }
                 }
             }
-
-            if ($activo) {
-                $countColabsActivos++;
-            }
-        }
-
-        if ($countColabsActivos > 0) {
-            // Incluir la semana si está activa y tiene al menos un colaborador activo
-            $semanasParaConteo->push($semana);
-        }
-    }
-}
 
             if ($semanasParaConteo->count() <= 0) {
                 // Determinar si el mes es 'Próximo' o 'Anterior'
