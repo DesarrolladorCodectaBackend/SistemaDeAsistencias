@@ -15,7 +15,6 @@ class AreaSemanaDesactivacion extends Model
         'area_id',
         'fecha_inicio',
         'fecha_fin',
-        'fecha_fin',
         'desactivada'
     ];
 

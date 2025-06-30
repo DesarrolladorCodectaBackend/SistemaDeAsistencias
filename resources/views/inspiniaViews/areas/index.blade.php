@@ -257,6 +257,27 @@
                                                                         <p class="card-text" id="resumenPeriodo{{$area->id}}">
                                                                             Seleccione las fechas para ver el resumen del período de desactivación.
                                                                         </p>
+
+                                                                        <style>
+                                                                            .desactivacion-text {
+                                                                                font-weight: bold;
+                                                                            }
+                                                                        </style>
+                                                                       @if($area->ultima_desactivacion)
+                                                                            <div>
+                                                                                <span class="desactivacion-text">Fechas desactivadas</span>
+                                                                            </div>
+                                                                            <div>
+                                                                                <span class="desactivacion-text">Fecha Inicio: {{ \Carbon\Carbon::parse($area->ultima_desactivacion->fecha_inicio)->format('Y-m-j') }}</span>
+                                                                            </div>
+                                                                            <div>
+                                                                                <span class="desactivacion-text">Fecha Fin: {{ \Carbon\Carbon::parse($area->ultima_desactivacion->fecha_fin)->format('Y-m-j') }}</span>
+                                                                            </div>
+                                                                        @else
+                                                                            <div>
+                                                                                <span class="desactivacion-text">Sin fecha de desactivación</span>
+                                                                            </div>
+                                                                        @endif
                                                                     </div>
                                                                 </div>
                                                             </div>
