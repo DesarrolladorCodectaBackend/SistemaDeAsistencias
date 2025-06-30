@@ -119,20 +119,19 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
                 $fechaDomingo = $fechaLunes->copy()->addDays(6);
 
                 $desactivada = AreaSemanaDesactivacion::where('area_id', $area_id)
-    ->where('fecha_inicio', '<=', $fechaDomingo)
-    ->where('fecha_fin', '>=', $fechaLunes)
-    ->where('desactivada', true)
-    ->where(function($query) use ($year) {
-        $query->whereYear('fecha_inicio', $year)
-              ->orWhereYear('fecha_fin', $year);
-    })
-    ->exists();
+                                ->where('fecha_inicio', '<=', $fechaDomingo)
+                                ->where('fecha_fin', '>=', $fechaLunes)
+                                ->where('desactivada', true)
+                                ->where(function($query) use ($year) {
+                                    $query->whereYear('fecha_inicio', $year)
+                                        ->orWhereYear('fecha_fin', $year);
+                                })
+                                ->exists();
 
                 // Verificar si la semana tiene evaluaciones
                 $tieneEvaluaciones = $Cumplio_res_Area->where('semana_id', $semana->id)->isNotEmpty();
 
                 if ($tieneEvaluaciones) {
-                    // Incluir la semana si tiene evaluaciones, incluso si está desactivada
                     $semanasParaConteo->push($semana);
                 } elseif (!$desactivada) {
                     // Si no está desactivada, verificar si tiene colaboradores activos

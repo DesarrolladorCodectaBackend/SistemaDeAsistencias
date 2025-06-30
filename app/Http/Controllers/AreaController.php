@@ -57,7 +57,7 @@ class AreaController extends Controller
         }
         // return auth()->user();
         //Recurar todos los registros en áreas
-        $areas = Area::with('salon')->paginate(12);
+        $areas = Area::with(['salon', 'ultima_desactivacion'])->paginate(12);
         $salones = Salones::where('estado', 1)->get();
         $pageData = FunctionHelperController::getPageData($areas);
         $hasPagination = true;
@@ -68,6 +68,8 @@ class AreaController extends Controller
         $areas = $this->getAreaWithIntegrantes($areas);
         $countAreas = Area::where('estado', 1)->count();
         $countColabs = Colaboradores::where('estado', 1)->count();
+        // $desactivacionFechaArea = AreaSemanaDesactivacion::with('area')->orderBy('created_at', 'desc');
+
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
         return view('inspiniaViews.areas.index', [
@@ -77,6 +79,7 @@ class AreaController extends Controller
             'salones' => $salones,
             'countAreas' => $countAreas,
             'countColabs' => $countColabs,
+            // 'desactivacionFechaArea' => $desactivacionFechaArea
         ]);
     }
 
