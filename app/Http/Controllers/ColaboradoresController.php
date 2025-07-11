@@ -822,12 +822,17 @@ class ColaboradoresController extends Controller
 
             $colaborador->save();
 
+            $colaboradoresAreaActivos = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('estado', 1)->get();
             if($colaborador->estado == 0){
-                $colaboradoresAreaActivos = Colaboradores_por_Area::where('colaborador_id', $colaborador->id)->where('estado', 1)->get();
                 foreach($colaboradoresAreaActivos as $colabArea){
                     $colabArea->update(["jefe_area" => 0]);
                     //Crear registro de inactivación
                     RegistroActividadController::crearRegistro($colabArea->id, false);
+                }
+            } else {
+                 foreach($colaboradoresAreaActivos as $colabArea){
+                    //Crear registro de inactivación
+                    RegistroActividadController::crearRegistro($colabArea->id, true);
                 }
             }
             DB::commit();
