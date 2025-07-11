@@ -13,14 +13,6 @@
             margin: 30px auto;
         }
 
-        /* Estilo para los eventos de cumpleaños */
-        .fc-event {
-            background-color: #ffcccb; /* Fondo rojo claro */
-            border: none;
-            color: #000;
-            cursor: pointer;
-        }
-
         /* Tooltip personalizado */
         .fc-event-tooltip {
             background-color: #333;
@@ -32,6 +24,35 @@
 
         .fc-event-tooltip span {
             width: 100%;
+        }
+
+        /* Leyenda de colores */
+        .legend {
+            margin: 20px auto;
+            max-width: 90%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .legend-green {
+            background-color: #28a745;
+        }
+
+        .legend-yellow {
+            background-color: #ffc107;
         }
     </style>
 </head>
@@ -53,6 +74,18 @@
         </div>
 
         <main>
+            <!-- Leyenda de colores -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color legend-green"></div>
+                    <span>Colaboradores Activos</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-yellow"></div>
+                    <span>Colaboradores Inactivos</span>
+                </div>
+            </div>
+
             <div id="calendar"></div>
         </main>
 
@@ -83,7 +116,7 @@
                     // Personalizar el contenido del evento
                     return { html: `<div class="birthday-event"><span>${info.event.title}</span></div>` };
                 },
-                
+
             });
 
             calendar.render();
