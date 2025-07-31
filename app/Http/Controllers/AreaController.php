@@ -94,23 +94,25 @@ class AreaController extends Controller
         // Encontrar el id de los colaboradores del área
         $colaboradoresAreaId = Colaboradores_por_Area::where('estado', true)->where('area_id', $area_id)->pluck('colaborador_id');
         // Encontrar los días de clase de esos colaboradores
-        $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        // $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        // return $horariosColaboradores;
         // Obtener todos los Horarios presenciales disponibles
         $horariosPresenciales = Horarios_Presenciales::all();
+        // return $horariosPresenciales;
         // Array para las horas ocupadas de los colaboradores
-        $horasOcupadas = [];
+        // $horasOcupadas = [];
         // Recorrer los horarios de los colaboradores
-        foreach ($horariosColaboradores as $horarioColab) {
-            $dia = $horarioColab->dia;
-            $horaInicial = strtotime($horarioColab->hora_inicial);
-            $horaFinal = strtotime($horarioColab->hora_final);
+        // foreach ($horariosColaboradores as $horarioColab) {
+        //     $dia = $horarioColab->dia;
+        //     $horaInicial = strtotime($horarioColab->hora_inicial);
+        //     $horaFinal = strtotime($horarioColab->hora_final);
 
-            // Por cada hora en el rango, agregar la hora al array de horas ocupadas para ese día
-            for ($hora = $horaInicial; $hora <= $horaFinal; $hora += 3600) {
-                //Agregar key dia y dentro de cada uno las horas que están ocupados durante ese día
-                $horasOcupadas[$dia][] = date('H', $hora);
-            }
-        }
+        //     // Por cada hora en el rango, agregar la hora al array de horas ocupadas para ese día
+        //     for ($hora = $horaInicial; $hora <= $horaFinal; $hora += 3600) {
+        //         //Agregar key dia y dentro de cada uno las horas que están ocupados durante ese día
+        //         $horasOcupadas[$dia][] = date('H', $hora);
+        //     }
+        // }
         // Array para los horarios disponibles
         $horariosDisponibles = [];
         // Recorrer todos los Horarios Presenciales
@@ -128,19 +130,19 @@ class AreaController extends Controller
             // return $rangoHorasPres;
             $disponible = true;
 
-            // Comprobar si alguna de las horas del horario presencial coincide con las horas ocupadas
-            if (isset($horasOcupadas[$diaPres])) {
-                // error_log($diaPres);
-                //Recorrer el rango de horas presenciales
-                foreach ($rangoHorasPres as $hora) {
-                    //Si la hora está dentro de las horas ocupadas del día
-                    if (in_array($hora, $horasOcupadas[$diaPres])) {
-                        //Este horario no estará disponible
-                        $disponible = false;
-                        break;
-                    }
-                }
-            }
+            // // Comprobar si alguna de las horas del horario presencial coincide con las horas ocupadas
+            // if (isset($horasOcupadas[$diaPres])) {
+            //     // error_log($diaPres);
+            //     //Recorrer el rango de horas presenciales
+            //     foreach ($rangoHorasPres as $hora) {
+            //         //Si la hora está dentro de las horas ocupadas del día
+            //         if (in_array($hora, $horasOcupadas[$diaPres])) {
+            //             //Este horario no estará disponible
+            //             $disponible = false;
+            //             break;
+            //         }
+            //     }
+            // }
             //Si disponible es true
             if ($disponible) {
                 //Se agrega el horario disponible al array de horarios disponibles
