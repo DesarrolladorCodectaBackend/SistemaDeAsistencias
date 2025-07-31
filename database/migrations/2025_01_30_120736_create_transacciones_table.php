@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('semana_id')->nullable();
             $table->foreign('semana_id')->references('id')->on('semanas');
-            $table->bigInteger('nro_pago')->unique();
+            $table->bigInteger('nro_pago')->unique()->nullable();
             $table->string('nombres');
             $table->bigInteger('dni')->nullable();
             $table->text('descripcion')->nullable();
