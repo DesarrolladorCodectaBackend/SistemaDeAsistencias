@@ -49,15 +49,20 @@ class AreaController extends Controller
      * @response 200 vista index.blade.php con todas las áreas
      *
      */
-    public function index()
-    {
+    public function index(Request $request){
         $access = FunctionHelperController::verifyAdminAccess();
         if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
+        $buscar = $request->buscar_area;
+        if($buscar) {
+            $areas = $this->buscarAreas($buscar );
+        } else {
+            //Recuperar todos los registros en áreas
+            $areas = Area::with(['salon', 'ultima_desactivacion'])->paginate(12);
+        }
         // return auth()->user();
-        //Recurar todos los registros en áreas
-        $areas = Area::with(['salon', 'ultima_desactivacion'])->paginate(12);
+
         $salones = Salones::where('estado', 1)->get();
         $pageData = FunctionHelperController::getPageData($areas);
         $hasPagination = true;
@@ -72,6 +77,9 @@ class AreaController extends Controller
 
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
+
+
+
         return view('inspiniaViews.areas.index', [
             'areas' => $areas,
             'hasPagination' => $hasPagination,
@@ -822,6 +830,26 @@ class AreaController extends Controller
             DB::rollBack();
             return redirect()->route('areas.index')->with('error','Ocurrió un error. Vuélvelo a intentarlo más tarde.');
         }
+    }
+
+    public function buscarAreas($busqueda) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        if($busqueda) {
+            $areas = Area::where('especializacion', 'LIKE', '%' . $busqueda . '%')
+                    ->with(['salon', 'ultima_desactivacion'])
+                    ->orderBy('especializacion', 'asc')
+                    ->paginate(12);
+        } else {
+            $areas = Area::with(['salon', 'ultima_desactivacion'])
+                    ->orderBy('especializacion', 'asc')
+                    ->paginate(12);
+        }
+
+        return $areas;
     }
 
 }

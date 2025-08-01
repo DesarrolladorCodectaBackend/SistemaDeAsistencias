@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/areas/index.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <title>INSPINIA| Áreas</title>
 </head>
 
@@ -90,6 +91,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row mt-2 justify-content-center">
+            <div class="col-md-6 col-sm-8">
+                <form method="GET" action="{{ route('areas.buscar') }}" class="d-flex form-content">
+                    <input
+                        type="text"
+                        name="buscar_area"
+                        class="form-control me-2"
+                        placeholder="Escribe el nombre del área..."
+                        value="{{ request('buscar_area') }}"
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="btn btn-primary">
+                        Buscar
+                    </button>
+                </form>
             </div>
         </div>
 

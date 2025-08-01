@@ -19,11 +19,17 @@ use Exception;
 
 class Cumplio_Responsabilidad_SemanalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userData = FunctionHelperController::getUserRol();
         if ($userData['isAdmin']) {
-            $areas = Area::with('salon')->where('estado', 1)->paginate(12);
+            $buscar = $request->buscar_responsabilidad;
+
+            if($buscar) {
+                $areas = $this->buscarResponsabilidades($buscar);
+            } else {
+                $areas = Area::with('salon')->where('estado', 1)->paginate(12);
+            }
         } else if ($userData['isBoss']) {
             $bossAreasId = $userData['Jefeareas']->pluck('area_id');
             // return $bossAreasId;
@@ -734,5 +740,17 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             "firstWeek" => $firstWeek,
             "lastWeek" => $lastWeek
         ]);
+    }
+
+    public function buscarResponsabilidades($busqueda) {
+        if($busqueda) {
+            $areas = Area::with('salon')->where('especializacion', 'LIKE', '%' . $busqueda . '%')->where('estado', 1)
+                    ->orderBy('especializacion', 'asc')
+                    ->paginate(12);
+        } else {
+            $areas = Area::with('salon')->where('estado', 1)->paginate(12);
+        }
+
+        return $areas;
     }
 }
