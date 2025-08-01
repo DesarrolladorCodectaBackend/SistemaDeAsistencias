@@ -55,8 +55,14 @@ class AreaController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         $buscar = $request->buscar_area;
+        $warning = null;
         if($buscar) {
-            $areas = $this->buscarAreas($buscar );
+
+            $resultado = $this->buscarAreas($buscar );
+
+            $areas = $resultado['areas'];
+            $warning = $resultado['warning'];
+
         } else {
             //Recuperar todos los registros en áreas
             $areas = Area::with(['salon', 'ultima_desactivacion'])->paginate(12);
@@ -87,6 +93,7 @@ class AreaController extends Controller
             'salones' => $salones,
             'countAreas' => $countAreas,
             'countColabs' => $countColabs,
+            'warning' => $warning
             // 'desactivacionFechaArea' => $desactivacionFechaArea
         ]);
     }
@@ -838,18 +845,26 @@ class AreaController extends Controller
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
 
-        if($busqueda) {
-            $areas = Area::where('especializacion', 'LIKE', '%' . $busqueda . '%')
-                    ->with(['salon', 'ultima_desactivacion'])
-                    ->orderBy('especializacion', 'asc')
-                    ->paginate(12);
-        } else {
-            $areas = Area::with(['salon', 'ultima_desactivacion'])
-                    ->orderBy('especializacion', 'asc')
-                    ->paginate(12);
+        $consulta = Area::with(['salon', 'ultima_desactivacion'])
+                    ->orderBy('especializacion', 'asc');
+
+        if(!empty($busqueda)) {
+            $consulta->where('especializacion', 'LIKE', '%' . $busqueda . '%');
         }
 
-        return $areas;
+        $areas = $consulta->paginate(12);
+
+        $warning = null;
+
+        if($areas->isEmpty()) {
+            $warning = 'No se encontraron áreas que coincidan con su búsqueda';
+        }
+
+
+        return [
+            'areas' => $areas,
+            'warning' => $warning
+        ];
     }
 
 }
