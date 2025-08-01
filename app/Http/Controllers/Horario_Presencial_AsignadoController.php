@@ -27,7 +27,7 @@ class Horario_Presencial_AsignadoController extends Controller
             foreach ($horarios_presenciales_Asignados as $horario) {
                 $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
                 $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-        
+
                 $horariosFormateados = [
                     'hora_inicial' => $horaInicial,
                     'hora_final' => $horaFinal,
@@ -35,7 +35,7 @@ class Horario_Presencial_AsignadoController extends Controller
                 ];
                 $horario->horario_modificado = $horariosFormateados;
             }
-
+            // return $horarios_presenciales_Asignados;
             return view('InspiniaViews.horarios.horario_general_presencial', compact('horarios_presenciales_Asignados'));
             // return response()->json(["data" => $horarios_presenciales_Asignados]);
 
@@ -62,7 +62,7 @@ class Horario_Presencial_AsignadoController extends Controller
             $area = Area::findOrFail($request->area_id);
             if($area){
                 $horariosPresencialesRegistros = Horarios_Presenciales::whereIn('id', $request->horario_presencial_id)->get();
-                
+
                 foreach($horariosPresencialesRegistros as $horarioPresencialRegistro) {
                     $horarioExistente = Horario_Presencial_Asignado::where('horario_presencial_id', $horarioPresencialRegistro->id)
                         ->where('area_id', $request->area_id)->first();
@@ -112,7 +112,7 @@ class Horario_Presencial_AsignadoController extends Controller
                     FunctionHelperController::destroySameMachines($area->id);
                 }
             }
-            
+
             DB::commit();
             // return response()->json(["resp" => "Registro actualizado correctamente"]);
             return redirect()->route('areas.getHorario', ['area_id' => $request->area_id]);
@@ -125,21 +125,20 @@ class Horario_Presencial_AsignadoController extends Controller
     }
 
 
-    public function destroy($area_id, $horario_presencial_asignado_id)
-    {
+    public function destroy($area_id, $horario_presencial_asignado_id){
         $access = FunctionHelperController::verifyAdminAccess();
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
         DB::beginTransaction();
         try{
-            
+
             $horario_presencial_asignado = Horario_Presencial_Asignado::findOrFail($horario_presencial_asignado_id);
 
             if ($horario_presencial_asignado){
                 $horario_presencial_asignado->delete();
             }
-            
+
             DB::commit();
             return redirect()->route('areas.getHorario', ['area_id' => $area_id]);
             // return response()->json(["resp" => "Candidato eliminado correctamente"]);
@@ -148,7 +147,24 @@ class Horario_Presencial_AsignadoController extends Controller
             // return response()->json(["error" => $e]);
             return redirect()->route('areas.getHorario', ['area_id' => $area_id]);
         }
+    }
 
+    public function redirectGestHorario($area_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
 
+        try {
+            $area = Area::findOrFail($area_id);
+
+            $areaController = new AreaController();
+            return $areaController->getFormHorarios($area);
+
+        } catch (Exception $e) {
+
+            return redirect()->route('dashboard');
+
+        }
     }
 }

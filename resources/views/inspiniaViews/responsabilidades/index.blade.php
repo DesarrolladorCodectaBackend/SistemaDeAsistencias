@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ asset('css/responsabilidades/index.css') }}">
     <title>INSPINIA | RESPONSABILIDADES</title>
 </head>
 
@@ -23,6 +24,33 @@
                         <strong>Responsabilidades - Áreas</strong>
                     </li>
                 </ol>
+            </div>
+        </div>
+
+        @if(!empty($warning))
+            <div class="alert alert-warning">
+                <strong>Advertencia:</strong> {{ $warning }}
+            </div>
+        @endif
+
+        <div class="row mt-2 justify-content-center">
+            <div class="col-md-6 col-sm-8">
+                <form method="GET" action="{{ route('buscar.responsabilidades') }}" class="d-flex form-content">
+
+                    <input
+                        type="text"
+                        name="buscar_responsabilidad"
+                        class="form-control me-2"
+                        placeholder="Escribe el nombre de la responsabilidad..."
+                        value="{{ request('buscar.responsabilidades') }}"
+                        autocomplete="off"
+                    >
+
+                    <button type="submit" class="btn btn-primary">
+                        Buscar
+                    </button>
+
+                </form>
             </div>
         </div>
 

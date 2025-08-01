@@ -19,11 +19,19 @@ use Exception;
 
 class Cumplio_Responsabilidad_SemanalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userData = FunctionHelperController::getUserRol();
         if ($userData['isAdmin']) {
-            $areas = Area::with('salon')->where('estado', 1)->paginate(12);
+            $buscar = $request->buscar_responsabilidad;
+            $warning = null;
+            if($buscar) {
+                $resultado = $this->buscarResponsabilidades($buscar);
+                $areas = $resultado['areas'];
+                $warning = $resultado['warning'];
+            } else {
+                $areas = Area::with('salon')->where('estado', 1)->paginate(12);
+            }
         } else if ($userData['isBoss']) {
             $bossAreasId = $userData['Jefeareas']->pluck('area_id');
             // return $bossAreasId;
@@ -45,6 +53,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             'areas' => $areas,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
+            'warning' => $warning
         ]);
     }
 
@@ -734,5 +743,26 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             "firstWeek" => $firstWeek,
             "lastWeek" => $lastWeek
         ]);
+    }
+
+    public function buscarResponsabilidades($busqueda) {
+        $consulta = Area::with('salon')->where('estado', 1)->orderBy('especializacion', 'asc');
+
+        if(!empty($busqueda)) {
+            $consulta->where('especializacion', 'LIKE', '%' . $busqueda . '%');
+        }
+
+        $areas = $consulta->paginate(12);
+
+        $warning = null;
+
+        if($areas->isEmpty()) {
+            $warning = 'No se encontraron responsabilidades que coincidan con su búsqueda';
+        }
+
+        return [
+            'areas' => $areas,
+            'warning' => $warning
+        ];
     }
 }

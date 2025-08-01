@@ -99,9 +99,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/perfil-updatePassword', [PerfilController::class, 'updatePassword'])->name('perfil.updatePassword');
 
     //AREAS
-    Route::resource('areas', AreaController::class);
     Route::put('areas/activarInactivar/{area_id}',[AreaController::class,'activarInactivar'])->name('areas.activarInactivar');
     Route::get('area/showing/{area_id}', [AreaController::class, 'showArea'])->name('areas.showArea');
+    Route::get('areas/buscar', [AreaController::class, 'index'])->name('areas.buscar');
+    Route::resource('areas', AreaController::class);
 
     //Horarios (Area)
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');
@@ -209,6 +210,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('ajustes', AjusteController::class);
 
     //RESPONSABILIDADES
+    Route::get('responsabilidades/buscar', [Cumplio_Responsabilidad_SemanalController::class, 'index'])->name('buscar.responsabilidades');
     Route::resource('responsabilidades', Cumplio_Responsabilidad_SemanalController::class);
     Route::put('/responsabilidades/{semana_id}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'actualizar'])->name('responsabilidades.actualizar');
     Route::get('/responsabilidades/years/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getYearsArea'])->name('responsabilidades.years');
