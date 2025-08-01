@@ -100,13 +100,11 @@
 
     <script>
         $(document).ready(function() {
-
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
 
-            /* initialize the external events -----------------------------------------------------------------*/
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
                     title: $.trim($(this).text()),
@@ -120,7 +118,6 @@
                 });
             });
 
-            /* initialize the calendar -----------------------------------------------------------------*/
             var date = new Date();
             var d = date.getDate();
             var m = date.getMonth();
@@ -154,10 +151,10 @@
                     end: new Date(2024, 1, numeroDia, horario.horario_modificado.hora_final, 0),
                     allDay: false,
                     color: horario.area.color_hex,
-                    editable: false
+                    editable: false,
+                    area_id: horario.area.id
                 };
             });
-
 
             var eventos = [{
                     title: 'Domingo',
@@ -255,6 +252,14 @@
                     var daysToShow = 4;
                     var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
                     element.css('width', columnWidth);
+                },
+                eventClick: function(calEvent, jsEvent, view) {
+
+                    if (calEvent.area_id) {
+                        window.open("{{ route('areas.getHorario', ':area_id') }}".replace(':area_id', calEvent.area_id), '_blank');
+                    } else {
+                        console.log('Clic en día: ' + calEvent.title);
+                    }
                 }
             });
         });
