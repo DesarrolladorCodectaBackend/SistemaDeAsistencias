@@ -11,4 +11,8 @@ class Responsabilidades_semanales extends Model
 
     protected $fillable = ['nombre', 'porcentaje_peso', 'estado'];
 
+    public function responsabilidad_semanal(){
+        return $this->hasMany(Cumplio_Responsabilidad_Semanal::class, 'responsabilidad_id', 'id');
+    }
+
 }

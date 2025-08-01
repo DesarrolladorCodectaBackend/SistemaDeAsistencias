@@ -67,7 +67,7 @@ class InformesSemanalesController extends Controller
             } else {
                 $informe = $request->file('informe_url');
                 $extensionVal = $informe->getClientOriginalExtension();
-                $extensiones = ['pdf', 'docx', 'doc'];
+                $extensiones = ['pdf'];
 
                 if (!in_array($extensionVal, $extensiones)) {
                     $errors['informe_url' . $semana_id] = 'El informe debe ser un archivo de tipo: ' . implode(', ', $extensiones);
@@ -91,12 +91,15 @@ class InformesSemanalesController extends Controller
             'nota_semanal' => $request->nota_semanal,
             'informe_url' => $nombreInforme,
             'semana_id' => $semana_id,
-            'area_id' => $area_id
+            'area_id' => $area_id,
+            'dia' => Carbon::now()->toDateString(),
+            'hora' => Carbon::now()->toTimeString(),
         ]);
 
         DB::commit();
         return redirect($returnRoute)->with('success', 'Informe guardado correctamente.');
     } catch (Exception $e) {
+        // return $e;
         DB::rollBack();
         return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])
             ->with('error', 'Ocurrió un error.');
@@ -142,7 +145,7 @@ class InformesSemanalesController extends Controller
 
 
             if ($request->hasFile('informe_url')) {
-                $extensiones = ['pdf', 'docx', 'doc'];
+                $extensiones = ['pdf'];
                 $extensionVal = $request->file('informe_url')->getClientOriginalExtension();
 
                 if (!in_array($extensionVal, $extensiones)) {
@@ -156,6 +159,9 @@ class InformesSemanalesController extends Controller
 
             // Preparar los datos para actualizar
             $datosActualizar = $request->except(['informe_url']);
+
+            $datosActualizar['dia'] = Carbon::now()->toDateString();
+            $datosActualizar['hora'] = Carbon::now()->toTimeString();
 
             if ($request->hasFile('informe_url')) {
                 $rutaPublica = public_path('storage/informes');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Colaboradores;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Dotenv\Exception\ValidationException;
@@ -28,15 +29,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // $loginUser = User::where('email', $request->email)->where('estado', 1)->first();
-        // if(!$loginUser){
-        //     RateLimiter::hit($this->throttleKey());
-
-        //     throw ValidationException::withMessages([
-        //         'email' => trans('auth.failed'),
-        //     ]);
-        // }
-
         $remember = $request->has('remember');
 
         if(!Auth::attempt($request->only('email', 'password'), $remember)){
@@ -64,6 +56,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([

@@ -22,10 +22,10 @@
                 <h2>Gestión Cursos</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/ajustes">Ajustes</a>
+                        <a href="{{route('ajustes.index')}}">Ajustes</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Curso</strong>
@@ -239,6 +239,7 @@
 
         <!-- Page-Level Scripts -->
         <script>
+            
             $(document).ready(function(){
                 $('.dataTables-example').DataTable({
                     pageLength: 10,

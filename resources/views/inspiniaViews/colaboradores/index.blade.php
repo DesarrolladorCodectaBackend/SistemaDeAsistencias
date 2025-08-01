@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/colaboradores/index.css') }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>INSPINIA | Colaboradores</title>
 </head>
 
@@ -16,7 +23,7 @@
                 <h2>Colaboradores ({{$countColaboradores}})</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a>Personal</a>
@@ -42,93 +49,17 @@
 
                 <div class="ibox-content">
                     <div class="text-center flex-centered gap-20">
-                        <a class="btn btn-primary" href="/candidatos">
+                        <a class="btn btn-primary" href="{{route('candidatos.index')}}">
                             <i class="fa fa-long-arrow-left"></i> Agregar
                         </a>
                         <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar </a>
+                        <a href="#" class="btn btn-warning" onclick="confirmEditAll()">Activar Edición</a>
                     </div>
                     <div id="modal-filtrar" class="modal fade" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <!--
-                                    <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
-                                        <h2 class="m-t-none m-b font-bold">Filtrar Colaboradores</h2>
-                                        <div class="row">
-                                            <div class="col-sm-12 col-md-6 b-r">
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Areas:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="select-all-areas"><span>Seleccionar
-                                                            todos</span>
-                                                    </div>
-                                                    @foreach($areasAll as $index => $area)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="checkbox-areas-{{$index}}" class="area-checkbox" value="{{ $area->id }}"><span>{{$area->especializacion}}</span>
-                                                    </div>
-                                                    @endforeach
 
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Estados:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="select-all-estados"><span>Seleccionar
-                                                            todos</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-1"
-                                                            value="1"><span>activo</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-0"
-                                                            value="0"><span>inactivo</span>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="estado-checkbox" id="checkbox-estados-0"
-                                                            value="2"><span>Ex colaborador</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-12 col-md-6 b-r">
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Carreras:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox"
-                                                            id="select-all-carreras"><span>Seleccionar todos</span>
-                                                    </div>
-                                                    @foreach($carrerasAll as $index => $carrera)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="carrera-checkbox" value="{{ $carrera->id }}"><span>{{ $carrera->nombre }}</span>
-                                                    </div>
-                                                    @endforeach
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>
-                                                        <h4 class="m-t-none m-b">Instituciones:</h4>
-                                                    </label>
-                                                    <div class="form-group">
-                                                        <input type="checkbox"
-                                                            id="select-all-instituciones"><span>Seleccionar todos</span>
-                                                    </div>
-                                                    @foreach($institucionesAll as $index => $institucion)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" class="institucion-checkbox" value="{{ $institucion->id }}"><span>{{ $institucion->nombre }}</span>
-                                                    </div>
-                                                    @endforeach
-                                                </div>
-                                                <div class="form-group mt-3 text-center">
-                                                    <button type="submit" class="btn btn-primary px-5">Filtrar</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    -->
                                     <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                         <h2 class="m-t-none m-b font-bold text-center">Filtrar Colaboradores</h2>
                                         <div class="accordion" id="accordionExample">
@@ -225,16 +156,12 @@
                                                         <div class="form-group">
                                                             <input type="checkbox" id="select-all-ciclos"><span> Seleccionar todos</span>
                                                         </div>
-                                                        {{-- @if(isset($ciclosAll) && $ciclosAll->isNotEmpty()) --}}
                                                         @foreach($ciclosAll as $index => $ciclo)
                                                         <div class="form-check">
                                                             <input type="checkbox" class="form-check-input ciclo-checkbox" id="checkbox-ciclo-candidatos-{{ $ciclo }}" value="{{ $ciclo }}">
                                                             <span for="checkbox-ciclo-candidatos-{{ $ciclo }}">Ciclo {{ $ciclo }}</span>
                                                         </div>
                                                         @endforeach
-                                            {{-- @else --}}
-                                                {{-- <p>No hay ciclos disponibles.</p> --}}
-                                            {{-- @endif --}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -263,6 +190,41 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Sedes -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingSedesCandidatos">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedesCandidatos" aria-expanded="false" aria-controls="collapseSedesCandidatos">
+                                                            Sedes
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseSedesCandidatos" class="collapse" aria-labelledby="headingSedesCandidatos" data-parent="#accordionExampleCandidatos">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        @foreach($sedesAll as $index => $sede)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input sede-checkbox" id="checkbox-sede-candidatos-{{ $sede->id }}" value="{{ $sede->id }}">
+                                                            <span for="checkbox-sede-candidatos-{{ $sede->id }}">{{ $sede->nombre }}</span>
+                                                        </div>
+                                                        @endforeach
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- pagos --}}
+                                            {{-- <div class="card">
+                                                <div class="card-header d-flex" id="headingCarreras">
+                                                    <div class="mb-0 pago-check-content">
+                                                        <input type="checkbox" id="pagos-checkbox">
+                                                        <h5>Colaboradores pagados</h5>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+
                                             <!-- Submit Button -->
                                             <div class="text-center mt-4">
                                                 <button type="submit" class="btn btn-primary px-5">Filtrar</button>
@@ -278,18 +240,36 @@
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
-            @if(session('error'))
-            <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
-                <div style="flex-grow: 1;">
-                    <strong>Error:</strong> {{ session('error') }}
+            @if(session('success'))
+                <div id="alert" class="alert alert-success alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Éxito:</strong> {{ session('success') }}
+                    </div>
+                    <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
                 </div>
-                <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
-            </div>
+            @endif
+
+            @if(session('warning'))
+                <div id="alert" class="alert alert-warning alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Advertencia:</strong> {{ session('warning') }}
+                    </div>
+                    <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div id="alert" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+                    <div style="flex-grow: 1;">
+                        <strong>Error:</strong> {{ session('error') }}
+                    </div>
+                    <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+                </div>
             @endif
             <div class="row">
                 @foreach($colaboradores->data as $index => $colaborador)
 
-                <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true">
+                <div id="modal-form-view{{$colaborador->id}}" class="modal fade" aria-hidden="true" >
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
@@ -319,6 +299,10 @@
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->direccion ?? 'Sin Direccion'}}</p>
                                         </div>
                                         <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Distrito:</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->distrito ? $colaborador->candidato->distrito->nombre : 'No asignado'}}</p>
+                                        </div>
+                                        <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Institución - Sede:</p>
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->sede->nombre ?? 'Sin Institucion - Sede'}}</p>
                                         </div>
@@ -339,12 +323,24 @@
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">DNI:</p>
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->dni ?? 'Sin DNI'}}</p>
                                         </div>
+
+                                        <div class="form-group">
+                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">ID Senati:</p>
+                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->id_senati ?? 'Sin ID'}}</p>
+                                        </div>
+
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Celular:</p>
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->celular ?? 'Sin celular'}}</p>
                                         </div>
 
 
+                                        <div class="form-group">
+                                            <p style="font-weight: bold; font-size: 1rem; margin: 0px;">Especialista de Seguimiento:</p>
+                                            <p class="overflowing-skipt" style="font-size: 0.9rem;">
+                                                {{ $colaborador?->especialista?->nombres ?? 'Sin Especialista' }}
+                                            </p>
+                                        </div>
                                         {{-- horas colab --}}
                                         <div class="form-group">
                                             <p style="font-weight: bold; font-size: 1rem; margin: 0px;">Horas Prácticas:</p>
@@ -366,7 +362,7 @@
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Actividades favoritas:</p>
                                             <ol class="custom-list">
                                                 @foreach($colaborador->actividadesFavoritas as $actividades)
-                                                <li style='font-size: 0.9rem;' class="overflowing-skipt">{{$actividades}}</li>
+                                                    <li style='font-size: 0.9rem;' class="overflowing-skipt">{{$actividades}}</li>
                                                 @endforeach
                                             </ol>
                                         </div>
@@ -391,7 +387,8 @@
                                                     class="btn btn-sm btn-primary float-right m-t-n-xs fa fa-edit btn-success"
                                                     onclick="abrirModalEdicion({{$colaborador->id}});"
                                                     style="font-size: 20px; width: 60px;"
-                                                    href="#modal-form-update{{$colaborador->id}}"></a>
+                                                    {{-- href="#modal-form-update{{$colaborador->id}}" --}}
+                                                    href="javascript:void(0)"></a>
                                             </x-uiverse.tooltip>
                                         </div>
                                     </div>
@@ -403,14 +400,15 @@
                                                 class="img-lg  max-min-h-w-200 img-cover">
 
                                         </div>
-                                        <div style="display: flex; gap:2px">
+
+                                        <div class="botones-colabs">
                                             {{-- Redirección a computadora --}}
                                             <form id="getComputadoraColab{{$colaborador->id}}"
                                                 action="{{route('colaboradores.getComputadora', $colaborador->id)}}">
                                             </form>
                                             <x-uiverse.tooltip nameTool="Maquinas">
                                             <a href="#" class="btn btn-primary btn-success fa fa-desktop"
-                                                style="width: 100px; font-size: 18px;"
+                                                style="width: 110px; font-size: 18px;"
                                                 onclick="document.getElementById('getComputadoraColab{{$colaborador->id}}').submit();">
                                             </a>
                                             </x-uiverse.tooltip>
@@ -420,20 +418,51 @@
                                             </form>
                                             <x-uiverse.tooltip nameTool="Prestamos">
                                             <a data-toggle="modal" class="btn btn-primary btn-success fa fa-dropbox"
-                                                style="width: 100px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                                style="width: 110px; font-size: 18px;" href="#" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                            </x-uiverse.tooltip>
+
+                                            {{-- Redirección a librería --}}
+                                            <form id="getLibroColab{{ $colaborador->id }}" action="{{ route('libro.colabLibro', $colaborador->id) }}">
+                                            </form>
+                                            <x-uiverse.tooltip nameTool="Libreria">
+                                                <a
+                                                    href="javascript:void(0);"
+                                                    class="btn btn-primary btn-success fa fa-book"
+                                                    style="width: 110px; font-size: 18px;"
+                                                    onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
+                                                >
+                                                </a>
                                             </x-uiverse.tooltip>
                                         </div>
 
                                         <div class="mt-2">
-                                            <form role="form" method="POST" action="{{route('colaboradores.despedirColaborador', $colaborador->id)}}">
-                                                @csrf
-                                                @method('PUT')
-                                                @isset($pageData->currentURL)
-                                                <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-                                                @endisset
-                                                <button class="btn btn-danger">Despedir</button>
-                                            </form>
+                                            <button class="btn btn-danger" onclick="confirmDespedir({{$colaborador->id}})">Despedir</button>
                                         </div>
+
+                                        <div class="mt-2">
+                                            <button
+                                                class="btn btn-warning"
+                                                onclick="activeEdit({{ $colaborador->id }})"
+                                                {{ $colaborador->editable === 1 ? 'disabled' : '' }}
+                                            >
+                                                Activar Edición
+                                            </button>
+                                        </div>
+
+                                        <div class="mt-2">
+                                            @if(!$colaborador->hasUser)
+                                                <form action="{{ route('colaboradoresEmail.store', $colaborador->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success">
+                                                        Crear usuario
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+
+
+
+
 
                                     </div>
                                 </div>
@@ -480,11 +509,26 @@
                         list-style-position: inside; /* Esto coloca los números dentro del contenedor, evitando el sangrado */
                         padding-left: 0; /* Elimina el relleno a la izquierda del <ol> */
                         margin-left: 0; /* Elimina el margen a la izquierda del <ol> */
+                        /* width: 100%; */
                     }
 
                     ol.custom-list li {
                         margin: 0; /* Elimina el margen de los elementos <li> */
                         padding-left: 0; /* Opcional: Agrega un poco de espacio a la izquierda para el número, si es necesario */
+                        /* width: 100%; */
+                    }
+
+                    .overflowing-skipt {
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden; /* Oculta cualquier desbordamiento */
+    text-overflow: ellipsis; /* Agrega "..." cuando el texto es muy largo */
+    max-width: 100%; /* Asegura que se ajuste al contenedor */
+    display: inline-block; /* Evita comportamiento inesperado con listas */
+}
+
+
+                    .select2-selection__choice__remove {
+                        paddin: 2em;
                     }
 
                     /* .text-center {
@@ -521,13 +565,7 @@
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
 
                     <div
-                         class="ibox"
-
-
-
-
-
-                       >
+                         class="ibox">
                         <div class="ibox-content product-box"
                         @if($colaborador->estadoJefe)
                             style="box-shadow: 3px 10px 25px{{ $colaborador->estadoJefe['color'] }};"
@@ -553,12 +591,11 @@
                                         <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                         @endisset
 
-                                        <button type="submit"
-                                            class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs">
-                                            <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
-                                        </button>
 
                                     </form>
+                                    <button type="button" class="btn btn-{{ $colaborador->estado ? 'outline-success' : 'danger' }} btn-primary dim btn-xs" onclick="confirmState({{ $colaborador->id }})">
+                                        <span>{{ $colaborador->estado ? 'Activo' : 'Inactivo' }}</span>
+                                    </button>
                                 </span>
                                 <div title="{{$colaborador->status['message']}}" style="position: absolute; font-size: 14px; font-weight: 600; height: 35px; width: 35px; top: -27px; left: 5; border-radius: 100%">
                                     <button style="border-radius: 100%; background: {{$colaborador->status['color']}}" class="btn w-100 h-100"></button>
@@ -604,15 +641,33 @@
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark">DNI:</h3>
                                 </small>
+
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">{{$colaborador->candidato->dni ?? 'Sin DNI'}}</h5>
                                 </div>
+
+                                <small class="text-muted text-left">
+                                    <h3 class="text-dark">ID Senati:</h3>
+                                </small>
+
+                                <div class="small m-t-xs text-left">
+                                    <h5 class="overflowing-text">{{$colaborador->candidato->id_senati ?? 'Sin ID'}}</h5>
+                                </div>
+                                <small class="text-muted text-left">
+                                    <h3 class="text-dark">Distrito:</h3>
+                                </small>
+
+                                <div class="small m-t-xs text-left">
+                                    <h5 class="overflowing-text">{{$colaborador->candidato->distrito ? $colaborador->candidato->distrito->nombre : 'No asignado'}}</h5>
+                                </div>
+
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark">Correo:</h3>
                                 </small>
                                 <div class="small m-t-xs text-left">
                                     <h5 class="overflowing-text">{{$colaborador->candidato->correo ?? 'Sin correo'}}</h5>
                                 </div>
+
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark">Celular:</h3>
                                 </small>
@@ -633,14 +688,24 @@
                                             <x-uiverse.tooltip nameTool="Horario">
                                                 <button data-toggle="modal" class="btn btn-primary fa fa-clock-o"
                                                     style="font-size: 20px;"
-                                                    onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();"></button>
+                                                    onclick="document.getElementById('horario-clase-{{$colaborador->id}}').submit();">
+                                                </button>
                                             </x-uiverse.tooltip>
 
                                             {{-- Botón ver colaborador --}}
                                             <x-uiverse.tooltip nameTool="Ver">
                                                 <button data-toggle="modal" class="btn btn-primary btn-success fa fa-eye"
                                                     style="font-size: 20px;"
-                                                    href="#modal-form-view{{$colaborador->id}}"></button>
+                                                    href="#modal-form-view{{$colaborador->id}}">
+                                                </button>
+                                            </x-uiverse.tooltip>
+
+                                            {{-- btn pagos colab --}}
+                                            <x-uiverse.tooltip nameTool="Pagos">
+                                                <button data-toggle="modal" class="btn btn-primary btn-success fa fa-coins"
+                                                    style="font-size: 20px;"
+                                                    href="#modal-form-gasto{{$colaborador->id}}">
+                                                </button>
                                             </x-uiverse.tooltip>
                                         </div>
                                         <style>
@@ -655,6 +720,58 @@
                                                 -moz-appearance: textfield; /* Para Firefox */
                                             }
                                         </style>
+
+                                        {{-- MODAL GASTO --}}
+                                        <div id="modal-form-gasto{{ $colaborador->id }}" class="modal fade" aria-hidden="true">
+                                            <div class="modal-dialog modal-custom">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <form action="{{ route('colaboradores.pagos', $colaborador->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('POST')
+
+                                                            <input type="hidden" name="gastos_eliminados[{{ $colaborador->id }}]" id="eliminar-gastos-{{ $colaborador->id }}">
+
+                                                            <h2 class="name-colab">{{ $colaborador->candidato->nombre . " " . $colaborador->candidato->apellido}}</h2>
+
+                                                            <div class="row d-flex justify-center pagos-content">
+                                                                <div class="row btn-agregar-content">
+                                                                    <button type="button" class="btn btn-primary btn-pago-colab" id="add-more-{{ $colaborador->id }}">+</button>
+                                                                    <span>Agregar pagos</span>
+                                                                </div>
+
+                                                                <div class="row d-flex justify-center pagos-content" id="gastos-container-{{ $colaborador->id }}">
+
+                                                                    @foreach ($colaborador->pago_colaborador as $gasto)
+                                                                        <div class="input-group mb-2 gasto-item" data-id="{{ $gasto->id }}">
+
+                                                                            <input type="hidden" name="gasto_id[]" value="{{ $gasto->id }}">
+
+                                                                           <div class="descripcion-content">
+                                                                                <label >Descripcion</label>
+                                                                                <input type="text" name="descripcion[{{ $colaborador->id }}][]" value="{{ $gasto->descripcion }}" class="form-control">
+                                                                           </div>
+
+                                                                            <div class="monto-content">
+                                                                                <label >Monto</label>
+                                                                                <input type="number" name="monto[{{ $colaborador->id }}][]" value="{{ $gasto->monto }}" class="form-control">
+                                                                            </div>
+
+                                                                            <button type="button" class="btn btn-danger btn-sm delete-btn btn-pagos" data-id="{{ $gasto->id }}">X</button>
+
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+
+                                                                <button type="submit" class="btn btn-primary mt-4">Guardar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                         {{-- MODAL UPDATE --}}
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
                                             aria-hidden="true">
@@ -713,6 +830,23 @@
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                     </div>
+
+                                                                    <div class="form-group">
+                                                                        <label>
+                                                                            <h5 class="m-t-none">Distrito:</h5>
+                                                                        </label>
+                                                                        <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
+                                                                            <option value="">Seleccione un distrito</option>
+                                                                            @foreach($distritos as $distrito)
+                                                                                <option value="{{ $distrito->id }}"
+                                                                                    {{ isset($colaborador->candidato->distrito_id) && $colaborador->candidato->distrito_id == $distrito->id ? 'selected' : '' }}>
+                                                                                    {{ $distrito->nombre }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+
+
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Institución - Sede:
                                                                             </h5>
@@ -794,7 +928,25 @@
                                                                         value="{{$colaborador->candidato->dni}}" oninput="limitDNI(this)"></input>
                                                                         <span id="dni-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
                                                                         @error('dni'.$colaborador->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                       </div>
+                                                                    </div>
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
+                                                                            <h5 class="m-t-none">ID Senati:</h5>
+                                                                        </label>
+
+                                                                       <div class="position-relative">
+
+                                                                        <input type="number" placeholder="....."
+                                                                        class="form-control" name="id_senati"
+                                                                        value="{{$colaborador->candidato->id_senati}}"></input>
+
+                                                                        @error('id_senati'.$colaborador->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                        </div>
                                                                     </div>
@@ -873,6 +1025,18 @@
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
+                                                                    <div class="form-group"><label>
+                                                                            <h5 class="m-t-none">Especialista de Seguimiento:</h5>
+                                                                        </label>
+                                                                        <select class="form-control" name="especialista_id">
+                                                                            <option value="0" @if($colaborador->especialista_id == null) selected @endif>Sin Especialista</option>
+                                                                            @foreach ($especialistas as $especialista)
+                                                                            <option value="{{ $especialista->id }}"
+                                                                                @if($especialista->id == $colaborador->especialista_id) selected @endif>
+                                                                                {{ $especialista->nombres }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
 
                                                                     <div class="mt-4 text-center">
                                                                         <button
@@ -904,15 +1068,16 @@
 
                                                                         </button>
                                                                         @error('icono'.$colaborador->id)
-                                                                        <span class="text-danger">{{ $message }}</span>
-                                                                    @enderror
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
                                                                         <script>
                                                                             document.getElementById('icon-upload-{{ $colaborador->candidato->id }}').addEventListener('click', function() {
                                                                                 document.getElementById('icono-{{ $colaborador->candidato->id }}').click();
                                                                             });
                                                                         </script>
                                                                     </div>
-                                                                    <div style="display: flex; gap:2px">
+                                                                    {{-- tooltip btns colab --}}
+                                                                    <div style="display: flex; gap:2px; flex-direction: column">
                                                                         <x-uiverse.tooltip nameTool="Maquinas">
                                                                             <a href="#"
                                                                             class="btn btn-primary btn-success fa fa-desktop"
@@ -925,8 +1090,21 @@
                                                                             <a data-toggle="modal"
                                                                             class="btn btn-primary btn-success fa fa-dropbox"
                                                                             style="width: 100px; font-size: 18px;"
-                                                                            href="" onclick="document.getElementById('getPrestamoColab{{$colaborador->id}}').submit();"></a>
+                                                                            href=""
+                                                                            onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"></a>
                                                                         </x-uiverse.tooltip>
+
+
+                                                                        <x-uiverse.tooltip nameTool="Libreria">
+                                                                            <a
+                                                                                href="javascript:void(0);"
+                                                                                class="btn btn-primary btn-success fa fa-book"
+                                                                                style="width: 100px; font-size: 18px;"
+                                                                                onclick="document.getElementById('getLibroColab{{$colaborador->id}}').submit();"
+                                                                            >
+                                                                            </a>
+                                                                        </x-uiverse.tooltip>
+
                                                                     </div>
 
                                                                 </div>
@@ -942,17 +1120,17 @@
                                         </div>
                                         @else
                                         <div class="text-center d-flex justify-content-center gap-10">
-                                            <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
+                                            {{-- <form role="form" method="POST" action="{{route('colaboradores.recontratarColaborador', $colaborador->id)}}">
                                                 @csrf
                                                 @method('PUT')
                                                 @isset($pageData->currentURL)
                                                 <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                                 @endisset
-                                                <button class="btn btn-success" type="submit">
-                                                    Re Contratar
-                                                </button>
-                                            </form>
 
+                                            </form> --}}
+                                            <button class="btn btn-success" type="submit" onclick="confirmRecontratar({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
+                                                Re Contratar
+                                            </button>
                                             {{-- delete --}}
                                                 <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $colaborador->id }}, '{{ $pageData->currentURL }}')">
                                                     Eliminar
@@ -1000,7 +1178,30 @@
                 </div>
             </div>
             @endif
+            <style>
+                .swal2-container {
+                    position: fixed;
+                    z-index: 9999999999999;
+                }
 
+                .select2-selection__choice {
+                background-color: #f1f1f1 !important;
+                border: 1px solid #aaa !important;
+                border-radius: 4px !important;
+                font-size: 12px !important;
+                padding-left: 2em !important;
+                }
+
+                .select2-selection__choice__display {
+                word-break: normal !important;
+                white-space: normal !important;
+                overflow: visible !important;
+                }
+
+                .select2-container--default .select2-selection--multiple {
+                border: 1px solid #ced4da !important;
+                }
+            </style>
 
         </div>
 
@@ -1034,11 +1235,6 @@
         </script>
     @endif
 
-
-
-
-
-
     <style>
         .select2-container.select2-container--default.select2-container--open {
             z-index: 9999 !important;
@@ -1052,254 +1248,367 @@
 
 
     </style>
-    {{-- <script src="{{ asset('js/InspiniaViewsJS/indexColaboradores.js') }}"></script> --}}
 
-
-    <script>
-        // limiteCel
-        function limitCel(input) {
-           // Asegura que solo se permitan 8 caracteres
-           if (input.value.length > 9) {
-               input.value = input.value.slice(0, 9); // Limita a 8 caracteres
-           }
-
-           // Obtener el ID del candidato para el contador correspondiente
-           let counterId;
-           if (input.id.includes('store')) {
-               counterId = 'cel-counter-store'; // Para el campo de creación
-           } else {
-               const colaboradorId = input.id.split('-')[2]; // Para los campos de actualización
-               counterId = `cel-counter-update-${colaboradorId}`;
-           }
-
-           const counter = document.getElementById(counterId);
-
-           // Actualiza el contador de caracteres
-           counter.textContent = `${input.value.length}/9`;
-
-           // Cambia el color del borde según el número de caracteres
-           if (input.value.length >= 1 && input.value.length < 9) {
-               input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
-           } else if (input.value.length === 9) {
-               input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
-           } else {
-               input.style.borderColor = ''; // Restablece el borde si no está en el rango
-           }
-       }
-
-       // Inicializa el contador y el borde al cargar la página
-       document.addEventListener("DOMContentLoaded", function() {
-           // Para Store (Crear)
-           const inputStore = document.getElementById('cel-store');
-           const counterStore = document.getElementById('cel-counter-store');
-           if (inputStore) {
-               const initialValueStore = inputStore.value || '';
-               counterStore.textContent = `${initialValueStore.length}/9`;
-
-               if (initialValueStore.length >= 1 && initialValueStore.length < 9) {
-                   inputStore.style.borderColor = 'red';
-               } else if (initialValueStore.length === 9) {
-                   inputStore.style.borderColor = 'green';
-               }
-
-               inputStore.addEventListener('input', function() {
-                   limitCel(inputStore);
-               });
-           }
-
-           // Para Update (Actualizar)
-           const inputsUpdate = document.querySelectorAll('[id^="cel-update-"]');
-
-           inputsUpdate.forEach(inputUpdate => {
-               const colaboradorId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
-               const counterUpdate = document.getElementById(`cel-counter-update-${colaboradorId}`);
-
-               // Inicializa el contador y el borde según el valor inicial
-               const initialValueUpdate = inputUpdate.value || '';
-               counterUpdate.textContent = `${initialValueUpdate.length}/9`;
-
-               if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 9) {
-                   inputUpdate.style.borderColor = 'red';
-               } else if (initialValueUpdate.length === 9) {
-                   inputUpdate.style.borderColor = 'green';
-               }
-
-               // Agregar event listener al input
-               inputUpdate.addEventListener('input', function() {
-                   limitCel(inputUpdate);
-               });
-           });
-       });
-
-
-
-       // limiteDNI
-       function limitDNI(input) {
-           // Asegura que solo se permitan 8 caracteres
-           if (input.value.length > 8) {
-               input.value = input.value.slice(0, 8); // Limita a 8 caracteres
-           }
-
-           // Obtener el ID del candidato para el contador correspondiente
-           let counterId;
-           if (input.id.includes('store')) {
-               counterId = 'dni-counter-store'; // Para el campo de creación
-           } else {
-               const colaboradorId = input.id.split('-')[2]; // Para los campos de actualización
-               counterId = `dni-counter-update-${colaboradorId}`;
-           }
-
-           const counter = document.getElementById(counterId);
-
-           // Actualiza el contador de caracteres
-           counter.textContent = `${input.value.length}/8`;
-
-           // Cambia el color del borde según el número de caracteres
-           if (input.value.length >= 1 && input.value.length < 8) {
-               input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
-           } else if (input.value.length === 8) {
-               input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
-           } else {
-               input.style.borderColor = ''; // Restablece el borde si no está en el rango
-           }
-           console.log(input.value);
-       }
-
-       // Inicializa el contador y el borde al cargar la página
-       document.addEventListener("DOMContentLoaded", function() {
-           // Para Store (Crear)
-           const inputStore = document.getElementById('dni-store');
-           const counterStore = document.getElementById('dni-counter-store');
-           if (inputStore) {
-               const initialValueStore = inputStore.value || '';
-               counterStore.textContent = `${initialValueStore.length}/8`;
-
-               if (initialValueStore.length >= 1 && initialValueStore.length < 8) {
-                   inputStore.style.borderColor = 'red';
-               } else if (initialValueStore.length === 8) {
-                   inputStore.style.borderColor = 'green';
-               }
-
-               inputStore.addEventListener('input', function() {
-                   limitDNI(inputStore);
-               });
-           }
-
-           // Para Update (Actualizar)
-           const inputsUpdate = document.querySelectorAll('[id^="dni-update-"]');
-
-           inputsUpdate.forEach(inputUpdate => {
-               const colaboradorId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
-               const counterUpdate = document.getElementById(`dni-counter-update-${colaboradorId}`);
-
-               // Inicializa el contador y el borde según el valor inicial
-               const initialValueUpdate = inputUpdate.value || '';
-               counterUpdate.textContent = `${initialValueUpdate.length}/8`;
-
-               if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 8) {
-                   inputUpdate.style.borderColor = 'red';
-               } else if (initialValueUpdate.length === 8) {
-                   inputUpdate.style.borderColor = 'green';
-               }
-
-               // Agregar event listener al input
-               inputUpdate.addEventListener('input', function() {
-                   limitDNI(inputUpdate);
-               });
-           });
-       });
-   </script>
+    <script src="{{ asset('js/asistencia/colaboradores.js') }}"></script>
 
     <script>
-        function confirmDelete(id, currentURL) {
-            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente y eliminará todo lo relacionado a este colaborador", function (e) {
-                if (e) {
-                    let form = document.createElement('form')
+$(document).ready(function() {
+    // Desactivar el comportamiento por defecto de Bootstrap para Escape
+    $.fn.modal.Constructor.prototype.escape = function() {};
+    
+    // Manejar Escape manualmente
+    $(document).on('keydown', function(e) {
+        if (e.keyCode === 27) { // Escape key
+            var $visibleModals = $('.modal.show');
+            if ($visibleModals.length > 0) {
+                // Obtener el modal que está más arriba
+                var $topModal = $visibleModals.last();
+                
+                // Cerrar solo ese modal
+                $topModal.modal('hide');
+                
+                // Prevenir propagación
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        }
+    });
+    
+    // Limpiar backdrops cuando se cierra cualquier modal
+    $('.modal').on('hidden.bs.modal', function () {
+        setTimeout(function() {
+            var visibleModals = $('.modal.show').length;
+            var backdrops = $('.modal-backdrop').length;
+            
+            if (backdrops > visibleModals) {
+                $('.modal-backdrop').slice(visibleModals).remove();
+            }
+            
+            if (visibleModals === 0) {
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('padding-right', '');
+            }
+        }, 50);
+    });
+});
 
+function abrirModalEdicion(colaboradorId) {
+    $('#modal-form-view' + colaboradorId).modal('hide');
+    
+    $('#modal-form-view' + colaboradorId).one('hidden.bs.modal', function() {
+        setTimeout(function() {
+            $('#modal-form-update' + colaboradorId).modal('show');
+        }, 100);
+    });
+}
+</script>
+
+    <script>
+        function confirmState(id) {
+            Swal.fire({
+                title: "¿Deseas cambiar el estado del colaborador?",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/colaboradores/${id}`;
-                    form.innerHTML = `@csrf @method('DELETE')`;
+                    // form.action = `/colaboradores/activar-inactivar/${id}`;
+
+                    let routeTemplate = "<?php echo route('colaboradores.activarInactivar', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    form.innerHTML = `
+                        @csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
+
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+
+                    Swal.fire({
+                        title: "Acción cancelada",
+                        text: "El colaborador no fue cambiado de estado",
+                        icon: "info",
+                        customClass: {
+                            content: 'swal-content'
+                        }
+                    });
+
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                        .swal2-html-container {
+                            color: #FFFFFF;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function confirmEditAll() {
+        Swal.fire({
+            title: "¿Deseas activar la edición para todos los colaboradores?",
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                let form = document.createElement('form');
+                form.method = 'POST';
+
+                let routeTemplate = "<?php echo route('colaboradores.editAll'); ?>";
+                form.action = routeTemplate;
+
+                form.innerHTML = `
+                    @csrf @method("PUT")
+                `;
+
+                document.body.appendChild(form);
+                form.submit();
+
+            } else {
+                Swal.fire({
+                    title: "Acción cancelada",
+                    text: "No se activó la edición",
+                    icon: "info",
+                    customClass: {
+                        content: 'swal-content'
+                    }
+                });
+
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .swal2-html-container {
+                        color: #FFFFFF;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+    }
+        function activeEdit(id) {
+            Swal.fire({
+                    title: "¿Deseas activar la edición?",
+                    showCancelButton: true,
+                    confirmButtonText: "Activar",
+                    cancelButtonText: "Cancelar",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+
+                    let routeTemplate = "<?php echo route('colaboradores.editState', ':id'); ?>";
+
+
+                    form.action = routeTemplate.replace(':id', id);
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "La edición no fue activada",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    // console.log(result);
+                    });
+
+        }
+
+        function confirmDespedir(id) {
+            Swal.fire({
+                    title: "¿Deseas despedir a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Despedir",
+                    cancelButtonText: "Cancelar",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+
+                    let routeTemplate = "<?php echo route('colaboradores.despedirColaborador', ':id'); ?>";
+
+
+                    form.action = routeTemplate.replace(':id', id);
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
+
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue despedido",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    // console.log(result);
+                    });
+
+        }
+
+
+
+
+
+        function  confirmRecontratar(id, currentURL){
+            Swal.fire({
+                    title: "¿Deseas re contratar a este colaborador?",
+                    showCancelButton: true,
+                    confirmButtonText: "Re contratar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    // form.action = `/colaboradores/recontratarColaborador/${id}`;
+
+                    let routeTemplate = "<?php echo route('colaboradores.recontratarColaborador', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    form.innerHTML = `@csrf @method("PUT")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
 
                     if (currentURL != null) {
                         let inputHidden = document.createElement('input');
                         inputHidden.type = 'hidden';
                         inputHidden.name = 'currentURL';
                         inputHidden.value = currentURL;
-                        form.appendChild(inputHidden)
+                        form.appendChild(inputHidden);
                     }
 
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
-        const deleteAlertError = () => {
-            let alertError = document.getElementById('alert-error');
-            if (alertError) {
-                alertError.remove();
-            } else{
-                console.error("Elemento con ID 'alert-error' no encontrado.");
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            const personal = document.getElementById('personalCont');
-            if (personal) {
-                personal.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
-            }
-        });
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const colaborador = document.getElementById('colaboradores');
-            if (colaborador) {
-                colaborador.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'colaboradores' no se encontró en el DOM.");
-            }
-        });
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+        }
+
+
+        function confirmDelete(id, currentURL) {
+            Swal.fire({
+                    title: "¿Deseas eliminar este registro? Se eliminará todo lo relacionado a este colaborador",
+                    showCancelButton: true,
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    // form.action = `/colaboradores/${id}`;
+
+                    let routeTemplate = "<?php echo route('colaboradores.destroy', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    form.innerHTML = `@csrf @method("DELETE")
+                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                        `;
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El colaborador no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+
+
+        }
     </script>
 
     <script>
-        function hideModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('show');
-
-                // Remover el Backdrop
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) {
-                    backdrop.parentNode.removeChild(backdrop);
-                }
-            }
-        }
-
-        function showModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('show');
-            }
-        }
-
-        function abrirModalEdicion(id) {
-            hideModal('modal-form-view' + id);
-            showModal('modal-form-update' + id);
-        }
-
-
-
-        function prepareSearchActionURL(event) {
+         function prepareSearchActionURL(event) {
             // preventDefault();
 
             let busqueda = document.getElementById('searchInput').value;
 
             if(busqueda.trim().length > 0){
-                console.log(busqueda);
+                // console.log(busqueda);
 
                 let actionUrl = `{{ url('colaboradores/search/${busqueda}') }}`;
-                console.log(actionUrl);
+                // console.log(actionUrl);
                 document.querySelector('#searchColaboradores').action = actionUrl;
 
                 return true;
@@ -1316,16 +1625,18 @@
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
+            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
 
-            estados = estados.length ? estados.join(',') : '0,1,2';
+            estados = estados.length ? estados.join(',') : '1';
             areas = areas.length ? areas.join(',') : '0';
             carreras = carreras.length ? carreras.join(',') : '0';
             instituciones = instituciones.length ? instituciones.join(',') : '0';
             ciclos = ciclos.length ? ciclos.join(',') : '0';
+            sedes = sedes.length ? sedes.join(',') : '0';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos !=null){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
-                console.log(actionUrl);
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null){
+                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
+                // console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
                 return true;
@@ -1357,8 +1668,11 @@
         checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
-
-
+        //sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function () {
+        let checkboxes = document.querySelectorAll('.sede-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        });
 
 
 
@@ -1403,6 +1717,14 @@
             }
         });
 
+        // sedes
+        document.getElementById('select-all-sedes').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
         document.querySelectorAll('input[id^="checkbox-areas-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-areas-"]', 'select-all-areas');
@@ -1433,22 +1755,14 @@
             });
         });
 
-
-    </script>
-
-
-    <script>
-        //JQuery para select multiple de areas
-        $(document).ready(function() {
-            $('.multiple_areas_select').select2();
-        });
-        $(document).ready(function() {
-            $('.multiple_apoyo_select').select2();
-        });
-        $(document).ready(function() {
-            $('.multiple_actividades_select').select2();
-        });
+        // sedes
+        document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
+            });
+        })
     </script>
 </body>
 
 </html>
+

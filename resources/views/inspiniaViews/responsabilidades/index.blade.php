@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ asset('css/responsabilidades/index.css') }}">
     <title>INSPINIA | RESPONSABILIDADES</title>
 </head>
 
@@ -17,12 +18,34 @@
                 <h2>Responsabilidades</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Responsabilidades - Áreas</strong>
                     </li>
                 </ol>
+            </div>
+        </div>
+
+
+        <div class="row mt-2 justify-content-center">
+            <div class="col-md-6 col-sm-8">
+                <form method="GET" action="{{ route('buscar.responsabilidades') }}" class="d-flex form-content">
+
+                    <input
+                        type="text"
+                        name="buscar_responsabilidad"
+                        class="form-control me-2"
+                        placeholder="Escribe el nombre de la responsabilidad..."
+                        value="{{ request('buscar.responsabilidades') }}"
+                        autocomplete="off"
+                    >
+
+                    <button type="submit" class="btn btn-primary">
+                        Buscar
+                    </button>
+
+                </form>
             </div>
         </div>
 
@@ -32,9 +55,8 @@
                     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="ibox">
                             <div class="ibox-content product-box">
-                                <div class="product-imitation">
-                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt=""
-                                        class="img-lg">
+                                <div class="product-imitation" style="object-fit: cover; padding: 0px; height: 225px;" onclick="onClickArea('{{ $area->id }}')">
+                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" style="height: 100%; width: 100%; object-fit: cover"  class="img-cover">
                                 </div>
                                 <div class="product-desc">
                                     {{-- <button class="btn btn-outline btn-primary dim float-right"

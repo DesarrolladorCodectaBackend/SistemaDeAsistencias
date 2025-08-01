@@ -1,11 +1,15 @@
-<?php
+    <?php
 
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
 use App\Http\Controllers\AjusteController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\BirthdayController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CandidatosController;
 use App\Http\Controllers\CarreraController;
+use App\Http\Controllers\ColabAccountController;
+use App\Http\Controllers\ColaboradorEditController;
 use App\Http\Controllers\ColaboradoresController;
 use App\Http\Controllers\Computadora_colaboradorController;
 use App\Http\Controllers\Cumplio_Responsabilidad_SemanalController;
@@ -13,9 +17,11 @@ use App\Http\Controllers\CursosController;
 use App\Http\Controllers\FunctionHelperController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Horario_Presencial_AsignadoController;
+use App\Http\Controllers\HorarioColabAccountController;
 use App\Http\Controllers\HorarioDeClasesController;
 use App\Http\Controllers\InformesSemanalesController;
 use App\Http\Controllers\InstitucionController;
+use App\Http\Controllers\LibroController;
 use App\Http\Controllers\MaquinasController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObjetoController;
@@ -30,8 +36,10 @@ use App\Http\Controllers\Reuniones_AreasController;
 use App\Http\Controllers\SedeController;
 use App\Http\Controllers\SalonesController;
 use App\Http\Controllers\MaquinaReservadaController;
+use App\Http\Controllers\PrestamoLibroController;
 use App\Http\Controllers\ResponsabilidadController;
 use App\Http\Controllers\ReunionesProgramadasController;
+use App\Http\Controllers\TutorSeguimientoController;
 use App\Mail\ReunionProgramadaMailable;
 use Illuminate\Support\Facades\Route;
 
@@ -60,12 +68,16 @@ Route::get('/', function () {
 
 Route::get('regenerateSession/{email}/{password}', [NotificationController::class, 'regenerateSession'])->name('regenerateSession');
 
+
+
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
+    // userColab
+    Route::get('/colaborador/edit', [ColaboradorEditController::class, 'edit'])->name('colaboradorEdit.edit');
+    Route::put('/colaborador/update/{id}', [ColaboradorEditController::class, 'update'])->name('colaboradorEdit.update');
     //FUNCION HELPER
     Route::get('/funcionPrueba', [FunctionHelperController::class, 'funcionPruebas']);
 
@@ -78,6 +90,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/cuentas/store', [AccountsController::class, 'store'])->name('accounts.store');
     Route::put('/cuentas/activar-inactivar/{user_id}', [AccountsController::class, 'activarInactivar'])->name('accounts.activarInactivar');
     Route::put('/cuentas/update/{user_id}', [AccountsController::class, 'update'])->name('accounts.update');
+    // cambiarAJefe
+    Route::post('/cuentas/changeToJefe/{user_id}', [AccountsController::class, 'changeToJefeArea'])->name('accounts.changeToJefe');
 
     //PERFIL
     Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil.index');
@@ -85,9 +99,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/perfil-updatePassword', [PerfilController::class, 'updatePassword'])->name('perfil.updatePassword');
 
     //AREAS
-    Route::resource('areas', AreaController::class);
     Route::put('areas/activarInactivar/{area_id}',[AreaController::class,'activarInactivar'])->name('areas.activarInactivar');
     Route::get('area/showing/{area_id}', [AreaController::class, 'showArea'])->name('areas.showArea');
+    Route::get('areas/buscar', [AreaController::class, 'index'])->name('areas.buscar');
+    Route::resource('areas', AreaController::class);
 
     //Horarios (Area)
     Route::get('/areas/horario/{area_id}', [AreaController::class, 'getFormHorarios'])->name('areas.getHorario');
@@ -146,8 +161,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/formToColab/{candidato_id}', [CandidatosController::class, 'getFormToColab'])->name('candidatos.form');
     Route::post('candidato/rechazarCandidato/{candidato_id}', [CandidatosController::class, 'rechazarCandidato'])->name('candidatos.rechazarCandidato');
     Route::post('candidato/reconsiderarCandidato/{candidato_id}', [CandidatosController::class, 'reActivate'])->name('candidatos.reconsiderarCandidato');
-    Route::get('candidatos/filtrar/estados={estados}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}', [CandidatosController::class, 'filtrarCandidatos'])
-        ->where(['estados' => '[0-9,]+','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*'])->name('candidatos.filtrar');
+    Route::get('candidatos/filtrar/estados={estados}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}/sedes={sedes?}', [CandidatosController::class, 'filtrarCandidatos'])
+    ->where(['estados' => '[0-9,]+','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*','sedes' => '[0-9,]*'])->name('candidatos.filtrar');
     Route::get('candidatos/search/{busqueda}', [CandidatosController::class, 'search'])->name('candidatos.search');
 
 
@@ -158,12 +173,20 @@ Route::middleware('auth')->group(function () {
     Route::post('colaboradores/store', [ColaboradoresController::class, 'store'])->name('colaboradores.store');
     Route::put('colaboradores/update/{colaborador_id}', [ColaboradoresController::class, 'update'])->name('colaboradores.update');
     Route::delete('colaboradores/{colaborador_id}', [ColaboradoresController::class, 'destroy'])->name('colaboradores.destroy');
-    Route::post('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
-    Route::get('colaboradores/filtrar/estados={estados}/areas={areas}/carreras={carreras}/instituciones={instituciones}/ciclos={ciclos}', [ColaboradoresController::class, 'filtrarColaboradores'])
-    ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*'])->name('colaboradores.filtrar');
+    Route::put('colaboradores/activar-inactivar/{colaborador_id}', [ColaboradoresController::class, 'activarInactivar'])->name('colaboradores.activarInactivar');
+    Route::get('colaboradores/filtrar/estados={estados}/areas={areas?}/carreras={carreras?}/instituciones={instituciones?}/ciclos={ciclos?}/sedes={sedes?}', [ColaboradoresController::class, 'filtrarColaboradores'])
+    ->where(['estados' => '[0-9,]+','areas' => '[0-9,]*','carreras' => '[0-9,]*','instituciones' => '[0-9,]*','ciclos' => '[0-9,]*','sedes' => '[0-9,]*'])->name('colaboradores.filtrar');
+
     Route::get('colaboradores/search/{busqueda}', [ColaboradoresController::class, 'search'])->name('colaboradores.search');
     Route::put('colaboradores/despedirColaborador/{colaborador_id}', [ColaboradoresController::class, 'despedirColaborador'])->name('colaboradores.despedirColaborador');
     Route::put('colaboradores/recontratarColaborador/{colaborador_id}', [ColaboradoresController::class, 'recontratarColaborador'])->name('colaboradores.recontratarColaborador');
+
+    Route::post('colaboradores/pagos/{colaborador_id}', [ColaboradoresController::class, 'pagoColab'])->name('colaboradores.pagos');
+
+    Route::put('colaboradores/editState/{colaborador_id}', [ColaboradoresController::class, 'colabEditState'])->name('colaboradores.editState');
+
+    Route::post('colaboradores/createEmailPassword/{colaborador_id}', [ColaboradoresController::class, 'createEmailPassword'])->name('colaboradoresEmail.store');
+    Route::put('colaboradores/editAll/', [ColaboradoresController::class, 'activeEditAll'])->name('colaboradores.editAll');
 
     //HORARIO DE CLASES
     Route::resource('horarioClase', HorarioDeClasesController::class);
@@ -187,6 +210,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('ajustes', AjusteController::class);
 
     //RESPONSABILIDADES
+    Route::get('responsabilidades/buscar', [Cumplio_Responsabilidad_SemanalController::class, 'index'])->name('buscar.responsabilidades');
     Route::resource('responsabilidades', Cumplio_Responsabilidad_SemanalController::class);
     Route::put('/responsabilidades/{semana_id}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'actualizar'])->name('responsabilidades.actualizar');
     Route::get('/responsabilidades/years/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getYearsArea'])->name('responsabilidades.years');
@@ -221,11 +245,51 @@ Route::middleware('auth')->group(function () {
     Route::put('ReunionProgramada/update/{reunion_id}', [ReunionesProgramadasController::class, 'update'])->name('reunionesProgramadas.update');
 
     //REPORTES
-    Route::get('Reportes', [ReporteController::class, 'index']);
+    Route::get('Reportes', [ReporteController::class, 'index'])->name('reportes.index');
 
     // INFORMESSEMANALES
    Route::resource('/InformeSemanal', InformesSemanalesController::class);
 
+
+    //TutoSeguimiento
+    Route::get('/especialista', [TutorSeguimientoController::class, 'index'])->name('especialista.index');
+    Route::post('/especialista/store', [TutorSeguimientoController::class, 'store'])->name('especialista.store');
+    Route::put('/especialista/update/{especialista_id}', [TutorSeguimientoController::class, 'update'])->name('especialista.update');
+    Route::put('/especialista/changeState/{especialista_id}', [TutorSeguimientoController::class, 'changeState'])->name('especialista.changeState');
+
+    // CajaChica
+    Route::get('/caja-chica', [CajaController::class, 'index'])->name('caja.index');
+    Route::post('/caja-chica/transaccionColab/{colaborador_id}', [CajaController::class, 'transaccionColab'])->name('caja.transaccionColab');
+    Route::post('/caja-chica/deposito', [CajaController::class, 'registroTransaccion'])->name('caja.registroTransaccion');
+    Route::post('/caja-chica/anularColab/{colaborador_id}', [CajaController::class, 'anularTransaccionColab'])->name('caja.anularTransaccionColab');
+    // Route::put('/caja/cerrar-semana', [CajaController::class, 'cerrarCajaSemanaActual'])
+    // ->name('caja.cerrarSemana');
+
+    Route::post('/caja-chica/abrir', [CajaController::class, 'abrirCaja'])->name('caja.abrir');
+    Route::post('/caja-chica/cerrar', [CajaController::class, 'cerrarCaja'])->name('caja.cerrar');
+    Route::post('/caja-chica/filtrarFecha', [CajaController::class, 'filtrarFecha'])->name('caja.filtrarFecha');
+
+    // Libros
+    Route::get('/biblioteca', [LibroController::class, 'index'])->name('libro.index');
+    Route::post('/biblioteca/store', [LibroController::class, 'store'])->name('libro.store');
+    Route::put('/biblioteca/update/{libro_id}', [LibroController::class, 'update'])->name('libro.update');
+    // Route::post('/biblioteca/active-inactive/{libro_id}', [LibroController::class, 'activeInactive'])->name('libro.activarInactivar');
+    Route::get('/libros-disponibles/', [ColabAccountController::class, 'index'])->name('bibliotecaColab.index');
+
+    Route::get('/biblioteca/{colaborador_id}', [PrestamoLibroController::class, 'colabLibros'])->name('libro.colabLibro');
+    Route::post('/biblioteca/prestamo/store', [PrestamoLibroController::class, 'store'])->name('libroPrestamo.store');
+    Route::put('biblioteca/prestamo/devolver/{libro_id}', [PrestamoLibroController::class, 'devolver'])->name('libroPrestamo.devolver');
+
+    Route::get('/birthdays', [BirthdayController::class, 'index'])->name('cumplecolabs.index');
+    Route::get('/cumpleaneros', [BirthdayController::class, 'getCumpleanerosHoy'])->name('cumpleaneros.json');
+
+    // ColaboradorAccount
+    Route::get('/colaborador-horario', [HorarioColabAccountController::class, 'index'])->name('colabAccount.index');
+
+    // // Desactivar evaluaciones semanales por grupo
+    // Route::post('area/evaluaciones/desactivacion-semanal/{area_id}', [AreaController::class, 'desactivarEvaluaciones'])->name('desactivarEvaluacion.area');
+    // Route::patch('area/evaluaciones/update-desactivacion-semanal{area_id}', [AreaController::class, 'updateDesactivacion'])->name('desactivarEvaluacionUpdate.area');
+    Route::match(['post', 'patch'], 'area/evaluaciones/update-desactivacion-semanal/{area_id}', [AreaController::class, 'updateDesactivacion'])->name('desactivarEvaluacionUpdate.area');
 });
 
 require __DIR__ . '/auth.php';

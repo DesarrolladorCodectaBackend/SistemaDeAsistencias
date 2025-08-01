@@ -1,4 +1,4 @@
-<button id="chat-button" class="chat-button">
+{{-- <button id="chat-button" class="chat-button">
     <i id="chat-icon" class="fa fa-comment"></i>
 </button>
 <div id="chat-container" class="chat-container hidden">
@@ -8,7 +8,8 @@
     </div>
     <iframe id="chat-frame" class="chat-frame hidden"
         src='https://webchat.botframework.com/embed/ChatBotJYP?s=LFxQB5IN5dQ.-HKd0sojcXTYTKLnB_Xyf-ZlFCtaumyaGbVXxt-1SW8'></iframe>
-</div>
+        //Reemplazar el iframe o key con el que se tenga en el bot	
+</div> --}}
 
 <style>
     .hidden {

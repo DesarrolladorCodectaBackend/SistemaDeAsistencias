@@ -16,10 +16,10 @@
                 <h2>Ajustes</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <a href="/ajustes"><strong>Ajustes</strong></a>
+                        <strong>Ajustes</strong>
                     </li>
                 </ol>
             </div>
@@ -40,7 +40,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="/institucion"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('institucion.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="/carreras"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('carreras.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="/cursos"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('cursos.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>
@@ -106,19 +106,20 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="/programas"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('programas.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-5">
                     <div class="ibox ">
                         <div class="show-grid container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <img src={{asset('img/svg/herramienta.svg')}} class="img-md">
+                                    <img src={{asset('img/svg/sedes.svg')}} class="img-md">
                                 </div>
                                 <div class="col-sm">
                                     <h4><strong>Sedes</strong></h4>
@@ -126,7 +127,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="/sedes"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('sedes.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>
@@ -147,7 +148,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="/objeto"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('objeto.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>
@@ -168,7 +169,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="/actividades"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('actividades.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>
@@ -189,7 +190,49 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <x-uiverse.tooltip nameTool="Configurar">
-                                        <a class="btn btn-success" href="/gestionResponsabilidad"><i class="fa fa-cog"></i></a>
+                                        <a class="btn btn-success" href="{{route('gestionResponsabilidad.index')}}"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="ibox ">
+                        <div class="show-grid container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <img src={{asset('img/svg/especialistas.svg')}} class="img-md">
+                                </div>
+                                <div class="col-sm">
+                                    <h4><strong>Especialistas</strong></h4>
+                                    <p>Tabla de Especialistas</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="{{route('especialista.index')}}"><i class="fa fa-cog"></i></a>
+                                    </x-uiverse.tooltip>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="ibox ">
+                        <div class="show-grid container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <img src={{asset('img/svg/book.svg')}} class="img-md">
+                                </div>
+                                <div class="col-sm">
+                                    <h4><strong>Biblioteca</strong></h4>
+                                    <p>Tabla de libros</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <x-uiverse.tooltip nameTool="Configurar">
+                                        <a class="btn btn-success" href="{{route('libro.index')}}"><i class="fa fa-cog"></i></a>
                                     </x-uiverse.tooltip>
                                 </div>
                             </div>

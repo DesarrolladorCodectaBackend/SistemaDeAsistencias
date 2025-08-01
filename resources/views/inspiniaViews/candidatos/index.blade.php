@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Inspina|Candidatos</title>
 </head>
@@ -17,7 +22,7 @@
                 <h2>Candidatos</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a>Personal</a>
@@ -109,6 +114,9 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
+
                                         <!-- Ciclos -->
                                             <div class="card">
                                                 <div class="card-header" id="headingCiclosCandidatos">
@@ -160,6 +168,32 @@
                                             </div>
                                         </div>
 
+                                        {{-- sedes --}}
+                                        <div class="card">
+                                            <div class="card-header" id="headingSedesCandidatos">
+                                                <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSedesCandidatos" aria-expanded="false" aria-controls="collapseSedesCandidatos">
+                                                        Sedes
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseSedesCandidatos" class="collapse" aria-labelledby="headingSedesCandidatos" data-parent="#accordionExampleCandidatos">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="select-all-sedes"><span> Seleccionar todos</span>
+                                                    </div>
+                                                    @foreach($sedesAll as $index => $sede)
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input sede-checkbox" id="checkbox-sede-candidatos-{{ $sede->id }}" value="{{ $sede->id }}">
+                                                        <span for="checkbox-sede-candidatos-{{ $sede->id }}">{{ $sede->nombre }}</span>
+                                                    </div>
+                                                    @endforeach
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                         <!-- Submit Button -->
                                         <div class="text-center mt-4">
                                             <button type="submit" class="btn btn-primary px-5">Filtrar</button>
@@ -210,7 +244,7 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            
+
 
                                             <style>
                                                 /* Quitar los controles de incremento y decremento en los navegadores */
@@ -232,6 +266,29 @@
                                                     name="direccion" value="{{ old('direccion')}}" autocomplete="off">
 
                                                     @error('direccion')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Distrito</label>
+                                                <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
+                                                    <option value="">Seleccione un distrito</option>
+                                                    @foreach($distritos as $distrito)
+                                                        <option value="{{ $distrito->id }}">
+                                                            {{ $distrito->nombre }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>ID Senati</label>
+                                                <input type="text"
+                                                    placeholder="Ingrese su id" class="form-control"
+                                                    name="id_senati" value="{{ old('id_senati')}}" autocomplete="off">
+
+                                                    @error('id_senati')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                             </div>
@@ -300,7 +357,7 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <label>Celular</label> 
+                                                <label>Celular</label>
                                                <div class="position-relative">
                                                     <input type="number" id="cel-store"
                                                     placeholder="Ingrese celular" class="form-control" name="celular" oninput="limitCel(this)">
@@ -311,9 +368,9 @@
                                                </div>
                                             </div>
 
-                                          
+
                                         </div>
-                                      
+
                                         <div>
                                             <button class="btn btn-primary btn-sm m-t-n-xs float-right" type="submit" ><i
                                                     class="fa fa-check"></i>&nbsp;Confirmar
@@ -371,6 +428,11 @@
                                                 </label><label for="">{{$candidato->direccion ?? 'Sin dirección'}}</label>
                                             </div>
                                             <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Distrito:</h5>
+                                                </label><label for="">{{$candidato->distrito ? $candidato->distrito->nombre : 'No asignado'}}</label>
+
+                                            </div>
+                                            <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Institución - Sede:</h5>
                                                 </label><label for="">{{$candidato->sede->nombre ?? 'Sin Institucion - Sede'}}</label>
                                             </div>
@@ -390,6 +452,11 @@
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">DNI:</h5>
                                                 </label><label for="">{{$candidato->dni  ?? 'Sin DNI'}}</label>
+                                            </div>
+
+                                            <div class="form-group"><label>
+                                                <h5 class="m-t-none m-b">ID Senati:</h5>
+                                                </label><label for="">{{$candidato->id_senati  ?? 'Sin ID'}}</label>
                                             </div>
                                             <div class="form-group"><label>
                                                     <h5 class="m-t-none m-b">Celular:</h5>
@@ -450,16 +517,17 @@
                                                 Agregar Colaborador
                                             </button>
                                         </form>
-                                        <form class="text-center" method="POST"
+                                        {{-- <form class="text-center" method="POST"
                                             action="{{ route('candidatos.rechazarCandidato', $candidato->id) }}">
                                             @csrf
                                             @isset($pageData->currentURL)
                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             @endisset
-                                            <button class="btn btn-danger" type="submit">
-                                                Rechazar
-                                            </button>
-                                        </form>
+
+                                        </form> --}}
+                                        <button class="btn btn-danger" type="submit" onclick="confirmRechazar({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
+                                            Rechazar
+                                        </button>
                                     </div>
 
                                     @elseif($candidato->estado == 0)
@@ -468,16 +536,17 @@
                                     </div>
                                     @elseif($candidato->estado == 2)
                                     <div class="d-flex justify-content-center gap-10">
-                                        <form class="text-center" method="POST"
+                                        {{-- <form class="text-center" method="POST"
                                             action="{{ route('candidatos.reconsiderarCandidato', $candidato->id) }}">
                                             @csrf
                                             @isset($pageData->currentURL)
                                             <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
                                             @endisset
-                                            <button class="btn btn-success" type="submit">
-                                                Reconsiderar
-                                            </button>
-                                        </form>
+
+                                        </form> --}}
+                                        <button class="btn btn-success" type="submit" onclick="confirmReconsiderar({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
+                                            Reconsiderar
+                                        </button>
                                         <button class="btn btn-danger" type="button" onclick="confirmDelete({{ $candidato->id }}, '{{ $pageData->currentURL }}')">
                                             Eliminar
                                         </button>
@@ -514,6 +583,12 @@
                                         <div class="col-sm-6 text-sm-left">
                                             <dt>Celular</dt>
                                             <dd class="sm-2">{{$candidato->celular ?? 'Sin celular'}}</dd>
+                                        </div>
+                                    </dl>
+                                    <dl class="row mb-0">
+                                        <div class="col-sm-6 text-sm-left">
+                                            <dt>Distrito</dt>
+                                            <dd class="sm-2">{{$candidato->distrito ? $candidato->distrito->nombre : 'No asignado'}}</dd>
                                         </div>
                                     </dl>
 
@@ -587,8 +662,21 @@
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
-                                                                    
-                                                                    
+
+                                                                    <div class="form-group">
+                                                                        <label>ID Senati</label>
+                                                                        <div class="position-relative">
+                                                                            <!-- Campo ID senati -->
+                                                                            <input type="number"  placeholder="Ingrese ID senati" class="form-control" name="id_senati" value="{{ $candidato->id_senati ?? 'No tiene' }}" autocomplete="off" >
+                                                                            @error('id_senati'.$candidato->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        </div>
+                                                                        @error('dni.' . $candidato->id)
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                    </div>
+
                                                                     <div class="form-group"><label>Dirección</label>
                                                                         <input type="text" placeholder="....."
                                                                             class="form-control" name="direccion"
@@ -598,6 +686,20 @@
                                                                             <span class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
+
+                                                                    <div class="form-group">
+                                                                        <label>Distrito</label>
+                                                                        <select class="form-control select2-distrito" name="distrito_id" id="distrito_id">
+                                                                            <option value="">Seleccione un distrito</option>
+                                                                            @foreach($distritos as $distrito)
+                                                                                <option value="{{ $distrito->id }}"
+                                                                                    {{ isset($candidato->distrito_id) && $candidato->distrito_id == $distrito->id ? 'selected' : '' }}>
+                                                                                    {{ $distrito->nombre }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+
                                                                     <div class="form-group"><label>Fecha de
                                                                             Nacimiento</label>
                                                                         <input type="date" placeholder="....."
@@ -748,7 +850,18 @@
 
     </div>
     </div>
+    <style>
+        .select2-container.select2-container--default.select2-container--open {
+            z-index: 9999 !important;
+            width: 100% !important;
+        }
 
+        .select2-container {
+            display: inline !important;
+        }
+
+
+    </style>
     @if ($errors->any())
         <script>
             // Reabrir el modal de creación si el error proviene del formulario de creación
@@ -766,316 +879,10 @@
 
 
 
-    <style>
-        .select2-container.select2-container--default.select2-container--open {
-            z-index: 9999 !important;
-            width: 100% !important;
-        }
+<script src="{{ asset('js/asistencia/candidatos.js') }}"></script>
 
-        .select2-container {
-            display: inline !important;
-        }
-
-
-    </style>
-
-
-    <script>
-         // limiteCel
-         function limitCel(input) {
-            // Asegura que solo se permitan 8 caracteres
-            if (input.value.length > 9) {
-                input.value = input.value.slice(0, 9); // Limita a 8 caracteres
-            }
-
-            // Obtener el ID del candidato para el contador correspondiente
-            let counterId;
-            if (input.id.includes('store')) {
-                counterId = 'cel-counter-store'; // Para el campo de creación
-            } else {
-                const candidateId = input.id.split('-')[2]; // Para los campos de actualización
-                counterId = `cel-counter-update-${candidateId}`;
-            }
-
-            const counter = document.getElementById(counterId);
-
-            // Actualiza el contador de caracteres
-            counter.textContent = `${input.value.length}/9`;
-
-            // Cambia el color del borde según el número de caracteres
-            if (input.value.length >= 1 && input.value.length < 9) {
-                input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
-            } else if (input.value.length === 9) {
-                input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
-            } else {
-                input.style.borderColor = ''; // Restablece el borde si no está en el rango
-            }
-        }
-
-        // Inicializa el contador y el borde al cargar la página
-        document.addEventListener("DOMContentLoaded", function() {
-            // Para Store (Crear)
-            const inputStore = document.getElementById('cel-store');
-            const counterStore = document.getElementById('cel-counter-store');
-            if (inputStore) {
-                const initialValueStore = inputStore.value || '';
-                counterStore.textContent = `${initialValueStore.length}/9`;
-
-                if (initialValueStore.length >= 1 && initialValueStore.length < 9) {
-                    inputStore.style.borderColor = 'red';
-                } else if (initialValueStore.length === 9) {
-                    inputStore.style.borderColor = 'green';
-                }
-
-                inputStore.addEventListener('input', function() {
-                    limitCel(inputStore);
-                });
-            }
-
-            // Para Update (Actualizar)
-            const inputsUpdate = document.querySelectorAll('[id^="cel-update-"]');
-
-            inputsUpdate.forEach(inputUpdate => {
-                const candidateId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
-                const counterUpdate = document.getElementById(`cel-counter-update-${candidateId}`);
-
-                // Inicializa el contador y el borde según el valor inicial
-                const initialValueUpdate = inputUpdate.value || '';
-                counterUpdate.textContent = `${initialValueUpdate.length}/9`;
-
-                if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 9) {
-                    inputUpdate.style.borderColor = 'red';
-                } else if (initialValueUpdate.length === 9) {
-                    inputUpdate.style.borderColor = 'green';
-                }
-
-                // Agregar event listener al input
-                inputUpdate.addEventListener('input', function() {
-                    limitCel(inputUpdate);
-                });
-            });
-        });
-
-
-
-        // limiteDNI 
-        function limitDNI(input) {
-            // Asegura que solo se permitan 8 caracteres
-            if (input.value.length > 8) {
-                input.value = input.value.slice(0, 8); // Limita a 8 caracteres
-            }
-
-            // Obtener el ID del candidato para el contador correspondiente
-            let counterId;
-            if (input.id.includes('store')) {
-                counterId = 'dni-counter-store'; // Para el campo de creación
-            } else {
-                const candidateId = input.id.split('-')[2]; // Para los campos de actualización
-                counterId = `dni-counter-update-${candidateId}`;
-            }
-
-            const counter = document.getElementById(counterId);
-
-            // Actualiza el contador de caracteres
-            counter.textContent = `${input.value.length}/8`;
-
-            // Cambia el color del borde según el número de caracteres
-            if (input.value.length >= 1 && input.value.length < 8) {
-                input.style.borderColor = 'red'; // Rojo cuando llega a 1-7 caracteres
-            } else if (input.value.length === 8) {
-                input.style.borderColor = 'green'; // Verde cuando llega a 8 caracteres
-            } else {
-                input.style.borderColor = ''; // Restablece el borde si no está en el rango
-            }
-            console.log(input.value);
-        }
-
-        // Inicializa el contador y el borde al cargar la página
-        document.addEventListener("DOMContentLoaded", function() {
-            // Para Store (Crear)
-            const inputStore = document.getElementById('dni-store');
-            const counterStore = document.getElementById('dni-counter-store');
-            if (inputStore) {
-                const initialValueStore = inputStore.value || '';
-                counterStore.textContent = `${initialValueStore.length}/8`;
-
-                if (initialValueStore.length >= 1 && initialValueStore.length < 8) {
-                    inputStore.style.borderColor = 'red';
-                } else if (initialValueStore.length === 8) {
-                    inputStore.style.borderColor = 'green';
-                }
-
-                inputStore.addEventListener('input', function() {
-                    limitDNI(inputStore);
-                });
-            }
-
-            // Para Update (Actualizar)
-            const inputsUpdate = document.querySelectorAll('[id^="dni-update-"]');
-
-            inputsUpdate.forEach(inputUpdate => {
-                const candidateId = inputUpdate.id.split('-')[2];  // Obtiene el ID del candidato
-                const counterUpdate = document.getElementById(`dni-counter-update-${candidateId}`);
-
-                // Inicializa el contador y el borde según el valor inicial
-                const initialValueUpdate = inputUpdate.value || '';
-                counterUpdate.textContent = `${initialValueUpdate.length}/8`;
-
-                if (initialValueUpdate.length >= 1 && initialValueUpdate.length < 8) {
-                    inputUpdate.style.borderColor = 'red';
-                } else if (initialValueUpdate.length === 8) {
-                    inputUpdate.style.borderColor = 'green';
-                }
-
-                // Agregar event listener al input
-                inputUpdate.addEventListener('input', function() {
-                    limitDNI(inputUpdate);
-                });
-            });
-        });
-    </script>
-
-
-
-    <script>
-        const deleteAlertError = () => {
-            let alertError = document.getElementById('alert-error');
-            if (alertError) {
-                alertError.remove();
-            } else{
-                console.error("Elemento con ID 'alert-error' no encontrado.");
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            const personal = document.getElementById('personalCont');
-            if (personal) {
-                personal.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'personalCont' no se encontró en el DOM.");
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const candidato = document.getElementById('candidatos');
-            if (candidato) {
-                candidato.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'candidato' no se encontró en el DOM.");
-            }
-        });
-    </script>
-    <script>
-        const hiddenFileInput = document.getElementById('icono');
-        const iconUploadButton = document.getElementById('icon-upload');
-
-        iconUploadButton.addEventListener('click', function() {
-            hiddenFileInput.click();
-        });
-    </script>
-
-    <script>
-        function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('show');
-        modal.style.display = 'block'; // Asegúrate de que el modal se muestre
-    }
-}
-
-function hideModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('show');
-        modal.style.display = 'none'; // Asegúrate de que el modal se oculte
-    }
-}
-
-function abrirModalCreacion(index) {
-    ocultarTodosLosModales();
-    showModal('modal-create-form-' + index);
-}
-
-
-        function abrirModalEdicion(id) {
-            hideModal('modal-form-view' + id);
-            showModal('modal-form-update' + id);
-        }
-
-        function confirmDelete(id, currentURL) {
-            alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-
-                    form.method = 'POST'
-                    form.action = `/candidatos/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-
-                    if(currentURL != null){
-                        let inputHidden = document.createElement('input');
-                        inputHidden.type = 'hidden';
-                        inputHidden.name = 'currentURL';
-                        inputHidden.value = currentURL;
-                        form.appendChild(inputHidden)
-                    }
-
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
-
-        function updateSelectAll(checkboxGroup, selectAllId) {
-            const selectAllCheckbox = document.getElementById(selectAllId);
-            const checkboxes = document.querySelectorAll(checkboxGroup);
-            selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        }
-
-        document.getElementById('select-all-estados').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-estados-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-        document.getElementById('select-all-carreras').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-carreras-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-        document.getElementById('select-all-instituciones').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-institucion-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-        document.querySelectorAll('input[id^="checkbox-estados-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-estados-"]', 'select-all-estados');
-            });
-        });
-
-        document.querySelectorAll('input[id^="checkbox-carreras-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-carreras-"]', 'select-all-carreras');
-            });
-        });
-
-        document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
-            });
-        });
-
-
-
-    </script>
-    <script>
-        function prepareSearchActionURL(event) {
+<script>
+     function prepareSearchActionURL(event) {
             let busqueda = document.getElementById('searchInput').value;
 
             if(busqueda.trim().length > 0) {
@@ -1095,40 +902,231 @@ function abrirModalCreacion(index) {
             let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
+            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
 
-            estados = estados.length ? estados.join(',') : '0,1,2,3';
+            estados = estados.length ? estados.join(',') : '1';
             carreras = carreras.length ? carreras.join(',') : '0';
             instituciones = instituciones.length ? instituciones.join(',') : '0';
             ciclos = ciclos.length ? ciclos.join(',') : '0';
+            sedes = sedes.length ? sedes.join(',') : '0';
 
-            if(estados != null && carreras != null && instituciones != null && ciclos !=null) {
-                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}') }}`;
+
+
+            if(estados != null && carreras != null && instituciones != null && ciclos != null, sedes != null) {
+                let actionUrl = `{{ url('candidatos/filtrar/estados=${estados}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
                 console.log(actionUrl);
                 document.querySelector('#filtrarCandidatos').action = actionUrl;
 
                 return true;
             }
         }
+</script>
 
-    document.getElementById('select-all-estados').addEventListener('change', function() {
-        let checkboxes = document.querySelectorAll('.estado-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
 
-    document.getElementById('select-all-carreras').addEventListener('change', function() {
-        let checkboxes = document.querySelectorAll('.carrera-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
+    <script>
+        $(document).ready(function() {
+            $('.select2-distrito').select2({
+                placeholder: "Buscar distrito...",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 
-    document.getElementById('select-all-instituciones').addEventListener('change', function() {
-        let checkboxes = document.querySelectorAll('.institucion-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
+    <script>
 
-    document.getElementById('select-all-ciclos').addEventListener('change', function () {
-        let checkboxes = document.querySelectorAll('.ciclo-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-    });
+    </script>
+    <script>
+        const hiddenFileInput = document.getElementById('icono');
+        const iconUploadButton = document.getElementById('icon-upload');
+
+        iconUploadButton.addEventListener('click', function() {
+            hiddenFileInput.click();
+        });
+    </script>
+
+    <script>
+
+
+
+        function confirmReconsiderar(id, currentURL) {
+                Swal.fire({
+                    title: "¿Deseas reconsiderar este candidato?",
+                    showCancelButton: true,
+                    confirmButtonText: "Reconsiderar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/candidato/reconsiderarCandidato/${id}`;
+
+                    form.innerHTML = '@csrf @method("POST")';
+
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El candidato no fue reconsiderado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  // Cambia el color del texto del contenido
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+            }
+
+
+            function confirmRechazar(id, currentURL) {
+                Swal.fire({
+                    title: "¿Deseas rechazar este candidato?",
+                    showCancelButton: true,
+                    confirmButtonText: "Rechazar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    // Crear el formulario y enviarlo
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    let routeTemplate = "<?php echo route('candidatos.rechazarCandidato', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    // Agregar el CSRF token y el método HTTP necesario
+                    form.innerHTML = `@csrf @method("POST")
+                     <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                    `;
+
+                    // Agregar el parámetro currentURL, si está disponible
+                    if (currentURL != null) {
+                        let inputHidden = document.createElement('input');
+                        inputHidden.type = 'hidden';
+                        inputHidden.name = 'currentURL';
+                        inputHidden.value = currentURL;
+                        form.appendChild(inputHidden);
+                    }
+
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El candidato no fue rechazado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'  // Asignamos una clase personalizada al contenido
+                            }
+                        });
+                        // Luego, en tu CSS, puedes cambiar el color del contenido
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;  // Cambia el color del texto del contenido
+                            }
+                        `;
+                        document.head.appendChild(style);
+                                    }
+                    });
+            }
+
+
+        function confirmDelete(id, currentURL) {
+
+            Swal.fire({
+                title: "¿Deseas eliminar este registro? Esta acción es permanente",
+                showCancelButton: true,
+                confirmButtonText: "Despedir",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/candidatos/${id}`;
+
+                form.innerHTML = '@csrf @method("DELETE")';
+
+                if (currentURL != null) {
+                    let inputHidden = document.createElement('input');
+                    inputHidden.type = 'hidden';
+                    inputHidden.name = 'currentURL';
+                    inputHidden.value = currentURL;
+                    form.appendChild(inputHidden);
+                }
+
+
+                document.body.appendChild(form);
+                form.submit();
+                } else {
+
+                    Swal.fire({
+                        title: "Acción cancelada",
+                        text: "El candidato no fue despedido",
+                        icon: "info",
+                        customClass: {
+                            content: 'swal-content'
+                        }
+                    });
+
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                        .swal2-html-container{
+                            color: #FFFFFF;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                                }
+                });
+
+            // alertify.confirm("¿Deseas eliminar este registro? Esta acción es permanente", function(e) {
+            //     if (e) {
+            //         let form = document.createElement('form')
+
+            //         form.method = 'POST'
+            //         form.action = `/candidatos/${id}`
+            //         form.innerHTML = '@csrf @method('DELETE')'
+
+            //         if(currentURL != null){
+            //             let inputHidden = document.createElement('input');
+            //             inputHidden.type = 'hidden';
+            //             inputHidden.name = 'currentURL';
+            //             inputHidden.value = currentURL;
+            //             form.appendChild(inputHidden)
+            //         }
+
+            //         document.body.appendChild(form)
+            //         form.submit()
+            //     } else {
+            //         return false
+            //     }
+            // });
+        }
+
+
+
+    </script>
+    <script>
+
     </script>
 
 </body>

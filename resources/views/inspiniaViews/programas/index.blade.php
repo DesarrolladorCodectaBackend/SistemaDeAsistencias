@@ -22,10 +22,10 @@
                 <h2>Gestión Programas</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/ajustes">Ajustes</a>
+                        <a href="{{route('ajustes.index')}}">Ajustes</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Programas</strong>

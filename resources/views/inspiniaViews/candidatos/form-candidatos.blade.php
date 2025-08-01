@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title>INSPINIA | Form - Candidatos</title>
 </head>
 
@@ -17,10 +18,10 @@
                 <h2>Formulario Colaborador</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/candidatos">Candidatos</a>
+                        <a href="{{route('candidatos.index')}}">Candidatos</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Colaboradores</strong>
@@ -28,6 +29,14 @@
                 </ol>
             </div>
         </div>
+        @if(session('error'))
+        <div id="alert" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
+            <div style="flex-grow: 1;">
+                <strong>Error:</strong> {{ session('error') }}
+            </div>
+            <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
+        </div>
+    @endif
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 <div class="col-lg-12">
@@ -50,6 +59,11 @@
                                                 class="form-control" disabled>
                                         </div>
 
+                                        <div class="form-group"><label class="col-form-label">ID Senati</label><input
+                                            type="text" value="{{ $candidato->id_senati }}"
+                                            class="form-control" disabled>
+                                        </div>                          
+
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group"><label>Correo</label> <input type="email"
@@ -57,8 +71,9 @@
                                                 class="form-control" disabled></div>
                                         <div class="form-group"><label>Teléfono</label> <input type="text"
                                                 placeholder="Ingrese su telefono" value="{{ $candidato->celular }}"
-                                                class="form-control" disabled></div>
-                                                <div class="form-group">
+                                                class="form-control" disabled>
+                                        </div>
+                                        <div class="form-group">
                                                     <label class="col-form-label">Área</label>
                                                     <div>
                                                         <select name="areas_id[]" multiple class="form-control multiple_areas_select">
@@ -73,7 +88,13 @@
                                                             <div class="text-danger mt-2">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
+                                        </div>
+
+                                        <div class="form-group"><label class="col-form-label">Distrito</label><input
+                                            type="text"
+                                            value="{{ $candidato->distrito ? $candidato->distrito->nombre : 'No asignado' }}"
+                                            class="form-control" disabled>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -177,7 +198,7 @@
                                                 <button class="ladda-button btn btn-primary mr-5" type="submit"
                                                     data-style="expand-left">Guardar</button>
                                                 <a class="ladda-button btn btn-primary" data-style="expand-left"
-                                                    href="/candidatos">Cancelar</a>
+                                                    href="{{route('candidatos.index')}}">Cancelar</a>
                                             </div>
                             </form>
 
@@ -266,8 +287,16 @@
             var fila = boton.parentNode.parentNode;
             fila.parentNode.removeChild(fila);
         }
-    </script>
 
+    </script>
+    <script>
+        const deleteAlert = () => {
+            let alert = document.getElementById('alert');
+            if (alert) {
+                alert.remove();
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -1,9 +1,3 @@
-/*!
- * <%= meta.title %> v<%= meta.version %> Stylesheet
- * Docs & License: <%= meta.homepage %>
- * (c) <%= meta.copyright %>
- */
-
 
 .fc {
 	direction: ltr;
@@ -14,13 +8,9 @@
 	text-align: right;
 }
 
-body .fc { /* extra precedence to overcome jqui */
+body .fc {
 	font-size: 1em;
 }
-
-
-/* Colors
---------------------------------------------------------------------------------------------------*/
 
 .fc-unthemed th,
 .fc-unthemed td,
@@ -28,7 +18,7 @@ body .fc { /* extra precedence to overcome jqui */
 .fc-unthemed tbody,
 .fc-unthemed .fc-divider,
 .fc-unthemed .fc-row,
-.fc-unthemed .fc-content, /* for gutter border */
+.fc-unthemed .fc-content,
 .fc-unthemed .fc-popover {
 	border-color: #ddd;
 }
@@ -50,26 +40,21 @@ body .fc { /* extra precedence to overcome jqui */
 	background: #fcf8e3;
 }
 
-.fc-highlight { /* when user is selecting cells */
+.fc-highlight {
 	background: #bce8f1;
 	opacity: .3;
-	filter: alpha(opacity=30); /* for IE */
+	filter: alpha(opacity=30);
 }
 
-.fc-bgevent { /* default look for background events */
+.fc-bgevent {
 	background: rgb(143, 223, 130);
 	opacity: .3;
-	filter: alpha(opacity=30); /* for IE */
+	filter: alpha(opacity=30);
 }
 
-.fc-nonbusiness { /* default look for non-business-hours areas */
-	/* will inherit .fc-bgevent's styles */
+.fc-nonbusiness {
 	background: #d7d7d7;
 }
-
-
-/* Icons (inline elements with styled text that mock arrow icons)
---------------------------------------------------------------------------------------------------*/
 
 .fc-icon {
 	display: inline-block;
@@ -79,8 +64,6 @@ body .fc { /* extra precedence to overcome jqui */
 	text-align: center;
 	overflow: hidden;
 	font-family: "Courier New", Courier, monospace;
-
-	/* don't allow browser text-selection */
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -88,15 +71,6 @@ body .fc { /* extra precedence to overcome jqui */
 	-ms-user-select: none;
 	user-select: none;
 	}
-
-/*
-Acceptable font-family overrides for individual icons:
-	"Arial", sans-serif
-	"Times New Roman", serif
-
-NOTE: use percentage font sizes or else old IE chokes
-*/
-
 .fc-icon:after {
 	position: relative;
 }
@@ -151,58 +125,40 @@ NOTE: use percentage font sizes or else old IE chokes
 	top: 6%;
 }
 
-
-/* Buttons (styled <button> tags, normalized to work cross-browser)
---------------------------------------------------------------------------------------------------*/
-
 .fc button {
-	/* force height to include the border and padding */
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-
-	/* dimensions */
 	margin: 0;
 	height: 2.1em;
 	padding: 0 .6em;
-
-	/* text & cursor */
-	font-size: 1em; /* normalize */
+	font-size: 1em;
 	white-space: nowrap;
 	cursor: pointer;
 }
 
-/* Firefox has an annoying inner border */
 .fc button::-moz-focus-inner { margin: 0; padding: 0; }
-	
-.fc-state-default { /* non-theme */
+
+.fc-state-default {
 	border: 1px solid;
 }
 
-.fc-state-default.fc-corner-left { /* non-theme */
+.fc-state-default.fc-corner-left {
 	border-top-left-radius: 4px;
 	border-bottom-left-radius: 4px;
 }
 
-.fc-state-default.fc-corner-right { /* non-theme */
+.fc-state-default.fc-corner-right {
 	border-top-right-radius: 4px;
 	border-bottom-right-radius: 4px;
 }
 
-/* icons in buttons */
-
-.fc button .fc-icon { /* non-theme */
+.fc button .fc-icon {
 	position: relative;
-	top: -0.05em; /* seems to be a good adjustment across browsers */
+	top: -0.05em;
 	margin: 0 .2em;
 	vertical-align: middle;
 }
-	
-/*
-  button states
-  borrowed from twitter bootstrap (http://twitter.github.com/bootstrap/)
-*/
-
 .fc-state-default {
 	background-color: #f5f5f5;
 	background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
@@ -250,39 +206,25 @@ NOTE: use percentage font sizes or else old IE chokes
 	filter: alpha(opacity=65);
 	box-shadow: none;
 }
-
-
-/* Buttons Groups
---------------------------------------------------------------------------------------------------*/
-
 .fc-button-group {
 	display: inline-block;
 }
 
-/*
-every button that is not first in a button group should scootch over one pixel and cover the
-previous button's border...
-*/
-
-.fc .fc-button-group > * { /* extra precedence b/c buttons have margin set to zero */
+.fc .fc-button-group > * {
 	float: left;
 	margin: 0 0 0 -1px;
 }
 
-.fc .fc-button-group > :first-child { /* same */
+.fc .fc-button-group > :first-child {
 	margin-left: 0;
 }
-
-
-/* Popover
---------------------------------------------------------------------------------------------------*/
 
 .fc-popover {
 	position: absolute;
 	box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
 
-.fc-popover .fc-header { /* TODO: be more consistent with fc-head/fc-body */
+.fc-popover .fc-header {
 	padding: 2px 4px;
 }
 
@@ -304,8 +246,6 @@ previous button's border...
 	float: right;
 }
 
-/* unthemed */
-
 .fc-unthemed .fc-popover {
 	border-width: 1px;
 	border-style: solid;
@@ -319,13 +259,8 @@ previous button's border...
 /* jqui themed */
 
 .fc-popover > .ui-widget-header + .ui-widget-content {
-	border-top: 0; /* where they meet, let the header have the border */
+	border-top: 0;
 }
-
-
-/* Misc Reusable Components
---------------------------------------------------------------------------------------------------*/
-
 .fc-divider {
 	border-style: solid;
 	border-width: 1px;
@@ -334,7 +269,7 @@ previous button's border...
 hr.fc-divider {
 	height: 0;
 	margin: 0;
-	padding: 0 0 2px; /* height is unreliable across browsers, so use padding */
+	padding: 0 0 2px;
 	border-width: 1px 0;
 }
 
@@ -346,7 +281,6 @@ hr.fc-divider {
 .fc-bgevent-skeleton,
 .fc-highlight-skeleton,
 .fc-helper-skeleton {
-	/* these element should always cling to top-left/right corners */
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -354,24 +288,21 @@ hr.fc-divider {
 }
 
 .fc-bg {
-	bottom: 0; /* strech bg to bottom edge */
+	bottom: 0;
 }
 
 .fc-bg table {
-	height: 100%; /* strech bg to bottom edge */
+	height: 100%;
 }
 
 
-/* Tables
---------------------------------------------------------------------------------------------------*/
-
 .fc table {
 	width: 100%;
-	box-sizing: border-box; /* fix scrollbar issue in firefox */
+	box-sizing: border-box;
 	table-layout: fixed;
 	border-collapse: collapse;
 	border-spacing: 0;
-	font-size: 1em; /* normalize cross-browser */
+	font-size: 1em;
 }
 
 .fc th {
@@ -387,7 +318,7 @@ hr.fc-divider {
 }
 
 .fc td.fc-today {
-	border-style: double; /* overcome neighboring borders */
+	border-style: double;
 }
 
 
@@ -407,7 +338,7 @@ hr.fc-divider {
 	border-right: 0 hidden transparent;
 
 	/* no bottom borders on rows */
-	border-bottom: 0 hidden transparent; 
+	border-bottom: 0 hidden transparent;
 }
 
 .fc-row:first-child table {
@@ -816,7 +747,7 @@ a.fc-more:hover {
 .fc .fc-toolbar > * > :first-child { /* extra precedence to override button border margins */
 	margin-left: 0;
 }
-	
+
 /* title text */
 
 .fc-toolbar h2 {
@@ -833,7 +764,7 @@ a.fc-more:hover {
 .fc-toolbar .ui-state-hover {
 	z-index: 2;
 }
-	
+
 .fc-toolbar .fc-state-down {
 	z-index: 3;
 }
@@ -1209,11 +1140,7 @@ be a descendant of the grid when it is being dragged.
 .fc-time-grid-event.fc-allow-mouse-resize .fc-resizer:after {
 	content: "=";
 }
-
-/* resizer (touch device) */
-
 .fc-time-grid-event.fc-selected .fc-resizer {
-	/* 10x10 dot */
 	border-radius: 5px;
 	border-width: 1px;
 	width: 8px;
@@ -1221,16 +1148,12 @@ be a descendant of the grid when it is being dragged.
 	border-style: solid;
 	border-color: inherit;
 	background: #fff;
-	/* horizontally center */
+
 	left: 50%;
 	margin-left: -5px;
-	/* center on the bottom edge */
 	bottom: -5px;
 }
 
-
-/* Now Indicator
---------------------------------------------------------------------------------------------------*/
 
 .fc-time-grid .fc-now-indicator-line {
 	border-top-width: 1px;

@@ -23,6 +23,8 @@ class Candidatos extends Model
         'correo',
         'celular',
         'icono',
+        'id_senati',
+        'distrito_id'
     ];
 
     public function sede(){
@@ -44,7 +46,7 @@ class Candidatos extends Model
 
         return $candidatosPorNombre;
     }
-    
+
     public static function searchByDni($search = ''){
         $candidatosPorDni = Candidatos::with('sede', 'carrera')
         ->where(DB::raw("dni"), 'like', '%' . $search . '%')
@@ -53,6 +55,8 @@ class Candidatos extends Model
         return $candidatosPorDni;
     }
 
-
+    public function distrito() {
+        return $this->belongsTo(Distrito::class, 'distrito_id', 'id');
+    }
 
 }

@@ -15,12 +15,32 @@ use App\Models\Salones;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
+use App\Models\User;
+use App\Models\AreaSemanaDesactivacion;
+use App\Models\UsuarioJefeArea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
 class AreaController extends Controller
 {
+    function getAreaWithIntegrantes($areas){
+        foreach($areas as $area){
+            $area->hasBoss = false;
+            // $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
+            $integrantesArea = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->get();
+            foreach($integrantesArea as $integrante){
+                if($integrante->jefe_area){
+                    $area->hasBoss = true;
+                    break;
+                }
+            }
+            $colaboradoresAreaCount = $integrantesArea->count();
+            $area->integrantes = $integrantesArea;
+            $area->count_colabs = $colaboradoresAreaCount;
+        }
+        return $areas;
+    }
     /**
      * INDEX
      *
@@ -29,26 +49,37 @@ class AreaController extends Controller
      * @response 200 vista index.blade.php con todas las áreas
      *
      */
-    public function index()
-    {
+    public function index(Request $request){
         $access = FunctionHelperController::verifyAdminAccess();
         if (!$access) {
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
+        $buscar = $request->buscar_area;
+        if($buscar) {
+            $areas = $this->buscarAreas($buscar );
+        } else {
+            //Recuperar todos los registros en áreas
+            $areas = Area::with(['salon', 'ultima_desactivacion'])->paginate(12);
+        }
         // return auth()->user();
-        //Recurar todos los registros en áreas
-        $areas = Area::with('salon')->paginate(12);
+
         $salones = Salones::where('estado', 1)->get();
         $pageData = FunctionHelperController::getPageData($areas);
         $hasPagination = true;
-        foreach ($areas as $area) {
-            $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
-            $area->count_colabs = $colaboradoresAreaCount;
-        }
+        // foreach ($areas as $area) {
+        //     $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
+        //     $area->count_colabs = $colaboradoresAreaCount;
+        // }
+        $areas = $this->getAreaWithIntegrantes($areas);
         $countAreas = Area::where('estado', 1)->count();
         $countColabs = Colaboradores::where('estado', 1)->count();
+        // $desactivacionFechaArea = AreaSemanaDesactivacion::with('area')->orderBy('created_at', 'desc');
+
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
+
+
+
         return view('inspiniaViews.areas.index', [
             'areas' => $areas,
             'hasPagination' => $hasPagination,
@@ -56,6 +87,7 @@ class AreaController extends Controller
             'salones' => $salones,
             'countAreas' => $countAreas,
             'countColabs' => $countColabs,
+            // 'desactivacionFechaArea' => $desactivacionFechaArea
         ]);
     }
 
@@ -70,23 +102,25 @@ class AreaController extends Controller
         // Encontrar el id de los colaboradores del área
         $colaboradoresAreaId = Colaboradores_por_Area::where('estado', true)->where('area_id', $area_id)->pluck('colaborador_id');
         // Encontrar los días de clase de esos colaboradores
-        $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        // $horariosColaboradores = Horario_de_Clases::whereIn('colaborador_id', $colaboradoresAreaId)->get();
+        // return $horariosColaboradores;
         // Obtener todos los Horarios presenciales disponibles
         $horariosPresenciales = Horarios_Presenciales::all();
+        // return $horariosPresenciales;
         // Array para las horas ocupadas de los colaboradores
-        $horasOcupadas = [];
+        // $horasOcupadas = [];
         // Recorrer los horarios de los colaboradores
-        foreach ($horariosColaboradores as $horarioColab) {
-            $dia = $horarioColab->dia;
-            $horaInicial = strtotime($horarioColab->hora_inicial);
-            $horaFinal = strtotime($horarioColab->hora_final);
+        // foreach ($horariosColaboradores as $horarioColab) {
+        //     $dia = $horarioColab->dia;
+        //     $horaInicial = strtotime($horarioColab->hora_inicial);
+        //     $horaFinal = strtotime($horarioColab->hora_final);
 
-            // Por cada hora en el rango, agregar la hora al array de horas ocupadas para ese día
-            for ($hora = $horaInicial; $hora <= $horaFinal; $hora += 3600) {
-                //Agregar key dia y dentro de cada uno las horas que están ocupados durante ese día
-                $horasOcupadas[$dia][] = date('H', $hora);
-            }
-        }
+        //     // Por cada hora en el rango, agregar la hora al array de horas ocupadas para ese día
+        //     for ($hora = $horaInicial; $hora <= $horaFinal; $hora += 3600) {
+        //         //Agregar key dia y dentro de cada uno las horas que están ocupados durante ese día
+        //         $horasOcupadas[$dia][] = date('H', $hora);
+        //     }
+        // }
         // Array para los horarios disponibles
         $horariosDisponibles = [];
         // Recorrer todos los Horarios Presenciales
@@ -104,19 +138,19 @@ class AreaController extends Controller
             // return $rangoHorasPres;
             $disponible = true;
 
-            // Comprobar si alguna de las horas del horario presencial coincide con las horas ocupadas
-            if (isset($horasOcupadas[$diaPres])) {
-                // error_log($diaPres);
-                //Recorrer el rango de horas presenciales
-                foreach ($rangoHorasPres as $hora) {
-                    //Si la hora está dentro de las horas ocupadas del día
-                    if (in_array($hora, $horasOcupadas[$diaPres])) {
-                        //Este horario no estará disponible
-                        $disponible = false;
-                        break;
-                    }
-                }
-            }
+            // // Comprobar si alguna de las horas del horario presencial coincide con las horas ocupadas
+            // if (isset($horasOcupadas[$diaPres])) {
+            //     // error_log($diaPres);
+            //     //Recorrer el rango de horas presenciales
+            //     foreach ($rangoHorasPres as $hora) {
+            //         //Si la hora está dentro de las horas ocupadas del día
+            //         if (in_array($hora, $horasOcupadas[$diaPres])) {
+            //             //Este horario no estará disponible
+            //             $disponible = false;
+            //             break;
+            //         }
+            //     }
+            // }
             //Si disponible es true
             if ($disponible) {
                 //Se agrega el horario disponible al array de horarios disponibles
@@ -331,41 +365,33 @@ class AreaController extends Controller
         //Se inicia la transacción
         DB::beginTransaction();
         try {
-            //Solicitar los datos requeridos
-            // $request->validate([
-            //     'especializacion' => 'required|string|min:1|max:100',
-            //     'descripcion' => 'required|string|min:1|max:255',
-            //     'color_hex' => 'required|string|min:1|max:7',
-            //     'salon_id' => 'required|integer',
-            //     'icono' => 'image'
-            // ]);
 
             $errors = [];
 
             // validacion especializacion
-            if(!isset($request->especializacion)){
+            if (!isset($request->especializacion)) {
                 $errors['especializacion'] = "Este campo es obligatorio.";
-            }else {
-                if(strlen($request->especializacion) > 100){
+            } else {
+                if (strlen($request->especializacion) > 100) {
                     $errors['especializacion'] = "Excede los 100 caracteres.";
                 }
             }
 
             // validacion descripcion
-            if(!isset($request->descripcion)){
+            if (!isset($request->descripcion)) {
                 $errors['descripcion'] = "Este campo es obligatorio.";
-            }else {
-                if(strlen($request->descripcion) > 250){
+            } else {
+                if (strlen($request->descripcion) > 250) {
                     $errors['descripcion'] = "Excede los 250 caracteres.";
                 }
             }
 
             // validacion color_hex
-            if(!isset($request->color_hex)){
+            if (!isset($request->color_hex)) {
                 $errors['color_hex'] = "Este campo es obligatorio.";
             }
 
-            if(!empty($errors)){
+            if (!empty($errors)) {
                 return redirect()->route('areas.index')->withErrors($errors)->withInput();
             }
             //Validar que los datos no esten vacios
@@ -444,47 +470,103 @@ class AreaController extends Controller
         //Se inicia la transacción
         DB::beginTransaction();
         try {
-            //Se raliza la validación de los datos ingresados por el usuario
-            // $request->validate([
-            //     'especializacion' => 'sometimes|string|min:1|max:100',
-            //     'descripcion' => 'sometimes|string|min:1|max:255',
-            //     'color_hex' => 'sometimes|string|min:1|max:7',
-            //     'salon_id' => 'sometimes|integer',
-            //     'icono' => 'sometimes|image',
-            // ]);
-
-            // return $request;
 
             $errors = [];
 
             // validacion especializacion
-            if(!isset($request->especializacion)){
-                $errors['especializacion'.$area_id] = "Este campo es obligatorio.";
-            }else {
-                if(strlen($request->especializacion) > 100){
-                    $errors['especializacion'.$area_id] = "Excede los 100 caracteres.";
+            if (!isset($request->especializacion)) {
+                $errors['especializacion' . $area_id] = "Este campo es obligatorio.";
+            } else {
+                if (strlen($request->especializacion) > 100) {
+                    $errors['especializacion' . $area_id] = "Excede los 100 caracteres.";
                 }
             }
 
             // validacion descripcion
-            if(!isset($request->descripcion)){
-                $errors['descripcion'.$area_id] = "Este campo es obligatorio.";
-            }else {
-                if(strlen($request->descripcion) > 250){
-                    $errors['descripcion'.$area_id] = "Excede los 250 caracteres.";
+            if (!isset($request->descripcion)) {
+                $errors['descripcion' . $area_id] = "Este campo es obligatorio.";
+            } else {
+                if (strlen($request->descripcion) > 250) {
+                    $errors['descripcion' . $area_id] = "Excede los 250 caracteres.";
                 }
             }
 
             // validacion descripcion
-            if(!isset($request->color_hex)){
-                $errors['color_hex'.$area_id] = "Este campo es obligatorio.";
+            if (!isset($request->color_hex)) {
+                $errors['color_hex' . $area_id] = "Este campo es obligatorio.";
             }
 
-            if(!empty($errors)){
+            if (!empty($errors)) {
                 return redirect()->route('areas.index')->withErrors($errors)->withInput();
             }
+
+
             //Se busca el área por el id ingresado como parámetro
             $area = Area::findOrFail($area_id);
+
+            if ($request->has('jefe_area_id')) {
+                $jefeArea = Colaboradores_por_Area::where('area_id', $area->id)->where('jefe_area', 1)->first();
+
+                if ($jefeArea) {
+                    $previousUser = User::where('email', $jefeArea->colaborador->candidato->correo)->first();
+                    if ($previousUser) {
+                        UsuarioJefeArea::where('user_id', $previousUser->id)
+                            ->where('area_id', $area->id)
+                            ->delete();
+                    }
+
+                    if (isset($request->jefe_area_id) && $request->jefe_area_id != 0) {
+                        if ($request->jefe_area_id != $jefeArea->id) {
+                            // 3. Reasignar el nuevo jefe
+                            $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
+                            if ($newJefeArea && $newJefeArea->estado == 1) {
+                                $newJefeArea->update(["jefe_area" => 1]);
+
+                                $candidato = $newJefeArea->colaborador->candidato;
+                                if ($candidato && $candidato->correo) {
+                                    $user = User::where('email', $candidato->correo)->first();
+                                    if ($user) {
+                                        UsuarioJefeArea::updateOrCreate(
+                                            ['user_id' => $user->id, 'area_id' => $area->id],
+                                            ['estado' => 1] // Activo
+                                        );
+                                    }
+                                }
+                            }
+                            $jefeArea->update(["jefe_area" => 0]);
+                        } else {
+                            if ($previousUser) {
+                                UsuarioJefeArea::updateOrCreate(
+                                    ['user_id' => $previousUser->id, 'area_id' => $area->id],
+                                    ['estado' => 1] // Activo
+                                );
+                            }
+                        }
+                    } else {
+                        $jefeArea->update(["jefe_area" => 0]);
+                    }
+                } else {
+                    if (isset($request->jefe_area_id) && $request->jefe_area_id != 0) {
+                        $newJefeArea = Colaboradores_por_Area::findOrFail($request->jefe_area_id);
+                        if ($newJefeArea && $newJefeArea->estado == 1) {
+                            $newJefeArea->update(["jefe_area" => 1]);
+
+                            $candidato = $newJefeArea->colaborador->candidato;
+                            if ($candidato && $candidato->correo) {
+                                $user = User::where('email', $candidato->correo)->first();
+                                if ($user) {
+                                    // Registrar al nuevo jefe en usuario_jefe_areas
+                                    UsuarioJefeArea::updateOrCreate(
+                                        ['user_id' => $user->id, 'area_id' => $area->id],
+                                        ['estado' => 1] // Activo
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             //Se asignan los valores ingresados por el usuario a las variables correspondientes, si no se ingresó nada se asigna el valor actual de la base de datos
             $especializacion = !$request->especializacion ? $area->especializacion : $request->especializacion;
             $descripcion = !$request->descripcion ? $area->descripcion : $request->descripcion;
@@ -502,8 +584,10 @@ class AreaController extends Controller
                 //Si existe buscamos la ruta publica
                 $rutaPublica = public_path('storage/areas');
                 //Si existe la imagen y no es la imagen por defecto, se elimina la imagen anterior
-                if ($area->icono && $area->icono !== 'default.png') {
-                    unlink($rutaPublica . '/' . $area->icono);
+                if ($area->icono) {
+                    if($area->icono != 'Default.png'){
+                        unlink($rutaPublica . '/' . $area->icono);
+                    }
                 }
                 //Se obtiene la imagen ingresada por el usuario
                 $icono = $request->file('icono');
@@ -525,6 +609,7 @@ class AreaController extends Controller
                 return redirect()->route('areas.index');
             }
         } catch (Exception $e) {
+            // return $e;
             //Si ocurre algún error
             //Se revierte la transacción
             DB::rollBack();
@@ -537,18 +622,6 @@ class AreaController extends Controller
             // return response()->json(["message" => "Hubo un error", "error" => $e->getMessage()]);
         }
     }
-
-
-
-    // public function destroy($area_id)
-    // {
-    //     $area = Area::findOrFail($area_id);
-
-    //     $area->delete();
-
-    //     return redirect()->route('areas.index');
-    // }
-
 
     public function activarInactivar(Request $request, $area_id)
     {
@@ -567,6 +640,7 @@ class AreaController extends Controller
 
             if ($area->estado == 0) {
                 $colaboradoresArea = Colaboradores_por_Area::where('estado', 1)->where('area_id', $area_id)->get();
+                AreaController::removeJefeArea($area_id);
                 // Por cada registro encontrado
                 foreach ($colaboradoresArea as $colaboradorArea) {
                     //Se inactiva su estado
@@ -621,11 +695,11 @@ class AreaController extends Controller
 
     public function showArea($area_id)
     {
-        $access = FunctionHelperController::verifyAreaAccess($area_id);
+        // $access = FunctionHelperController::verifyAreaAccess($area_id);
 
-        if(!$access){
-            return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para visualizar esa area. No lo intente denuevo o puede ser baneado.');
-        }
+        // if (!$access) {
+        //     return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para visualizar esa area. No lo intente denuevo o puede ser baneado.');
+        // }
 
         $area = Area::findOrFail($area_id);
         if ($area) {
@@ -658,4 +732,126 @@ class AreaController extends Controller
 
     }
 
+    public static function removeJefeArea($area_id){
+        //Buscar al jefe de area
+        $jefe_area = Colaboradores_por_Area::where('area_id', $area_id)->where('jefe_area', 1)->first();
+        //Si existe se le quita el puesto de jefe
+        if($jefe_area){
+            $jefe_area->update(["jefe_area" => 0]);
+        }
+
+    }
+
+    // public function desactivarEvaluaciones(Request $request, $area_id) {
+    //     $access = FunctionHelperController::verifyAdminAccess();
+    //     if (!$access) {
+    //         return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+    //     }
+
+    //     $fecha_inicio = $request->fecha_inicio;
+    //     $fecha_fin = $request->fecha_fin;
+
+    //     $area = Area::findOrFail($area_id);
+
+    //     DB::beginTransaction();
+    //     try {
+
+    //         AreaSemanaDesactivacion::create([
+    //             'area_id' => $area_id,
+    //             'fecha_inicio' => $fecha_inicio,
+    //             'fecha_fin' => $fecha_fin
+    //         ]);
+
+    //         DB::commit();
+    //         return redirect()->route('areas.index')->with('success','Evaluaciones desactivadas con éxito.');
+
+    //     } catch (Exception $e) {
+
+    //         DB::rollBack();
+    //         return redirect()->route('areas.index')->with('error','Ocurrió un error. Vuélvelo a intentarlo más tarde.');
+
+    //     }
+    // }
+
+    // public function updateDesactivacion(Request $request, $area_id) {
+
+    //     $access = FunctionHelperController::verifyAdminAccess();
+    //     if (!$access) {
+    //         return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+    //     }
+
+    //     $area = Area::findOrFail($area_id);
+
+    //     $fecha_inicio = $request->fecha_inicio;
+    //     $fecha_fin = $request->fecha_fin;
+
+    //     try {
+
+    //         $area->update([
+    //             'fecha_inicio' => $fecha_inicio,
+    //             'fecha_fin' => $fecha_fin
+    //         ]);
+
+    //         DB::commit();
+    //         return redirect()->route('areas.index')->with('success','Evaluaciones desactivadas con éxito.');
+
+    //     } catch (Exception $e) {
+
+    //         DB::rollBack();
+    //         return redirect()->route('areas.index')->with('error','Ocurrió un error. Vuélvelo a intentarlo más tarde.');
+
+    //     }
+
+
+    public function updateDesactivacion(Request $request, $area_id) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        $fecha_inicio = $request->fecha_inicio;
+        $fecha_fin = $request->fecha_fin;
+
+        DB::beginTransaction();
+        try {
+
+            // $desactivacion = AreaSemanaDesactivacion::where('area_id', $area_id)->first();
+
+            AreaSemanaDesactivacion::create([
+                'area_id' => $area_id,
+                'fecha_inicio' => $fecha_inicio,
+                'fecha_fin' => $fecha_fin
+            ]);
+
+            DB::commit();
+            return redirect()->route('areas.index')->with('success','Evaluaciones desactivadas hasta el: '.$fecha_fin);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->route('areas.index')->with('error','Ocurrió un error. Vuélvelo a intentarlo más tarde.');
+        }
+    }
+
+    public function buscarAreas($busqueda) {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if (!$access) {
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
+
+        if($busqueda) {
+            $areas = Area::where('especializacion', 'LIKE', '%' . $busqueda . '%')
+                    ->with(['salon', 'ultima_desactivacion'])
+                    ->orderBy('especializacion', 'asc')
+                    ->paginate(12);
+        } else {
+            $areas = Area::with(['salon', 'ultima_desactivacion'])
+                    ->orderBy('especializacion', 'asc')
+                    ->paginate(12);
+        }
+
+        return $areas;
+    }
+
 }
+
+

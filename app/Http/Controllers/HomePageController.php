@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Colaboradores;
 use App\Models\Colaboradores_por_Area;
 use App\Models\Cumplio_Responsabilidad_Semanal;
 use App\Models\Horario_Presencial_Asignado;
@@ -14,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\UsuarioAdministrador;
 use App\Models\UsuarioJefeArea;
+use Illuminate\Support\Facades\DB;
 
 class HomePageController extends Controller
 {
@@ -21,15 +23,20 @@ class HomePageController extends Controller
 
         $userData = FunctionHelperController::getUserRol();
         $returning = [];
-        
+
+        // $returning['selectedAreasColab'] = [];
+
         if($userData['isAdmin']){
             $areasProm = $this->getMonthPromAreas();
             $reunionesProgramadas = $this->getTodayProgramReu();
             $areas = $this->getAreasToday();
+            $asistencia = $this->getAsistenciaMesAnterior();
 
             $returning['areasProm'] = $areasProm;
             $returning['reunionesProgramadas'] = $reunionesProgramadas;
             $returning['areas'] = $areas;
+            $returning['asistencia'] = $asistencia;
+            // return $asistencia;
         }
 
         if($userData['isBoss']){
@@ -42,29 +49,151 @@ class HomePageController extends Controller
 
             $returning['selectedAreas'] = $selectedAreas;
         }
+
+        if ($userData['isColab'] && isset($userData['colabsArea']) && $userData['colabsArea']) {
+            $areasColabId = is_array($userData['colabsArea']) ? collect($userData['colabsArea'])->pluck('area_id') : collect([$userData['colabsArea']->area_id]);
+
+            $selectedAreasColab = Area::whereIn('id', $areasColabId)
+                ->withCount(['colaborador_por_area' => function ($query) {
+                    $query->where('estado', 1);
+                }])
+                ->get();
+
+            $returning['selectedAreasColab'] = $selectedAreasColab;
+        }
         // return $returning;
         return view('dashboard', $returning);
     }
 
-    function getMonthPromAreas(){
+    public function getAsistenciaMesAnterior() {
+        $inicioMesAnterior = Carbon::today()->subMonth()->startOfMonth()->toDateString();
+        $finMesAnterior = Carbon::today()->subMonth()->endOfMonth()->toDateString();
+
+        $semanasDelMesAnterior = Semanas::whereBetween('fecha_lunes', [$inicioMesAnterior, $finMesAnterior])
+                              ->orWhere(function($query) use ($inicioMesAnterior, $finMesAnterior) {
+                                  $query->where('fecha_lunes', '<', $inicioMesAnterior)
+                                        ->where(DB::raw('DATE_ADD(fecha_lunes, INTERVAL 6 DAY)'), '>=', $inicioMesAnterior);
+                              })
+                              ->get();
+
+        if ($semanasDelMesAnterior->isEmpty()) {
+            return [
+                'asistieron' => 0,
+                'faltaron' => 0,
+                'faltantes' => [],
+                'mes' => Carbon::today()->subMonth()->format('Y-m')
+            ];
+        }
+
+        $idsSemanasDelMesAnterior = $semanasDelMesAnterior->pluck('id')->toArray();
+
+        $responsabilidadAsistencia = Responsabilidades_semanales::where('nombre', 'Asistencia diaria')->first();
+        $responsabilidadJustificacion = Responsabilidades_semanales::where('nombre', 'Faltas Justificadas')->first();
+
+        if (!$responsabilidadAsistencia) {
+            return [
+                'asistieron' => 0,
+                'faltaron' => 0,
+                'faltantes' => [],
+                'mes' => Carbon::today()->subMonth()->format('Y-m')
+            ];
+        }
+
+        $colaboradoresActivos = Colaboradores_por_Area::where('estado', 1)->get();
+        $idsColaboradoresActivos = $colaboradoresActivos->pluck('id')->toArray();
+
+        $registrosAsistencia = Cumplio_Responsabilidad_Semanal::where('responsabilidad_id', $responsabilidadAsistencia->id)
+                                ->whereIn('semana_id', $idsSemanasDelMesAnterior)
+                                ->whereIn('colaborador_area_id', $idsColaboradoresActivos)
+                                ->get();
+
+        $registrosJustificacion = [];
+        if ($responsabilidadJustificacion) {
+            $registrosJustificacion = Cumplio_Responsabilidad_Semanal::where('responsabilidad_id', $responsabilidadJustificacion->id)
+                                    ->whereIn('semana_id', $idsSemanasDelMesAnterior)
+                                    ->whereIn('colaborador_area_id', $idsColaboradoresActivos)
+                                    ->get();
+        }
+
+        $idsColaboradoresAsistieron = $registrosAsistencia->where('cumplio', 1)
+                                                         ->pluck('colaborador_area_id')
+                                                         ->unique()
+                                                         ->count();
+
+        $faltasPorColaborador = [];
+        $idsColaboradoresFaltaron = [];
+
+        foreach ($idsColaboradoresActivos as $colaboradorId) {
+            $ausenciasReales = 0;
+
+            foreach ($idsSemanasDelMesAnterior as $semanaId) {
+                $registroAsistencia = $registrosAsistencia->where('colaborador_area_id', $colaboradorId)
+                                                         ->where('semana_id', $semanaId)
+                                                         ->first();
+
+                $registroJustificacion = $registrosJustificacion->where('colaborador_area_id', $colaboradorId)
+                                                              ->where('semana_id', $semanaId)
+                                                              ->first();
+
+                if ($registroAsistencia && $registroAsistencia->cumplio == 0) {
+                    if (!$registroJustificacion || $registroJustificacion->cumplio == 0) {
+                        $ausenciasReales++;
+                    }
+                }
+            }
+
+            if ($ausenciasReales > 0) {
+                $idsColaboradoresFaltaron[] = $colaboradorId;
+
+                $colaboradorArea = $colaboradoresActivos->where('id', $colaboradorId)->first();
+                if ($colaboradorArea) {
+                    $colaborador = Colaboradores::with('candidato')->find($colaboradorArea->colaborador_id);
+                    if ($colaborador && $colaborador->candidato) {
+                        $area = Area::find($colaboradorArea->area_id);
+                        $faltasPorColaborador[] = [
+                            'id' => $colaborador->id,
+                            'nombre' => $colaborador->candidato->nombre . ' ' . $colaborador->candidato->apellido,
+                            'area' => $area ? ($area->especializacion ?? 'Sin área') : 'Sin área',
+                            'estado' => 'Ausente',
+                            'veces_faltadas' => $ausenciasReales
+                        ];
+                    }
+                }
+            }
+        }
+
+        $colaboradoresFaltaron = count(array_unique($idsColaboradoresFaltaron));
+
+        usort($faltasPorColaborador, function($a, $b) {
+            return $b['veces_faltadas'] - $a['veces_faltadas'];
+        });
+
+        return [
+            'asistieron' => $idsColaboradoresAsistieron,
+            'faltaron' => $colaboradoresFaltaron,
+            'faltantes' => $faltasPorColaborador,
+            'mes' => Carbon::today()->subMonth()->format('Y-m')
+        ];
+    }
+
+
+    function getMonthPromAreas() {
         $areas = Area::where('estado', 1)->get();
         $responsabilidades = Responsabilidades_semanales::get();
         $today = Carbon::now()->format('Y-m-d');
-        //verifica que no nos encontremos en la primera semana del mes
-        //si estamos en la primera semana de
+
         $mes = date('m', strtotime($today));
         $year = date('Y', strtotime($today));
         $thisWeek = FunctionHelperController::findThisWeek();
+
         if($thisWeek){
             $semanaPasada = Semanas::where('id', $thisWeek->id-1)->first();
-            //  $semanaPasada;
             if($semanaPasada){
                 $fecha = $semanaPasada->fecha_lunes;
                 $mesSemanaPasada = date('m', strtotime($fecha));
                 $yearSemanaPasada = date('Y', strtotime($fecha));
-                //verificar si son del mismo año
+
                 if($yearSemanaPasada == $year){
-                    //verificar si son del mismo mes
                     if($mesSemanaPasada != $mes){
                         $mes = $mesSemanaPasada;
                     }
@@ -74,7 +203,7 @@ class HomePageController extends Controller
                 }
             }
         }
-        
+
         $Meses = FunctionHelperController::getMonths();
         $semanasTotales = Semanas::get();
 
@@ -91,20 +220,27 @@ class HomePageController extends Controller
                 }
             }
         }
-        
+
         $totalSemanas = count($semanasMes);
         $areasProm = [];
+
         foreach ($areas as $area) {
             $area_id = $area->id;
             $colaboradoresMes = [];
+
             foreach ($semanasMes as $semana) {
-                $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)->where('semana_inicio_id', '<=', $semana->id)->with('colaborador', 'semana')->get();
+                $colaboradoresArea = Colaboradores_por_Area::where('area_id', $area_id)
+                    ->where('semana_inicio_id', '<=', $semana->id)
+                    ->with('colaborador', 'semana')
+                    ->get();
+
                 $colaboradoresAreaId = $colaboradoresArea->pluck('id');
                 $colaboradoresActivosId = [];
-                $countColabsActivos = 0;
+
                 foreach($colaboradoresAreaId as $colabAreaId){
                     $inactividades = RegistroActividadController::obtenerInactividad($colabAreaId);
                     $activo = true;
+
                     foreach($inactividades as $inactividad){
                         $semanasInactivas = $inactividad['semanas'];
                         foreach($semanasInactivas as $semanaInactiva){
@@ -114,18 +250,19 @@ class HomePageController extends Controller
                             }
                         }
                     }
-                    // Si el colaborador está activo, añadirlo al array temporal
+
                     if ($activo === true) {
                         $colaboradoresActivosId[] = $colabAreaId;
-                        $countColabsActivos++;
                     }
                 }
+
                 $colaboradoresActivosToAdd = Colaboradores_por_Area::whereIn('id', $colaboradoresActivosId)->get();
-                
+
                 foreach ($colaboradoresActivosToAdd as $colaboradorActivoToAdd) {
-                    $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)->where("colaborador_area_id", $colaboradorActivoToAdd->id)->first();
-                    // return $semanaCumplida;
-                    // Verificar si el colaborador ya está en $colaboradoresMes
+                    $semanaCumplida = Cumplio_Responsabilidad_Semanal::where("semana_id", $semana->id)
+                        ->where("colaborador_area_id", $colaboradorActivoToAdd->id)
+                        ->first();
+
                     if($semanaCumplida){
                         $existe = false;
                         foreach ($colaboradoresMes as &$colaboradorMes) {
@@ -136,8 +273,7 @@ class HomePageController extends Controller
                                 break;
                             }
                         }
-                        
-                        // Si el colaborador no está en $colaboradoresMes, agregarlo
+
                         if (!$existe) {
                             $candidato = $colaboradorActivoToAdd->colaborador->candidato;
                             $colaboradoresMes[] = [
@@ -151,25 +287,23 @@ class HomePageController extends Controller
                     }
                 }
             }
-            // if(count($colaboradoresMes) > 0){
-            //     return $colaboradoresMes;
-            // }
-            // Obtener la suma de sus notas
+
+            // Calcular notas por responsabilidad
             foreach ($colaboradoresMes as $index => &$colaboradorMes) {
-                // Inicializar sumNotes con todas las responsabilidades en 0
                 $sumNotes = [];
                 foreach ($responsabilidades as $responsabilidad) {
                     $nombreResponsabilidad = $responsabilidad->nombre;
                     $sumNotes[$nombreResponsabilidad] = 0;
                 }
+
                 foreach ($colaboradorMes['semanas'] as $semanaId) {
                     $registrosCumplidosSemana = Cumplio_Responsabilidad_Semanal::where('semana_id', $semanaId)
                         ->where('colaborador_area_id', $colaboradorMes['id'])
                         ->get();
-                    
+
                     foreach ($registrosCumplidosSemana as $registro) {
                         $valorCumplio = $registro->cumplio == 1 ? 20 : 0;
-                        
+
                         foreach($responsabilidades as $responsabilidad){
                             if($responsabilidad->id == $registro->responsabilidad_id) {
                                 $nombreResponsabilidad = $responsabilidad->nombre;
@@ -178,46 +312,57 @@ class HomePageController extends Controller
                         }
                     }
                 }
-                // Agregar el array $sumNotes al array $colaboradorMes['sumNotas']
                 $colaboradorMes['sumNotas'] = $sumNotes;
             }
-            unset($colaboradorMes); // Unset the reference
-    
-            // return $colaboradoresMes;
-            
-            //Dividir la suma maxima de las notas por la cantidad de semanas para obtener el promedio de cada responsabilidad
+            unset($colaboradorMes);
+
+            // Calcular promedios normalizados
             foreach ($colaboradoresMes as $index => $colaboradorMes) {
-                // Inicializar promNotes con todas las responsabilidades en 0
                 $semanasCount = $colaboradoresMes[$index]['semanasCount'];
                 $PromNotas = [];
+
                 foreach (array_keys($colaboradoresMes[$index]['sumNotas']) as $responsabilidad) {
-                    $PromNotas[$responsabilidad] = number_format(($colaboradoresMes[$index]['sumNotas'][$responsabilidad]) / $semanasCount, 1);
+                    // Normalizar para que no exceda 20
+                    $promedioNormalizado = min(
+                        20,
+                        ($colaboradoresMes[$index]['sumNotas'][$responsabilidad]) / $semanasCount
+                    );
+                    $PromNotas[$responsabilidad] = number_format($promedioNormalizado, 1);
                 }
+
                 $colaboradoresMes[$index]['promedio'] = $PromNotas;
-                //Total suma de todas las responsabilidades entre el conteo de estas para obtener el promedio general del colaborador en el mes
-                $colaboradoresMes[$index]['total'] = number_format((array_sum($PromNotas))/$responsabilidades->count(),1);
-                
+
+                // Calcular total normalizado
+                $totalPromedio = number_format(
+                    (array_sum($PromNotas)) / $responsabilidades->count(),
+                    1
+                );
+                $colaboradoresMes[$index]['total'] = min(20, $totalPromedio);
             }
+
+            // Calcular promedio del área
             if(count($colaboradoresMes) > 0){
                 $areaTotal = 0;
-                $areaProm = 0;
-                foreach($colaboradoresMes as $index => $colaboradorMes){
-                    $areaTotal += $colaboradoresMes[$index]['total'];
+                foreach($colaboradoresMes as $colaboradorMes){
+                    $areaTotal += $colaboradorMes['total'];
                 }
-                $areaProm = number_format($areaTotal / count($colaboradoresMes), 0);
+
+                $areaProm = number_format(
+                    $areaTotal / count($colaboradoresMes),
+                    0
+                );
+
                 $areasProm[] = [
                     "area" => $area,
-                    "promedio" => $areaProm
+                    "promedio" => min(20, $areaProm)
                 ];
             }
-            // return $areaProm;
-
-            // if(count($colaboradoresMes) > 0){
-            //     return $colaboradoresMes;
-            // }
         }
+
         return $areasProm;
     }
+
+
 
     function getTodayProgramReu(){
         $today = Carbon::now()->format('Y-m-d');
@@ -231,7 +376,7 @@ class HomePageController extends Controller
             $day = date('d', strtotime($horario->fecha));
 
             $month = $month -1;
-    
+
             $horariosFormateados = [
                 'hora_inicial' => $horaInicial,
                 'hora_final' => $horaFinal,
@@ -248,15 +393,15 @@ class HomePageController extends Controller
     function getAreasToday(){
         $dia_today = Carbon::now()->format('l');
         $dias = [
-            "Monday" => "Lunes", 
-            "Tuesday" => "Martes", 
-            "Wednesday" => "Miércoles", 
-            "Thursday" => "Jueves", 
-            "Friday" => "Viernes", 
-            "Saturday" => "Sábado", 
+            "Monday" => "Lunes",
+            "Tuesday" => "Martes",
+            "Wednesday" => "Miércoles",
+            "Thursday" => "Jueves",
+            "Friday" => "Viernes",
+            "Saturday" => "Sábado",
             "Sunday" => "Domingo"
         ];
-        
+
         $dia_español = $dias[$dia_today];
         $horariosToday = Horarios_Presenciales::where('dia', $dia_español)->get();
         $horariosAreasToday = Horario_Presencial_Asignado::with('area', 'horario_presencial')->whereIn('horario_presencial_id', $horariosToday->pluck('id'))->get();
@@ -265,7 +410,7 @@ class HomePageController extends Controller
             if($horario->area->estado == 1){
                 $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
                 $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
-                $areasToday[] = 
+                $areasToday[] =
                     [
                         'especializacion' => $horario->area->especializacion,
                         'color' => $horario->area->color_hex,
@@ -275,7 +420,7 @@ class HomePageController extends Controller
                     ];
             }
         }
-        
+
         return $areasToday;
     }
 

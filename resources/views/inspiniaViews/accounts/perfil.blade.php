@@ -16,7 +16,7 @@
                 <h2>Perfil</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Perfil</strong>
@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-10 offset-sm-2">
-                                        <button id="btnUpdatePassword" type="submit" class="btn btn-primary" disabled>Actualizar Contraseña</button>
+                                        <button id="btnUpdatePassword" type="submit" class="btn btn-primary">Actualizar Contraseña</button>
                                     </div>
                                 </div>
                             </form>

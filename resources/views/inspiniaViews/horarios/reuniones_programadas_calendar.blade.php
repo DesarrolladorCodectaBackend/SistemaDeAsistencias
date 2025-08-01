@@ -16,6 +16,9 @@
             <div class="col-lg-10">
                 <h2>Reuniones Programadas</h2>
                 <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{route('dashboard')}}">Inicio</a>
+                    </li>
                     <li class="breadcrumb-item active">
                         <strong>Reuniones Programadas</strong>
                     </li>

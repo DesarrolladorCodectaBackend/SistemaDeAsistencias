@@ -147,6 +147,10 @@ class Computadora_colaboradorController extends Controller
 
     public function destroy($computadora_colaborador_id)
     {
+        $access = FunctionHelperController::verifyAdminAccess();
+        if(!$access){
+            return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
+        }
         $computadora_colaborador = Computadora_colaborador::findOrFail($computadora_colaborador_id);
 
         $computadora_colaborador->delete();

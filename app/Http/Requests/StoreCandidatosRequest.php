@@ -54,7 +54,12 @@ class StoreCandidatosRequest extends FormRequest
                 'max:9',
                 'nullable',
                 Rule::unique('candidatos')->ignore($this->route('candidatos'))
-                ]
+            ],
+                'id_senati' => [
+                    'sometimes',
+                    'nullable',
+                    Rule::unique('candidatos')->ignore($this->route('candidatos'))
+                ],
         ];
     }
 
@@ -66,6 +71,7 @@ class StoreCandidatosRequest extends FormRequest
             'correo.unique' => 'Error. Correo en uso',
             'celular.unique' => 'Error. Nro.celular en uso',
             'celular.max' => 'El celular debe contener 9 números',
+            'id_senati' => 'Campo en uso',
             'dni.max' => 'El DNI debe contener 8 números',
             'min' => 'Debe contener más de 1 letra.',
             'max' => 'excedió limite permitido de caracteres.',

@@ -13,7 +13,8 @@ class Colaboradores_por_Area extends Model
         'colaborador_id',
         'area_id',
         'semana_inicio_id',
-        'estado'
+        'estado',
+        'jefe_area'
     ];
 
     

@@ -27,4 +27,11 @@ class Area extends Model
         return $this->belongsTo(Salones::class,'salon_id','id');
     }
 
+    public function area_semana_desactivacion(){
+        return $this->hasMany(AreaSemanaDesactivacion::class, 'area_id', 'id');
+    }
+
+    public function ultima_desactivacion() {
+        return $this->hasOne(AreaSemanaDesactivacion::class, 'area_id', 'id')->latest('created_at');
+    }
 }

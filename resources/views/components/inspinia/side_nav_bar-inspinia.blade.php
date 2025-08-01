@@ -4,7 +4,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.css') }}">
-
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="{{ asset('css/plugins/switchery/switchery.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     <link href="{{asset('css/plugins/select2/select2.min.css') }}" rel="stylesheet">
@@ -16,6 +16,8 @@
     <link href="{{ asset('css/plugins/chartist/chartist.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/inspinia.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
 
@@ -26,8 +28,9 @@
     $userData = FunctionHelperController::getUserRol();
     $user = $userData['user'];
     $rol = '';
-    if($userData['isBoss']) $rol = 'Jefe de Área';
     if($userData['isAdmin']) $rol = 'Administrador';
+    if($userData['isColab']) $rol = 'Colaborador';
+    if($userData['isBoss']) $rol = 'Jefe de Área';
 @endphp
 
 
@@ -46,9 +49,14 @@
                         @if($userData['isAdmin'])
                         <li><a class="dropdown-item" href="{{route('accounts.index')}}">Administrar Cuentas</a></li>
                         @endif
+                        @if($userData['isColab'])
+                            <li><a class="dropdown-item" href="{{ route('colaboradorEdit.edit', session('colaborador_id')) }}">Editar datos</a></li>
+                        @endif
+
+
                         <li class="dropdown-divider"></li>
                         <li><a class="dropdown-item"
-                                onclick="document.getElementById('logoutForm').submit();">Cerrar Sesión</a></li>
+                            href="javascript:void(0);" onclick="confirmLogout();">Cerrar Sesión</a></li>
                     </ul>
                 </div>
                 <div class="logo-element">
@@ -56,67 +64,85 @@
                 </div>
             </li>
             <li>
-                <a href="/dashboard"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span></a>
+                <a href="{{route('dashboard')}}"><i class="fa fa-th-large"></i> <span class="nav-label">Inicio</span></a>
             </li>
             @if($userData['isAdmin'])
-            <li>
-                <a href="/horarioGeneral"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
-                        Generales</span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="/horarioGeneral">Presencial</a></li>
-                    <li><a href="/ReunionesAreas">Reuniones Áreas</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="/ReunionesProgramadas"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu.
-                        Programadas</span></a>
-            </li>
-            <li>
-                <a href="/Reportes"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
-            </li>
-            <li id="personalCont">
-                <a href=""><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse">
-                    <li id="candidatos">
-                        <a href="/candidatos">Candidatos</a>
-                    </li>
-                    <li id="colaboradores">
-                        <a href="/colaboradores">Colaboradores</a>
-                    </li>
-                </ul>
+                <li>
+                    <a href="#"><i class="fa fa-clock-o"></i> <span class="nav-label">Horarios
+                            Generales</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="{{route('horarios.getHorarioGeneral')}}">Presencial</a></li>
+                        <li><a href="{{route('reuniones.getAll')}}">Reuniones Áreas</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{route('reunionesProgramadas.allReu')}}"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu.
+                            Programadas</span></a>
+                </li>
+                <li>
+                    <a href="{{route('reportes.index')}}"><i class="fa fa-book"></i> <span class="nav-label">Reportes</span></a>
+                </li>
+                <li id="personalCont">
+                    <a href="#"><i class="fa fa-group"></i> <span class="nav-label">Personal</span><span
+                            class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                        <li id="candidatos">
+                            <a href="{{route('candidatos.index')}}">Candidatos</a>
+                        </li>
+                        <li id="colaboradores">
+                            <a href="{{route('colaboradores.index')}}">Colaboradores</a>
+                        </li>
+                        <li>
+                            <a href="{{route('caja.index')}}">Caja Chica</a>
+                        </li>
+                    </ul>
 
-            </li>
-            <li id="areas">
-                <a href="/areas"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
-            </li>
+                </li>
+                <li id="areas">
+                    <a href="{{route('areas.index')}}"><i class="fa fa-tags"></i> <span class="nav-label">Áreas</span></a>
+                </li>
             @endif
+
             @if($userData['isAdmin'] || $userData['isBoss'])
-            <li>
-                <a href="/responsabilidades"><i class="fa fa-list-alt"></i> <span
-                        class="nav-label">Responsabilidades</span></a>
-            </li>
+                <li>
+                    <a href="{{route('responsabilidades.index')}}"><i class="fa fa-list-alt"></i> <span
+                            class="nav-label">Responsabilidades</span></a>
+                </li>
             @endif
+
+            @if($userData['isColab'] || $userData['isBoss'])
+                <li>
+                    <a href="{{ route('bibliotecaColab.index') }}"><i class="fa fa-list-alt"></i> <span
+                            class="nav-label">Biblioteca</span></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-list-alt"></i> <span
+                            class="nav-label">Horarios</span></a>
+                </li>
+            @endif
+
             @if($userData['isAdmin'])
-            <li id="maquinas">
-                <a href="/maquinas"><i class="fa fa-desktop"></i> <span class="nav-label">Maquinas</span></a>
-            </li>
-            <li id="salones">
-                <a href="/salones"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
-            </li>
-            <li id="ajustes">
-                <a href="/ajustes"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
-            </li>
+                <li id="maquinas">
+                    <a href="{{route('maquinas.index')}}"><i class="fa fa-desktop"></i> <span class="nav-label">Máquinas</span></a>
+                </li>
+                <li id="salones">
+                    <a href="{{route('salones.index')}}"><i class="fa fa-address-card-o"></i> <span class="nav-label">Salones</span></a>
+                </li>
+                <li id="ajustes">
+                    <a href="{{route('ajustes.index')}}"><i class="fa fa-cog"></i> <span class="nav-label">Ajustes</span></a>
+                </li>
             @endif
+
             <li>
-                <form id="logoutForm" method="POST" action="http://127.0.0.1:8000/logout">
+                <form id="logoutForm" method="POST" action="{{ route('logout') }}">
                     @csrf
                 </form>
 
-                <a onclick="document.getElementById('logoutForm').submit();">
+                <a href="javascript:void(0);" onclick="confirmLogout();">
                     <i class="fa fa-sign-out"></i>
                     <span class="nav-label">Cerrar Sesión</span>
                 </a>
+
             </li>
         </ul>
 
@@ -132,10 +158,28 @@
 
             </div>
             <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a href="{{ route('cumplecolabs.index') }}">
+                        <i class='bx bxs-cake' style="font-size: 25px"></i>
+                            <span id="notificationsCountBirthdayBContainer" class="label label-primary badge-cumple" ></span>
+
+                    </a>
+
+                    <style>
+                        .badge-cumple {
+position: absolute;
+top: 13px; /* Ajusta la posición arriba */
+right: 176px;
+width: 5px
+line-height: 1;
+}
+                    </style>
+                </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                         <i style="font-size: 20px" class="fa fa-bell "></i>
                         <span id="notificationsCountContainer" class="label label-primary" hidden>8</span>
+
                     </a>
                     <ul id="notificationsContainer" class="dropdown-menu dropdown-alerts max-height-scrollable">
 
@@ -145,7 +189,7 @@
 
                 <li>
 
-                    <a onclick="document.getElementById('logoutForm').submit();">
+                    <a href="javascript:void(0);" onclick="confirmLogout();">
                         <i class="fa fa-sign-out"></i>Cerrar Sesión
                     </a>
 
@@ -154,15 +198,17 @@
 
         </nav>
     </div>
-    @if($userData['isAdmin'])
-        @include('components.chatbot.chatbot')
-    @endif
+    {{-- @if($userData['isAdmin'])
+        @include('components.chatbot.chatbot') //Agregar el componente de chatbot si es creado
+    @endif --}}
     @if($user['estado'] == 0)
         <script>
             console.log('baneado');
             document.getElementById('logoutForm').submit();
         </script>
     @endif
+    <label id="notificationRoute" hidden>{{route('notificaciones')}}</label>
+    <label id="userToken" hidden>{{json_encode(session('api_token'))}}</label>
     <style>
         .max-height-scrollable {
             max-height: 300px;
@@ -170,6 +216,40 @@
         }
     </style>
 
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: "¿Estás seguro de que deseas cerrar sesión?",
+        text: "Puedes iniciar sesión nuevamente en cualquier momento.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Cerrar sesión",
+        cancelButtonText: "Cancelar",
+        customClass: {
+            popup: 'swal-center-popup',
+            title: 'swal-center-title',
+            content: 'swal2-center-html-container',
+            confirmButton: 'swal-center-confirm-button',
+            cancelButton: 'swal-center-cancel-button'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logoutForm').submit();
+        } else {
+            Swal.fire({
+                title: "Acción cancelada",
+                icon: "info",
+                customClass: {
+                    popup: 'swal-center-popup',
+                    title: 'swal-center-title',
+                    content: 'swal2-html-container'
+                }
+            });
+        }
+    });
+}
+
+</script>
 
     <!-- Mainly scripts -->
     <script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
@@ -197,7 +277,7 @@
     <!-- Full Calendar -->
     <script src="{{ asset('js/plugins/fullcalendar/moment.min.js') }}"></script>
     <script src="{{ asset('js/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
-
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <!-- Select2 -->
     <script src="{{asset('js/plugins/select2/select2.full.min.js')}} "></script>
 
@@ -234,53 +314,5 @@
     <script class="Sparkline demo data" src="{{ asset('js/demo/sparkline-demo.js') }}"></script>
     -->
 
-    <script>
-        let notificationsContainer = document.getElementById('notificationsContainer');
-        let notificationsCountContainer = document.getElementById('notificationsCountContainer');
-
-        const UserToken = <?php echo json_encode(session('api_token')); ?>;
-        const notificationCard = (icon, message, url) => {
-            let card = `<li>
-                            <a href="${url}" class="dropdown-item">
-                                <div class="text-wrap">
-                                    <i class="${icon}"></i> ${message}
-                                </div>
-                            </a>
-                        </li>`;
-            notificationsContainer.innerHTML += card;
-        };
-        const nothingCard = () => {
-            let card = `<li>
-                            <div class="dropdown-item">
-                                <div class="text-wrap">
-                                    <i class="fa fa-question-circle"></i> No hay notificaciones pendientes para hoy.
-                                </div>
-                            </div>
-                        </li>`;
-            notificationsContainer.innerHTML += card;
-        };
-
-        let data = null;
-        fetch('http://127.0.0.1:8000/api/notificaciones', {
-            headers: {
-                'Authorization': 'Bearer '+UserToken
-            }
-        })
-            .then(response => response.json())
-            .then(responseData => {
-                data = responseData;
-                // console.log(data);
-
-                data.notifications.map(notification => {
-                    notificationCard(notification.icon, notification.message, notification.url);
-                });
-                if (data.notifications.length === 0) {
-                nothingCard()
-                }
-                notificationsCountContainer.removeAttribute('hidden');
-                notificationsCountContainer.innerText = data.notifications.length;
-            })
-            .catch(error => console.error('Error:', error));
-
-
-    </script>
+    <script src="{{asset('js/InspiniaViewsJS/notifications.js')}}"></script>
+    <script src="{{ asset('js/InspiniaViewsJS/notificacionBirthday.js') }}"></script>

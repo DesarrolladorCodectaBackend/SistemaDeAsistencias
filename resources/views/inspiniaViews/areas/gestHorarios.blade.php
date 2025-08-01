@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
@@ -20,10 +21,10 @@
                 <h2>ÁREAS</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/areas">Áreas</a>
+                        <a href="{{route('areas.index')}}">Áreas</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Horario Área</strong>
@@ -172,7 +173,7 @@
                                                                     </button>
                                                                 </form>
                                                             </div>
-                                                            
+
                                                             @endforeach
                                                         </div>
 
@@ -264,23 +265,11 @@
             display: none;
         }
     </style>
-    <script>
-        function confirmDelete(id, area_id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/areas/horarioDelete/${area_id}/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
-        }
 
-        function toggleCheckbox(event, id, type) {
+
+<script>
+
+    function toggleCheckbox(event, id, type) {
             if (event.target.tagName !== 'INPUT') {
                 const checkbox = document.getElementById(id);
                 checkbox.checked = !checkbox.checked;
@@ -292,7 +281,7 @@
             }
             uncheckOthers(id, type);
         }
-    
+
         function uncheckOthers(id, type) {
             const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
             checkboxes.forEach(checkbox => {
@@ -301,7 +290,7 @@
                 }
             });
         }
-    
+
         function updateSubmitButton(type) {
             const checkboxes = document.querySelectorAll(`.horario-checkbox-${type}`);
             const submitButton = document.getElementById(`submit-button-${type}`);
@@ -334,9 +323,7 @@
             const submitButton = document.getElementById('submit-store-button');
             submitButton.disabled = !allFormsValid;
         }
-    </script>
 
-    <script>
         let formCounter = 1;
 
         function addNewForm() {
@@ -376,174 +363,218 @@
             const formContainer = button.closest('.storeForm');
             formContainer.remove();
         }
-    
-    </script>
 
+</script>
 
+</script>
 
+<script>
+     function confirmDelete(id, area_id) {
+            Swal.fire({
+                    title: "¿Deseas eliminar este horario?",
+                    showCancelButton: true,
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
-    <script>
-        $(document).ready(function() {
-    
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green'
-            });
-    
-            /* initialize the external events -----------------------------------------------------------------*/
-            $('#external-events div.external-event').each(function() {
-                $(this).data('event', {
-                    title: $.trim($(this).text()),
-                    stick: true
-                });
-    
-                $(this).draggable({
-                    zIndex: 1111999,
-                    revert: true,
-                    revertDuration: 0
-                });
-            });
-    
-            /* initialize the calendar -----------------------------------------------------------------*/
-            var date = new Date();
-            var d = date.getDate();
-            var m = date.getMonth();
-            var y = date.getFullYear();
-            var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
-            const area = <?php echo json_encode($area); ?>;
-            
-            var eventosHorarios = horariosFormateados.map(function(horario) {
-                var numeroDia;
-                if(horario.dia == "Lunes"){
-                    numeroDia = 5;
-                } else if(horario.dia == "Martes"){
-                    numeroDia = 6;
-                } else if(horario.dia == "Miércoles"){
-                    numeroDia = 7;
-                } else if(horario.dia == "Jueves"){
-                    numeroDia = 8;
-                } else if(horario.dia == "Viernes"){
-                    numeroDia = 9;
-                } else if(horario.dia == "Sábado"){
-                    numeroDia = 10;
-                } else if(horario.dia == "Domingo"){
-                    numeroDia = 4;
-                } else{
-                    numeroDia = 4;
-                }
-                return {
-                    title: area.especializacion,
-                    start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
-                    end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
-                    allDay: false,
-                    color: area.color_hex,
-                    editable: false
-                };
-            });
-            
-    
-            var eventos = [{
-                    title: 'Domingo',
-                    start: new Date(2024, 1, 4, 0, 0),
-                    end: new Date(2024, 1, 4, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Lunes',
-                    start: new Date(2024, 1, 5, 9, 0),
-                    end: new Date(2024, 1, 5, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Martes',
-                    start: new Date(2024, 1, 6, 9, 0),
-                    end: new Date(2024, 1, 6, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Miércoles',
-                    start: new Date(2024, 1, 7, 9, 0),
-                    end: new Date(2024, 1, 7, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Jueves',
-                    start: new Date(2024, 1, 8, 9, 0),
-                    end: new Date(2024, 1, 8, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Viernes',
-                    start: new Date(2024, 1, 9, 9, 0),
-                    end: new Date(2024, 1, 9, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                },
-                {
-                    title: 'Sabado',
-                    start: new Date(2024, 1, 10, 9, 0),
-                    end: new Date(2024, 1, 10, 13, 30),
-                    allDay: true,
-                    color: '#a0d6f4',
-                    editable: false
-                }
-            ].concat(eventosHorarios);
-    
-            $('#calendar').fullCalendar({
-                locale: 'es',
-                defaultView: 'agendaWeek',
-                weekNumbers: false,
-                weekNumbersWithinDays: 7,
-                viewRender: function(view, element) {
-                    var startDate = moment('2024-02-04');
-                    var endDate = moment(startDate).add(6, 'weeks');
-                    if (view.end.isAfter(endDate)) {
-                        $('#calendar').fullCalendar('gotoDate', startDate);
+                        let form = document.createElement('form');
+                        form.method = 'POST';
+                        // form.action = `/areas/horarioDelete/${area_id}/${id}`;
+
+                        let routeTemplate = "<?php echo route('areas.horarioDelete', [':area_id', ':horario_presencial_asignado_id']); ?>";
+                        form.action = routeTemplate.replace(':area_id', area_id).replace(':horario_presencial_asignado_id', id);
+
+                        form.innerHTML = '@csrf @method("DELETE")';
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "El horario no fue eliminado",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
                     }
-                },
-                header: {
-                    left: '',
-                    center: 'title',
-                    right: ''
-                },
-                allDayText: 'Hora/Area',
-                slotDuration: '00:30:00',
-                slotLabelInterval: '01:00',
-                minTime: '08:00:00',
-                maxTime: '18:00:01',
-                contentHeight: 'auto',
-                eventOverlap: true,
-                slotEventOverlap: false,
-                editable: true,
-                droppable: true,
-                allDaySlot: true,
-                drop: function() {
-                    if ($('#drop-remove').is(':checked')) {
-                        $(this).remove();
-                    }
-                },
-                events: eventos,
-                eventRender: function(event, element) {
-                    var daysToShow = 4;
-                    var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
-                    element.css('width', columnWidth);
-                }
+                    console.console.log(result);
+
+                    });
+
+        }
+</script>
+
+<script>
+    $(document).ready(function() {
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+
+        /* initialize the external events -----------------------------------------------------------------*/
+        $('#external-events div.external-event').each(function() {
+            $(this).data('event', {
+                title: $.trim($(this).text()),
+                stick: true
+            });
+
+            $(this).draggable({
+                zIndex: 1111999,
+                revert: true,
+                revertDuration: 0
             });
         });
-    </script>
+
+        /* initialize the calendar -----------------------------------------------------------------*/
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+        var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
+        const area = <?php echo json_encode($area); ?>;
+
+        var eventosHorarios = horariosFormateados.map(function(horario) {
+            var numeroDia;
+            if(horario.dia == "Lunes"){
+                numeroDia = 5;
+            } else if(horario.dia == "Martes"){
+                numeroDia = 6;
+            } else if(horario.dia == "Miércoles"){
+                numeroDia = 7;
+            } else if(horario.dia == "Jueves"){
+                numeroDia = 8;
+            } else if(horario.dia == "Viernes"){
+                numeroDia = 9;
+            } else if(horario.dia == "Sábado"){
+                numeroDia = 10;
+            } else if(horario.dia == "Domingo"){
+                numeroDia = 4;
+            } else{
+                numeroDia = 4;
+            }
+            return {
+                title: area.especializacion,
+                start: new Date(2024, 1, numeroDia, horario.hora_inicial, 0),
+                end: new Date(2024, 1, numeroDia, horario.hora_final, 0),
+                allDay: false,
+                color: area.color_hex,
+                editable: false
+            };
+        });
 
 
+        var eventos = [{
+                title: 'Domingo',
+                start: new Date(2024, 1, 4, 0, 0),
+                end: new Date(2024, 1, 4, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Lunes',
+                start: new Date(2024, 1, 5, 9, 0),
+                end: new Date(2024, 1, 5, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Martes',
+                start: new Date(2024, 1, 6, 9, 0),
+                end: new Date(2024, 1, 6, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Miércoles',
+                start: new Date(2024, 1, 7, 9, 0),
+                end: new Date(2024, 1, 7, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Jueves',
+                start: new Date(2024, 1, 8, 9, 0),
+                end: new Date(2024, 1, 8, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Viernes',
+                start: new Date(2024, 1, 9, 9, 0),
+                end: new Date(2024, 1, 9, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            },
+            {
+                title: 'Sabado',
+                start: new Date(2024, 1, 10, 9, 0),
+                end: new Date(2024, 1, 10, 13, 30),
+                allDay: true,
+                color: '#a0d6f4',
+                editable: false
+            }
+        ].concat(eventosHorarios);
+
+        $('#calendar').fullCalendar({
+            locale: 'es',
+            defaultView: 'agendaWeek',
+            weekNumbers: false,
+            weekNumbersWithinDays: 7,
+            viewRender: function(view, element) {
+                var startDate = moment('2024-02-04');
+                var endDate = moment(startDate).add(6, 'weeks');
+                if (view.end.isAfter(endDate)) {
+                    $('#calendar').fullCalendar('gotoDate', startDate);
+                }
+            },
+            header: {
+                left: '',
+                center: 'title',
+                right: ''
+            },
+            allDayText: 'Hora/Area',
+            slotDuration: '00:30:00',
+            slotLabelInterval: '01:00',
+            minTime: '08:00:00',
+            maxTime: '18:00:01',
+            contentHeight: 'auto',
+            eventOverlap: true,
+            slotEventOverlap: false,
+            editable: true,
+            droppable: true,
+            allDaySlot: true,
+            drop: function() {
+                if ($('#drop-remove').is(':checked')) {
+                    $(this).remove();
+                }
+            },
+            events: eventos,
+            eventRender: function(event, element) {
+                var daysToShow = 4;
+                var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
+                element.css('width', columnWidth);
+            }
+        });
+        });
+</script>
 
 </body>
 

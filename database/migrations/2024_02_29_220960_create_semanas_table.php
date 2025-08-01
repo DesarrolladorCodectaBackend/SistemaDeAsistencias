@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('semanas', function (Blueprint $table) {
             $table->id();
             $table->date('fecha_lunes');
+            $table->boolean('caja_abierta')->default(0);
             $table->timestamps();
         });
     }

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
@@ -20,7 +20,7 @@
                 <h2>Horarios Generales</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Horario General</strong>
@@ -28,6 +28,12 @@
                 </ol>
             </div>
         </div>
+
+        {{-- btn descargar excel --}}
+        <div id="button-container" style="text-align: center; margin-top: 20px; display: flex; justify-content: end;">
+
+        </div>
+
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 <div class="col-lg-12">
@@ -81,19 +87,10 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
+
     <style>
         /*Ocultar la fecha del calendario*/
         .fc-toolbar {
@@ -103,13 +100,11 @@
 
     <script>
         $(document).ready(function() {
-
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
 
-            /* initialize the external events -----------------------------------------------------------------*/
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
                     title: $.trim($(this).text()),
@@ -123,7 +118,6 @@
                 });
             });
 
-            /* initialize the calendar -----------------------------------------------------------------*/
             var date = new Date();
             var d = date.getDate();
             var m = date.getMonth();
@@ -157,10 +151,10 @@
                     end: new Date(2024, 1, numeroDia, horario.horario_modificado.hora_final, 0),
                     allDay: false,
                     color: horario.area.color_hex,
-                    editable: false
+                    editable: false,
+                    area_id: horario.area.id
                 };
             });
-
 
             var eventos = [{
                     title: 'Domingo',
@@ -258,13 +252,207 @@
                     var daysToShow = 4;
                     var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
                     element.css('width', columnWidth);
+                },
+                eventClick: function(calEvent, jsEvent, view) {
+
+                    if (calEvent.area_id) {
+                        window.open("{{ route('areas.getHorario', ':area_id') }}".replace(':area_id', calEvent.area_id), '_blank');
+                    } else {
+                        console.log('Clic en día: ' + calEvent.title);
+                    }
                 }
             });
         });
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.2.0/dist/exceljs.min.js"></script>
+
+
+
+    ></script>
+
+    <script>
+    function exportToExcel() {
+        var horariosAreas = <?php echo json_encode($horarios_presenciales_Asignados); ?>;
+
+        // Crear una estructura para almacenar las áreas por hora (de 8 AM a 6 PM)
+        var eventosAgrupados = {
+            "8 AM": [],
+            "9 AM": [],
+            "10 AM": [],
+            "11 AM": [],
+            "12 PM": [],
+            "1 PM": [],
+            "2 PM": [],
+            "3 PM": [],
+            "4 PM": [],
+            "5 PM": [],
+            "6 PM": []
+        };
+
+        // Generar colores únicos para cada área
+        var coloresAreas = {};
+        var coloresUsados = [];
+        function generarColorTransparente() {
+            var r = Math.floor(Math.random() * 256);
+            var g = Math.floor(Math.random() * 256);
+            var b = Math.floor(Math.random() * 256);
+            return { argb: `FF${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}` }; // Color sólido
+        }
+
+        horariosAreas.forEach(function(horario) {
+            var horaInicial = horario.horario_modificado.hora_inicial;
+            var horaFinal = horario.horario_modificado.hora_final;
+            var area = horario.area.especializacion;
+            var dia = horario.horario_modificado.dia;
+
+            for (var h = horaInicial; h < horaFinal; h++) {
+                var hora = formatTime(h);
+                if (eventosAgrupados[hora]) {
+                    eventosAgrupados[hora].push({ area: area, dia: dia });
+
+                    // Generar un color único si no existe para el área
+                    if (!coloresAreas[area]) {
+                        var nuevoColor = generarColorTransparente();
+                        while (coloresUsados.includes(nuevoColor.argb)) {
+                            nuevoColor = generarColorTransparente();
+                        }
+                        coloresAreas[area] = nuevoColor;
+                        coloresUsados.push(nuevoColor.argb);
+                    }
+                }
+            }
+        });
+
+        // Crear una nueva instancia de ExcelJS
+        var wb = new ExcelJS.Workbook();
+        var ws = wb.addWorksheet("Eventos");
+
+        // Establecer los encabezados de columnas (de 8AM a 6PM)
+        ws.columns = [
+            { header: 'Hora/Área', key: 'hora', width: 15 },
+            { header: 'Lunes', key: 'lunes', width: 30 },
+            { header: 'Martes', key: 'martes', width: 30 },
+            { header: 'Miércoles', key: 'miercoles', width: 30 },
+            { header: 'Jueves', key: 'jueves', width: 30 },
+            { header: 'Viernes', key: 'viernes', width: 30 },
+            { header: 'Sábado', key: 'sabado', width: 30 },
+            { header: 'Domingo', key: 'domingo', width: 30 }
+        ];
+
+        // Añadir las filas con los horarios y las áreas
+        for (var hora in eventosAgrupados) {
+            var areas = eventosAgrupados[hora];
+
+            var dias = {
+                "Lunes": [],
+                "Martes": [],
+                "Miércoles": [],
+                "Jueves": [],
+                "Viernes": [],
+                "Sábado": [],
+                "Domingo": []
+            };
+
+            areas.forEach(function(evento) {
+                dias[evento.dia].push(evento.area);
+            });
+
+            var row = {
+                hora: hora,
+                lunes: dias["Lunes"].join("\n"),
+                martes: dias["Martes"].join("\n"),
+                miercoles: dias["Miércoles"].join("\n"),
+                jueves: dias["Jueves"].join("\n"),
+                viernes: dias["Viernes"].join("\n"),
+                sabado: dias["Sábado"].join("\n"),
+                domingo: dias["Domingo"].join("\n")
+            };
+
+            ws.addRow(row);
+        }
+
+        // Aplicar estilos, colores y bordes a las celdas
+        ws.eachRow(function(row, rowNumber) {
+            row.eachCell(function(cell, colNumber) {
+                // Aplicar bordes negros
+                cell.border = {
+                    top: { style: 'thin', color: { argb: '000000' } },
+                    left: { style: 'thin', color: { argb: '000000' } },
+                    bottom: { style: 'thin', color: { argb: '000000' } },
+                    right: { style: 'thin', color: { argb: '000000' } }
+                };
+
+                if (rowNumber === 1) {
+                    // Estilo del encabezado
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: 'E0FFFF' } // Celeste transparente
+                    };
+                    cell.font = { bold: true };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                } else if (colNumber === 1) {
+                    // Fondo blanco para la columna Hora/Área
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: 'FFFFFF' } // Blanco
+                    };
+                } else {
+                    // Aplicar colores para las áreas
+                    var valorCelda = cell.value;
+                    if (valorCelda) {
+                        var color = coloresAreas[valorCelda.split("\n")[0]]; // Primer área en la celda
+                        if (color) {
+                            cell.fill = {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: color
+                            };
+                        }
+                    }
+                    cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                }
+            });
+        });
+
+        // Descargar el archivo Excel
+        wb.xlsx.writeBuffer().then(function(buffer) {
+            var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "horarios-areas.xlsx";
+            link.click();
+        });
+    }
+
+    // Función para convertir la hora en formato de 12 horas (AM/PM)
+    function formatTime(hora) {
+        var hora12 = hora % 12;
+        if (hora12 === 0) hora12 = 12;
+        var ampm = hora < 12 ? 'AM' : 'PM';
+        return hora12 + " " + ampm;
+    }
+
+    // Crear el botón
+    var button = document.createElement("button");
+    button.innerHTML = "Descargar Excel";
+    button.onclick = exportToExcel;
+
+    // Estilos opcionales para el botón
+    button.style.backgroundColor = "#4CAF50";  // Fondo verde
+    button.style.color = "white";  // Texto blanco
+    button.style.fontSize = "16px";  // Tamaño de fuente
+    button.style.padding = "10px 20px";  // Relleno interno
+    button.style.border = "none";  // Sin borde
+    button.style.borderRadius = "5px";  // Bordes redondeados
+    button.style.cursor = "pointer";  // Cambio del cursor cuando pasa por encima
+
+    // Añadir el botón al contenedor con id "button-container"
+    document.getElementById("button-container").appendChild(button);
+</script>
 
 
 </body>
-
 </html>

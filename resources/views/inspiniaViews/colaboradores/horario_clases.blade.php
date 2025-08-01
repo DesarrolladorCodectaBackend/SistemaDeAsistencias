@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Horario de Clases</title>
-
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <link href="{{ asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
@@ -20,10 +21,10 @@
                 <h2>Horario de Clases</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/colaboradores">Colaboradores</a>
+                        <a href="{{route('colaboradores.index')}}">Colaboradores</a>
                     </li>
                     <li class="breadcrumb-item">
                         <strong>Horario de Clases</strong>
@@ -320,7 +321,7 @@
                                                                 onclick="document.getElementById('storeHorarios').submit();"
                                                                 data-style="expand-left">Guardar</button>
                                                             <a class="ladda-button btn btn-primary"
-                                                                data-style="expand-left" href="/candidatos">Cancelar</a>
+                                                                data-style="expand-left" href="{{route('colaboradores.index')}}">Cancelar</a>
                                                         </div>
 
 
@@ -430,102 +431,103 @@
     </style>
     <script>
         function confirmDelete(id) {
-            alertify.confirm("¿Deseas eliminar este registro?", function(e) {
-                if (e) {
-                    let form = document.createElement('form')
-                    form.method = 'POST'
-                    form.action = `/horarioClase/${id}`
-                    form.innerHTML = '@csrf @method('DELETE')'
-                    document.body.appendChild(form)
-                    form.submit()
-                } else {
-                    return false
-                }
-            });
+
+            Swal.fire({
+                    title: "¿Deseas eliminar este registro?",
+                    showCancelButton: true,
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    // form.action = `/horarioClase/${id}`;
+                    let routeTemplate = "<?php echo route('horarioClase.destroy', ':id'); ?>";
+                    form.action = routeTemplate.replace(':id', id);
+
+                    form.innerHTML = `
+                        @csrf @method("DELETE")`;
+                    // form.innerHTML = '@csrf @method("DELETE")';
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    } else {
+
+                        Swal.fire({
+                            title: "Acción cancelada",
+                            text: "No se eliminó el horario",
+                            icon: "info",
+                            customClass: {
+                                content: 'swal-content'
+                            }
+                        });
+
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            .swal2-html-container{
+                                color: #FFFFFF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    });
+            // alertify.confirm("¿Deseas eliminar este registro?", function(e) {
+            //     if (e) {
+            //         let form = document.createElement('form')
+            //         form.method = 'POST'
+            //         form.action = `/horarioClase/${id}`
+            //         form.innerHTML = '@csrf @method('DELETE')'
+            //         document.body.appendChild(form)
+            //         form.submit()
+            //     } else {
+            //         return false
+            //     }
+            // });
         }
 
 
         var contadorFilas = 0;
         var horas = @json($horas);
-    
-        function agregarFila() {
-            var tabla = document.getElementById("tablaHorarios").getElementsByTagName('tbody')[0];
-            var nuevaFila = tabla.insertRow(tabla.rows.length);
-    
-            // Insertar celdas en la nueva fila
-            var celdaDia = nuevaFila.insertCell(0);
-            var celdaHoraInicial = nuevaFila.insertCell(1);
-            var celdaHoraFinal = nuevaFila.insertCell(2);
-            var celdaJustificacion = nuevaFila.insertCell(3);
-            var celdaBotonEliminar = nuevaFila.insertCell(4);
-    
-            contadorFilas++;
-    
-            // Construir el select de horas iniciales y finales
-            var selectHoraInicial = construirSelectHora('horarios[' + contadorFilas + '][hora_inicial]');
-            var selectHoraFinal = construirSelectHora('horarios[' + contadorFilas + '][hora_final]');
-            var selectJustificacion = constuirSelectJustificacion();
-    
-            celdaDia.innerHTML = '<div class="form-group row"><label class="col-form-label"></label><div class="col-sm-10"><select class="form-control m-b" name="horarios[' + contadorFilas + '][dia]"><option>Lunes</option><option>Martes</option><option>Miércoles</option><option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option></select></div></div>';
-            celdaHoraInicial.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraInicial + '</div>';
-            celdaHoraFinal.innerHTML = '<div class="input-group date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>' + selectHoraFinal + '</div>';
-            celdaJustificacion.innerHTML = '<div class="input-group">' + selectJustificacion + '</div>';
-            celdaBotonEliminar.innerHTML = '<button class="btn btn-danger float-right" type="button" onclick="eliminarFila(this)"><i class="fa fa-trash-o"></i></button>';
-        }
-    
-        function construirSelectHora(name) {
-            var select = '<select class="form-control" name="' + name + '">';
-            for (var i = 0; i < horas.length; i++) {
-                select += '<option value="' + horas[i] + '">' + horas[i] + '</option>';
-            }
-            select += '</select>';
-            return select;
-        }
-    
-        function eliminarFila(boton) {
-            var fila = boton.parentNode.parentNode;
-            fila.parentNode.removeChild(fila);
-        }
 
-        const constuirSelectJustificacion = () => {
-            let select = `<select class="form-control" name="horarios[${contadorFilas}][justificacion]"><option>Clases</option><option>Trabajo</option></select>`;
-            return select;
-        }
+
 
     </script>
 
 
+<script src="{{ asset('js/asistencia/colaboradores-horario-clase.js') }}">
 
+</script>
 
     <script>
         $(document).ready(function() {
-    
+
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
                 radioClass: 'iradio_square-green'
             });
-    
+
             /* initialize the external events -----------------------------------------------------------------*/
             $('#external-events div.external-event').each(function() {
                 $(this).data('event', {
                     title: $.trim($(this).text()),
                     stick: true
                 });
-    
+
                 $(this).draggable({
                     zIndex: 1111999,
                     revert: true,
                     revertDuration: 0
                 });
             });
-    
+
             /* initialize the calendar -----------------------------------------------------------------*/
             var date = new Date();
             var d = date.getDate();
             var m = date.getMonth();
             var y = date.getFullYear();
             var horariosFormateados = <?php echo json_encode($horariosFormateados); ?>;
-    
+
             var eventosHorarios = horariosFormateados.map(function(horario) {
                 var numeroDia;
                 if(horario.dia == "Lunes"){
@@ -554,7 +556,7 @@
                     editable: false
                 };
             });
-    
+
             var eventos = [{
                     title: 'Domingo',
                     start: new Date(2024, 1, 4, 0, 0),
@@ -612,7 +614,7 @@
                     editable: false
                 }
             ].concat(eventosHorarios);
-    
+
             $('#calendar').fullCalendar({
                 locale: 'es',
                 defaultView: 'agendaWeek',
@@ -654,6 +656,7 @@
                 }
             });
         });
+
     </script>
 
 

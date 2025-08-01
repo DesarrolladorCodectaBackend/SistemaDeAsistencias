@@ -16,7 +16,7 @@
                 <h2>Responsabilidades</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="/dashboard">Inicio</a>
+                        <a href="{{route('dashboard')}}">Inicio</a>
                     </li>
                     <li class="breadcrumb-item active">
                         <strong>Responsabilidades - Semanas</strong>
@@ -115,7 +115,13 @@
 
         @foreach($semanasMes as $index => $semana)
 
-        <section id="semana{{$index+1}}" style="display: none">
+        <style>
+            .section-calificar {
+                height: 100% !important;
+                object-fit: cover;
+            }
+        </style>
+        <section id="semana{{$index+1}}" style="display: none" class="section-calificar">
             <table class="juntar">
                 <tr>
                     <th> {{$mes}} </th>
@@ -141,12 +147,16 @@
                             <h3 class="p-0 m-0">
                                 {{$area->especializacion}}
                             </h3>
-                            <p title="La evaluación de nuevas semanas se liberan cada lunes."
+                            {{-- <p title="La evaluación de nuevas semanas se liberan cada domingo."
                                 class="p-0 m-0 font-italic {{$semana->disponible ? 'text-success' : 'text-danger'}}">
                                 {{
                                     $semana->disponible ? '(Esta semana está disponible para ser evaluada)'
                                     : '(Esta semana no puede ser evaluada aún)'
                                 }}
+                            </p> --}}
+                            <p title="La evaluación de nuevas semanas se liberan cada domingo."
+                                class="p-0 m-0 font-italic text-success">
+                                Activado los domingos
                             </p>
                         </div>
                         <div style="width: 10%">
@@ -203,9 +213,11 @@
                                     <div>
                                         <button
                                             onclick="confirmDelete({{ $informe->id }}, {{ $index+1 }}, {{ $year }}, '{{ $mes }}', {{ $area->id }})"
-                                            class="btn btn-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                            class="btn btn-danger btn-sm"
+                                            type="button"
+                                            title="Eliminar informe">
+                                        <i style="font-size: 20px" class="fa fa-trash"></i>
+                                    </button>
                                     </div>
                                 </div>
                                 <hr>
@@ -236,6 +248,23 @@
                         <h4>Nota Semanal:</h4>
                         <p>{{ $informe->nota_semanal ? $informe->nota_semanal : 'No se ha escrito una nota.' }}</p>
                     </div>
+
+                    <div class="d-flex flex-column justify-content-center mb-2">
+                        <h4>Fecha de Entrega:</h4>
+
+                        @if (!empty($informe->dia))
+                            <p class="fw-bold">📅 {{ \Carbon\Carbon::parse($informe->dia)->format('d/m/Y') }}</p>
+                        @else
+                            <p class="fw-bold text-muted">📅 No especificado</p>
+                        @endif
+
+                        @if (!empty($informe->hora))
+                            <p class="fw-bold">🕒 {{ \Carbon\Carbon::parse($informe->hora)->format('H:i') }}</p>
+                        @else
+                            <p class="fw-bold text-muted">🕒 No especificado</p>
+                        @endif
+                    </div>
+
 
                     <div class="d-flex flex-column justify-content-center mb-3">
                         <h4>Archivo:</h4>
@@ -427,7 +456,12 @@
             </tbody>
         </form>
     </table>
-    <div class="text-center">
+    <style>
+        .btn-calificar {
+            /* height: 100%; */
+        }
+    </style>
+    <div class="text-center btn-calificar">
         <button onclick="habilitarEdicion({{$index+1}})" class="ladda-button btn btn-success mr-2">Editar</button>
         <a href="#" id="BtnGuardar{{$index+1}}" class="ladda-button btn btn-primary mr-2 disabled"
             onclick="document.getElementById('cumplioUpdate{{$index+1}}').submit();" disabled>Guardar
@@ -484,7 +518,7 @@
             </tbody>
         </form>
     </table>
-    <div class="text-center">
+    <div class="text-center btn-calificar">
         <a href="#" class="ladda-button btn btn-primary mr-5"
             onclick="document.getElementById('cumplioStore{{$index+1}}').submit();">Guardar
         </a>
@@ -551,6 +585,17 @@
     @endif
 
 
+    {{-- MODAL ERRORES --}}
+    <script>
+        const deleteAlert = (id) => {
+            let alertError = document.getElementById(id);
+            if (alertError) {
+                alertError.remove();
+            } else{
+                console.error(`Elemento con ID '${id}' no encontrado.`);
+            }
+        }
+    </script>
 
     {{-- tarjetas validaciones errores y warnings --}}
     <script>
@@ -646,17 +691,7 @@
 
     </script>
 
-    {{-- MODAL ERRORES --}}
-    <script>
-        const deleteAlert = (id) => {
-            let alertError = document.getElementById(id);
-            if (alertError) {
-                alertError.remove();
-            } else{
-                console.error(`Elemento con ID '${id}' no encontrado.`);
-            }
-        }
-    </script>
+
 
 
 
@@ -714,12 +749,28 @@
 
             function confirmDelete(informeId, index, year, mes, area_id) {
                 forzarCerrado('modal-form-' + index);
-                alertify.confirm("¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.", function(e) {
-                    if (e) {
+                alertify.confirm(
+                    "Confirmación de eliminación",
+                    "¿Estás seguro de que deseas eliminar este informe? Esta acción es permanente.",
+                    function() {
                         let form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = `/InformeSemanal/${informeId}`;
-                        form.innerHTML = '@csrf @method('DELETE')';
+
+                        let routeTemplate = "<?php echo route('InformeSemanal.destroy', ':id'); ?>";
+                        form.action = routeTemplate.replace(':id', informeId);
+
+                        let csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = "{{ csrf_token() }}";
+
+                        let methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'DELETE';
+
+                        form.appendChild(csrfToken);
+                        form.appendChild(methodField);
 
                         let inputYear = document.createElement('input');
                         inputYear.type = 'hidden';
@@ -741,12 +792,11 @@
 
                         document.body.appendChild(form);
                         form.submit();
-                    } else {
-                        return false;
+                    },
+                    function() {
+                        console.log('Eliminación cancelada');
                     }
-                }, function() {
-                    console.log('Cancelado');
-                });
+                ).set('labels', {ok:'Eliminar', cancel:'Cancelar'});
             }
     </script>
 
@@ -755,7 +805,6 @@
 
 
     <!--===PRUEBAS===-->
-
 
     @if(session('error'))
     <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert"
@@ -784,7 +833,6 @@
     @endif
 
 
-    @include('components.inspinia.footer-inspinia')
     </div>
     </div>
 
