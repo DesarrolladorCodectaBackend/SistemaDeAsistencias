@@ -22,9 +22,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     public function index(Request $request)
     {
         $userData = FunctionHelperController::getUserRol();
+        $warning = null;
         if ($userData['isAdmin']) {
             $buscar = $request->buscar_responsabilidad;
-            $warning = null;
+
             if($buscar) {
                 $resultado = $this->buscarResponsabilidades($buscar);
                 $areas = $resultado['areas'];
@@ -34,11 +35,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             }
         } else if ($userData['isBoss']) {
             $bossAreasId = $userData['Jefeareas']->pluck('area_id');
-            $warning = null;
+
             // return $bossAreasId;
             $areas = Area::with('salon')->where('estado', 1)->whereIn('id', $bossAreasId)->paginate(12);
         } else {
-            $warning = null;
             return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar áreas. No lo intente denuevo o puede ser baneado.');
         }
 
