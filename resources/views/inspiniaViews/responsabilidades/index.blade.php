@@ -47,10 +47,10 @@
                         id="buscar"
                     >
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn-buscar">
                         Buscar
                     </button>
-                    <button type="button" id="limpiar" class="btn btn-success">
+                    <button type="button" id="limpiar" class="btn-limpiar">
                         Limpiar
                     </button>
                 </form>
