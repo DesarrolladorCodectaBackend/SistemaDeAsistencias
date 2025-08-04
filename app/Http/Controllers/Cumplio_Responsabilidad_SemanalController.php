@@ -22,9 +22,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     public function index(Request $request)
     {
         $userData = FunctionHelperController::getUserRol();
+        $warning = null;
         if ($userData['isAdmin']) {
             $buscar = $request->buscar_responsabilidad;
-            $warning = null;
+
             if($buscar) {
                 $resultado = $this->buscarResponsabilidades($buscar);
                 $areas = $resultado['areas'];
@@ -34,11 +35,10 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             }
         } else if ($userData['isBoss']) {
             $bossAreasId = $userData['Jefeareas']->pluck('area_id');
-            $warning = null;
+
             // return $bossAreasId;
             $areas = Area::with('salon')->where('estado', 1)->whereIn('id', $bossAreasId)->paginate(12);
         } else {
-            $warning = null;
             return redirect()->route('dashboard')->with('error', 'No es un usuario con permisos para evaluar áreas. No lo intente denuevo o puede ser baneado.');
         }
 
@@ -455,9 +455,9 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             }
 
             $request->validate([
-                'colaborador_area_id.*' => 'sometimes|integer|min:1|max:100',
-                'responsabilidad_id.*' => 'sometimes|integer|min:1|max:255',
-                'cumplio.*' => 'sometimes|boolean|min:0|max:1',
+                'colaborador_area_id.*' => 'sometimes|integer',
+                'responsabilidad_id.*' => 'sometimes|integer',
+                'cumplio.*' => 'sometimes|boolean',
                 'year' => 'required|integer',
                 'mes' => 'required|string',
             ]);
@@ -501,6 +501,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             DB::commit();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('success', 'Se guardó correctamente.');
         } catch (Exception $e) {
+            return $e;
             DB::rollback();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('error', 'Ocurrió un error.');
         }
