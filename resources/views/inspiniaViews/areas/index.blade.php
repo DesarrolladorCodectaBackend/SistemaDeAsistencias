@@ -111,9 +111,13 @@
                         placeholder="Escribe el nombre del área..."
                         value="{{ request('buscar_area') }}"
                         autocomplete="off"
+                        id="input-buscar"
                     >
                     <button type="submit" class="btn btn-primary">
                         Buscar
+                    </button>
+                    <button type="button" id="btn-limpiar" class="btn btn-success">
+                        Limpiar
                     </button>
                 </form>
             </div>
@@ -764,6 +768,17 @@ function validarFechas(areaId) {
         resumen.innerHTML = 'Seleccione las fechas para ver el resumen del período de desactivación.';
     }
 }
+</script>
+
+<script>
+    const buscador = document.getElementById("input-buscar");
+    const btnLimpiar = document.getElementById("btn-limpiar");
+
+    function limpiarBuscador(){
+    buscador.value = "";
+    }
+
+    btnLimpiar.addEventListener("click",limpiarBuscador)
 </script>
 
 <style>

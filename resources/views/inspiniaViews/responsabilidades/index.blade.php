@@ -44,12 +44,15 @@
                         placeholder="Escribe el nombre de la responsabilidad..."
                         value="{{ request('buscar.responsabilidades') }}"
                         autocomplete="off"
+                        id="buscar"
                     >
 
                     <button type="submit" class="btn btn-primary">
                         Buscar
                     </button>
-
+                    <button type="button" id="limpiar" class="btn btn-success">
+                        Limpiar
+                    </button>
                 </form>
             </div>
         </div>
@@ -130,6 +133,16 @@
     </div>
     </div>
 
+<script>
+    const buscador = document.getElementById("buscar");
+    const btnLimpiar = document.getElementById("limpiar");
+
+    function limpiarBuscador(){
+    buscador.value = "";
+    }
+
+    limpiar.addEventListener("click",limpiarBuscador)
+</script>
 </body>
 
 </html>
