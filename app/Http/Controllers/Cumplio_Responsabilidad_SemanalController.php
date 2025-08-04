@@ -22,16 +22,20 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     public function index(Request $request)
     {
         $userData = FunctionHelperController::getUserRol();
+        $warning = null;
         if ($userData['isAdmin']) {
             $buscar = $request->buscar_responsabilidad;
 
             if($buscar) {
-                $areas = $this->buscarResponsabilidades($buscar);
+                $resultado = $this->buscarResponsabilidades($buscar);
+                $areas = $resultado['areas'];
+                $warning = $resultado['warning'];
             } else {
                 $areas = Area::with('salon')->where('estado', 1)->paginate(12);
             }
         } else if ($userData['isBoss']) {
             $bossAreasId = $userData['Jefeareas']->pluck('area_id');
+
             // return $bossAreasId;
             $areas = Area::with('salon')->where('estado', 1)->whereIn('id', $bossAreasId)->paginate(12);
         } else {
@@ -51,6 +55,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             'areas' => $areas,
             'hasPagination' => $hasPagination,
             'pageData' => $pageData,
+            'warning' => $warning
         ]);
     }
 
@@ -450,9 +455,9 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             }
 
             $request->validate([
-                'colaborador_area_id.*' => 'sometimes|integer|min:1|max:100',
-                'responsabilidad_id.*' => 'sometimes|integer|min:1|max:255',
-                'cumplio.*' => 'sometimes|boolean|min:0|max:1',
+                'colaborador_area_id.*' => 'sometimes|integer',
+                'responsabilidad_id.*' => 'sometimes|integer',
+                'cumplio.*' => 'sometimes|boolean',
                 'year' => 'required|integer',
                 'mes' => 'required|string',
             ]);
@@ -496,6 +501,7 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
             DB::commit();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('success', 'Se guardó correctamente.');
         } catch (Exception $e) {
+            return $e;
             DB::rollback();
             return redirect()->route('responsabilidades.asis', ['year' => $year, 'mes' => $mes, 'area_id' => $area_id])->with('error', 'Ocurrió un error.');
         }
@@ -743,14 +749,23 @@ class Cumplio_Responsabilidad_SemanalController extends Controller
     }
 
     public function buscarResponsabilidades($busqueda) {
-        if($busqueda) {
-            $areas = Area::with('salon')->where('especializacion', 'LIKE', '%' . $busqueda . '%')->where('estado', 1)
-                    ->orderBy('especializacion', 'asc')
-                    ->paginate(12);
-        } else {
-            $areas = Area::with('salon')->where('estado', 1)->paginate(12);
+        $consulta = Area::with('salon')->where('estado', 1)->orderBy('especializacion', 'asc');
+
+        if(!empty($busqueda)) {
+            $consulta->where('especializacion', 'LIKE', '%' . $busqueda . '%');
         }
 
-        return $areas;
+        $areas = $consulta->paginate(12);
+
+        $warning = null;
+
+        if($areas->isEmpty()) {
+            $warning = 'No se encontraron responsabilidades que coincidan con su búsqueda';
+        }
+
+        return [
+            'areas' => $areas,
+            'warning' => $warning
+        ];
     }
 }

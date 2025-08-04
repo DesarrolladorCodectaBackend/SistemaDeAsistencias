@@ -27,6 +27,11 @@
             </div>
         </div>
 
+        @if(!empty($warning))
+            <div class="alert alert-warning">
+                <strong>Advertencia:</strong> {{ $warning }}
+            </div>
+        @endif
 
         <div class="row mt-2 justify-content-center">
             <div class="col-md-6 col-sm-8">

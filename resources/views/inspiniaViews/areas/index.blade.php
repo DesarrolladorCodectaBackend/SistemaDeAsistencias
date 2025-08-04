@@ -13,6 +13,7 @@
 </head>
 
 <body>
+
     <div id="wrapper">
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
@@ -93,6 +94,12 @@
                 </div>
             </div>
         </div>
+
+        @if(!empty($warning))
+            <div class="alert alert-warning">
+                <strong>Advertencia:</strong> {{ $warning }}
+            </div>
+        @endif
 
         <div class="row mt-2 justify-content-center">
             <div class="col-md-6 col-sm-8">
@@ -760,25 +767,6 @@ function validarFechas(areaId) {
 </script>
 
 <style>
-#modalDesactivarEvaluaciones{{$area->id}} .form-control:focus {
-    border-color: #00B3B0;
-    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
-}
-
-#modalDesactivarEvaluaciones{{$area->id}} .form-control-lg {
-    font-size: 1.1rem;
-    padding: 0.75rem 1rem;
-}
-
-#modalDesactivarEvaluaciones{{$area->id}} .card {
-    border-left: 4px solid #00B3B0;
-}
-
-#btnConfirmarDesactivacion{{$area->id}}:not(:disabled):hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: all 0.2s ease;
-}
 
 .modal-backdrop {
     z-index: 1040;
