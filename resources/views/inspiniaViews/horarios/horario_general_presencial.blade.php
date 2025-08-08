@@ -10,6 +10,13 @@
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
     <title>INSPINIA | HORARIO GENERAL</title>
+    <style>
+        .fc-event {
+    display: flex !important;
+    margin-bottom: 2px;
+}
+    </style>
+
 </head>
 
 <body>
@@ -59,7 +66,7 @@
                                                                 justify-content: center;
 
                                                             }
-
+                                                            
                                                             .fc-content {
                                                                 text-align: center;
                                                             }
@@ -237,9 +244,11 @@
                 minTime: '08:00:00',
                 maxTime: '18:00:01',
                 contentHeight: 'auto',
-                eventOverlap: true,
+                eventOrder: 'start',
+                eventDisplay: 'block',
+                eventOverlap: false,
                 slotEventOverlap: false,
-                editable: true,
+                editable: false,
                 droppable: true,
                 allDaySlot: true,
                 drop: function() {
@@ -251,7 +260,7 @@
                 eventRender: function(event, element) {
                     var daysToShow = 4;
                     var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
-                    element.css('width', columnWidth);
+                    // element.css('width', columnWidth);
                 },
                 eventClick: function(calEvent, jsEvent, view) {
 

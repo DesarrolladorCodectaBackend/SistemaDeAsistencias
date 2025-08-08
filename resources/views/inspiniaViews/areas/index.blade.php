@@ -126,53 +126,44 @@
         <!-- From Uiverse.io by themrsami -->
 <form method="GET" action="{{ route('areas.buscar') }}" class="d-flex form-content">
 <div class="search-container">
-  <div class="search-bar">
+    <div class="search-bar">
+        <input type="text" class="search-input"
+                            name="buscar_area"
+                            placeholder="Buscar Área..."
+                            value="{{ request('buscar_area') }}"
+                            autocomplete="off"
+                            id="input-buscar"/>
+        <button type="submit" class="btn-buscar">
+        <div class="search-icon">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+            >
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path
+                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                ></path>
+            </svg>
+        </div>
+        </button>
+        <button type="button" class="btn-limpiar" id="btn-limpiar" >
+        <div class="search-icon">
 
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16.24 3c-.39 0-.77.15-1.06.44L3.44 15.18c-.59.59-.59 1.54 0 2.12l3.3 3.3c.59.59 1.54.59 2.12 0L21.24 8.24c.59-.59.59-1.54 0-2.12l-3.3-3.3A1.49 1.49 0 0 0 16.24 3zM7.88 20 4 16.12 13.06 7.06 17 11l-9.12 9z"/>
+            </svg>
 
-    <input type="text" class="search-input"
-                        name="buscar_area"
-                        placeholder="Escribe el nombre del área..."
-                        value="{{ request('buscar_area') }}"
-                        autocomplete="off"
-                        id="input-buscar"/>
-    <button type="submit" class="btn-buscar">
-    <div class="search-icon">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-      >
+            <path d="M0 0h24v24H0z" fill="none"></path>
+            <path
+                M16.24 3c-.39 0-.77.15-1.06.44L3.44 15.18c-.59.59-.59 1.54 0 2.12l3.3 3.3c.59.59 1.54.59 2.12 0L21.24 8.24c.59-.59.59-1.54 0-2.12l-3.3-3.3A1.49 1.49 0 0 0 16.24 3zM7.88 20 4 16.12 13.06 7.06 17 11l-9.12 9z
+            ></path>
+            </svg>
 
-        <path d="M0 0h24v24H0z" fill="none"></path>
-        <path
-          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-        ></path>
-      </svg>
-
-
+        </div>
+        </button>
     </div>
-    </button>
-    <button type="button" class="btn-limpiar" id="btn-limpiar" >
-    <div class="search-icon">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-      >
-
-        <path d="M0 0h24v24H0z" fill="none"></path>
-        <path
-          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-        ></path>
-      </svg>
-
-
-    </div>
-    </button>
-
-  </div>
 </div>
  </form>
 

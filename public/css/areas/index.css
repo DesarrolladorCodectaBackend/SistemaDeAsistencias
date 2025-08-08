@@ -1,19 +1,29 @@
 .form-content {
     /* gap: 5px; */
 }
+.search-container{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 8vh;
+    margin-left: 80em;
+}
 
 .btn-buscar{
     color: white;
-     background-color: #d8d0d0;
+    background: transparent;
     border: none;
-    padding: 5px 12px 5px 12px;
     /* border-radius: 3px; */
+}
 
+#input-buscar{
+    color: black;
 }
 
 .btn-limpiar{
+    display: flex;
     color: white;
-     background-color: #d8d0d0;
+    background: transparent;
     padding: 5px 10px 5px 10px;
     border: none;
     /* border-radius: 3px; */
@@ -26,14 +36,16 @@
 }
 
 .search-bar {
-  position: relative;
+ position: relative;
   display: flex;
   align-items: center;
-  background-color: #d8d0d0;
-  border-radius: 8px;
-  padding: 10px;
+  border: #333;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1px;
   overflow: hidden;
   transition: all 0.3s ease;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.521);
 }
 
 .search-input {
@@ -42,7 +54,7 @@
   background: none;
   color: #fff;
   font-size: 16px;
-  padding: 10px;
+  padding: 5px;
   outline: none;
 }
 
@@ -54,10 +66,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 5px;
   background-color: #333;
   border-radius: 50%;
-  margin-left: 10px;
+  /* margin-left: 2px; */
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
