@@ -102,20 +102,24 @@
         display: none !important;
     }
     
-    
-   .fc-time-grid .fc-event {
-    position: relative !important;
-    left: auto !important;
-    right: auto !important;
-    margin: 2px 0 !important; /* Espacio vertical entre eventos */
-    padding: 4px !important;
-    font-size: 13px !important;
-    white-space: nowrap !important;
-    width: 95% !important; /* Ancho casi completo */
+    .fc-time-grid .fc-event {
+        position: inherit !important;
+        left: auto !important;
+        right: auto !important;
+        margin: 0 !important; /* sin márgenes que corten el alto */
+        padding: 3px !important;
+        font-size: 11px !important;
+        width: 100% !important;
+        height: 100% !important; /* ocupa toda la celda de la hora */
+        box-sizing: border-box;
+    }
 
-}
-
-
+    /* Ajustar el contenido interno del evento */
+    .fc-time-grid-event > .fc-content {
+        height: 100% !important;
+        padding: 5px;
+        box-sizing: border-box;
+    }
 </style>
 
     <script>
@@ -271,10 +275,14 @@
                 },
                 events: eventos,
                 eventRender: function(event, element) { 
-                    var daysToShow = 4; 
-                    var columnWidth = $('.fc-day-grid-container').width() / daysToShow; 
-                    // element.css('width', columnWidth); 
-                    },
+                var daysToShow = 4; 
+                var columnWidth = $('.fc-day-grid-container').width() / daysToShow; 
+                // element.css('width', columnWidth); 
+
+                // NUEVO: envolver contenido para girarlo
+                element.wrapInner('<div class="event-wrapper"></div>');
+},
+
                 eventClick: function(calEvent, jsEvent, view) {
 
                     if (calEvent.area_id) {
