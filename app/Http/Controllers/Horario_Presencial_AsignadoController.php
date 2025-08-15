@@ -36,15 +36,14 @@ class Horario_Presencial_AsignadoController extends Controller
                 $horario->horario_modificado = $horariosFormateados;
             }
             // return $horarios_presenciales_Asignados;
-            return view('InspiniaViews.horarios.horario_general_presencial', compact('horarios_presenciales_Asignados'));
-            // return response()->json(["data" => $horarios_presenciales_Asignados]);
+            // return view('inspiniaViews.horarios.horario_general_presencial', compact('horarios_presenciales_Asignados'));
+            return response()->json(["data" => $horarios_presenciales_Asignados]);
 
         } catch (Exception $e) {
             return response()->json(["error" => $e->getMessage()]);
         }
-    }
 
-
+}
 
     public function store(Request $request)
     {

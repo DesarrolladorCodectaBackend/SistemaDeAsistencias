@@ -10,11 +10,56 @@
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
     <title>INSPINIA | HORARIO GENERAL</title>
-    <style>
-        .fc-event {
-    display: flex !important;
-    margin-bottom: 2px;
+
+    {{-- <style>
+    .fc-event {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin-top: 2px;
 }
+    </style> --}}
+
+    <style>
+    /* .fc-time-grid .fc-event {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 2px 0 !important;
+    padding: 4px !important;
+    font-size: 13px !important;
+    width: auto !important;
+    white-space: normal !important;
+} */
+
+    .fc-time-grid .fc-event {
+    position: absolute !important;
+    left: 2% !important;
+    right: 2% !important;
+    width: 100% !important;
+    }
+
+    .fc-toolbar, .fc-day-header {
+        display: none !important;
+    }
+    .fc-time-grid .fc-event {
+        position: inherit !important;
+        left: auto !important;
+        right: auto !important;
+        margin-top: 1px !important;
+        padding: 12.5px 0px  !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        width: 100% !important;
+    }
+    .fc-timegrid-event {
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        padding: 20px 0 !important;
+    }
+
     </style>
 
 </head>
@@ -40,7 +85,6 @@
         <div id="button-container" style="text-align: center; margin-top: 20px; display: flex; justify-content: end;">
 
         </div>
-
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 <div class="col-lg-12">
@@ -66,7 +110,7 @@
                                                                 justify-content: center;
 
                                                             }
-                                                            
+
                                                             .fc-content {
                                                                 text-align: center;
                                                             }
@@ -84,9 +128,6 @@
 
                                 </div>
                             </div>
-
-
-
 
 
                         </div>
@@ -185,7 +226,7 @@
                     end: new Date(2024, 1, 6, 13, 30),
                     allDay: true,
                     color: '#a0d6f4',
-                    editable: false
+                    editable: true
                 },
                 {
                     title: 'Miércoles',
@@ -248,9 +289,10 @@
                 eventDisplay: 'block',
                 eventOverlap: false,
                 slotEventOverlap: false,
-                editable: false,
+                editable: true,
                 droppable: true,
-                allDaySlot: true,
+                allDaySlot: false,
+
                 drop: function() {
                     if ($('#drop-remove').is(':checked')) {
                         $(this).remove();
@@ -275,7 +317,6 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.2.0/dist/exceljs.min.js"></script>
-
 
 
     ></script>
@@ -397,7 +438,7 @@
                     cell.fill = {
                         type: 'pattern',
                         pattern: 'solid',
-                        fgColor: { argb: 'E0FFFF' } // Celeste transparente
+                        fgColor: { argb: 'FFFF' } // Celeste transparente
                     };
                     cell.font = { bold: true };
                     cell.alignment = { vertical: 'middle', horizontal: 'center' };
