@@ -101,27 +101,6 @@
             </div>
         @endif
 
-        {{-- <div class="row mt-2 justify-content-center">
-            <div class="col-md-6 col-sm-8">
-                <form method="GET" action="{{ route('areas.buscar') }}" class="d-flex form-content">
-                    <input
-                        type="text"
-                        name="buscar_area"
-                        class="form-control me-2"
-                        placeholder="Escribe el nombre del área..."
-                        value="{{ request('buscar_area') }}"
-                        autocomplete="off"
-                        id="input-buscar"
-                    >
-                    <button type="submit" class="btn-buscar">
-                        Buscar
-                    </button>
-                    <button type="button" id="btn-limpiar" class="btn-limpiar">
-                        Limpiar
-                    </button>
-                </form>
-            </div>
-        </div> --}}
 
         <!-- From Uiverse.io by themrsami -->
 <form method="GET" action="{{ route('areas.buscar') }}" class="d-flex form-content">

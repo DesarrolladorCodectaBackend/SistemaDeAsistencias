@@ -11,7 +11,7 @@
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
     <title>INSPINIA | HORARIO GENERAL</title>
 
-    <style>
+    {{-- <style>
     .fc-event {
     position: absolute !important;
     left: 0 !important;
@@ -19,10 +19,10 @@
     width: 100% !important;
     margin-top: 2px;
 }
-    </style> 
+    </style>
 
     <style>
-    /* .fc-time-grid .fc-event {
+    .fc-time-grid .fc-event {
     position: absolute !important;
     left: 0 !important;
     right: 0 !important;
@@ -31,7 +31,7 @@
     font-size: 13px !important;
     width: auto !important;
     white-space: normal !important;
-} */
+}
 
     .fc-time-grid .fc-event {
     position: absolute !important;
@@ -60,7 +60,7 @@
         padding: 20px 0 !important;
     }
 
-    </style>
+    </style> --}}
 
 </head>
 
@@ -118,12 +118,12 @@
                                                             .fc-day-header {
                                                                 display: none !important;
                                                             }
-                                                            
-                                
+
+
                                                         </style>
                                                         <div id="calendar"></div>
                                                     </div>
-                                                
+
                                                 </div>
                                             </div>
                                         </div>
@@ -147,7 +147,7 @@
     .fc-toolbar, .fc-day-header {
         display: none !important;
     }
-    
+
     .fc-time-grid .fc-event {
         position: inherit !important;
         left: auto !important;
@@ -321,10 +321,10 @@
                     }
                 },
                 events: eventos,
-                eventRender: function(event, element) { 
-                var daysToShow = 4; 
-                var columnWidth = $('.fc-day-grid-container').width() / daysToShow; 
-                // element.css('width', columnWidth); 
+                eventRender: function(event, element) {
+                var daysToShow = 4;
+                var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
+                // element.css('width', columnWidth);
 
                 // NUEVO: envolver contenido para girarlo
                 element.wrapInner('<div class="event-wrapper"></div>');
@@ -347,7 +347,7 @@
 
     ></script>
 
-        
+
 
     <script>
     function exportToExcel() {

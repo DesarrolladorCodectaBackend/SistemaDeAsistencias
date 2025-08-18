@@ -38,8 +38,8 @@ class Horario_Presencial_AsignadoController extends Controller
             // return $horarios_presenciales_Asignados;
             return view('inspiniaViews.horarios.horario-gp-areas',['horarios_presenciales_Asignados' => $horarios_presenciales_Asignados]);
             // return response()->json(["data" => $horarios_presenciales_Asignados]);
-            
-        } catch (Exception $e) {    
+
+        } catch (Exception $e) {
             return response()->json(["error" => $e->getMessage()]);
         }
 
@@ -153,7 +153,7 @@ class Horario_Presencial_AsignadoController extends Controller
 
     }
 
-    
+
 
     public function destroy($area_id, $horario_presencial_asignado_id){
         $access = FunctionHelperController::verifyAdminAccess();
