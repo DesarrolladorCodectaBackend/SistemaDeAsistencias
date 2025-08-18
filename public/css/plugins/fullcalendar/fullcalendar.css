@@ -287,12 +287,29 @@ hr.fc-divider {
 	right: 0;
 }
 
-.fc-bg {
+div.fc-bg {
 	bottom: 0;
+    display: inline-block;
+    width: 40px;
+    width: 100%;
+     /* display: inline-block;
+    white-space: nowrap;
+    gap: 50px; */
+    
 }
+
+
+/* .fc-event-container{
+    display: inline-block;
+    white-space: nowrap;
+    gap: 50px;
+} */
+
 
 .fc-bg table {
 	height: 100%;
+    /* display: block; */
+    /* white-space: nowrap; */
 }
 
 
@@ -608,6 +625,7 @@ temporary rendered events).
 	margin-right: -4px; /* centers the 8x8 dot on the right edge */
 }
 
+.div
 
 /* DayGrid events
 ----------------------------------------------------------------------------------------------------
@@ -618,6 +636,7 @@ be a descendant of the grid when it is being dragged.
 .fc-day-grid-event {
 	margin: 1px 2px 0; /* spacing between events and edges */
 	padding: 0 1px;
+
 }
 
 .fc-day-grid-event.fc-selected:after {
@@ -966,6 +985,8 @@ a.fc-more:hover {
 	position: relative;
 	z-index: 4;
 }
+
+
 
 .fc-time-grid .fc-now-indicator-line {
 	z-index: 5;

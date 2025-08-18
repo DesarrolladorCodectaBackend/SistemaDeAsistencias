@@ -36,13 +36,42 @@ class Horario_Presencial_AsignadoController extends Controller
                 $horario->horario_modificado = $horariosFormateados;
             }
             // return $horarios_presenciales_Asignados;
-            return view('InspiniaViews.horarios.horario_general_presencial', compact('horarios_presenciales_Asignados'));
+            return view('inspiniaViews.horarios.horario-gp-areas',['horarios_presenciales_Asignados' => $horarios_presenciales_Asignados]);
             // return response()->json(["data" => $horarios_presenciales_Asignados]);
-
-        } catch (Exception $e) {
+            
+        } catch (Exception $e) {    
             return response()->json(["error" => $e->getMessage()]);
         }
+
+}
+
+    public function indexPublic()
+{
+    try {
+        $areasActivasId = Area::where('estado', 1)->get()->pluck('id');
+        $horarios_presenciales_Asignados = Horario_Presencial_Asignado::with(['horario_presencial', 'area'])
+            ->whereIn('area_id', $areasActivasId)
+            ->get();
+
+        foreach ($horarios_presenciales_Asignados as $horario) {
+            $horaInicial = (int) date('H', strtotime($horario->horario_presencial->hora_inicial));
+            $horaFinal = (int) date('H', strtotime($horario->horario_presencial->hora_final));
+
+            $horariosFormateados = [
+                'hora_inicial' => $horaInicial,
+                'hora_final' => $horaFinal,
+                'dia' => $horario->horario_presencial->dia,
+            ];
+            $horario->horario_modificado = $horariosFormateados;
+        }
+
+        return view('inspiniaViews.horarios.horario-gp-areas', [
+            'horarios_presenciales_Asignados' => $horarios_presenciales_Asignados
+        ]);
+    } catch (Exception $e) {
+        return response()->json(["error" => $e->getMessage()]);
     }
+}
 
 
 
@@ -124,6 +153,7 @@ class Horario_Presencial_AsignadoController extends Controller
 
     }
 
+    
 
     public function destroy($area_id, $horario_presencial_asignado_id){
         $access = FunctionHelperController::verifyAdminAccess();
