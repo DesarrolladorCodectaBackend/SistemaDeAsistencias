@@ -2,41 +2,51 @@
     /* gap: 2em; */
 }
 
-.search-container{
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    height: 8vh;
-    margin-left: 80em;
-}
-
-.btn-buscar{
-    color: white;
-    background: transparent;
-    border: none;
-    /* border-radius: 3px; */
-}
-
-#input-buscar{
-    color: black;
-}
-
 .btn-limpiar{
-    display: flex;
-    color: white;
-    background: transparent;
-    padding: 5px 10px 5px 10px;
-    border: none;
-    /* border-radius: 3px; */
-}
+  display: flex;
+  color: white;
+  background: transparent;
+  padding: 5px 10px 5px 10px;
+  border: none;
+  border-radius: 100px;
+} 
 
-
+/* From Uiverse.io by themrsami */
 .search-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 8vh;
   position: relative;
-  width: 290px;
-
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
 }
 
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: #333;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.521);
+} 
+
+.search-input {
+  display: block;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #e5e7e7;
+  border-radius: 1px;
+  background: none;
+  font-size: 0.98rem;
+  padding: 4px 12px;
+}
 .search-bar {
   position: relative;
   display: flex;
