@@ -33,26 +33,20 @@
             </div>
         @endif
 
-        <div class="row mt-2 justify-content-center">
-            <div class="col-md-6 col-sm-8">
-                <form method="GET" action="{{ route('buscar.responsabilidades') }}" class="d-flex form-content">
 
-                    <input
-                        type="text"
-                        name="buscar_responsabilidad"
-                        class="form-control me-2"
-                        placeholder="Escribe el nombre de la responsabilidad..."
-                        value="{{ request('buscar.responsabilidades') }}"
-                        autocomplete="off"
-                    >
 
-                    <button type="submit" class="btn btn-primary">
-                        Buscar
-                    </button>
-
+        <form method="GET" action="{{ route('buscar.responsabilidades') }}" class="d-flex form-content">
+            <div class="search-container">
+                <form method="GET" action="">
+                    <input id="ls-buscar" class="search-input" type="text" name="buscar_area"
+                        placeholder="Buscar Responsabilidad..." autocomplete="off" value="{{ request('buscar_area') }}">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
+                {{-- <form>
+                    <button id="limpiar" class="btn btn-outline-success my-2 my-sm-0" type="button">Limpiar</button>
+                </form> --}}
             </div>
-        </div>
+        </form>
 
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
@@ -130,6 +124,16 @@
     </div>
     </div>
 
+<script>
+    const buscador = document.getElementById("ls-buscar");
+    const btnLimpiar = document.getElementById("limpiar");
+
+    function limpiarBuscador() {
+        buscador.value = "";
+    }
+
+    btnLimpiar.addEventListener("click", limpiarBuscador);
+</script>
 </body>
 
 </html>

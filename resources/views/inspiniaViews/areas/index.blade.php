@@ -101,23 +101,21 @@
             </div>
         @endif
 
-        <div class="row mt-2 justify-content-center">
-            <div class="col-md-6 col-sm-8">
-                <form method="GET" action="{{ route('areas.buscar') }}" class="d-flex form-content">
-                    <input
-                        type="text"
-                        name="buscar_area"
-                        class="form-control me-2"
-                        placeholder="Escribe el nombre del área..."
-                        value="{{ request('buscar_area') }}"
-                        autocomplete="off"
-                    >
-                    <button type="submit" class="btn btn-primary">
-                        Buscar
-                    </button>
+
+        <!-- From Uiverse.io by themrsami -->
+        <form method="GET" action="{{ route('areas.buscar') }}" class="d-flex form-content">
+            <div class="search-container">
+                <form method="GET" action="">
+                    <input id="input-buscar" class="search-input" type="text" name="buscar_area"
+                        placeholder="Buscar Área..." autocomplete="off" value="{{ request('buscar_area') }}">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
+                {{-- <form>
+                    <button id="btn-limpiar" class="btn btn-outline-success my-2 my-sm-0" type="button">Limpiar</button>
+                </form> --}}
+
             </div>
-        </div>
+        </form>
 
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
@@ -764,6 +762,17 @@ function validarFechas(areaId) {
         resumen.innerHTML = 'Seleccione las fechas para ver el resumen del período de desactivación.';
     }
 }
+</script>
+
+<script>
+    const buscador = document.getElementById("input-buscar");
+    const btnLimpiar = document.getElementById("btn-limpiar");
+
+    function limpiarBuscador(){
+    buscador.value = "";
+    }
+
+    btnLimpiar.addEventListener("click",limpiarBuscador)
 </script>
 
 <style>

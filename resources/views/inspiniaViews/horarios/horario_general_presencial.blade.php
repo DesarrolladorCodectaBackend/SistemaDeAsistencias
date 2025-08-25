@@ -10,6 +10,58 @@
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
     <title>INSPINIA | HORARIO GENERAL</title>
+
+    {{-- <style>
+    .fc-event {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin-top: 2px;
+}
+    </style>
+
+    <style>
+    .fc-time-grid .fc-event {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 2px 0 !important;
+    padding: 4px !important;
+    font-size: 13px !important;
+    width: auto !important;
+    white-space: normal !important;
+}
+
+    .fc-time-grid .fc-event {
+    position: absolute !important;
+    left: 2% !important;
+    right: 2% !important;
+    width: 100% !important;
+    }
+
+    .fc-toolbar, .fc-day-header {
+        display: none !important;
+    }
+    .fc-time-grid .fc-event {
+        position: inherit !important;
+        left: auto !important;
+        right: auto !important;
+        margin-top: 1px !important;
+        padding: 12.5px 0px  !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        width: 100% !important;
+    }
+    .fc-timegrid-event {
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        padding: 20px 0 !important;
+    }
+
+    </style> --}}
+
 </head>
 
 <body>
@@ -33,7 +85,6 @@
         <div id="button-container" style="text-align: center; margin-top: 20px; display: flex; justify-content: end;">
 
         </div>
-
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 <div class="col-lg-12">
@@ -67,9 +118,12 @@
                                                             .fc-day-header {
                                                                 display: none !important;
                                                             }
+
+
                                                         </style>
                                                         <div id="calendar"></div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -77,9 +131,6 @@
 
                                 </div>
                             </div>
-
-
-
 
 
                         </div>
@@ -91,12 +142,31 @@
     </div>
     </div>
 
-    <style>
-        /*Ocultar la fecha del calendario*/
-        .fc-toolbar {
-            display: none;
-        }
-    </style>
+<style>
+    /* Ocultar elementos no necesarios */
+    .fc-toolbar, .fc-day-header {
+        display: none !important;
+    }
+
+    .fc-time-grid .fc-event {
+        position: inherit !important;
+        left: auto !important;
+        right: auto !important;
+        margin: 0 !important; /* sin márgenes que corten el alto */
+        padding: 3px !important;
+        font-size: 11px !important;
+        width: 100% !important;
+        height: 100% !important; /* ocupa toda la celda de la hora */
+        box-sizing: border-box;
+    }
+
+    /* Ajustar el contenido interno del evento */
+    .fc-time-grid-event > .fc-content {
+        height: 100% !important;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+</style>
 
     <script>
         $(document).ready(function() {
@@ -178,7 +248,7 @@
                     end: new Date(2024, 1, 6, 13, 30),
                     allDay: true,
                     color: '#a0d6f4',
-                    editable: false
+                    editable: true
                 },
                 {
                     title: 'Miércoles',
@@ -237,11 +307,14 @@
                 minTime: '08:00:00',
                 maxTime: '18:00:01',
                 contentHeight: 'auto',
-                eventOverlap: true,
+                eventOrder: 'start',
+                eventDisplay: 'block',
+                eventOverlap: false,
                 slotEventOverlap: false,
                 editable: true,
                 droppable: true,
-                allDaySlot: true,
+                allDaySlot: false,
+
                 drop: function() {
                     if ($('#drop-remove').is(':checked')) {
                         $(this).remove();
@@ -249,10 +322,14 @@
                 },
                 events: eventos,
                 eventRender: function(event, element) {
-                    var daysToShow = 4;
-                    var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
-                    element.css('width', columnWidth);
-                },
+                var daysToShow = 4;
+                var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
+                // element.css('width', columnWidth);
+
+                // NUEVO: envolver contenido para girarlo
+                element.wrapInner('<div class="event-wrapper"></div>');
+},
+
                 eventClick: function(calEvent, jsEvent, view) {
 
                     if (calEvent.area_id) {
@@ -268,8 +345,9 @@
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.2.0/dist/exceljs.min.js"></script>
 
 
-
     ></script>
+
+
 
     <script>
     function exportToExcel() {
@@ -388,7 +466,7 @@
                     cell.fill = {
                         type: 'pattern',
                         pattern: 'solid',
-                        fgColor: { argb: 'E0FFFF' } // Celeste transparente
+                        fgColor: { argb: 'FFFF' } // Celeste transparente
                     };
                     cell.font = { bold: true };
                     cell.alignment = { vertical: 'middle', horizontal: 'center' };

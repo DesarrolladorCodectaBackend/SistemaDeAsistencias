@@ -72,7 +72,7 @@ body .fc { /* extra precedence to overcome jqui */
 --------------------------------------------------------------------------------------------------*/
 
 .fc-icon {
-	display: inline-block;
+	display: table-column-group;
 	height: 1em;
 	line-height: 1em;
 	font-size: 1em;

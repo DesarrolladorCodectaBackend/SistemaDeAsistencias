@@ -16,6 +16,7 @@
         @include('components.inspinia.side_nav_bar-inspinia')
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-3">
+                <h2>Caja chica</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{route('dashboard')}}">Inicio</a>
