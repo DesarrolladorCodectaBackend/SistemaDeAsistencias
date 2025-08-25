@@ -110,9 +110,9 @@
                         placeholder="Buscar Área..." autocomplete="off" value="{{ request('buscar_area') }}">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
-                <form>
+                {{-- <form>
                     <button id="btn-limpiar" class="btn btn-outline-success my-2 my-sm-0" type="button">Limpiar</button>
-                </form>
+                </form> --}}
 
             </div>
         </form>

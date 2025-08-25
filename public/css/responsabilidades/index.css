@@ -9,7 +9,7 @@
   padding: 5px 10px 5px 10px;
   border: none;
   border-radius: 100px;
-} 
+}
 
 /* From Uiverse.io by themrsami */
 .search-container {
@@ -35,7 +35,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.521);
-} 
+}
 
 .search-input {
   display: block;
@@ -43,7 +43,7 @@
   background-color: #fff;
   border: 1px solid #e5e7e7;
   border-radius: 1px;
-  background: none;
+  /* background: none; */
   font-size: 0.98rem;
   padding: 4px 12px;
 }
