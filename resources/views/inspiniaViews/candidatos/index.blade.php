@@ -222,18 +222,19 @@
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Nombre</label>
-                                                <input type="text" placeholder="Ingrese un nombre"  autocomplete="off" class="form-control" name="nombre" value="{{ old('nombre') }}">
+                                                <input type="text" placeholder="Ingrese un nombre" autocomplete="off" class="form-control" name="nombre" value="{{ old('nombre') }}">
                                                 @error('nombre')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            <div class="form-group"><label>Apellido</label> <input type="text"
-                                                    placeholder="Ingrese apellido" class="form-control" name="apellido" value="{{ old('apellido')}}"
-                                                     autocomplete="off">
-                                                    @error('apellido')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+
+                                            <div class="form-group"><label>Apellido</label> <input type="text" placeholder="Ingrese apellido" class="form-control" name="apellido" value="{{ old('apellido')}}"
+                                                    autocomplete="off">
+                                                @error('apellido')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
+
                                             <div class="form-group">
                                                 <label>DNI</label>
                                                 <div class="position-relative">
@@ -244,8 +245,6 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-
-
                                             <style>
                                                 /* Quitar los controles de incremento y decremento en los navegadores */
                                                 input[type="number"]::-webkit-outer-spin-button,
@@ -350,11 +349,13 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group"><label>Correo</label> <input type="email"
-                                                    placeholder="correo@gmail.com" class="form-control" name="correo" value="{{old('correo')}}">
+                                                    placeholder="correo@gmail.com" class="form-control" name="correo" value="{{old('correo')}}" autocomplete="off">
                                                     @error('correo')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                             </div>
+
+
 
                                             <div class="form-group">
                                                 <label>Celular</label>
@@ -367,7 +368,6 @@
                                                     @enderror
                                                </div>
                                             </div>
-
 
                                         </div>
 
