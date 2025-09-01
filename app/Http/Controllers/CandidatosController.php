@@ -62,7 +62,12 @@ class CandidatosController extends Controller
         if(!$access){
             return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
+
         $candidato = Candidatos::findOrFail($candidato_id);
+         if(!isset($candidato->correo)){
+            return redirect()->route('candidatos.index')->with('warning', 'Debe ingresar el correo del usuario.');
+        }
+
         $areas = Area::where('estado', 1)->orderBy('especializacion', 'asc')->get();
         $horas = [
             "07:00",
@@ -211,9 +216,9 @@ class CandidatosController extends Controller
             }
 
             // Validación de id_senati
-            if (!isset($request->id_senati)) {
-                $errors['id_senati'.$candidato_id] = 'Campo obligatorio.';
-            } else if (isset($request->id_senati)) {
+            // if (!isset($request->id_senati)) {
+            //     $errors['id_senati'.$candidato_id] = 'Campo obligatorio.';
+            if (isset($request->id_senati)) {
                 $candidatos = Candidatos::where('id_senati', $request->id_senati)->get();
                 foreach ($candidatos as $cand) {
                     if ($cand->id != $candidato_id) {
