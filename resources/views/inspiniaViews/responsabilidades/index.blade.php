@@ -125,11 +125,11 @@
     </div>
 
 <script>
-    const buscador = document.getElementById("ls-buscar");
+    const buscadora = document.getElementById("ls-buscar");
     const btnLimpiar = document.getElementById("limpiar");
 
     function limpiarBuscador() {
-        buscador.value = "";
+        buscadora.value = "";
     }
 
     btnLimpiar.addEventListener("click", limpiarBuscador);

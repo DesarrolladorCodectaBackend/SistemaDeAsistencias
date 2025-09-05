@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Inspina|Candidatos</title>
 </head>
@@ -20,6 +21,7 @@
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-3">
                 <h2>Candidatos</h2>
+
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{route('dashboard')}}">Inicio</a>
@@ -30,7 +32,9 @@
                     <li class="breadcrumb-item active">
                         <strong>Candidatos</strong>
                     </li>
+
                 </ol>
+
             </div>
             <div class="col-lg-7 flex-centered">
                 <div class="flex-centered spc-per-90">
@@ -42,6 +46,7 @@
                     </form>
                 </div>
             </div>
+
             <div class="col-lg-2">
                 <div class="py-3">
                     {{-- abrir modal agregar --}}
@@ -49,6 +54,7 @@
                         type="button">Agregar</button>
                     <button data-toggle="modal" class="btn btn-primary dim float-right" href="#modal-filtrar"> Filtrar </button>
                 </div>
+
                 <div id="modal-filtrar" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -56,6 +62,7 @@
 
                                 <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                     <h2 class="m-t-none m-b font-bold text-center">Filtrar Candidatos</h2>
+
                                     <div class="accordion" id="accordionExampleCandidatos">
                                         <!-- Estados -->
                                         <div class="card">
@@ -222,18 +229,19 @@
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
                                             <div class="form-group"><label>Nombre</label>
-                                                <input type="text" placeholder="Ingrese un nombre"  autocomplete="off" class="form-control" name="nombre" value="{{ old('nombre') }}">
+                                                <input type="text" placeholder="Ingrese un nombre" autocomplete="off" class="form-control" name="nombre" value="{{ old('nombre') }}">
                                                 @error('nombre')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            <div class="form-group"><label>Apellido</label> <input type="text"
-                                                    placeholder="Ingrese apellido" class="form-control" name="apellido" value="{{ old('apellido')}}"
-                                                     autocomplete="off">
-                                                    @error('apellido')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+
+                                            <div class="form-group"><label>Apellido</label> <input type="text" placeholder="Ingrese apellido" class="form-control" name="apellido" value="{{ old('apellido')}}"
+                                                    autocomplete="off">
+                                                @error('apellido')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
+
                                             <div class="form-group">
                                                 <label>DNI</label>
                                                 <div class="position-relative">
@@ -244,8 +252,6 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-
-
                                             <style>
                                                 /* Quitar los controles de incremento y decremento en los navegadores */
                                                 input[type="number"]::-webkit-outer-spin-button,
@@ -349,12 +355,17 @@
                                                 <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
+
+
                                             <div class="form-group"><label>Correo</label> <input type="email"
-                                                    placeholder="correo@gmail.com" class="form-control" name="correo" value="{{old('correo')}}">
-                                                    @error('correo')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                placeholder="correo@gmail.com" class="form-control" name="correo" value="{{old('correo')}}" autocomplete="off">
+                                                @error('correo')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
+
+
+
 
                                             <div class="form-group">
                                                 <label>Celular</label>
@@ -367,7 +378,6 @@
                                                     @enderror
                                                </div>
                                             </div>
-
 
                                         </div>
 
@@ -388,6 +398,24 @@
 
 
         <div class="wrapper wrapper-content animated fadeInRight">
+            @if(session('warning'))
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Advertencia!</strong> {{ session('warning') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>¡Éxito!</strong> {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @elseif(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
             @if(session('error'))
             <div id="alert-error" class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert" style="position: relative;">
                 <div style="flex-grow: 1;">
@@ -396,6 +424,7 @@
                 <button onclick="deleteAlertError()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
             </div>
             @endif
+
             <div class="row">
                 @foreach ($candidatos as $index => $candidato)
                 {{-- MODAL SHOW --}}
@@ -1128,7 +1157,7 @@
     <script>
 
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

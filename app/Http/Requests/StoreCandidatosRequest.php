@@ -42,7 +42,7 @@ class StoreCandidatosRequest extends FormRequest
                     Rule::unique('candidatos')->ignore($this->route('candidatos'))
                 ],
 
-                'correo' => ['sometimes',
+                'correo' => ['required',
                 // 'min:1',
                 'max:250',
                 'nullable',
@@ -69,6 +69,7 @@ class StoreCandidatosRequest extends FormRequest
             'required' => 'Campo obligatorio',
             'dni.unique' => 'Error. DNI en uso.',
             'correo.unique' => 'Error. Correo en uso',
+            'correo.required' => 'Campo obligatorio',
             'celular.unique' => 'Error. Nro.celular en uso',
             'celular.max' => 'El celular debe contener 9 números',
             'id_senati' => 'Campo en uso',
