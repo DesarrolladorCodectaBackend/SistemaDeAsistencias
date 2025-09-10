@@ -129,7 +129,8 @@ class CandidatosController extends Controller
                 'celular' => $request->celular,
                 'icono' => $nombreIcono,
                 'id_senati' => $request->id_senati,
-                'distrito_id' => $request->distrito_id
+                'distrito_id' => $request->distrito_id,
+                'carnet_extranjeria' => $request->carnet_extranjeria
             ]);
 
             DB::commit();
