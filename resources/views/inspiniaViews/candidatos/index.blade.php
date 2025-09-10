@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Inspina|Candidatos</title>
 </head>
@@ -242,11 +243,14 @@
                                                 @enderror
                                             </div>
 
-                                            <div class="form-group">
-                                                <label>DNI</label>
+                                            <div class="form-group" id="content-dni-carnet">
+                                                <label id="label-change-dni-carnet">DNI</label>
+                                                <button class="btn btn-success btn-sm" type="button" id="btn-change" onclick="changeToDniCarnet()">
+                                                    <i class='bx bx-undo'></i>
+                                                </button>
                                                 <div class="position-relative">
-                                                    <input type="number" id="dni-store" placeholder="Ingrese dni" class="form-control" name="dni" autocomplete="off" oninput="limitDNI(this)">
-                                                    <span id="dni-counter-store" class="position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
+                                                    <input type="number" placeholder="Ingrese dni" id="input-dni-carnet" class="form-control" name="dni">
+                                                    {{-- <span id="dni-counter-store" class="position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span> --}}
                                                 </div>
                                                 @error('dni')
                                                     <span class="text-danger">{{ $message }}</span>
@@ -1158,6 +1162,37 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function changeToDniCarnet() {
+            const contentDiv = document.getElementById('content-dni-carnet');
+            const currentLabel = document.getElementById('label-change-dni-carnet').textContent;
+
+            if (currentLabel === 'DNI') {
+                // cambiarlo a carnet_extranjeria
+                contentDiv.innerHTML = `
+                    <label id="label-change-dni-carnet">Carnet Extranjería</label>
+                    <button class="btn btn-success btn-sm" type="button" id="btn-change" onclick="changeToDniCarnet()">
+                        <i class='bx bx-undo'></i>
+                    </button>
+                    <div class="position-relative">
+                        <input type="text" placeholder="Ingrese carnet de extranjería" id="input-dni-carnet" class="form-control" name="carnet_extranjeria">
+                    </div>
+                `;
+            } else {
+                // cambiarlo a DNI
+                contentDiv.innerHTML = `
+                    <label id="label-change-dni-carnet">DNI</label>
+                    <button class="btn btn-success btn-sm" type="button" id="btn-change" onclick="changeToDniCarnet()">
+                        <i class='bx bx-undo'></i>
+                    </button>
+                    <div class="position-relative">
+                        <input type="number" placeholder="Ingrese dni" id="input-dni-carnet" class="form-control" name="dni">
+                    </div>
+                `;
+            }
+        }
+    </script>
 </body>
 
 </html>
