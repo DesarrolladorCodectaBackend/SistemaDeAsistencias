@@ -50,17 +50,31 @@ class HomePageController extends Controller
             $returning['selectedAreas'] = $selectedAreas;
         }
 
-        if ($userData['isColab'] && isset($userData['colabsArea']) && $userData['colabsArea']) {
-            $areasColabId = is_array($userData['colabsArea']) ? collect($userData['colabsArea'])->pluck('area_id') : collect([$userData['colabsArea']->area_id]);
+        // if ($userData['isColab'] && isset($userData['colabsArea']) && $userData['colabsArea']) {
+        //     $areasColabId = is_array($userData['colabsArea']) ? collect($userData['colabsArea'])->pluck('area_id') : collect([$userData['colabsArea']->area_id]);
 
-            $selectedAreasColab = Area::whereIn('id', $areasColabId)
-                ->withCount(['colaborador_por_area' => function ($query) {
+        //     $selectedAreasColab = Area::whereIn('id', $areasColabId)
+        //         ->withCount(['colaborador_por_area' => function ($query) {
+        //             $query->where('estado', 1);
+        //         }])
+        //         ->get();
+
+        //     $returning['selectedAreasColab'] = $selectedAreasColab;
+        // }
+        if ($userData['isColab'] && isset($userData['colabsArea']) && $userData['colabsArea']) {
+            $areasColabId = is_array($userData['colabsArea'])
+                ? collect($userData['colabsArea'])->pluck('area_id')
+                : collect([$userData['colabsArea']->area_id]);
+            // sacar a los que son jefes de area para evitar duplicados
+            $areasJefeId = $userData['Jefeareas']->pluck('area_id');
+
+            $selectedAreasColab = Area::whereIn('id', $areasColabId)->whereNotIn('id', $areasJefeId)->where('estado', 1)->withCount(['colaborador_por_area' => function ($query) {
                     $query->where('estado', 1);
-                }])
-                ->get();
+                }])->get();
 
             $returning['selectedAreasColab'] = $selectedAreasColab;
         }
+
         // return $returning;
         return view('dashboard', $returning);
     }
