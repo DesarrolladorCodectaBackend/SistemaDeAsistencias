@@ -205,6 +205,19 @@
                                             @endif
                                         </x-uiverse.tooltip>
 
+                                        {{-- proyectos btn abrir modal --}}
+                                        <x-uiverse.tooltip nameTool="Proyectos">
+                                            <button
+                                                type="button"
+                                                class="btn btn-success fa fa-edit"
+                                                style="font-size: 20px;"
+                                                data-toggle="modal"
+                                                data-target="#proyectosModal{{ $area->id }}"
+                                            >
+                                            </button>
+                                        </x-uiverse.tooltip>
+                                        
+
                                         {{-- modal desactivar evaluaciones --}}
                                         <div class="modal fade"
                                             id="modalDesactivarEvaluaciones{{$area->id}}"
