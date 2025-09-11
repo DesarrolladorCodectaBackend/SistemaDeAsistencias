@@ -42,6 +42,7 @@ use App\Http\Controllers\ReunionesProgramadasController;
 use App\Http\Controllers\TutorSeguimientoController;
 use App\Mail\ReunionProgramadaMailable;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GestorProyectos\ProyectoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -251,6 +252,9 @@ Route::middleware('auth')->group(function () {
 
     // INFORMESSEMANALES
    Route::resource('/InformeSemanal', InformesSemanalesController::class);
+
+   //PROYECTOS 
+   Route::get('/proyecto', [ProyectoController::class, 'index'])->name('proyecto.index');
 
 
     //TutoSeguimiento

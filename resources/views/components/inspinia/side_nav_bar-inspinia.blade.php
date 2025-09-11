@@ -76,6 +76,12 @@
                     </ul>
                 </li>
                 <li>
+                    <a href="{{ route('proyecto.index') }}">
+                        <i class="fa fa-folder-open"></i> Proyecto
+                    </a>
+                </li>
+
+                <li>
                     <a href="{{route('reunionesProgramadas.allReu')}}"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu.
                             Programadas</span></a>
                 </li>
