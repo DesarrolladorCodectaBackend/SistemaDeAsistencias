@@ -76,12 +76,6 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="{{ route('proyecto.index') }}">
-                        <i class="fa fa-folder-open"></i> Proyecto
-                    </a>
-                </li>
-
-                <li>
                     <a href="{{route('reunionesProgramadas.allReu')}}"><i class="fa fa-video-camera"></i> <span class="nav-label">Reu.
                             Programadas</span></a>
                 </li>
@@ -109,6 +103,7 @@
                 </li>
             @endif
 
+            {{-- admin y jefe de area --}}
             @if($userData['isAdmin'] || $userData['isBoss'])
                 <li>
                     <a href="{{route('responsabilidades.index')}}"><i class="fa fa-list-alt"></i> <span
@@ -116,6 +111,16 @@
                 </li>
             @endif
 
+            {{-- jefe de area --}}
+            @if($userData['isBoss'])
+                <li>
+                    <a href="{{ route('proyectos.index') }}">
+                        <i class="fa fa-folder-open"></i> Proyectos
+                    </a>
+                </li>
+            @endif
+
+            {{-- colaborador y jefe de area --}}
             @if($userData['isColab'] || $userData['isBoss'])
                 <li>
                     <a href="{{ route('bibliotecaColab.index') }}"><i class="fa fa-list-alt"></i> <span

@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\ActividadesController;
@@ -214,7 +214,7 @@ Route::middleware('auth')->group(function () {
     Route::get('responsabilidades/buscar', [Cumplio_Responsabilidad_SemanalController::class, 'index'])->name('buscar.responsabilidades');
 
     Route::resource('responsabilidades', Cumplio_Responsabilidad_SemanalController::class);
-    
+
     Route::put('/responsabilidades/{semana_id}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'actualizar'])->name('responsabilidades.actualizar');
     Route::get('/responsabilidades/years/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getYearsArea'])->name('responsabilidades.years');
     Route::get('/responsabilidades/{year}/{area_id}', [Cumplio_Responsabilidad_SemanalController::class, 'getMesesAreas'])->name('responsabilidades.meses');
@@ -251,11 +251,13 @@ Route::middleware('auth')->group(function () {
     Route::get('Reportes', [ReporteController::class, 'index'])->name('reportes.index');
 
     // INFORMESSEMANALES
-   Route::resource('/InformeSemanal', InformesSemanalesController::class);
+    Route::resource('/InformeSemanal', InformesSemanalesController::class);
 
-   //PROYECTOS 
-   Route::get('/proyecto', [ProyectoController::class, 'index'])->name('proyecto.index');
-
+    //PROYECTOS ÁREAS
+    Route::get('/proyectos', [ProyectoController::class, 'index'])->name('proyectos.index');
+    Route::post('/proyecto/store', [ProyectoController::class, 'store'])->name('proyectos.store');
+    Route::patch('/proyecto/change-state/{proyecto_id}', [ProyectoController::class, 'changeState'])->name('proyectos.changeState');
+    Route::put('/proyecto/update/{proyecto_id}', [ProyectoController::class, 'update'])->name('proyectos.update');
 
     //TutoSeguimiento
     Route::get('/especialista', [TutorSeguimientoController::class, 'index'])->name('especialista.index');
@@ -280,7 +282,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/biblioteca/store', [LibroController::class, 'store'])->name('libro.store');
     Route::put('/biblioteca/update/{libro_id}', [LibroController::class, 'update'])->name('libro.update');
     // Route::post('/biblioteca/active-inactive/{libro_id}', [LibroController::class, 'activeInactive'])->name('libro.activarInactivar');
-    Route::get('/libros-disponibles/', [ColabAccountController::class, 'index'])->name('bibliotecaColab.index');
+    Route::get('/libros-disponibles', [ColabAccountController::class, 'index'])->name('bibliotecaColab.index');
 
     Route::get('/biblioteca/{colaborador_id}', [PrestamoLibroController::class, 'colabLibros'])->name('libro.colabLibro');
     Route::post('/biblioteca/prestamo/store', [PrestamoLibroController::class, 'store'])->name('libroPrestamo.store');

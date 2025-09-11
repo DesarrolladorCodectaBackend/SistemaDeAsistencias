@@ -41,7 +41,7 @@ class HomePageController extends Controller
 
         if($userData['isBoss']){
             $areasJefeId = $userData['Jefeareas']->pluck('area_id');
-            $selectedAreas = Area::whereIn('id', $areasJefeId)->get();
+            $selectedAreas = Area::whereIn('id', $areasJefeId)->where('estado', 1)->get();
             foreach($selectedAreas as $area){
                 $colaboradoresAreaCount = Colaboradores_por_Area::where('area_id', $area->id)->where('estado', 1)->count();
                 $area->count_colabs = $colaboradoresAreaCount;
