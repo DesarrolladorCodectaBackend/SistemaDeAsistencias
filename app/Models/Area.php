@@ -34,4 +34,8 @@ class Area extends Model
     public function ultima_desactivacion() {
         return $this->hasOne(AreaSemanaDesactivacion::class, 'area_id', 'id')->latest('created_at');
     }
+
+    public function proyectos() {
+        return $this->hasMany(Proyecto::class, 'area_id', 'id');
+    }
 }
