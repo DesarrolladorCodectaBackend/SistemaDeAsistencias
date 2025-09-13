@@ -117,7 +117,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/areas/reuniones/{area_id}', [Reuniones_AreasController::class, 'reunionesGest'])->name('areas.getReuniones');
     Route::post('/areas/reunionCreate', [Reuniones_AreasController::class, 'store'])->name('areas.reunionCreate');
     Route::put('/areas/reunionUpdate/{id}', [Reuniones_AreasController::class, 'update'])->name('areas.reunionUpdate');
-    Route::delete('/areas/reunionDelete/{id}', [Reuniones_AreasController::class, 'destroy']);
+    Route::delete('/areas/reunionDelete/{id}', [Reuniones_AreasController::class, 'destroy'])->name('areas.delete');
 
     //Maquina Reservada
     Route::get('/area/maquinas/{area_id}', [AreaController::class, 'getMaquinasByArea'])->name('areas.getMaquinas');
