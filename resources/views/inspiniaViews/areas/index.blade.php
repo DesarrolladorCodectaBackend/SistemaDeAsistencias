@@ -205,6 +205,73 @@
                                             @endif
                                         </x-uiverse.tooltip>
 
+                                        {{-- proyectos btn abrir modal --}}
+                                        <x-uiverse.tooltip nameTool="Proyectos">
+                                            <button
+                                                type="button"
+                                                class="btn btn-success fa fa-edit"
+                                                style="font-size: 20px;"
+                                                data-toggle="modal"
+                                                data-target="#proyectosModal{{ $area->id }}"
+                                            >
+                                            </button>
+                                        </x-uiverse.tooltip>
+
+                                        <!-- Modal Proyectos -->
+                                        <div>
+                                            <div class="modal inmodal" id="proyectosModal{{ $area->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content animated bounceInRight">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                            <i class="fa fa-laptop modal-icon"></i>
+                                                            <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
+                                                            <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            @if($area->proyectos->count() > 0)
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-striped">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th>Nombre</th>
+                                                                            <th>Descripción</th>
+                                                                            <th>Fechas</th>
+                                                                            <th>Progreso</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        @foreach($area->proyectos as $proyecto)
+                                                                        <tr>
+                                                                            <td>{{ $proyecto->nombre }}</td>
+                                                                            <td>{{ $proyecto->descripcion }}</td>
+                                                                            <td>{{ \Carbon\Carbon::parse($proyecto->fecha_inicio)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($proyecto->fecha_fin)->format('d/m/Y') }}</td>
+                                                                            <td>
+                                                                                <div class="progress">
+                                                                                    <div class="progress-bar" role="progressbar" style="width: {{ $proyecto->porcentaje }}%;" aria-valuenow="{{ $proyecto->porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ $proyecto->porcentaje }}%</div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            @else
+                                                                <div class="text-center">
+                                                                    <p>Esta área no tiene proyectos registrados.</p>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+
+
                                         {{-- modal desactivar evaluaciones --}}
                                         <div class="modal fade"
                                             id="modalDesactivarEvaluaciones{{$area->id}}"

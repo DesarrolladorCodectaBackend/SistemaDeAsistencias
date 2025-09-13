@@ -17,6 +17,7 @@ use App\Http\Requests\StoreareaRequest;
 use App\Http\Requests\UpdateareaRequest;
 use App\Models\User;
 use App\Models\AreaSemanaDesactivacion;
+use App\Models\Proyecto;
 use App\Models\UsuarioJefeArea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +39,9 @@ class AreaController extends Controller
             $colaboradoresAreaCount = $integrantesArea->count();
             $area->integrantes = $integrantesArea;
             $area->count_colabs = $colaboradoresAreaCount;
+
+            $area->proyectos = Proyecto::where('area_id', $area->id)->where('estado', 1)->orderBy('created_at', 'desc')->limit(3)->get();
+            $area->count_proyectos = $area->proyectos->count();
         }
         return $areas;
     }
@@ -83,8 +87,6 @@ class AreaController extends Controller
 
         // return response()->json(["areas" => $areas]);
         //Redirigir a la vista mandando las áreas
-
-
 
         return view('inspiniaViews.areas.index', [
             'areas' => $areas,

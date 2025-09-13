@@ -429,17 +429,15 @@
 </script>
 
 <script>
-function confirmDelete(id) {
+    function confirmDelete(id) {
         alertify.confirm("¿Deseas eliminar este registro?", function(e) {
             if (e) {
                 let form = document.createElement('form')
                 form.method = 'POST'
-                form.action = `/areas/reunionDelete/${id}`
-                form.innerHTML = '@csrf @method('DELETE')'
+                form.action = "{{ route('areas.delete', ':id') }}".replace(':id', id)
+                form.innerHTML = `@csrf @method('DELETE')`
                 document.body.appendChild(form)
                 form.submit()
-            } else {
-                return false
             }
         });
     }

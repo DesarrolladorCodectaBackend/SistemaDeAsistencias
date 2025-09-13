@@ -12,4 +12,6 @@ class AjusteController extends Controller
         }
         return view('inspiniaViews.ajustes.index');
     }
+
+// gggg
 }
