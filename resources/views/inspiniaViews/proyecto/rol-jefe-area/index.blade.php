@@ -92,7 +92,7 @@
                                                 <div class="progress mt-2">
                                                     <div id="progressBar"
                                                         class="progress-bar bg-info"
-                                                        style="width: 0%;">
+                                                        style="width: 0%; color: black;">
                                                         0%
                                                     </div>
                                                 </div>
@@ -170,7 +170,7 @@
                                             @method('PATCH')
                                                 <button type="submit"
                                                     class="btn btn-{{ $proyecto->estado ? 'outline-success' : 'danger' }} btn-primary dim">
-                                                    <span>{{ $proyecto->estado ? 'Activado' : 'Inactivo' }}</span>
+                                                    <span>{{ $proyecto->estado ? 'Activado' : 'Inactivo'}}</span>
                                                 </button>
                                         </form>
                                     </td>
@@ -182,15 +182,17 @@
                                             data-toggle="modal"><i
                                             class="fa fa-paste"></i>
                                         </button>
-
                                         <button
-                                            class="btn btn-info" type="button"
+                                            class="btn btn-primary" type="button"
                                             href="#modal-view{{ $proyecto->id }}"
-                                            data-toggle="modal"><i
-                                            class="fa fa-paste"></i>
+                                            data-toggle="modal"><i class="fa fa-eye"></i> 
+                                            <style>
+                                                .btn-primary {
+                                                    margin: 5px;
+                                                }
+                                            </style>
                                         </button>
                                     </td>
-
                                     {{-- modal actualizar --}}
                                     <div id="modal-form{{ $proyecto->id }}" class="modal fade" aria-hidden="true">
                                         <div class="modal-dialog">
@@ -251,7 +253,7 @@
                                                                     <div class="progress mt-2">
                                                                         <div id="progressBar{{ $proyecto->id }}"
                                                                             class="progress-bar bg-info"
-                                                                            style="width: {{ $proyecto->porcentaje }}%;">
+                                                                            style="width: {{ $proyecto->porcentaje }}%;">                                                                            
                                                                             {{ $proyecto->porcentaje }}%
                                                                         </div>
                                                                     </div>
@@ -268,6 +270,34 @@
                                                             </form>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- Modal ver los datos del proyecto --}}
+                                    <div class="modal "
+                                        id="modal-view{{ $proyecto->id }}"
+                                        tabindex="-1"
+                                        aria-labelledby="modal-form{{ $proyecto->id }}"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="modal-form{{ $proyecto->id }}">
+                                                        Nombre: {{ $proyecto->nombre }}
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Descripción: {{ $proyecto->descripcion }}</p>
+                                                    <p>Fecha Inicio: {{ $proyecto->fecha_inicio }}</p>      
+                                                    <p>Fecha Fin: {{ $proyecto->fecha_fin }}</p>
+                                                    <p>Porcentaje: {{ $proyecto->porcentaje }}%</p>
+                                                    <p>Estado: {{ $proyecto->estado ?  'Activo' : 'Inactivo'}} </p>
+
+                                                </p>
                                                 </div>
                                             </div>
                                         </div>
