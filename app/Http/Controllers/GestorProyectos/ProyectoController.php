@@ -45,7 +45,7 @@ class ProyectoController extends Controller
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin' => $request->fecha_fin,
                 'porcentaje' => $request->porcentaje,
-                'estado' => 1, 
+                'estado' => 1,
                 'area_id' => $areaPerteneciente->id,
                 // estado en default => 1
             ]);
@@ -65,10 +65,41 @@ class ProyectoController extends Controller
     public function update(Request $request, $proyecto_id) {
         try {
 
+            $proyecto = Proyecto::findOrFail($proyecto_id);
+
+            $datosActualizar = [];
+
+            if ($request->has('nombre')) {
+                $datosActualizar['nombre'] = $request->nombre;
+            }
+
+            if ($request->has('descripcion')) {
+                $datosActualizar['descripcion'] = $request->descripcion;
+            }
+
+            if ($request->has('fecha_inicio')) {
+                $datosActualizar['fecha_inicio'] = $request->fecha_inicio;
+            }
+
+            if ($request->has('fecha_fin')) {
+                $datosActualizar['fecha_fin'] = $request->fecha_fin;
+            }
+
+            if ($request->has('porcentaje')) {
+                $datosActualizar['porcentaje'] = $request->porcentaje;
+            }
+
+            DB::beginTransaction();
+            $proyecto->update($datosActualizar);
+
+            DB::commit();
+            return redirect()->back()->with('success','Proyecto actualizado');
+
         } catch (Exception $e) {
 
             DB::rollBack();
-
+            // return $e;
+            return redirect()->route('proyectos.index')->with('error', 'Ocurrió un error, inténtelo más tarde o contacte con el equipo de soporte');
 
         }
     }

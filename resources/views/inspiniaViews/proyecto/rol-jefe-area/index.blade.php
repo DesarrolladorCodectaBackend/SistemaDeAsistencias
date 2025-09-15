@@ -163,7 +163,7 @@
                                     <td>{{ $proyecto->descripcion }}</td>
                                     <td>{{ $proyecto->fecha_inicio ?? '' }}</td>
                                     <td>{{ $proyecto->fecha_fin ?? '' }}</td>
-                                    <td>{{ $proyecto->porcentaje }}</td>
+                                    <td>{{ $proyecto->porcentaje }}%</td>
                                     <td class="text-center">
                                         <form method="POST" action="{{ route('proyectos.changeState', $proyecto->id) }}">
                                             @csrf
@@ -203,18 +203,61 @@
                                                             <form role="form" method="POST"
                                                                 action="{{ route('proyectos.update', $proyecto->id) }}">
                                                                 @csrf
-                                                                @method('PUT')
-                                                                <input type="hidden" name="form_type" value="edit">
-                                                                <input type="hidden" name="proyecto_id" value="{{ $proyecto->id }}">
-
-                                                                <label class="col-form-label">Institución</label>
-                                                                <div class="form-group"><label>Nombre</label>
-                                                                    <input type="text" placeholder="....."
-                                                                        class="form-control" name="nombre" id="nombre"
-                                                                        value="{{ $proyecto->nombre }}">
-                                                                        @error('nombre'.$proyecto->id)
-                                                                            <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
+                                                                @method('PATCH')
+                                                                <div class="form-group">
+                                                                    <label>Nombre: </label>
+                                                                    <input type="text" placeholder="Ingrese un nombre" name="nombre" autocomplete="off"
+                                                                        class="form-control" value="{{ $proyecto->nombre ?? '' }}">
+                                                                    @error('nombre')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Descripción: </label>
+                                                                    <textarea placeholder="Ingrese una descripción" name="descripcion" autocomplete="off"
+                                                                        class="form-control">{{ $proyecto->descripcion ?? '' }}</textarea>
+                                                                    @error('descripcion')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Fecha Inicio: </label>
+                                                                    <input type="date" name="fecha_inicio" autocomplete="off"
+                                                                        class="form-control" value="{{ $proyecto->fecha_inicio ?? '' }}">
+                                                                    @error('fecha_inicio')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Fecha Fin: </label>
+                                                                    <input type="date" name="fecha_fin" autocomplete="off" value="{{ $proyecto->fecha_fin ?? '' }}"
+                                                                        class="form-control">
+                                                                    @error('fecha_fin')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Porcentaje:</label>
+                                                                    <input
+                                                                        type="range"
+                                                                        min="0"
+                                                                        max="100"
+                                                                        step="1"
+                                                                        name="porcentaje"
+                                                                        value="{{ $proyecto->porcentaje }}"
+                                                                        class="form-control-range"
+                                                                        oninput="document.getElementById('progressBar{{ $proyecto->id }}').style.width = this.value + '%';
+                                                                                document.getElementById('progressBar{{ $proyecto->id }}').textContent = this.value + '%';">
+                                                                    <div class="progress mt-2">
+                                                                        <div id="progressBar{{ $proyecto->id }}"
+                                                                            class="progress-bar bg-info"
+                                                                            style="width: {{ $proyecto->porcentaje }}%;">
+                                                                            {{ $proyecto->porcentaje }}%
+                                                                        </div>
+                                                                    </div>
+                                                                    @error('porcentaje')
+                                                                        <span class="text-danger">{{ $message }}</span>
+                                                                    @enderror
                                                                 </div>
                                                                 <div>
                                                                     <button

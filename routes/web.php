@@ -257,7 +257,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/proyectos', [ProyectoController::class, 'index'])->name('proyectos.index');
     Route::post('/proyecto/store', [ProyectoController::class, 'store'])->name('proyectos.store');
     Route::patch('/proyecto/change-state/{proyecto_id}', [ProyectoController::class, 'changeState'])->name('proyectos.changeState');
-    Route::put('/proyecto/update/{proyecto_id}', [ProyectoController::class, 'update'])->name('proyectos.update');
+    Route::patch('/proyecto/update/{proyecto_id}', [ProyectoController::class, 'update'])->name('proyectos.update');
 
     //TutoSeguimiento
     Route::get('/especialista', [TutorSeguimientoController::class, 'index'])->name('especialista.index');
