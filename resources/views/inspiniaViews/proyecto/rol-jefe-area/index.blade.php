@@ -175,7 +175,7 @@
                                         </form>
                                     </td>
 
-                                    <td class="text-center oculto">
+                                    <td class="d-flex justify-content-center align-items-center g-2 text-center oculto">
                                         <button
                                             class="btn btn-info" type="button"
                                             href="#modal-form{{ $proyecto->id }}"
@@ -183,6 +183,12 @@
                                             class="fa fa-paste"></i>
                                         </button>
 
+                                        <button
+                                            class="btn btn-info" type="button"
+                                            href="#modal-view{{ $proyecto->id }}"
+                                            data-toggle="modal"><i
+                                            class="fa fa-paste"></i>
+                                        </button>
                                     </td>
 
                                     {{-- modal actualizar --}}
