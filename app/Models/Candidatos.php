@@ -24,7 +24,8 @@ class Candidatos extends Model
         'celular',
         'icono',
         'id_senati',
-        'distrito_id'
+        'distrito_id',
+        'carnet_extranjeria'
     ];
 
     public function sede(){

@@ -103,6 +103,7 @@
                 </li>
             @endif
 
+            {{-- admin y jefe de area --}}
             @if($userData['isAdmin'] || $userData['isBoss'])
                 <li>
                     <a href="{{route('responsabilidades.index')}}"><i class="fa fa-list-alt"></i> <span
@@ -110,6 +111,16 @@
                 </li>
             @endif
 
+            {{-- jefe de area --}}
+            @if($userData['isBoss'])
+                <li>
+                    <a href="{{ route('proyectos.index') }}">
+                        <i class="fa fa-folder-open"></i> Proyectos
+                    </a>
+                </li>
+            @endif
+
+            {{-- colaborador y jefe de area --}}
             @if($userData['isColab'] || $userData['isBoss'])
                 <li>
                     <a href="{{ route('bibliotecaColab.index') }}"><i class="fa fa-list-alt"></i> <span

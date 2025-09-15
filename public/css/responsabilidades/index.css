@@ -40,10 +40,13 @@
 .search-input {
   display: block;
   width: 100%;
-  background-color: #fff;
-  border: 1px solid #e5e7e7;
+ /* background-color: #fff; */
+  border: 2px solid #e5e7e7;
   border-radius: 1px;
+<<<<<<< HEAD
   /* background: none; */
+=======
+>>>>>>> c79b666 (d)
   font-size: 0.98rem;
   padding: 4px 12px;
 }
@@ -68,10 +71,10 @@
 
 .search-input::placeholder {
   color: #aaa;
+  
 }
 
 #buscar{
-    background-color: transparent;
     border: none;
 }
 
