@@ -41,7 +41,6 @@
                             <div class="modal-body">
                                 <form role="form" method="POST" action="{{ route('areas.store') }}"
                                     enctype="multipart/form-data">
-                                    @csrf
                                     <input type="hidden" name="currentURL" value="proyecto">
                                     <input type="hidden" name="form_type" value="create">
                                     <div class="row">
@@ -51,16 +50,12 @@
                                                     placeholder="....." class="form-control" name="especializacion"
                                                     >
                                             </div>
-                                            @error('especializacion')
                                                 <span class="text-danger">proyecto</span>
-                                            @enderror
                                             <div class="form-group"><label>Descripción</label> <input type="text"
                                                     placeholder="....." class="form-control" name="descripcion"
                                                     >
                                             </div>
-                                            @error('descripcion')
                                                 <span class="text-danger">proyecto</span>
-                                            @enderror
                                             <div class="form-group"><label>Color Hex</label>
                                                 <input type="color" placeholder="....." class="form-control"
                                                     name="color_hex" >
@@ -93,11 +88,9 @@
             </div>
         </div>
 
-        @if(!empty($warning))
             <div class="alert alert-warning">
                 <strong>Advertencia:</strong> proyecto
             </div>
-        @endif
 
 
         <!-- From Uiverse.io by themrsami -->
@@ -118,47 +111,44 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
                 <div  class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                    {{-- <button class="ibox" type="button" data-toggle="modal" href="#modal-form{{ $area->id }}"> --}}
+                    {{-- <button class="ibox" type="button" data-toggle="modal" href=""> --}}
                         <div class="ibox">
                             <div class="ibox-content product-box">
-                                <div class="product-imitation" style="object-fit: cover; padding: 0px; height: 225px;" onclick="onClickArea('{{ $area->id }}')">
-                                    <img src="{{ asset('storage/areas/' . $area->icono) }}" alt="" style="height: 100%; width: 100%; object-fit: cover"  class="img-cover">
+                                <div class="product-imitation" style="object-fit: cover; padding: 0px; height: 225px;" onclick="onClickArea('')">
+                                    <img src="" alt="" style="height: 100%; width: 100%; object-fit: cover"  class="img-cover">
                                 </div>
                                 <div class="product-desc">
                                     {{-- CAMBIO DE ESTADO ÁREAS --}}
-                                    <form action="{{ route('areas.activarInactivar', $area->id) }}" method="POST">
-                                        @csrf
-                                        @method('put')
-                                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+                                    <form action="" method="POST">
+                                        <input type="hidden" name="currentURL" value="">
 
                                     </form>
 
                                     <div>
                                         {{-- btn cambiar estado JS --}}
-                                        <button type="button" class="btn btn-{{ $area->estado ? 'outline-success' : 'danger' }} btn-primary dim" onclick="confirmState({{ $area->id }})">
-                                            <span>{{ $area->estado ? 'ON' : 'OFF' }}</span>
+                                        <button type="button" class="btn-primary dim" onclick="">
+                                            <span></span>
                                         </button>
                                     </div>
-                                    <small class="text-muted">ID: {{ $area->id }} Salón: {{$area->salon->nombre}} Cant. Integrantes: {{$area->count_colabs}}</small>
-                                    <a href="#"  class="product-name">{{ $area->especializacion }}</a>
+                                    <small class="text-muted">ID: Salón: Cant. Integrantes: </small>
+                                    <a href="#"  class="product-name"></a>
                                     <div class="small m-t-xs">
-                                        {{ $area->descripcion }}
                                     </div>
                                     <div style="display: flex; gap: 4px" class="m-t text-left">
                                         {{-- <button class="btn btn-danger" type="button"
-                                            onclick="confirmDelete({{ $area->id }})"><i class="fa fa-trash-o"></i></button>
+                                            onclick="confirmDelete()"><i class="fa fa-trash-o"></i></button>
                                         --}}
-                                        {{-- <button class="btn btn-info" type="button" href="#modal-form{{ $area->id }}"
+                                        {{-- <button class="btn btn-info" type="button" href=""
                                             data-toggle="modal"><i class="fa fa-paste"></i> Edit</button> --}}
 
                                             {{-- botones --}}
-                                        <form role="form" method="GET" action="{{ route('areas.getHorario', $area->id) }}">
+                                        <form role="form" method="GET" action="">
                                             <x-uiverse.tooltip nameTool="Horarios">
                                                 <button class="btn btn-primary fa fa-clock-o" style="font-size: 20px;"></button>
                                             </x-uiverse.tooltip>
                                         </form>
                                         <form role="form" method="GET"
-                                            action="{{ route('areas.getReuniones', $area->id) }}">
+                                            action="">
 
                                             <x-uiverse.tooltip nameTool="Reuniones">
                                                 <button class="btn btn-success fa fa-video-camera"
@@ -166,7 +156,7 @@
                                             </x-uiverse.tooltip>
 
                                         </form>
-                                        <form role="form" method="GET" action="{{route('areas.getMaquinas', $area->id)}}">
+                                        <form role="form" method="GET" action="">
 
                                             <x-uiverse.tooltip nameTool="Máquinas">
                                                 <button class="btn btn-secondary fa fa-desktop" style="font-size: 20px;">
@@ -177,50 +167,46 @@
 
                                         {{-- Botón para abrir modal --}}
                                         <x-uiverse.tooltip nameTool="Evaluaciones">
-                                            @if($area->desactivacion)
                                                 <!-- Botón para editar desactivación existente -->
                                                 <button
                                                     type="button"
                                                     class="btn btn-warning fa fa-edit modal-trigger-btn"
                                                     style="font-size: 20px;"
-                                                    data-area-id="{{$area->id}}"
-                                                    data-area-nombre="{{$area->nombre}}"
+                                                    data-area-id=""
+                                                    data-area-nombre=""
                                                     data-tiene-desactivacion="true"
-                                                    data-fecha-inicio="{{$area->desactivacion->fecha_inicio}}"
-                                                    data-fecha-fin="{{$area->desactivacion->fecha_fin}}">
+                                                    data-fecha-inicio=""
+                                                    data-fecha-fin="">
                                                 </button>
-                                            @else
                                                 <!-- Botón para crear nueva desactivación -->
                                                 <button
                                                     type="button"
                                                     class="btn btn-secondary fa fa-calendar modal-trigger-btn"
                                                     style="font-size: 20px;"
-                                                    data-area-id="{{$area->id}}"
-                                                    data-area-nombre="{{$area->nombre}}"
+                                                    data-area-id=""
+                                                    data-area-nombre=""
                                                     data-tiene-desactivacion="false">
                                                 </button>
-                                            @endif
                                         </x-uiverse.tooltip>
 
                                         {{-- modal desactivar evaluaciones --}}
                                         <div class="modal fade"
-                                            id="modalDesactivarEvaluaciones{{$area->id}}"
+                                            id="modalDesactivarEvaluaciones"
                                             tabindex="-1"
-                                            aria-labelledby="modalDesactivarEvaluacionesLabel{{$area->id}}"
+                                            aria-labelledby="modalDesactivarEvaluacionesLabel"
                                             aria-hidden="true"
                                             data-bs-backdrop="static"
                                             data-bs-keyboard="false">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header text-dark">
-                                                        <h5 class="modal-title" id="modalDesactivarEvaluacionesLabel{{$area->id}}">
+                                                        <h5 class="modal-title" id="modalDesactivarEvaluacionesLabel">
                                                             <i class="fas fa-calendar-times me-2"></i>
-                                                            Desactivar Evaluaciones - <span id="areaNombre{{$area->id}}">{{$area->especializacion}}</span>
+                                                            Desactivar Evaluaciones - <span id="areaNombre"></span>
                                                         </h5>
                                                     </div>
 
-                                                    <form method="POST" id="formDesactivarEvaluaciones{{$area->id}}" action="{{ route('desactivarEvaluacionUpdate.area', $area->id) }}">
-                                                        @csrf
+                                                    <form method="POST" id="formDesactivarEvaluaciones" action="">
                                                         <div class="modal-body">
                                                             <div class="alert alert-info">
                                                                 Seleccione el período durante el cual las evaluaciones estarán desactivadas para esta área.
@@ -230,17 +216,17 @@
                                                                 {{-- fecha_inicio --}}
                                                                 <div class="col-md-6">
                                                                     <div class="form-group mb-3">
-                                                                        <label for="fecha_inicio{{$area->id}}" class="form-label fw-bold">
+                                                                        <label for="fecha_inicio" class="form-label fw-bold">
                                                                             <i class="fas fa-calendar-plus text-success me-1"></i>
                                                                             Fecha de Inicio
                                                                         </label>
                                                                         <input type="date"
                                                                             class="form-control form-control-lg"
-                                                                            id="fecha_inicio{{$area->id}}"
+                                                                            id="fecha_inicio"
                                                                             name="fecha_inicio"
                                                                             required
                                                                             min="{{date('Y-m-d')}}"
-                                                                            onchange="validarFechas({{$area->id}})">
+                                                                            onchange="validarFechas()">
                                                                         <small class="form-text text-muted">
                                                                             Fecha desde cuando se desactivarán las evaluaciones
                                                                         </small>
@@ -250,17 +236,17 @@
                                                                 {{-- fecha_fin --}}
                                                                 <div class="col-md-6">
                                                                     <div class="form-group mb-3">
-                                                                        <label for="fecha_fin{{$area->id}}" class="form-label fw-bold">
+                                                                        <label for="fecha_fin" class="form-label fw-bold">
                                                                             <i class="fas fa-calendar-minus text-danger me-1"></i>
                                                                             Fecha de Fin
                                                                         </label>
                                                                         <input type="date"
                                                                             class="form-control form-control-lg"
-                                                                            id="fecha_fin{{$area->id}}"
+                                                                            id="fecha_fin"
                                                                             name="fecha_fin"
                                                                             required
-                                                                            min="{{date('Y-m-d')}}"
-                                                                            onchange="validarFechas({{$area->id}})">
+                                                                            min=""
+                                                                            onchange="validarFechas()">
                                                                         <small class="form-text text-muted">
                                                                             Fecha hasta cuando estarán desactivadas
                                                                         </small>
@@ -275,7 +261,7 @@
                                                                             <i class="fas fa-clock me-1"></i>
                                                                             Resumen del Período
                                                                         </h6>
-                                                                        <p class="card-text" id="resumenPeriodo{{$area->id}}">
+                                                                        <p class="card-text" id="resumenPeriodo">
                                                                             Seleccione las fechas para ver el resumen del período de desactivación.
                                                                         </p>
 
@@ -284,28 +270,25 @@
                                                                                 font-weight: bold;
                                                                             }
                                                                         </style>
-                                                                       @if($area->ultima_desactivacion)
                                                                             <div>
                                                                                 <span class="desactivacion-text">Fechas desactivadas</span>
                                                                             </div>
                                                                             <div>
-                                                                                <span class="desactivacion-text">Fecha Inicio: {{ \Carbon\Carbon::parse($area->ultima_desactivacion->fecha_inicio)->format('Y-m-j') }}</span>
+                                                                                <span class="desactivacion-text">Fecha Inicio: </span>
                                                                             </div>
                                                                             <div>
-                                                                                <span class="desactivacion-text">Fecha Fin: {{ \Carbon\Carbon::parse($area->ultima_desactivacion->fecha_fin)->format('Y-m-j') }}</span>
+                                                                                <span class="desactivacion-text">Fecha Fin: </span>
                                                                             </div>
-                                                                        @else
                                                                             <div>
                                                                                 <span class="desactivacion-text">Sin fecha de desactivación</span>
                                                                             </div>
-                                                                        @endif
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
 
                                                         <div class="modal-footer">
-                                                            <button type="submit" class="btn btn-primary" id="btnConfirmarDesactivacion{{$area->id}}" disabled>
+                                                            <button type="submit" class="btn btn-primary" id="btnConfirmarDesactivacion" disabled>
                                                                 Desactivar Evaluaciones
                                                             </button>
                                                         </div>
@@ -320,18 +303,17 @@
                         </div>
                     {{-- </button> --}}
                 </div>
-                <div id="modal-form{{ $area->id }}" class="modal fade" aria-hidden="true">
+                <div id="modal-form" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
                                 <form role="form" method="POST"
-                                    action="{{ route('areas.update', $area->id) }}"
+                                    action=""
                                     enctype="multipart/form-data">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
+
+                                    <input type="hidden" name="currentURL" value="">
                                     <input type="hidden" name="form_type" value="edit">
-                                    <input type="hidden" name="area_id" value="{{ $area->id }}">
+                                    <input type="hidden" name="area_id" value="">
                                     <div class="row">
                                         <div class="col-sm-6 b-r">
                                             <h3 class="m-t-none m-b">Ingrese los Datos</h3>
@@ -340,33 +322,27 @@
                                                 <input type="text" placeholder="....."
                                                     class="form-control" name="especializacion"
                                                     id="especializacion"
-                                                    value="{{ $area->especializacion }}">
-                                                    @error('especializacion'.$area->id)
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                    value="">
+                                                        <span class="text-danger"></span>
                                             </div>
                                             <div class="form-group"><label>Descripción</label>
                                                 <input type="text" placeholder="....."
                                                     class="form-control" name="descripcion"
                                                     id="descripcion"
-                                                    value="{{ $area->descripcion }}">
-                                                    @error('descripcion'.$area->id)
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                    value="">
+                                                        <span class="text-danger">span>
                                             </div>
                                             <div class="form-group"><label>Color Hex</label>
                                                 <input type="color" placeholder="....."
                                                     class="form-control" name="color_hex"
                                                     id="color_hex"
-                                                    value="{{ $area->color_hex }}">
+                                                    value="">
 
                                             </div>
                                             <div class="form-group"><label>Jefe del Área</label>
                                                 <select class="form-control" name="jefe_area_id" id="">
-                                                    <option @if($area->hasBoss == false) selected @endif value="0">Sin jefe</option>
-                                                    @foreach($area->integrantes as $integrante)
-                                                        <option @if($integrante->jefe_area) selected @endif value="{{$integrante->id}}">{{$integrante->colaborador->candidato->nombre}} {{$integrante->colaborador->candidato->apellido}}</option>
-                                                    @endforeach
+                                                    <option selected value="0">Sin jefe</option>
+                                                        <option  selected value=""></option>
                                                 </select>
 
                                             </div>
@@ -375,26 +351,22 @@
                                         <div class="col-sm-6">
                                             <h4>Subir Icono</h4>
                                             <input type="file" class="form-control-file"
-                                                id="icono-{{ $area->id }}" name="icono"
-                                                value="{{ old('icono', $area->icono) }}"
+                                                id="icono" name="icono"
+                                                value=""
                                                 style="display: none;">
                                             <button type="button" class="btn btn-link"
-                                                id="icon-upload-{{ $area->id }}">
+                                                id="icon-upload">
                                                 <i class="fa fa-cloud-download big-icon"></i>
                                             </button>
                                             <script>
-                                                document.getElementById('icon-upload-{{ $area->id }}').addEventListener('click', function() {
-                                                        document.getElementById('icono-{{ $area->id }}').click();
+                                                document.getElementById('icon-upload').addEventListener('click', function() {
+                                                        document.getElementById('icono').click();
                                                     });
                                             </script>
                                             <div class="form-group"><label>Salón</label>
                                                 <select class="form-control" name="salon_id"
                                                     required>
-                                                    @foreach($salones as $key => $salon)
-                                                    <option value="{{ $salon->id }}" @if($salon->id
-                                                        == $area->salon_id) selected @endif
-                                                        >{{ $salon->nombre }}</option>
-                                                    @endforeach
+                                                    
                                                 </select>
                                             </div>
                                             <div>
@@ -410,58 +382,28 @@
                         </div>
                     </div>
                 </div>
-                @endforeach
             </div>
-            @if($hasPagination === true)
                 <div class="row mb-5 mb-md-4">
                     <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-start align-items-center gap-10 my-3">
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== 1)
-                            <a href="{{ $areas->url(1) }}" class="btn btn-outline-dark rounded-5">
+                            <a href="" class="btn btn-outline-dark rounded-5">
                                 <i class="fa fa-arrow-circle-left"></i> First
                             </a>
-                        @endif
-                        @if($pageData->currentPage > 1)
-                            <a href="{{$pageData->previousPageUrl}}" class="btn btn-outline-dark rounded-5">
+                            <a href="" class="btn btn-outline-dark rounded-5">
                                 <i class="fa fa-arrow-circle-left"></i> Anterior
                             </a>
-                        @endif
                     </div>
                     <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center gap-10">
-                        @if($pageData->currentPage < $pageData->lastPage)
-                            <a href="{{ $pageData->nextPageUrl }}" class="btn btn-outline-dark rounded-5">
+                            <a href="" class="btn btn-outline-dark rounded-5">
                                 Siguiente <i class="fa fa-arrow-circle-right"></i>
                             </a>
-                        @endif
-                        @if($pageData->lastPage > 2 && $pageData->currentPage !== $pageData->lastPage)
-                            <a href="{{ $pageData->lastPageUrl }}" class="btn btn-outline-dark rounded-5">
+                            <a href="" class="btn btn-outline-dark rounded-5">
                                 Last <i class="fa fa-arrow-circle-right"></i>
                             </a>
-                        @endif
                     </div>
                 </div>
-            @endif
 
         </div>
 
-
-        @include('components.inspinia.footer-inspinia')
-
-    </div>
-    </div>
-    @if ($errors->any())
-        <script>
-            // Reabrir el modal de creación si el error proviene del formulario de creación
-            console.log(@json($errors->all()));
-            @if (old('form_type') == 'create')
-                $('#modal-form-add').modal('show');
-            @endif
-
-            // Reabrir el modal de edición si el error proviene del formulario de edición
-            @if (old('form_type') == 'edit' && old('area_id'))
-                $('#modal-form' + {{ old('area_id') }}).modal('show');
-            @endif
-        </script>
-    @endif
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const area = document.getElementById('areas');
@@ -473,7 +415,7 @@
         });
     </script>
 
-    <script src="{{ asset('js/asistencia/areas/index.js') }}"></script>
+    <script src=""></script>
 
 
     <script>
@@ -494,11 +436,6 @@
                     form.action = routeTemplate.replace(':id', id);
 
                     //console.log(routeTemplate);
-                    form.innerHTML = `
-                        @csrf @method("PUT")
-                        <input type="hidden" name="currentURL" value="{{ $pageData->currentURL }}">
-                        `;
-
                     // if (currentURL != null) {
                     //     let inputHidden = document.createElement('input');
                     //     inputHidden.type = 'hidden';
@@ -604,8 +541,8 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
 
         const areaId = form.id.replace('formDesactivarEvaluaciones', '');
-        const fechaInicio = document.getElementById(`fecha_inicio${areaId}`)?.value;
-        const fechaFin = document.getElementById(`fecha_fin${areaId}`)?.value;
+        const fechaInicio = document.getElementById()?.value;
+        const fechaFin = document.getElementById()?.value;
 
         if (!fechaInicio || !fechaFin) {
             console.log('Fechas incompletas');
@@ -650,53 +587,53 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function showModal(areaId) {
-    const modalElement = document.getElementById('modalDesactivarEvaluaciones' + areaId);
+// function showModal(areaId) {
+//    const modalElement = document.getElementById('modalDesactivarEvaluaciones' + areaId);
 
-    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-        const modal = new bootstrap.Modal(modalElement, {
-            backdrop: true,
-            keyboard: true
-        });
-        modal.show();
-    } else if (typeof $ !== 'undefined' && $.fn.modal) {
-        $(modalElement).modal({
-            backdrop: true,
-            keyboard: true
-        }).modal('show');
-    } else {
-        modalElement.style.display = 'block';
-        modalElement.classList.add('show');
-        document.body.classList.add('modal-open');
-    }
-}
+//    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+//        const modal = new bootstrap.Modal(modalElement, {
+//            backdrop: true,
+//            keyboard: true
+//        });
+//        modal.show();
+//    } else if  {
+//        $(modalElement).modal({
+//           backdrop: true,
+//            keyboard: true
+//        }).modal('show');
+//    } else {
+//        modalElement.style.display = 'block';
+//        modalElement.classList.add('show');
+//        document.body.classList.add('modal-open');
+//    }
+//} 
 
-function hideModal(areaId) {
-    const modalElement = document.getElementById('modalDesactivarEvaluaciones' + areaId);
+//function hideModal(areaId) {
+//    const modalElement = document.getElementById('modalDesactivarEvaluaciones' + areaId);
 
-    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) {
-            modalInstance.hide();
-        } else {
-            const modal = new bootstrap.Modal(modalElement);
-            modal.hide();
-        }
-    } else if (typeof $ !== 'undefined' && $.fn.modal) {
-        $(modalElement).modal('hide');
-    } else {
-        console.error('Bootstrap no encontrado');
-        modalElement.style.display = 'none';
-        modalElement.classList.remove('show');
-        document.body.classList.remove('modal-open');
+//    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+//        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+//        if (modalInstance) {
+//            modalInstance.hide();
+//        } else {
+//            const modal = new bootstrap.Modal(modalElement);
+//            modal.hide();
+//        }
+//   } else if (typeof $ !== 'undefined' && $.fn.modal) {
+//        $(modalElement).modal('hide');
+//    } else {
+//        console.error('Bootstrap no encontrado');
+//        modalElement.style.display = 'none';
+ //       modalElement.classList.remove('show');
+//        document.body.classList.remove('modal-open');
 
         // Remover backdrop si existe
-        const backdrop = document.querySelector('.modal-backdrop');
-        if (backdrop) {
-            backdrop.remove();
-        }
-    }
-}
+//       const backdrop = document.querySelector('.modal-backdrop');
+//       if (backdrop) {
+//          backdrop.remove();
+//       }
+//   }
+//}
 
 function validarFechas(areaId) {
     const fechaInicio = document.getElementById('fecha_inicio' + areaId)?.value;
@@ -749,9 +686,9 @@ function validarFechas(areaId) {
 
             resumen.innerHTML = `
                 <strong>Período seleccionado:</strong><br>
-                <i class="fas fa-play text-success me-1"></i> <strong>Inicio:</strong> ${fechaInicioFormat}<br>
-                <i class="fas fa-stop text-danger me-1"></i> <strong>Fin:</strong> ${fechaFinFormat}<br>
-                <i class="fas fa-calendar-day text-primary me-1"></i> <strong>Duración:</strong> ${daysDiff} día${daysDiff > 1 ? 's' : ''}
+                <i class="fas fa-play text-success me-1"></i> <strong>Inicio:</strong><br>
+                <i class="fas fa-stop text-danger me-1"></i> <strong>Fin:</strong><br>
+                <i class="fas fa-calendar-day text-primary me-1"></i> <strong>Duración:</strong>
             `;
         }
     } else {
