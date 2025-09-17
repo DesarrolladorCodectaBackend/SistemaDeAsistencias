@@ -23,7 +23,7 @@ class Computadora_colaboradorController extends Controller
 
     public function create(Request $request)
     {
-        
+
         Computadora_colaborador::create([
             "colaborador_id" => $request->colaborador_id,
             "procesador" => $request->procesador,
@@ -49,13 +49,13 @@ class Computadora_colaboradorController extends Controller
         try{
             $request->validate([
                 'colaborador_id' => 'required|integer|min:1|max:100',
-                'es_laptop' =>  'required|boolean|min:1|max:255',
-                'codigo_serie' =>  'required|string|min:1|max:255',
-                'procesador' => 'required|string|min:1|max:255',
-                'tarjeta_grafica' =>  'required|string|min:1|max:255',
-                'memoria_grafica' =>  'required|string|min:1|max:255',
-                'ram' =>  'required|string|min:1|max:255',
-                'almacenamiento' =>  'required|string|min:1|max:255',
+                'es_laptop' =>  'required|boolean',
+                'codigo_serie' =>  'required|string',
+                'procesador' => 'required|string',
+                'tarjeta_grafica' =>  'required|string',
+                'memoria_grafica' =>  'required|string',
+                'ram' =>  'required|string',
+                'almacenamiento' =>  'required|string',
             ]);
 
 
@@ -75,6 +75,7 @@ class Computadora_colaboradorController extends Controller
 
         } catch(Exception $e) {
             DB::rollBack();
+            // return $e;
             return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
         }
 
