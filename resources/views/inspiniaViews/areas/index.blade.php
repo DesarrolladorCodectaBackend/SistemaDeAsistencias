@@ -224,6 +224,7 @@
                                                     <div class="modal-content animated bounceInRight">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                            <button type="button" class="btn btn-info ml-2" id="openAnotherModal" data-toggle="modal" data-target="#nuevoModal"><i class="fa fa-plus"></i></button>
                                                             <i class="fa fa-laptop modal-icon"></i>
                                                             <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
                                                             <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
@@ -270,6 +271,53 @@
                                             </div>
                                         </div>
                                         
+                                        <!-- Crear Proyectoo -->
+                                        <div class="modal inmodal" id="nuevoModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content animated bounceInRight">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">
+                                                            <span aria-hidden="true">&times;</span>
+                                                            <span class="sr-only">Close</span>
+                                                        </button>
+                                                        <i class="fa fa-info-circle modal-icon"></i>
+                                                        <h4 class="modal-title">Nuevo Proyecto</h4>
+                                                        <small class="font-bold">Agrega un nuevo proyecto</small>
+                                                    </div>
+                                                    <form action="{{ route('proyectos.crear') }}" method="POST">
+                                                        @csrf
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label for="nombre">Nombre del proyecto</label>
+                                                                <input type="text" class="form-control" name="nombre" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="descripcion">Descripción</label>
+                                                                <textarea class="form-control" name="descripcion" rows="3" required></textarea>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="fecha_inicio">Fecha de inicio</label>
+                                                                <input type="date" class="form-control" name="fecha_inicio" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="fecha_fin">Fecha de fin</label>
+                                                                <input type="date" class="form-control" name="fecha_fin" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="porcentaje">Porcentaje inicial</label>
+                                                                <input type="number" class="form-control" name="porcentaje" min="0" max="100" value="0" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                                                            <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
 
 
                                         {{-- modal desactivar evaluaciones --}}
@@ -842,6 +890,22 @@ function validarFechas(areaId) {
     btnLimpiar.addEventListener("click",limpiarBuscador)
 </script>
 
+<script>
+    $(document).on('click', '#openAnotherModal', function (e) {
+        e.preventDefault();
+        var $modalProyectos = $(this).closest('.modal');
+
+        $('#openAnotherModal').modal('hide');
+
+         setTimeout(function() {
+    $('#nuevoModal').modal('show');
+        }, 3000);
+    });
+
+</script>
+
+
+
 <style>
 
 .modal-backdrop {
@@ -851,6 +915,9 @@ function validarFechas(areaId) {
 .modal {
     z-index: 1050;
 }
+
+
+
 </style>
 </body>
 
