@@ -75,8 +75,8 @@ class Computadora_colaboradorController extends Controller
 
         } catch(Exception $e) {
             DB::rollBack();
-            // return $e;
-            return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
+            return $e;
+            //return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
         }
 
 
