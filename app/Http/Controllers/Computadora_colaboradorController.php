@@ -48,7 +48,7 @@ class Computadora_colaboradorController extends Controller
         DB::beginTransaction();
         try{
             $request->validate([
-                'colaborador_id' => 'required|integer|min:1|max:100',
+                'colaborador_id' => 'required|integer',
                 'es_laptop' =>  'required|boolean',
                 'codigo_serie' =>  'required|string',
                 'procesador' => 'required|string',
@@ -75,8 +75,8 @@ class Computadora_colaboradorController extends Controller
 
         } catch(Exception $e) {
             DB::rollBack();
-            return $e;
-            //return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
+            // return $e;
+            return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
         }
 
 
