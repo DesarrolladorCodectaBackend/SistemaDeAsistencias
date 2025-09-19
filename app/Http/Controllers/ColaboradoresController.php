@@ -265,7 +265,7 @@ class ColaboradoresController extends Controller
 
     //FUNCTION getObjetoColabodaor
 
-    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '', string $pagos = 'false'){
+    public function filtrarColaboradores(string $estados = '0,1,2', string $areas = '', string $carreras = '', string $instituciones = '', string $ciclos = '', string $sedes = '', string $computadoras = ''){
     $access = FunctionHelperController::verifyAdminAccess();
     if(!$access){
         return redirect()->route('dashboard')->with('error', 'No tiene acceso para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
@@ -887,6 +887,11 @@ class ColaboradoresController extends Controller
                 ) . '%']);
         })->pluck('id');
 
+        // buscar por correo
+        $idCandidatosPorCorreo = Candidatos::where('correo', 'LIKE', '%' . $busqueda . '%')->pluck('id');
+        $colaboradoresPorCorreo = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorCorreo)->paginate(12);
+        $countColaboradoresCorreo = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorCorreo)->get()->count();
+
         $colaboradoresPorDistrito = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDistrito)->paginate(12);
         $countColaboradoresDistrito = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDistrito)->get()->count();
 
@@ -899,6 +904,9 @@ class ColaboradoresController extends Controller
         } elseif ($colaboradoresPorNombre->count() > 0) {
             $colaboradores = $colaboradoresPorNombre;
             $countColaboradores = $countColaboradoresNombre;
+        } elseif ($colaboradoresPorCorreo->count() > 0){
+            $colaboradores = $colaboradoresPorCorreo;
+            $countColaboradores = $countColaboradoresCorreo;
         } else {
             $colaboradores = $colaboradoresPorDistrito;
             $countColaboradores = $countColaboradoresDistrito;

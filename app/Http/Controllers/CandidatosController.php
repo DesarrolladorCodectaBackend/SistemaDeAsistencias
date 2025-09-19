@@ -469,8 +469,12 @@ class CandidatosController extends Controller
             })
             ->paginate(6);
 
+        $candidatosPorCorreo = Candidatos::with('sede', 'carrera', 'distrito')->where('correo', 'LIKE', '%' . $busqueda . '%')->paginate(6);
+
         if ($candidatosPorDni->count() > 0) {
             $candidatos = $candidatosPorDni;
+        } else if ($candidatosPorCorreo->count() > 0) {
+            $candidatos = $candidatosPorCorreo;
         } elseif ($candidatosPorNombre->count() > 0) {
             $candidatos = $candidatosPorNombre;
         } else {
