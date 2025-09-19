@@ -27,8 +27,6 @@
                     </li>
                 </ol>
             </div>
-
-
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
@@ -44,43 +42,268 @@
                                         <div class="row animated fadeInDown">
                                             <div class="col-lg-12">
                                                 <div class="ibox ">
-
                                                     <div class="ibox-content">
-                                                        <style>
-                                                            .fc-event {
-                                                                font-size: 12px !important;
-                                                                padding: 5px !important; /* Espaciado interno */
-                                                            }
-
-                                                            /* Aumenta la altura de las filas en la vista de agenda (slots de 30min) */
-                                                            .fc-time-grid .fc-slats td {
-                                                                height: 2em !important;
-                                                            }
-
-                                                            /* Asegura que los eventos se muestren en toda la anchura disponible */
-                                                            .fc .fc-event-container {
-                                                                width: 100% !important;
-                                                            }
-
-                                                            /* Oculta la barra de herramientas superior (botones, título de rango de fechas) */
-                                                            .fc-toolbar {
-                                                                display: none;
-                                                            }
-
-                                                            /* Oculta los headers de los días en la vista actual (si lo deseas) */
-                                                            .fc-day-header {
-                                                                display: none !important;
-
-                                                            }
-
-                                                            .fc-bg {
-                                                                display: flex !important;
-                                                                justify-content: center !important;
-                                                                align-items: center !important;
-                                                            }
-                                                        </style>
-                                                        <div id="calendar"></div>
+                                                    <h1 class="titulo">Reuniones Generales - Áreas</h1>
+                                                    <br>
+                                                    <div class="container">
+                                                        <table>
+                                                            <tr class="m1">
+                                                                <th class="hm">Hora / Área</th>
+                                                                <th id="A1">Domingo</th>
+                                                                <th id="A2">Lunes</th>
+                                                                <th id="A3">Martes</th>
+                                                                <th id="A4">Miércoles</th>
+                                                                <th id="A5">Jueves</th>
+                                                                <th id="A6">Viernes</th>
+                                                                <th id="A7">Sábado</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr class="celdas">
+                                                                    <th rowspan="4" >8:30 am - 12:30 pm</th>
+                                                                    <td id="c1"></td>
+                                                                    <td id="c2"></td>
+                                                                    <td id="c3"></td>
+                                                                    <td id="c4"></td>
+                                                                    <td id="c5"></td>
+                                                                    <td id="c6"></td>
+                                                                    <td id="c7"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c8"></td>
+                                                                    <td id="c9"></td>
+                                                                    <td id="c10"></td>
+                                                                    <td id="c11"></td>
+                                                                    <td id="c12"></td>
+                                                                    <td id="c13"></td>
+                                                                    <td id="c14"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c15"></td>
+                                                                    <td id="c16"></td>
+                                                                    <td id="c17"></td>
+                                                                    <td id="c18"></td>
+                                                                    <td id="c19"> </td>
+                                                                    <td id="c20"> </td>
+                                                                    <td id="c21"> </td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c22"></td>
+                                                                    <td id="c23"></td>
+                                                                    <td id="c24"></td>
+                                                                    <td id="c25"></td>
+                                                                    <td id="c26"> </td>
+                                                                    <td id="c27"> </td>
+                                                                    <td id="c28"> </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>12:30 pm - 2:00 pm</th>
+                                                                    <td class="receso" colspan="8">RECESO</td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <th rowspan="4" >2:00 pm - 6:00 pm</th>
+                                                                    <td id="c29" ></td>
+                                                                    <td id="c30" ></td>
+                                                                    <td id="c31" > </td>
+                                                                    <td id="c32" > </td>
+                                                                    <td id="c33"> </td>
+                                                                    <td id="c34"> </td>
+                                                                    <td id="c35"> </td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c36" ></td>
+                                                                    <td id="c37" ></td>
+                                                                    <td id="c38" ></td>
+                                                                    <td id="c39" ></td>
+                                                                    <td id="c40"> </td>
+                                                                    <td id="c41"> </td>
+                                                                    <td id="c42"> </td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c43" ></td>
+                                                                    <td id="c44" ></td>
+                                                                    <td id="c45" ></td>
+                                                                    <td id="c46" ></td>
+                                                                    <td id="c47"></td>
+                                                                    <td id="c48"></td>
+                                                                    <td id="c49"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c50" ></td>
+                                                                    <td id="c51" ></td>
+                                                                    <td id="c52" ></td>
+                                                                    <td id="c53" ></td>
+                                                                    <td id="c54"></td>
+                                                                    <td id="c55"> </td>
+                                                                    <td id="c56"> </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table >
                                                     </div>
+                                                    <style>
+                                                    .container {
+                                                    width: 1400px;
+
+                                                    margin: 0 auto;
+                                                    font-family: sans-serif;
+                                                    }
+
+                                                    h1 {
+                                                        text-align: center;
+                                                    }
+
+                                                    .fecha {
+                                                        text-align: center;
+                                                        color: white;
+                                                    }
+
+                                                    table {
+                                                        width: 100%;
+                                                        border-collapse: collapse;
+                                                    }
+
+                                                    th, td {
+                                                        border: 1px solid black;
+                                                        padding: 5px;
+                                                        color: black;
+                                                        height: 40px;
+                                                    }
+
+                                                    th {
+                                                        text-align: center;
+                                                        min-width: 100px;
+
+
+                                                    }
+                                                    .m1{
+                                                        background-color: #4e7bbf;
+                                                        color: white;
+
+                                                    }
+                                                    .hm{
+                                                        background-color: #4e7bbf;
+                                                        width: 200px;
+                                                        color: white;
+                                                    }
+                                                    .titulo{
+                                                        font-weight: 600;
+                                                    }
+                                                    .receso{
+                                                        background-color: #4e7bbf;
+                                                        font-size: 25px;
+                                                        font-weight: 600;
+                                                        color: white;
+                                                        height: 100px;
+                                                    }
+                                                    td {
+                                                        text-align: center;
+                                                    }
+                                                    #A4{
+                                                        background-color: #bbd5ff;
+
+                                                    }
+                                                    #A2{
+                                                        background-color: #bbd5ff;
+                                                    }
+                                                    #A1{
+                                                        background-color: #bbd5ff;
+                                                    }
+                                                    #A3{
+                                                        background-color: #bbd5ff;
+                                                    }
+
+                                                    #A4{
+                                                        background-color: #bbd5ff;
+                                                    }
+
+                                                    #A5{
+                                                        background-color: #bbd5ff;
+                                                    }
+
+                                                    #A6{
+                                                        background-color: #bbd5ff;
+                                                    }
+
+                                                    #A7{
+                                                        background-color: #bbd5ff;
+                                                    }
+                                                    .celdas{
+                                                        background-color: hsla(0, 0%, 100%, 0.884);
+                                                        height: 40px;
+                                                    }
+
+                                                    </style>
+                                                    <script>
+                                                    // Script para mostrar reuniones generales en la tabla
+                                                    $(function() {
+                                                        var reunionesAreas = <?php echo json_encode($reuniones); ?>;
+                                                        // Mapeo de días a columna (1=Domingo, 2=Lunes, ..., 7=Sábado)
+                                                        var diasCol = {
+                                                            'Domingo': 1, 'Lunes': 2, 'Martes': 3, 'Miércoles': 4,
+                                                            'Jueves': 5, 'Viernes': 6, 'Sábado': 7
+                                                        };
+                                                        // Mapeo de bloques de horario a filas (ajustar si cambian los bloques)
+                                                        var bloques = [
+                                                            { nombre: '8:30 am - 12:30 pm', base: 0 }, // c1-c28
+                                                            { nombre: '2:00 pm - 6:00 pm', base: 28 }   // c29-c56
+                                                        ];
+                                                        // Agrupar reuniones por día y bloque
+                                                        var agrupadas = {};
+                                                        if (Array.isArray(reunionesAreas)) {
+                                                            reunionesAreas.forEach(function(r) {
+                                                                var dia = r.horario_modificado.dia;
+                                                                var hora = parseInt(r.horario_modificado.hora_inicial, 10);
+                                                                var bloqueIdx = null;
+                                                                if (hora >= 8 && hora < 13) bloqueIdx = 0;
+                                                                else if (hora >= 14 && hora < 19) bloqueIdx = 1;
+                                                                if (bloqueIdx !== null && diasCol[dia]) {
+                                                                    var key = dia + '_' + bloqueIdx;
+                                                                    if (!agrupadas[key]) agrupadas[key] = [];
+                                                                    agrupadas[key].push(r);
+                                                                }
+                                                            });
+                                                            // Pintar en la tabla
+                                                            Object.keys(diasCol).forEach(function(dia) {
+                                                                bloques.forEach(function(bloque, bloqueIdx) {
+                                                                    var key = dia + '_' + bloqueIdx;
+                                                                    var eventos = agrupadas[key] || [];
+                                                                    eventos.forEach(function(evento, idx) {
+                                                                        if (idx < 8) { // máximo 4 filas por bloque
+                                                                            var cellId = bloque.base + (idx * 7) + diasCol[dia];
+                                                                            var $celda = $('#c' + cellId);
+                                                                            if ($celda.length) {
+                                                                                $celda.empty();
+                                                                                var $areaDiv = $('<div></div>');
+                                                                                $areaDiv.text(evento.area.especializacion);
+                                                                                $areaDiv.css({
+                                                                                    backgroundColor: evento.area.color_hex,
+                                                                                    color: '#fff',
+                                                                                    padding: '5px',
+                                                                                    marginBottom: '2px',
+                                                                                    borderRadius: '6px',
+                                                                                    fontSize: '12px',
+                                                                                    cursor: 'pointer',
+                                                                                    whiteSpace: 'nowrap',
+                                                                                    overflow: 'hidden',
+                                                                                    textOverflow: 'ellipsis'
+                                                                                });
+                                                                                $areaDiv.on('click', function() {
+                                                                                    // Mostrar modal con datos del evento
+                                                                                    $('#modalAreaName').text(evento.area.especializacion);
+                                                                                    $('#modalMeetingDay').text(evento.horario_modificado.dia);
+                                                                                    $('#modalMeetingTime').text(evento.horario_modificado.hora_inicial + ':00 - ' + evento.horario_modificado.hora_final + ':00');
+                                                                                    $('#modalMeetingAvailability').text(evento.disponibilidad ?? '');
+                                                                                    $('#meetingModal').modal('show');
+                                                                                });
+                                                                                $celda.append($areaDiv);
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                });
+                                                            });
+                                                        }
+                                                    });
+                                                    </script>
                                                 </div>
                                             </div>
                                         </div>
@@ -88,8 +311,6 @@
 
                                 </div>
                             </div>
-
-
                             <div id="meetingModal" class="modal fade" tabindex="-1" role="dialog">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -111,23 +332,11 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
         @include('components.inspinia.footer-inspinia')
     </div>
     </div>
@@ -296,7 +505,7 @@
             },
             events: eventos,
             eventRender: function(event, element) {
-                var daysToShow = 4;
+                var daysToShow = 7;
                 var columnWidth = $('.fc-day-grid-container').width() / daysToShow;
                 element.css('width', columnWidth);
             },
