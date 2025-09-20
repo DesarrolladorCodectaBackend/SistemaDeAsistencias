@@ -458,6 +458,9 @@ class CandidatosController extends Controller
             ->where(DB::raw("dni"), 'like', '%' . $busqueda . '%')
             ->paginate(6);
 
+        // buscar por carnet extranjeria
+        $candidatosPorCarnet = Candidatos::with('sede', 'carrera', 'distrito')->where('carnet_extranjeria', 'LIKE', '%' . $busqueda . '%')->paginate(6);
+
         // buscar por nombre y apellido
         $candidatosPorNombre = Candidatos::with('sede', 'carrera', 'distrito')
             ->where(DB::raw("LOWER(CONCAT(nombre, ' ', apellido))"), 'like', '%' . strtolower($busqueda) . '%')
@@ -481,6 +484,8 @@ class CandidatosController extends Controller
 
         if ($candidatosPorDni->count() > 0) {
             $candidatos = $candidatosPorDni;
+        } else if ($candidatosPorCarnet->count() > 0) {
+            $candidatos = $candidatosPorCarnet;
         } else if ($candidatosPorCorreo->count() > 0) {
             $candidatos = $candidatosPorCorreo;
         } elseif ($candidatosPorNombre->count() > 0) {

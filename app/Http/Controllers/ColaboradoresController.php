@@ -906,6 +906,16 @@ class ColaboradoresController extends Controller
         $colaboradoresPorDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->paginate(12);
         $countColaboradoresDni = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDni)->get()->count();
 
+        // buscar por carnet extranjeria
+        $idCandidatosPorCarnet = Candidatos::where('carnet_extranjeria', 'LIKE', '%' . $busqueda . '%')->pluck('id');
+        $colaboradoresPorCarnet = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorCarnet)->paginate(12);
+        $countColaboradoresPorCarnet = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorCarnet)->get()->count();
+
+        // buscar por correo
+        $idCandidatosPorCorreo = Candidatos::where('correo', 'LIKE', '%' . $busqueda . '%')->pluck('id');
+        $colaboradoresPorCorreo = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorCorreo)->paginate(12);
+        $countColaboradoresCorreo = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorCorreo)->get()->count();
+
         // buscar por distrito
         $idCandidatosPorDistrito = Candidatos::whereHas('distrito', function($query) use ($busqueda) {
             $query->whereRaw("LOWER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
@@ -916,12 +926,6 @@ class ColaboradoresController extends Controller
                                 $busqueda)
                 ) . '%']);
         })->pluck('id');
-
-        // buscar por correo
-        $idCandidatosPorCorreo = Candidatos::where('correo', 'LIKE', '%' . $busqueda . '%')->pluck('id');
-        $colaboradoresPorCorreo = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorCorreo)->paginate(12);
-        $countColaboradoresCorreo = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorCorreo)->get()->count();
-
         $colaboradoresPorDistrito = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDistrito)->paginate(12);
         $countColaboradoresDistrito = Colaboradores::with('candidato')->whereIn('candidato_id', $idCandidatosPorDistrito)->get()->count();
 
@@ -931,6 +935,9 @@ class ColaboradoresController extends Controller
         if ($colaboradoresPorDni->count() > 0) {
             $colaboradores = $colaboradoresPorDni;
             $countColaboradores = $countColaboradoresDni;
+        } else if ($colaboradoresPorCarnet->count() > 0) {
+            $colaboradores = $colaboradoresPorCarnet;
+            $countColaboradores = $countColaboradoresPorCarnet;
         } elseif ($colaboradoresPorNombre->count() > 0) {
             $colaboradores = $colaboradoresPorNombre;
             $countColaboradores = $countColaboradoresNombre;
