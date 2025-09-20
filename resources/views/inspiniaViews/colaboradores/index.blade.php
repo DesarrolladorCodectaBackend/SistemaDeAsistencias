@@ -215,6 +215,32 @@
                                                 </div>
                                             </div>
 
+
+                                            <!-- Computadoras -->
+                                            <div class="card">
+                                                <div class="card-header" id="headingComputadoras">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseComputadoras" aria-expanded="false" aria-controls="collapseComputadoras">
+                                                            Computadoras
+                                                        </button>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapseComputadoras" class="collapse" aria-labelledby="headingComputadoras" data-parent="#accordionExample">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="select-all-computadoras"><span> Seleccionar todos</span>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input computadora-checkbox" id="checkbox-computadoras-registradas" value="registradas">
+                                                            <span for="checkbox-computadoras-registradas">Registradas</span>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input computadora-checkbox" id="checkbox-computadoras-no_registradas" value="no_registradas">
+                                                            <span for="checkbox-computadoras-no_registradas">No registradas</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             {{-- pagos --}}
                                             {{-- <div class="card">
                                                 <div class="card-header d-flex" id="headingCarreras">
@@ -319,10 +345,22 @@
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">Fecha de nacimiento:</p>
                                             <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->fecha_nacimiento ?? 'Sin fecha de nacimiento'}}</p>
                                         </div>
-                                        <div class="form-group">
-                                            <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">DNI:</p>
-                                            <p class="overflowing-skipt" style='font-size: 0.9rem;'>{{$colaborador->candidato->dni ?? 'Sin DNI'}}</p>
-                                        </div>
+
+                                         @if(!empty($colaborador->candidato->dni))
+                                            <div class="form-group">
+                                                <p style="font-weight: bold; font-size: 1rem; margin: 0px;">DNI:</p>
+                                                <p class="overflowing-skipt" style="font-size: 0.9rem;">
+                                                    {{ $colaborador->candidato->dni }}
+                                                </p>
+                                            </div>
+                                        @elseif(!empty($colaborador->candidato->carnet_extranjeria))
+                                            <div class="form-group">
+                                                <p style="font-weight: bold; font-size: 1rem; margin: 0px;">Carnet Extranjería:</p>
+                                                <p class="overflowing-skipt" style="font-size: 0.9rem;">
+                                                    {{ $colaborador->candidato->carnet_extranjeria }}
+                                                </p>
+                                            </div>
+                                        @endif
 
                                         <div class="form-group">
                                             <p style='font-weight: bold; font-size: 1rem; margin: 0px; ' class="m-t-none m-b">ID Senati:</p>
@@ -459,10 +497,6 @@
                                                 </form>
                                             @endif
                                         </div>
-
-
-
-
 
                                     </div>
                                 </div>
@@ -639,12 +673,22 @@
                                     </h5>
                                 </div>
                                 <small class="text-muted text-left">
-                                    <h3 class="text-dark">DNI:</h3>
+                                    @if(!empty($colaborador->candidato->dni))
+                                        <h3 class="text-dark">DNI:</h3>
+                                    @elseif(!empty($colaborador->candidato->carnet_extranjeria))
+                                        <h3 class="text-dark">Carnet Extranjero:</h3>
+                                    @endif
                                 </small>
 
-                                <div class="small m-t-xs text-left">
-                                    <h5 class="overflowing-text">{{$colaborador->candidato->dni ?? 'Sin DNI'}}</h5>
-                                </div>
+                                @if(!empty($colaborador->candidato->dni))
+                                    <div class="small m-t-xs text-left">
+                                        <h5 class="overflowing-text">{{$colaborador->candidato->dni ?? 'Sin DNI'}}</h5>
+                                    </div>
+                                @elseif(!empty($colaborador->candidato->carnet_extranjeria))
+                                    <div class="small m-t-xs text-left">
+                                        <h5 class="overflowing-text">{{$colaborador->candidato->carnet_extranjeria ?? 'Sin carnet extranjero'}}</h5>
+                                    </div>
+                                @endif
 
                                 <small class="text-muted text-left">
                                     <h3 class="text-dark">ID Senati:</h3>
@@ -1255,7 +1299,7 @@
 $(document).ready(function() {
     // Desactivar el comportamiento por defecto de Bootstrap para Escape
     $.fn.modal.Constructor.prototype.escape = function() {};
-    
+
     // Manejar Escape manualmente
     $(document).on('keydown', function(e) {
         if (e.keyCode === 27) { // Escape key
@@ -1263,10 +1307,10 @@ $(document).ready(function() {
             if ($visibleModals.length > 0) {
                 // Obtener el modal que está más arriba
                 var $topModal = $visibleModals.last();
-                
+
                 // Cerrar solo ese modal
                 $topModal.modal('hide');
-                
+
                 // Prevenir propagación
                 e.preventDefault();
                 e.stopPropagation();
@@ -1274,17 +1318,17 @@ $(document).ready(function() {
             }
         }
     });
-    
+
     // Limpiar backdrops cuando se cierra cualquier modal
     $('.modal').on('hidden.bs.modal', function () {
         setTimeout(function() {
             var visibleModals = $('.modal.show').length;
             var backdrops = $('.modal-backdrop').length;
-            
+
             if (backdrops > visibleModals) {
                 $('.modal-backdrop').slice(visibleModals).remove();
             }
-            
+
             if (visibleModals === 0) {
                 $('.modal-backdrop').remove();
                 $('body').removeClass('modal-open').css('padding-right', '');
@@ -1295,7 +1339,7 @@ $(document).ready(function() {
 
 function abrirModalEdicion(colaboradorId) {
     $('#modal-form-view' + colaboradorId).modal('hide');
-    
+
     $('#modal-form-view' + colaboradorId).one('hidden.bs.modal', function() {
         setTimeout(function() {
             $('#modal-form-update' + colaboradorId).modal('show');
@@ -1626,6 +1670,7 @@ function abrirModalEdicion(colaboradorId) {
             let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
             let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
             let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
+            let computadoras = Array.from(document.querySelectorAll('.computadora-checkbox:checked')).map(cb => cb.value);
 
             estados = estados.length ? estados.join(',') : '1';
             areas = areas.length ? areas.join(',') : '0';
@@ -1633,9 +1678,10 @@ function abrirModalEdicion(colaboradorId) {
             instituciones = instituciones.length ? instituciones.join(',') : '0';
             ciclos = ciclos.length ? ciclos.join(',') : '0';
             sedes = sedes.length ? sedes.join(',') : '0';
+            computadoras = computadoras.length ? computadoras.join(',') : '0';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null){
-                let actionUrl = `{{ url('colaboradores/filtrar/estados=${estados}/areas=${areas}/carreras=${carreras}/instituciones=${instituciones}/ciclos=${ciclos}/sedes=${sedes}') }}`;
+            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null && computadoras != null){
+                let actionUrl = `/colaboradores/filtrar/estados=*${estados}*/areas=*${areas}*/carreras=*${carreras}*/instituciones=*${instituciones}*/ciclos=*${ciclos}*/sedes=*${sedes}*/computadoras=*${computadoras}*`;
                 // console.log(actionUrl);
                 document.querySelector('#filtrarColaboradores').action = actionUrl;
 
@@ -1653,6 +1699,7 @@ function abrirModalEdicion(colaboradorId) {
             let checkboxes = document.querySelectorAll('.area-checkbox');
             checkboxes.forEach(cb => cb.checked = this.checked);
         });
+
         document.getElementById('select-all-carreras').addEventListener('change', function() {
             let checkboxes = document.querySelectorAll('.carrera-checkbox');
             checkboxes.forEach(cb => cb.checked = this.checked);
@@ -1664,17 +1711,21 @@ function abrirModalEdicion(colaboradorId) {
         });
 
         document.getElementById('select-all-ciclos').addEventListener('change', function () {
-        let checkboxes = document.querySelectorAll('.ciclo-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
+            let checkboxes = document.querySelectorAll('.ciclo-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
         //sedes
         document.getElementById('select-all-sedes').addEventListener('change', function () {
-        let checkboxes = document.querySelectorAll('.sede-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
+            let checkboxes = document.querySelectorAll('.sede-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
         });
 
-
+        //computadoras
+        document.getElementById('select-all-computadoras').addEventListener('change', function () {
+            let checkboxes = document.querySelectorAll('.computadora-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
 
         function updateSelectAll(checkboxGroup, selectAllId) {
             const selectAllCheckbox = document.getElementById(selectAllId);
@@ -1725,6 +1776,14 @@ function abrirModalEdicion(colaboradorId) {
             }
         });
 
+        // computadoras
+        document.getElementById('select-all-computadoras').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[id^="checkbox-computadoras-"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
         document.querySelectorAll('input[id^="checkbox-areas-"]').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-areas-"]', 'select-all-areas');
@@ -1760,7 +1819,14 @@ function abrirModalEdicion(colaboradorId) {
             checkbox.addEventListener('change', function() {
                 updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
             });
-        })
+        });
+
+        // computadoras
+        document.querySelectorAll('input[id^="checkbox-computadoras-"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateSelectAll('input[id^="checkbox-computadoras-"]', 'select-all-computadoras');
+            });
+        });
     </script>
 </body>
 
