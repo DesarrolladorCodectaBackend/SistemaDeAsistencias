@@ -959,22 +959,83 @@
                                                                             id="fecha_nacimiento"
                                                                             value="{{ $colaborador->candidato->fecha_nacimiento }}">
                                                                     </div>
-                                                                    <div class="form-group">
+                                                                    <div class="form-group" id="content-dni-carnet-colaborador-{{ $colaborador->id }}">
 
-                                                                        <label>
-                                                                            <h5 class="m-t-none">DNI:</h5>
-                                                                        </label>
+                                                                        @if(!empty($colaborador->candidato->dni))
+                                                                            <label id="label-change-dni-carnet-colaborador-{{ $colaborador->id }}">
+                                                                                <h5 class="m-t-none">DNI:</h5>
+                                                                            </label>
+                                                                            <div class="position-relative">
+                                                                                <input type="number" placeholder="....." class="form-control" name="dni"
+                                                                                    id="input-dni-carnet-colaborador-{{ $colaborador->id }}"
+                                                                                    value="{{ $colaborador->candidato->dni }}"
+                                                                                    autocomplete="off"
+                                                                                    oninput="limitDNI(this)">
+                                                                                <span id="dni-counter-colaborador-{{ $colaborador->id }}"
+                                                                                    class="position-absolute"
+                                                                                    style="right: 50px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">
+                                                                                    {{ strlen($colaborador->candidato->dni) }}/8
+                                                                                </span>
+                                                                                <button class="btn btn-success btn-sm position-absolute"
+                                                                                        type="button"
+                                                                                        id="btn-change-colaborador-{{ $colaborador->id }}"
+                                                                                        onclick="changeToDniCarnetColaborador({{ $colaborador->id }})"
+                                                                                        style="right: 10px; top: 50%; transform: translateY(-50%);">
+                                                                                    <i class='bx bx-undo'></i>
+                                                                                </button>
+                                                                            </div>
+                                                                            @error('dni'.$colaborador->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
 
-                                                                       <div class="position-relative">
+                                                                        @elseif(!empty($colaborador->candidato->carnet_extranjeria))
+                                                                            <label id="label-change-dni-carnet-colaborador-{{ $colaborador->id }}">
+                                                                                <h5 class="m-t-none">Carnet Extranjería:</h5>
+                                                                            </label>
+                                                                            <div class="position-relative">
+                                                                                <input type="text" placeholder="....." class="form-control" name="carnet_extranjeria"
+                                                                                    id="input-dni-carnet-colaborador-{{ $colaborador->id }}"
+                                                                                    value="{{ $colaborador->candidato->carnet_extranjeria }}"
+                                                                                    autocomplete="off">
+                                                                                <button class="btn btn-success btn-sm position-absolute"
+                                                                                        type="button"
+                                                                                        id="btn-change-colaborador-{{ $colaborador->id }}"
+                                                                                        onclick="changeToDniCarnetColaborador({{ $colaborador->id }})"
+                                                                                        style="right: 10px; top: 50%; transform: translateY(-50%);">
+                                                                                    <i class='bx bx-undo'></i>
+                                                                                </button>
+                                                                            </div>
+                                                                            @error('carnet_extranjeria'.$colaborador->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
 
-                                                                        <input type="number" placeholder="....."
-                                                                        class="form-control" name="dni" id="dni-update-{{ $colaborador->id }}"
-                                                                        value="{{$colaborador->candidato->dni}}" oninput="limitDNI(this)"></input>
-                                                                        <span id="dni-counter-update-{{ $colaborador->id }}" class="position-absolute" style="right: 10px; top: 40%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
-                                                                        @error('dni'.$colaborador->id)
-                                                                            <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
-                                                                       </div>
+                                                                        @else
+                                                                            <label id="label-change-dni-carnet-colaborador-{{ $colaborador->id }}">
+                                                                                <h5 class="m-t-none">DNI:</h5>
+                                                                            </label>
+                                                                            <div class="position-relative">
+                                                                                <input type="number" placeholder="....." class="form-control" name="dni"
+                                                                                    id="input-dni-carnet-colaborador-{{ $colaborador->id }}"
+                                                                                    autocomplete="off"
+                                                                                    oninput="limitDNI(this)">
+                                                                                <span id="dni-counter-colaborador-{{ $colaborador->id }}"
+                                                                                    class="position-absolute"
+                                                                                    style="right: 50px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">
+                                                                                    0/8
+                                                                                </span>
+                                                                                <button class="btn btn-success btn-sm position-absolute"
+                                                                                        type="button"
+                                                                                        id="btn-change-colaborador-{{ $colaborador->id }}"
+                                                                                        onclick="changeToDniCarnetColaborador({{ $colaborador->id }})"
+                                                                                        style="right: 10px; top: 50%; transform: translateY(-50%);">
+                                                                                    <i class='bx bx-undo'></i>
+                                                                                </button>
+                                                                            </div>
+                                                                            @error('dni'.$colaborador->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        @endif
+
                                                                     </div>
 
                                                                     <div class="form-group">
@@ -1531,7 +1592,58 @@ function abrirModalEdicion(colaboradorId) {
         }
 
 
+        function changeToDniCarnetColaborador(colaboradorId) {
+            const contentDiv = document.getElementById('content-dni-carnet-colaborador-' + colaboradorId);
+            const currentLabel = document.getElementById('label-change-dni-carnet-colaborador-' + colaboradorId).querySelector('h5').textContent;
 
+            if (currentLabel === 'DNI:') {
+                // Cambiar a carnet_extranjeria
+                contentDiv.innerHTML = `
+                    <input type="hidden" name="dni" value="">
+                    <label id="label-change-dni-carnet-colaborador-${colaboradorId}">
+                        <h5 class="m-t-none">Carnet Extranjería:</h5>
+                    </label>
+                    <div class="position-relative">
+                        <input type="text" placeholder="....." class="form-control" name="carnet_extranjeria"
+                            id="input-dni-carnet-colaborador-${colaboradorId}"
+                            autocomplete="off" value="">
+                        <button class="btn btn-success btn-sm position-absolute"
+                                type="button"
+                                id="btn-change-colaborador-${colaboradorId}"
+                                onclick="changeToDniCarnetColaborador(${colaboradorId})"
+                                style="right: 10px; top: 50%; transform: translateY(-50%);">
+                            <i class='bx bx-undo'></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Cambiar a DNI
+                contentDiv.innerHTML = `
+                    <input type="hidden" name="carnet_extranjeria" value="">
+                    <label id="label-change-dni-carnet-colaborador-${colaboradorId}">
+                        <h5 class="m-t-none">DNI:</h5>
+                    </label>
+                    <div class="position-relative">
+                        <input type="number" placeholder="....." class="form-control" name="dni"
+                            id="input-dni-carnet-colaborador-${colaboradorId}"
+                            autocomplete="off"
+                            oninput="limitDNI(this)" value="">
+                        <span id="dni-counter-colaborador-${colaboradorId}"
+                            class="position-absolute"
+                            style="right: 50px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">
+                            0/8
+                        </span>
+                        <button class="btn btn-success btn-sm position-absolute"
+                                type="button"
+                                id="btn-change-colaborador-${colaboradorId}"
+                                onclick="changeToDniCarnetColaborador(${colaboradorId})"
+                                style="right: 10px; top: 50%; transform: translateY(-50%);">
+                            <i class='bx bx-undo'></i>
+                        </button>
+                    </div>
+                `;
+            }
+        }
 
 
         function  confirmRecontratar(id, currentURL){

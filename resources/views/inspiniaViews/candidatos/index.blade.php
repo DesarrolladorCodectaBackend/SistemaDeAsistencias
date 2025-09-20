@@ -733,7 +733,6 @@
                                                                                 <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                         @else
-                                                                            <!-- Si no tiene ninguno, mostrar DNI por defecto -->
                                                                             <label id="label-change-dni-carnet-update-{{ $candidato->id }}">DNI</label>
                                                                             <button class="btn btn-success btn-sm" type="button" id="btn-change-update-{{ $candidato->id }}" onclick="changeToDniCarnetUpdate({{ $candidato->id }})">
                                                                                 <i class='bx bx-undo'></i>
