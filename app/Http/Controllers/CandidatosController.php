@@ -165,7 +165,7 @@ class CandidatosController extends Controller
             }
 
             $candidato = Candidatos::findOrFail($candidato_id);
-            $datosActualizar = $request->except(['icono']);
+            $datosActualizar = $request->except(['icono', 'areas_id', 'dni', 'carnet_extranjeria']);
             // Validación de Distrito
             if (isset($request->distrito_id)) {
                 $distrito = Distrito::find($request->distrito_id);
@@ -297,6 +297,14 @@ class CandidatosController extends Controller
                 $nombreIcono = time() . '.' . $icono->getClientOriginalExtension();
                 $icono->move($rutaPublica, $nombreIcono);
                 $datosActualizar['icono'] = $nombreIcono;
+            }
+
+            if ($request->filled('dni')) {
+                $datosActualizar['dni'] = $request->dni;
+                $datosActualizar['carnet_extranjeria'] = null;
+            } elseif ($request->filled('carnet_extranjeria')) {
+                $datosActualizar['carnet_extranjeria'] = $request->carnet_extranjeria;
+                $datosActualizar['dni'] = null;
             }
 
             // Actualización de Datos

@@ -767,7 +767,15 @@ class ColaboradoresController extends Controller
                 }
             }
             //Se crea un array de datos a actualizar para el candidato, exceptuando el icono y area_id
-            $datosActualizar = $request->except(['icono', 'areas_id']);
+            $datosActualizar = $request->except(['icono', 'areas_id', 'dni', 'carnet_extranjeria']);
+
+            if ($request->filled('dni')) {
+                $datosActualizar['dni'] = $request->dni;
+                $datosActualizar['carnet_extranjeria'] = null;
+            } elseif ($request->filled('carnet_extranjeria')) {
+                $datosActualizar['carnet_extranjeria'] = $request->carnet_extranjeria;
+                $datosActualizar['dni'] = null;
+            }
 
             //Realizar la asignación y actualización del icono si se envía uno nuevo en la solicitud
             if ($request->hasFile('icono')) {
