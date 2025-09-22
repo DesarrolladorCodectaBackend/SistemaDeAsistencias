@@ -209,7 +209,7 @@
                                         <x-uiverse.tooltip nameTool="Proyectos">
                                             <button
                                                 type="button"
-                                                class="btn btn-success fa fa-edit"
+                                                class="btn btn-success fa fa-folder-open"
                                                 style="font-size: 20px;"
                                                 data-toggle="modal"
                                                 data-target="#proyectosModal{{ $area->id }}"
@@ -237,7 +237,8 @@
                                                                         <tr>
                                                                             <th>Nombre</th>
                                                                             <th>Descripción</th>
-                                                                            <th>Fechas</th>
+                                                                            <th>Fecha Inicio</th>
+                                                                            <th>Fecha Fin</th>
                                                                             <th>Progreso</th>
                                                                         </tr>
                                                                         </thead>
@@ -246,10 +247,11 @@
                                                                         <tr>
                                                                             <td>{{ $proyecto->nombre }}</td>
                                                                             <td>{{ $proyecto->descripcion }}</td>
-                                                                            <td>{{ \Carbon\Carbon::parse($proyecto->fecha_inicio)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($proyecto->fecha_fin)->format('d/m/Y') }}</td>
+                                                                            <td>{{ $proyecto->fecha_inicio }}</td>
+                                                                            <td>{{ $proyecto->fecha_fin }}</td>
                                                                             <td>
                                                                                 <div class="progress">
-                                                                                    <div class="progress-bar" role="progressbar" style="width: {{ $proyecto->porcentaje }}%;" aria-valuenow="{{ $proyecto->porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ $proyecto->porcentaje }}%</div>
+                                                                                    <div class="progress-bar" role="progressbar" style="width: {{ $proyecto->porcentaje }}%; color: black;" aria-valuenow="{{ $proyecto->porcentaje }}" aria-valuemin="0" aria-valuemax="100" >{{ $proyecto->porcentaje }}%</div>
                                                                                 </div>
                                                                             </td>
                                                                         </tr>
