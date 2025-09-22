@@ -51,9 +51,34 @@
                                                 placeholder="Ingrese su nombre"
                                                 value="{{ $candidato->nombre }} {{ $candidato->apellido }}"
                                                 class="form-control" disabled></div>
-                                        <div class="form-group"><label>DNI</label> <input type="text"
-                                                placeholder="Ingrese su DNI" value="{{ $candidato->dni }}"
-                                                class="form-control" disabled></div>
+
+                                        <div class="form-group">
+                                            @if(!empty($candidato->dni))
+                                                <label>DNI</label>
+                                                <input
+                                                    type="text"
+                                                    value="{{ $candidato->dni }}"
+                                                    class="form-control" disabled
+                                                >
+                                            @elseif(!empty($candidato->carnet_extranjeria))
+                                                <label>Carnet Extranjería</label>
+                                                <input
+                                                    type="text"
+                                                    value="{{ $candidato->carnet_extranjeria }}"
+                                                    class="form-control"
+                                                    disabled
+                                                >
+                                            @else
+                                                <label>Documento de identificación</label>
+                                                <input
+                                                    type="text"
+                                                    value="No tiene documento de identificación"
+                                                    class="form-control"
+                                                    disabled
+                                                >
+                                            @endif
+                                        </div>
+
                                         <div class="form-group"><label class="col-form-label">Carrera</label><input
                                                 type="text" value="{{ $candidato->carrera->nombre }}"
                                                 class="form-control" disabled>
@@ -62,7 +87,7 @@
                                         <div class="form-group"><label class="col-form-label">ID Senati</label><input
                                             type="text" value="{{ $candidato->id_senati }}"
                                             class="form-control" disabled>
-                                        </div>                          
+                                        </div>
 
                                     </div>
                                     <div class="col-sm-6">

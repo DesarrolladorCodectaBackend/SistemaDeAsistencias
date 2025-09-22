@@ -482,10 +482,22 @@
                                                         Nacimiento:</h5>
                                                 </label><label for="">{{$candidato->fecha_nacimiento  ?? 'Sin fecha de nacimiento'}}</label>
                                             </div>
-                                            <div class="form-group"><label>
-                                                    <h5 class="m-t-none m-b">DNI:</h5>
-                                                </label><label for="">{{$candidato->dni  ?? 'Sin DNI'}}</label>
-                                            </div>
+                                            @if(!empty($candidato->dni))
+                                                <div class="form-group"><label>
+                                                        <h5 class="m-t-none m-b">DNI:</h5>
+                                                    </label><label for="">{{$candidato->dni  ?? 'Sin DNI'}}</label>
+                                                </div>
+                                            @elseif(!empty($candidato->carnet_extranjeria))
+                                                <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Carnet Extranjería:</h5>
+                                                    </label><label for="">{{$candidato->carnet_extranjeria  ?? 'Sin carnet extranjero'}}</label>
+                                                </div>
+                                            @elseif(!empty($candidato->dni) && !empty($candidato->carnet_extranjeria))
+                                                <div class="form-group"><label>
+                                                    <h5 class="m-t-none m-b">Documento:</h5>
+                                                    </label><label for="">Sin documento de identificación</label>
+                                                </div>
+                                            @endif
 
                                             <div class="form-group"><label>
                                                 <h5 class="m-t-none m-b">ID Senati:</h5>
@@ -601,10 +613,22 @@
                                         </div>
                                     </dl>
                                     <dl class="row mb-0">
-                                        <div class="col-sm-6 text-sm-left">
-                                            <dt>DNI:</dt>
-                                            <dd class="sm-2">{{$candidato->dni ?? 'Sin DNI'}}</dd>
-                                        </div>
+                                        @if(!empty($candidato->dni))
+                                            <div class="col-sm-6 text-sm-left">
+                                                <dt>DNI:</dt>
+                                                <dd class="sm-2">{{$candidato->dni ?? 'Sin DNI'}}</dd>
+                                            </div>
+                                        @elseif(!empty($candidato->carnet_extranjeria))
+                                            <div class="col-sm-6 text-sm-left">
+                                                <dt>Carnet Extranjería:</dt>
+                                                <dd class="sm-2">{{$candidato->carnet_extranjeria ?? 'Sin carnet extranjero'}}</dd>
+                                            </div>
+                                        @elseif(!empty($candidato->dni) && !empty($candidato->carnet_extranjeria))
+                                            <div class="col-sm-6 text-sm-left">
+                                                <dt>Sin documento:</dt>
+                                                <dd class="sm-2">Sin documento de identificación</dd>
+                                            </div>
+                                        @endif
                                     </dl>
                                     <dl class="row mb-0">
                                         <div class="col-sm-6 text-sm-left">
@@ -684,18 +708,44 @@
                                                                         @enderror
                                                                     </div>
 
-                                                                    <div class="form-group">
-                                                                        <label>DNI</label>
-                                                                        <div class="position-relative">
-                                                                            <!-- Campo DNI con ID dinámico -->
-                                                                            <input type="number" id="dni-update-{{ $candidato->id }}" placeholder="Ingrese dni" class="form-control" name="dni" value="{{ $candidato->dni }}" autocomplete="off" oninput="limitDNI(this)">
-                                                                            <span id="dni-counter-update-{{ $candidato->id }}" class="position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
-                                                                        </div>
-                                                                        @error('dni.' . $candidato->id)
-                                                                            <span class="text-danger">{{ $message }}</span>
-                                                                        @enderror
+                                                                    <div class="form-group" id="content-dni-carnet-update-{{ $candidato->id }}">
+                                                                        @if(!empty($candidato->dni))
+                                                                            <label id="label-change-dni-carnet-update-{{ $candidato->id }}">DNI</label>
+                                                                            <button class="btn btn-success btn-sm" type="button" id="btn-change-update-{{ $candidato->id }}" onclick="changeToDniCarnetUpdate({{ $candidato->id }})">
+                                                                                <i class='bx bx-undo'></i>
+                                                                            </button>
+                                                                            <div class="position-relative">
+                                                                                <input type="number" placeholder="Ingrese dni" id="input-dni-carnet-update-{{ $candidato->id }}" class="form-control" name="dni" value="{{ $candidato->dni }}" autocomplete="off" oninput="limitDNI(this)">
+                                                                                <span id="dni-counter-update-{{ $candidato->id }}" class="position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">{{ strlen($candidato->dni) }}/8</span>
+                                                                            </div>
+                                                                            @error('dni.' . $candidato->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        @elseif(!empty($candidato->carnet_extranjeria))
+                                                                            <label id="label-change-dni-carnet-update-{{ $candidato->id }}">Carnet Extranjería</label>
+                                                                            <button class="btn btn-success btn-sm" type="button" id="btn-change-update-{{ $candidato->id }}" onclick="changeToDniCarnetUpdate({{ $candidato->id }})">
+                                                                                <i class='bx bx-undo'></i>
+                                                                            </button>
+                                                                            <div class="position-relative">
+                                                                                <input type="text" placeholder="Ingrese carnet de extranjería" id="input-dni-carnet-update-{{ $candidato->id }}" class="form-control" name="carnet_extranjeria" autocomplete="off" value="{{ $candidato->carnet_extranjeria }}">
+                                                                            </div>
+                                                                            @error('carnet_extranjeria.' . $candidato->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        @else
+                                                                            <label id="label-change-dni-carnet-update-{{ $candidato->id }}">DNI</label>
+                                                                            <button class="btn btn-success btn-sm" type="button" id="btn-change-update-{{ $candidato->id }}" onclick="changeToDniCarnetUpdate({{ $candidato->id }})">
+                                                                                <i class='bx bx-undo'></i>
+                                                                            </button>
+                                                                            <div class="position-relative">
+                                                                                <input type="number" placeholder="Ingrese dni" id="input-dni-carnet-update-{{ $candidato->id }}" class="form-control" name="dni" autocomplete="off" oninput="limitDNI(this)">
+                                                                                <span id="dni-counter-update-{{ $candidato->id }}" class="position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
+                                                                            </div>
+                                                                            @error('dni.' . $candidato->id)
+                                                                                <span class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        @endif
                                                                     </div>
-
                                                                     <div class="form-group">
                                                                         <label>ID Senati</label>
                                                                         <div class="position-relative">
@@ -1188,6 +1238,39 @@
                     </button>
                     <div class="position-relative">
                         <input type="number" placeholder="Ingrese dni" id="input-dni-carnet" class="form-control" name="dni">
+                    </div>
+                `;
+            }
+        }
+
+        function changeToDniCarnetUpdate(candidatoId) {
+            const contentDiv = document.getElementById('content-dni-carnet-update-' + candidatoId);
+            const currentLabel = document.getElementById('label-change-dni-carnet-update-' + candidatoId).textContent;
+            const currentInput = document.getElementById('input-dni-carnet-update-' + candidatoId);
+
+            const currentValue = currentInput ? currentInput.value : '';
+
+            if (currentLabel === 'DNI') {
+                contentDiv.innerHTML = `
+                    <input type="hidden" name="dni" value="">
+                    <label id="label-change-dni-carnet-update-${candidatoId}">Carnet Extranjería</label>
+                    <button class="btn btn-success btn-sm" type="button" id="btn-change-update-${candidatoId}" onclick="changeToDniCarnetUpdate(${candidatoId})">
+                        <i class='bx bx-undo'></i>
+                    </button>
+                    <div class="position-relative">
+                        <input type="text" placeholder="Ingrese carnet de extranjería" id="input-dni-carnet-update-${candidatoId}" class="form-control" name="carnet_extranjeria" autocomplete="off" value="">
+                    </div>
+                `;
+            } else {
+                contentDiv.innerHTML = `
+                    <input type="hidden" name="carnet_extranjeria" value="">
+                    <label id="label-change-dni-carnet-update-${candidatoId}">DNI</label>
+                    <button class="btn btn-success btn-sm" type="button" id="btn-change-update-${candidatoId}" onclick="changeToDniCarnetUpdate(${candidatoId})">
+                        <i class='bx bx-undo'></i>
+                    </button>
+                    <div class="position-relative">
+                        <input type="number" placeholder="Ingrese dni" id="input-dni-carnet-update-${candidatoId}" class="form-control" name="dni" autocomplete="off" oninput="limitDNI(this)" value="">
+                        <span id="dni-counter-update-${candidatoId}" class="position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: gray;">0/8</span>
                     </div>
                 `;
             }
