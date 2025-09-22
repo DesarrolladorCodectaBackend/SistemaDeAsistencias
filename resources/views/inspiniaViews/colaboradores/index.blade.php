@@ -1775,6 +1775,9 @@ function abrirModalEdicion(colaboradorId) {
 
         }
 
+
+    const colaboradoresFiltrarBaseUrl = '{{ route("colaboradores.filtrar", ["estados" => "PLACEHOLDER_ESTADOS","areas" => "PLACEHOLDER_AREAS","carreras" => "PLACEHOLDER_CARRERAS","instituciones" => "PLACEHOLDER_INSTITUCIONES","ciclos" => "PLACEHOLDER_CICLOS","sedes" => "PLACEHOLDER_SEDES","computadoras" => "PLACEHOLDER_COMPUTADORAS"]) }}';
+
     function prepareFilterActionURL() {
         let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
         let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
@@ -1793,27 +1796,17 @@ function abrirModalEdicion(colaboradorId) {
         computadoras = computadoras.length ? computadoras.join(',') : '0';
 
         if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null && computadoras != null){
-            let baseUrl = `{{ route("colaboradores.filtrar", [
-                "estados" => ":estados",
-                "areas" => ":areas",
-                "carreras" => ":carreras",
-                "instituciones" => ":instituciones",
-                "ciclos" => ":ciclos",
-                "sedes" => ":sedes",
-                "computadoras" => ":computadoras"
-                ])`;
+             let actionUrl = colaboradoresFiltrarBaseUrl
+            .replace('PLACEHOLDER_ESTADOS', estados)
+            .replace('PLACEHOLDER_AREAS', areas)
+            .replace('PLACEHOLDER_CARRERAS', carreras)
+            .replace('PLACEHOLDER_INSTITUCIONES', instituciones)
+            .replace('PLACEHOLDER_CICLOS', ciclos)
+            .replace('PLACEHOLDER_SEDES', sedes)
+            .replace('PLACEHOLDER_COMPUTADORAS', computadoras);
 
-            let actionUrl = baseUrl
-                .replace(':estados', estados)
-                .replace(':areas', areas)
-                .replace(':carreras', carreras)
-                .replace(':instituciones', instituciones)
-                .replace(':ciclos', ciclos)
-                .replace(':sedes', sedes)
-                .replace(':computadoras', computadoras);
-
-            document.querySelector('#filtrarColaboradores').action = actionUrl;
-            return true;
+        document.querySelector('#filtrarColaboradores').action = actionUrl;
+        return true;
         }
     }
 
