@@ -209,7 +209,7 @@
                                         <x-uiverse.tooltip nameTool="Proyectos">
                                             <button
                                                 type="button"
-                                                class="btn btn-success fa fa-edit"
+                                                class="btn btn-success fa fa-folder-open"
                                                 style="font-size: 20px;"
                                                 data-toggle="modal"
                                                 data-target="#proyectosModal{{ $area->id }}"
@@ -224,6 +224,7 @@
                                                     <div class="modal-content animated bounceInRight">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                                            <button type="button" class="btn btn-info ml-2" id="openAnotherModal" data-toggle="modal" data-target="#nuevoModal-{{ $area->id }}"><i class="fa fa-plus"></i></button>
                                                             <i class="fa fa-laptop modal-icon"></i>
                                                             <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
                                                             <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
@@ -236,7 +237,8 @@
                                                                         <tr>
                                                                             <th>Nombre</th>
                                                                             <th>Descripción</th>
-                                                                            <th>Fechas</th>
+                                                                            <th>Fecha Inicio</th>
+                                                                            <th>Fecha Fin</th>
                                                                             <th>Progreso</th>
                                                                         </tr>
                                                                         </thead>
@@ -245,10 +247,11 @@
                                                                         <tr>
                                                                             <td>{{ $proyecto->nombre }}</td>
                                                                             <td>{{ $proyecto->descripcion }}</td>
-                                                                            <td>{{ \Carbon\Carbon::parse($proyecto->fecha_inicio)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($proyecto->fecha_fin)->format('d/m/Y') }}</td>
+                                                                            <td>{{ $proyecto->fecha_inicio }}</td>
+                                                                            <td>{{ $proyecto->fecha_fin }}</td>
                                                                             <td>
                                                                                 <div class="progress">
-                                                                                    <div class="progress-bar" role="progressbar" style="width: {{ $proyecto->porcentaje }}%;" aria-valuenow="{{ $proyecto->porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ $proyecto->porcentaje }}%</div>
+                                                                                    <div class="progress-bar" role="progressbar" style="width: {{ $proyecto->porcentaje }}%; color: black;" aria-valuenow="{{ $proyecto->porcentaje }}" aria-valuemin="0" aria-valuemax="100" >{{ $proyecto->porcentaje }}%</div>
                                                                                 </div>
                                                                             </td>
                                                                         </tr>
@@ -269,7 +272,76 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
+                                        <!-- Crear Proyectoo -->
+                                        <div class="modal inmodal" id="nuevoModal-{{ $area->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content animated bounceInRight">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">
+                                                            <span aria-hidden="true">&times;</span>
+                                                            <span class="sr-only">Close</span>
+                                                        </button>
+                                                        <i class="fa fa-info-circle modal-icon"></i>
+                                                        <h4 class="modal-title">Nuevo Proyecto</h4>
+                                                        <small class="font-bold">Área {{ $area->especializacion }}</small>
+                                                    </div>
+                                                    <form action="{{ route('proyectos.crear') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="area_id" value="{{ $area->id }}">
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label for="nombre">Nombre del proyecto</label>
+                                                                <input type="text" class="form-control" name="nombre" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="descripcion">Descripción</label>
+                                                                <textarea class="form-control" name="descripcion" rows="3"></textarea>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="fecha_inicio">Fecha de inicio</label>
+                                                                <input type="date" class="form-control" name="fecha_inicio">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="fecha_fin">Fecha de fin</label>
+                                                                <input type="date" class="form-control" name="fecha_fin">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Porcentaje:</label>
+                                                                <input
+                                                                    type="range"
+                                                                    min="0"
+                                                                    max="100"
+                                                                    step="1"
+                                                                    name="porcentaje"
+                                                                    value="{{ old('porcentaje', 0) }}"
+                                                                    class="form-control-range"
+                                                                    data-target="progressBar-{{ $area->id }}"
+                                                                    oninput="updateProgress(this)">
+
+                                                                <div class="progress mt-2">
+                                                                    <div id="progressBar"
+                                                                        class="progress-bar bg-info progressBar-{{ $area->id }}"
+                                                                        style="width: 0%;">
+                                                                        0%
+                                                                    </div>
+                                                                </div>
+
+                                                                @error('porcentaje')
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                                                            <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
 
 
                                         {{-- modal desactivar evaluaciones --}}
@@ -842,6 +914,30 @@ function validarFechas(areaId) {
     btnLimpiar.addEventListener("click",limpiarBuscador)
 </script>
 
+<script>
+    $(document).on('click', '#openAnotherModal', function (e) {
+        e.preventDefault();
+        var $modalProyectos = $(this).closest('.modal');
+
+        $('#openAnotherModal').modal('hide');
+
+         setTimeout(function() {
+    $('#nuevoModal').modal('show');
+        }, 3000);
+    });
+
+    function updateProgress(inputElement) {
+        var target = $(inputElement).data('target');
+        var progressBar = $('.' + target);
+
+        progressBar.css('width', inputElement.value + '%');
+        progressBar.text(inputElement.value + '%');
+    }
+
+</script>
+
+
+
 <style>
 
 .modal-backdrop {
@@ -851,6 +947,9 @@ function validarFechas(areaId) {
 .modal {
     z-index: 1050;
 }
+
+
+
 </style>
 </body>
 

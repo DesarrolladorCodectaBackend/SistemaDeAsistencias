@@ -30,12 +30,12 @@ class ProyectoController extends Controller
             // traer el objeto area
             $areaPerteneciente = $this->verifyUserJefeArea();
 
-            $cantidadProyectos = Proyecto::where('area_id', $areaPerteneciente->id)->count();
+            // $cantidadProyectos = Proyecto::where('area_id', $areaPerteneciente->id)->count();
 
-        if ($cantidadProyectos >= 3) {
-            return redirect()->route('proyectos.index')
-                ->with('warning', 'Ya has registrado el máximo de 3 proyectos permitidos.');
-        }
+            // if ($cantidadProyectos >= 3) {
+            //     return redirect()->route('proyectos.index')
+            //         ->with('warning', 'Ya has registrado el máximo de 3 proyectos permitidos.');
+            // }
 
             // store del proyecto con dicha area
             DB::beginTransaction();

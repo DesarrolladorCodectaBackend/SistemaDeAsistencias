@@ -25,6 +25,13 @@
   margin: 0 auto;
 }
 
+div.progress-bar{
+  background-color:rgb(171, 209, 224) ;
+  border: black;
+  padding: 6px;
+  border-radius: 2px;
+}
+
 .search-bar {
   position: relative;
   display: flex;
