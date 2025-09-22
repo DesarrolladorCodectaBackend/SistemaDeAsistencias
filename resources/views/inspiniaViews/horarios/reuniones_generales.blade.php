@@ -147,7 +147,7 @@
                                                                     <td class="receso" colspan="8">RECESO</td>
                                                                 </tr>
                                                                 <tr class="celdas" >
-                                                                    <th rowspan="6">8:30 am - 12:30 pm</th>
+                                                                    <th rowspan="6">2:00 pm - 9:00 pm</th>
                                                                     <td id="c64"></td>
                                                                     <td id="c65"></td>
                                                                     <td id="c66"></td>
