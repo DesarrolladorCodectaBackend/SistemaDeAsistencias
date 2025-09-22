@@ -47,20 +47,21 @@
                                                     <br>
                                                     <div class="container">
                                                         <table>
-                                                            <tr class="m1">
-                                                                <th class="hm">Hora / Área</th>
-                                                                <th id="A1">Domingo</th>
-                                                                <th id="A2">Lunes</th>
-                                                                <th id="A3">Martes</th>
-                                                                <th id="A4">Miércoles</th>
-                                                                <th id="A5">Jueves</th>
-                                                                <th id="A6">Viernes</th>
-                                                                <th id="A7">Sábado</th>
-                                                            </tr>
+                                                            <thead>
+                                                                <tr class="m1">
+                                                                    <th class="hm">Hora / Área</th>
+                                                                    <th id="A1">Domingo</th>
+                                                                    <th id="A2">Lunes</th>
+                                                                    <th id="A3">Martes</th>
+                                                                    <th id="A4">Miércoles</th>
+                                                                    <th id="A5">Jueves</th>
+                                                                    <th id="A6">Viernes</th>
+                                                                    <th id="A7">Sábado</th>
+                                                                </tr>
                                                             </thead>
                                                             <tbody>
                                                                 <tr class="celdas">
-                                                                    <th rowspan="4" >8:30 am - 12:30 pm</th>
+                                                                    <th rowspan="6">8:30 am - 12:30 pm</th>
                                                                     <td id="c1"></td>
                                                                     <td id="c2"></td>
                                                                     <td id="c3"></td>
@@ -83,62 +84,98 @@
                                                                     <td id="c16"></td>
                                                                     <td id="c17"></td>
                                                                     <td id="c18"></td>
-                                                                    <td id="c19"> </td>
-                                                                    <td id="c20"> </td>
-                                                                    <td id="c21"> </td>
+                                                                    <td id="c19"></td>
+                                                                    <td id="c20"></td>
+                                                                    <td id="c21"></td>
                                                                 </tr>
                                                                 <tr class="celdas">
                                                                     <td id="c22"></td>
                                                                     <td id="c23"></td>
                                                                     <td id="c24"></td>
                                                                     <td id="c25"></td>
-                                                                    <td id="c26"> </td>
-                                                                    <td id="c27"> </td>
-                                                                    <td id="c28"> </td>
+                                                                    <td id="c26"></td>
+                                                                    <td id="c27"></td>
+                                                                    <td id="c28"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c29"></td>
+                                                                    <td id="c30"></td>
+                                                                    <td id="c31"></td>
+                                                                    <td id="c32"></td>
+                                                                    <td id="c33"></td>
+                                                                    <td id="c34"></td>
+                                                                    <td id="c35"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c36"></td>
+                                                                    <td id="c37"></td>
+                                                                    <td id="c38"></td>
+                                                                    <td id="c39"></td>
+                                                                    <td id="c40"></td>
+                                                                    <td id="c41"></td>
+                                                                    <td id="c42"></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>12:30 pm - 2:00 pm</th>
                                                                     <td class="receso" colspan="8">RECESO</td>
                                                                 </tr>
                                                                 <tr class="celdas">
-                                                                    <th rowspan="4" >2:00 pm - 6:00 pm</th>
-                                                                    <td id="c29" ></td>
-                                                                    <td id="c30" ></td>
-                                                                    <td id="c31" > </td>
-                                                                    <td id="c32" > </td>
-                                                                    <td id="c33"> </td>
-                                                                    <td id="c34"> </td>
-                                                                    <td id="c35"> </td>
-                                                                </tr>
-                                                                <tr class="celdas">
-                                                                    <td id="c36" ></td>
-                                                                    <td id="c37" ></td>
-                                                                    <td id="c38" ></td>
-                                                                    <td id="c39" ></td>
-                                                                    <td id="c40"> </td>
-                                                                    <td id="c41"> </td>
-                                                                    <td id="c42"> </td>
-                                                                </tr>
-                                                                <tr class="celdas">
-                                                                    <td id="c43" ></td>
-                                                                    <td id="c44" ></td>
-                                                                    <td id="c45" ></td>
-                                                                    <td id="c46" ></td>
+                                                                    <th rowspan="6">2:00 pm - 6:00 pm</th>
+                                                                    <td id="c43"></td>
+                                                                    <td id="c44"></td>
+                                                                    <td id="c45"></td>
+                                                                    <td id="c46"></td>
                                                                     <td id="c47"></td>
                                                                     <td id="c48"></td>
                                                                     <td id="c49"></td>
                                                                 </tr>
                                                                 <tr class="celdas">
-                                                                    <td id="c50" ></td>
-                                                                    <td id="c51" ></td>
-                                                                    <td id="c52" ></td>
-                                                                    <td id="c53" ></td>
+                                                                    <td id="c50"></td>
+                                                                    <td id="c51"></td>
+                                                                    <td id="c52"></td>
+                                                                    <td id="c53"></td>
                                                                     <td id="c54"></td>
-                                                                    <td id="c55"> </td>
-                                                                    <td id="c56"> </td>
+                                                                    <td id="c55"></td>
+                                                                    <td id="c56"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c57"></td>
+                                                                    <td id="c58"></td>
+                                                                    <td id="c59"></td>
+                                                                    <td id="c60"></td>
+                                                                    <td id="c61"></td>
+                                                                    <td id="c62"></td>
+                                                                    <td id="c63"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c64"></td>
+                                                                    <td id="c65"></td>
+                                                                    <td id="c66"></td>
+                                                                    <td id="c67"></td>
+                                                                    <td id="c68"></td>
+                                                                    <td id="c69"></td>
+                                                                    <td id="c70"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c71"></td>
+                                                                    <td id="c72"></td>
+                                                                    <td id="c73"></td>
+                                                                    <td id="c74"></td>
+                                                                    <td id="c75"></td>
+                                                                    <td id="c76"></td>
+                                                                    <td id="c77"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c78"></td>
+                                                                    <td id="c79"></td>
+                                                                    <td id="c80"></td>
+                                                                    <td id="c81"></td>
+                                                                    <td id="c82"></td>
+                                                                    <td id="c83"></td>
+                                                                    <td id="c84"></td>
                                                                 </tr>
                                                             </tbody>
-                                                        </table >
+                                                        </table>
                                                     </div>
                                                     <style>
                                                     .container {
@@ -244,8 +281,8 @@
                                                         };
                                                         // Mapeo de bloques de horario a filas (ajustar si cambian los bloques)
                                                         var bloques = [
-                                                            { nombre: '8:30 am - 12:30 pm', base: 0 }, // c1-c28
-                                                            { nombre: '2:00 pm - 6:00 pm', base: 28 }   // c29-c56
+                                                            { nombre: '8:30 am - 12:30 pm', base: 0 }, // c1-c42
+                                                            { nombre: '2:00 pm - 6:00 pm', base: 42 }   // c43-c84
                                                         ];
                                                         // Agrupar reuniones por día y bloque
                                                         var agrupadas = {};
@@ -268,9 +305,8 @@
                                                                     var key = dia + '_' + bloqueIdx;
                                                                     var eventos = agrupadas[key] || [];
                                                                     eventos.forEach(function(evento, idx) {
-                                                                        if (idx < 8) { // máximo 4 filas por bloque
-                                                                            var cellId = bloque.base + (idx * 7) + diasCol[dia];
-                                                                            var $celda = $('#c' + cellId);
+                                                                        if (idx < 8) { 
+                                                                            var cellId = bloque.base + (idx * 7) + diasCol[dia];                                                                            var $celda = $('#c' + cellId);
                                                                             if ($celda.length) {
                                                                                 $celda.empty();
                                                                                 var $areaDiv = $('<div></div>');
