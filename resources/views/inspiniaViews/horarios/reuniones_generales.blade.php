@@ -61,7 +61,7 @@
                                                             </thead>
                                                             <tbody>
                                                                 <tr class="celdas">
-                                                                    <th rowspan="6">8:30 am - 12:30 pm</th>
+                                                                    <th rowspan="9">8:30 am - 12:30 pm</th>
                                                                     <td id="c1"></td>
                                                                     <td id="c2"></td>
                                                                     <td id="c3"></td>
@@ -116,11 +116,6 @@
                                                                     <td id="c42"></td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th>12:30 pm - 2:00 pm</th>
-                                                                    <td class="receso" colspan="8">RECESO</td>
-                                                                </tr>
-                                                                <tr class="celdas">
-                                                                    <th rowspan="6">2:00 pm - 6:00 pm</th>
                                                                     <td id="c43"></td>
                                                                     <td id="c44"></td>
                                                                     <td id="c45"></td>
@@ -147,7 +142,12 @@
                                                                     <td id="c62"></td>
                                                                     <td id="c63"></td>
                                                                 </tr>
-                                                                <tr class="celdas">
+                                                                <tr>
+                                                                    <th>12:30 pm - 2:00 pm</th>
+                                                                    <td class="receso" colspan="8">RECESO</td>
+                                                                </tr>
+                                                                <tr class="celdas" >
+                                                                    <th rowspan="6">8:30 am - 12:30 pm</th>
                                                                     <td id="c64"></td>
                                                                     <td id="c65"></td>
                                                                     <td id="c66"></td>
@@ -156,6 +156,7 @@
                                                                     <td id="c69"></td>
                                                                     <td id="c70"></td>
                                                                 </tr>
+
                                                                 <tr class="celdas">
                                                                     <td id="c71"></td>
                                                                     <td id="c72"></td>
@@ -165,6 +166,7 @@
                                                                     <td id="c76"></td>
                                                                     <td id="c77"></td>
                                                                 </tr>
+
                                                                 <tr class="celdas">
                                                                     <td id="c78"></td>
                                                                     <td id="c79"></td>
@@ -173,6 +175,33 @@
                                                                     <td id="c82"></td>
                                                                     <td id="c83"></td>
                                                                     <td id="c84"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c85"></td>
+                                                                    <td id="c86"></td>
+                                                                    <td id="c87"></td>
+                                                                    <td id="c88"></td>
+                                                                    <td id="c89"></td>
+                                                                    <td id="c90"></td>
+                                                                    <td id="c91"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c92"></td>
+                                                                    <td id="c93"></td>
+                                                                    <td id="c94"></td>
+                                                                    <td id="c95"></td>
+                                                                    <td id="c96"></td>
+                                                                    <td id="c97"></td>
+                                                                    <td id="c98"></td>
+                                                                </tr>
+                                                                <tr class="celdas">
+                                                                    <td id="c99"></td>
+                                                                    <td id="c100"></td>
+                                                                    <td id="c101"></td>
+                                                                    <td id="c102"></td>
+                                                                    <td id="c103"></td>
+                                                                    <td id="c104"></td>
+                                                                    <td id="c105"></td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
@@ -281,8 +310,8 @@
                                                         };
                                                         // Mapeo de bloques de horario a filas (ajustar si cambian los bloques)
                                                         var bloques = [
-                                                            { nombre: '8:30 am - 12:30 pm', base: 0 }, // c1-c42
-                                                            { nombre: '2:00 pm - 6:00 pm', base: 42 }   // c43-c84
+                                                            { nombre: '8:30 am - 12:30 pm', base: 0 }, // c1-c62
+                                                            { nombre: '2:00 pm - 9:00 pm', base: 63 }   // c63-c105
                                                         ];
                                                         // Agrupar reuniones por día y bloque
                                                         var agrupadas = {};
