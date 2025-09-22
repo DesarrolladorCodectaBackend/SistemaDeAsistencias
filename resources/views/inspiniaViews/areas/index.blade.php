@@ -284,7 +284,7 @@
                                                         </button>
                                                         <i class="fa fa-info-circle modal-icon"></i>
                                                         <h4 class="modal-title">Nuevo Proyecto</h4>
-                                                        <small class="font-bold">Agrega un nuevo proyecto</small>
+                                                        <small class="font-bold">Área {{ $area->especializacion }}</small>
                                                     </div>
                                                     <form action="{{ route('proyectos.crear') }}" method="POST">
                                                         @csrf
@@ -296,15 +296,15 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="descripcion">Descripción</label>
-                                                                <textarea class="form-control" name="descripcion" rows="3" required></textarea>
+                                                                <textarea class="form-control" name="descripcion" rows="3"></textarea>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="fecha_inicio">Fecha de inicio</label>
-                                                                <input type="date" class="form-control" name="fecha_inicio" required>
+                                                                <input type="date" class="form-control" name="fecha_inicio">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="fecha_fin">Fecha de fin</label>
-                                                                <input type="date" class="form-control" name="fecha_fin" required>
+                                                                <input type="date" class="form-control" name="fecha_fin">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Porcentaje:</label>
