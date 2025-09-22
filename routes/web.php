@@ -258,7 +258,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/proyecto/store', [ProyectoController::class, 'store'])->name('proyectos.store');
     Route::patch('/proyecto/change-state/{proyecto_id}', [ProyectoController::class, 'changeState'])->name('proyectos.changeState');
     Route::patch('/proyecto/update/{proyecto_id}', [ProyectoController::class, 'update'])->name('proyectos.update');
-    Route::post('/proyectos/crear', [AreaController::class, 'crearproyecto'])->name('proyectos.crear');
+    Route::post('/areas/crear-proyecto', [AreaController::class, 'crearproyecto'])->name('proyectos.crear');
 
     //TutoSeguimiento
     Route::get('/especialista', [TutorSeguimientoController::class, 'index'])->name('especialista.index');

@@ -224,7 +224,7 @@
                                                     <div class="modal-content animated bounceInRight">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                            <button type="button" class="btn btn-info ml-2" id="openAnotherModal" data-toggle="modal" data-target="#nuevoModal"><i class="fa fa-plus"></i></button>
+                                                            <button type="button" class="btn btn-info ml-2" id="openAnotherModal" data-toggle="modal" data-target="#nuevoModal-{{ $area->id }}"><i class="fa fa-plus"></i></button>
                                                             <i class="fa fa-laptop modal-icon"></i>
                                                             <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
                                                             <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
@@ -270,9 +270,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <!-- Crear Proyectoo -->
-                                        <div class="modal inmodal" id="nuevoModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal inmodal" id="nuevoModal-{{ $area->id }}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content animated bounceInRight">
                                                     <div class="modal-header">
@@ -286,6 +286,7 @@
                                                     </div>
                                                     <form action="{{ route('proyectos.crear') }}" method="POST">
                                                         @csrf
+                                                        <input type="hidden" name="area_id" value="{{ $area->id }}">
                                                         <div class="modal-body">
                                                             <div class="form-group">
                                                                 <label for="nombre">Nombre del proyecto</label>
@@ -304,8 +305,29 @@
                                                                 <input type="date" class="form-control" name="fecha_fin" required>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="porcentaje">Porcentaje inicial</label>
-                                                                <input type="number" class="form-control" name="porcentaje" min="0" max="100" value="0" required>
+                                                                <label>Porcentaje:</label>
+                                                                <input
+                                                                    type="range"
+                                                                    min="0"
+                                                                    max="100"
+                                                                    step="1"
+                                                                    name="porcentaje"
+                                                                    value="{{ old('porcentaje', 0) }}"
+                                                                    class="form-control-range"
+                                                                    data-target="progressBar-{{ $area->id }}"
+                                                                    oninput="updateProgress(this)">
+
+                                                                <div class="progress mt-2">
+                                                                    <div id="progressBar"
+                                                                        class="progress-bar bg-info progressBar-{{ $area->id }}"
+                                                                        style="width: 0%;">
+                                                                        0%
+                                                                    </div>
+                                                                </div>
+
+                                                                @error('porcentaje')
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -901,6 +923,14 @@ function validarFechas(areaId) {
     $('#nuevoModal').modal('show');
         }, 3000);
     });
+
+    function updateProgress(inputElement) {
+        var target = $(inputElement).data('target');
+        var progressBar = $('.' + target);
+
+        progressBar.css('width', inputElement.value + '%');
+        progressBar.text(inputElement.value + '%');
+    }
 
 </script>
 

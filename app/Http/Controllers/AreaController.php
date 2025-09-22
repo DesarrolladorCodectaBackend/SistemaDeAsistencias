@@ -870,15 +870,15 @@ class AreaController extends Controller
     }
     public function crearproyecto(Request $request) {
         try {
-            // traer el objeto area
-            $areaPerteneciente = $this->verifyUserJefeArea();
+        //     // traer el objeto area
+        //     $areaPerteneciente = $this->verifyUserJefeArea();
 
-            $cantidadProyectos = Proyecto::where('area_id', $areaPerteneciente->id)->count();
+        //     $cantidadProyectos = Proyecto::where('area_id', $areaPerteneciente->id)->count();
 
-        if ($cantidadProyectos >= 3) {
-            return redirect()->route('proyectos.index')
-                ->with('warning', 'Ya has registrado el máximo de 3 proyectos permitidos.');
-        }
+        // if ($cantidadProyectos >= 3) {
+        //     return redirect()->route('proyectos.index')
+        //         ->with('warning', 'Ya has registrado el máximo de 3 proyectos permitidos.');
+        // }
 
             // store del proyecto con dicha area
             DB::beginTransaction();
@@ -889,18 +889,18 @@ class AreaController extends Controller
                 'fecha_fin' => $request->fecha_fin,
                 'porcentaje' => $request->porcentaje,
                 'estado' => 1,
-                'area_id' => $areaPerteneciente->id,
+                'area_id' => $request->area_id,
                 // estado en default => 1
             ]);
 
             DB::commit();
-            return redirect()->route('proyectos.index')->with('success', 'Proyecto creado correctamente');
+            return redirect()->route('areas.index')->with('success', 'Proyecto creado correctamente');
 
         } catch (Exception $e) {
 
             DB::rollBack();
             // return $e;
-            return redirect()->route('proyectos.index')->with('error', 'Ocurrió un error, inténtelo más tarde o contacte con el equipo de soporte');
+            return redirect()->route('areas.index')->with('error', 'Ocurrió un error, inténtelo más tarde o contacte con el equipo de soporte');
 
         }
     }
