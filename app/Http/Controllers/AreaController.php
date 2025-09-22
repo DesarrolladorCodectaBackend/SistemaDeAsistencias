@@ -868,7 +868,45 @@ class AreaController extends Controller
             'warning' => $warning
         ];
     }
+    public function crearproyecto(Request $request) {
+        try {
+            // traer el objeto area
+            $areaPerteneciente = $this->verifyUserJefeArea();
+
+            $cantidadProyectos = Proyecto::where('area_id', $areaPerteneciente->id)->count();
+
+        if ($cantidadProyectos >= 3) {
+            return redirect()->route('proyectos.index')
+                ->with('warning', 'Ya has registrado el máximo de 3 proyectos permitidos.');
+        }
+
+            // store del proyecto con dicha area
+            DB::beginTransaction();
+            Proyecto::create([
+                'nombre' => $request->nombre,
+                'descripcion' => $request->descripcion,
+                'fecha_inicio' => $request->fecha_inicio,
+                'fecha_fin' => $request->fecha_fin,
+                'porcentaje' => $request->porcentaje,
+                'estado' => 1,
+                'area_id' => $areaPerteneciente->id,
+                // estado en default => 1
+            ]);
+
+            DB::commit();
+            return redirect()->route('proyectos.index')->with('success', 'Proyecto creado correctamente');
+
+        } catch (Exception $e) {
+
+            DB::rollBack();
+            // return $e;
+            return redirect()->route('proyectos.index')->with('error', 'Ocurrió un error, inténtelo más tarde o contacte con el equipo de soporte');
+
+        }
+    }
 
 }
+
+
 
 
