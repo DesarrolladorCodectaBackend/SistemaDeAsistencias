@@ -1793,7 +1793,6 @@ function abrirModalEdicion(colaboradorId) {
         computadoras = computadoras.length ? computadoras.join(',') : '0';
 
         if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null && computadoras != null){
-            // Usar la ruta nombrada de Laravel en lugar de URL hardcodeada
             let baseUrl = `{{ route("colaboradores.filtrar", [
                 "estados" => ":estados",
                 "areas" => ":areas",
