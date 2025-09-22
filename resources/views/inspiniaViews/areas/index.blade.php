@@ -212,7 +212,7 @@
                                                 class="btn btn-success fa fa-folder-open"
                                                 style="font-size: 20px;"
                                                 data-toggle="modal"
-                                                data-target="#proyectosModal{{ $area->id }}"
+                                                data-target="#proyectosModal{{ $area->id }}"                                              "
                                             >
                                             </button>
                                         </x-uiverse.tooltip>
@@ -224,7 +224,14 @@
                                                     <div class="modal-content animated bounceInRight">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                                            <button type="button" class="btn btn-info ml-2" id="openAnotherModal" data-toggle="modal" data-target="#nuevoModal-{{ $area->id }}"><i class="fa fa-plus"></i></button>
+
+                                                            <button type="button"
+                                                                    class="btn btn-info ml-2 open-another-modal"
+                                                                    data-current="#proyectosModal{{ $area->id }}"
+                                                                    data-target="#nuevoModal-{{ $area->id }}">
+                                                                <i class="fa fa-plus"></i>
+                                                            </button>
+
                                                             <i class="fa fa-laptop modal-icon"></i>
                                                             <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
                                                             <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
@@ -915,17 +922,37 @@ function validarFechas(areaId) {
 </script>
 
 <script>
-    $(document).on('click', '#openAnotherModal', function (e) {
-        e.preventDefault();
-        var $modalProyectos = $(this).closest('.modal');
+    $(document).ready(function () {
+        let lastModal = null;
 
-        $('#openAnotherModal').modal('hide');
+        $(document).on('click', '.open-another-modal', function (e) {
+            e.preventDefault();
 
-         setTimeout(function() {
-    $('#nuevoModal').modal('show');
-        }, 3000);
+            const currentModalId = $(this).data('current');
+            const targetModalId = $(this).data('target');
+
+            lastModal = currentModalId;
+
+            $(currentModalId).one('hidden.bs.modal', function () {
+                $(targetModalId).modal('show');
+            }).modal('hide');
+        });
+
+        $(document).on('hidden.bs.modal', '.modal', function () {
+            const closedModalId = '#' + $(this).attr('id');
+
+            if (lastModal && closedModalId === $(lastModal).data('target')) {
+                $(lastModal).modal('show');
+                lastModal = null;
+            }
+        });
     });
+</script>
 
+
+
+
+<script>
     function updateProgress(inputElement) {
         var target = $(inputElement).data('target');
         var progressBar = $('.' + target);
@@ -933,10 +960,7 @@ function validarFechas(areaId) {
         progressBar.css('width', inputElement.value + '%');
         progressBar.text(inputElement.value + '%');
     }
-
 </script>
-
-
 
 <style>
 
