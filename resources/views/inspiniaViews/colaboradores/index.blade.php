@@ -1775,170 +1775,133 @@ function abrirModalEdicion(colaboradorId) {
 
         }
 
-        function prepareFilterActionURL() {
-            let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
-            let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
-            let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
-            let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
-            let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
-            let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
-            let computadoras = Array.from(document.querySelectorAll('.computadora-checkbox:checked')).map(cb => cb.value);
+    function prepareFilterActionURL() {
+    let estados = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(cb => cb.value);
+    let areas = Array.from(document.querySelectorAll('.area-checkbox:checked')).map(cb => cb.value);
+    let carreras = Array.from(document.querySelectorAll('.carrera-checkbox:checked')).map(cb => cb.value);
+    let instituciones = Array.from(document.querySelectorAll('.institucion-checkbox:checked')).map(cb => cb.value);
+    let ciclos = Array.from(document.querySelectorAll('.ciclo-checkbox:checked')).map(cb => cb.value);
+    let sedes = Array.from(document.querySelectorAll('.sede-checkbox:checked')).map(cb => cb.value);
+    let computadoras = Array.from(document.querySelectorAll('.computadora-checkbox:checked')).map(cb => cb.value);
 
-            estados = estados.length ? estados.join(',') : '1';
-            areas = areas.length ? areas.join(',') : '0';
-            carreras = carreras.length ? carreras.join(',') : '0';
-            instituciones = instituciones.length ? instituciones.join(',') : '0';
-            ciclos = ciclos.length ? ciclos.join(',') : '0';
-            sedes = sedes.length ? sedes.join(',') : '0';
-            computadoras = computadoras.length ? computadoras.join(',') : '0';
+    estados = estados.length ? estados.join(',') : '1';
+    areas = areas.length ? areas.join(',') : '0';
+    carreras = carreras.length ? carreras.join(',') : '0';
+    instituciones = instituciones.length ? instituciones.join(',') : '0';
+    ciclos = ciclos.length ? ciclos.join(',') : '0';
+    sedes = sedes.length ? sedes.join(',') : '0';
+    computadoras = computadoras.length ? computadoras.join(',') : '0';
 
-            if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null && computadoras != null){
-                let actionUrl = `/colaboradores/filtrar/estados=*${estados}*/areas=*${areas}*/carreras=*${carreras}*/instituciones=*${instituciones}*/ciclos=*${ciclos}*/sedes=*${sedes}*/computadoras=*${computadoras}*`;
-                // console.log(actionUrl);
-                document.querySelector('#filtrarColaboradores').action = actionUrl;
+    if(estados != null && areas != null && carreras != null && instituciones != null && ciclos != null && sedes != null && computadoras != null){
+        // Usar la ruta nombrada de Laravel en lugar de URL hardcodeada
+        let baseUrl = `{{ route("colaboradores.filtrar", [
+            "estados" => ":estados",
+            "areas" => ":areas",
+            "carreras" => ":carreras",
+            "instituciones" => ":instituciones",
+            "ciclos" => ":ciclos",
+            "sedes" => ":sedes",
+            "computadoras" => ":computadoras"
+    ])}}`;
 
-                return true;
-            }
+        let actionUrl = baseUrl
+            .replace(':estados', estados)
+            .replace(':areas', areas)
+            .replace(':carreras', carreras)
+            .replace(':instituciones', instituciones)
+            .replace(':ciclos', ciclos)
+            .replace(':sedes', sedes)
+            .replace(':computadoras', computadoras);
 
-        }
+        document.querySelector('#filtrarColaboradores').action = actionUrl;
+        return true;
+    }
+}
 
-        document.getElementById('select-all-estados').addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('.estado-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+function updateSelectAll(checkboxGroup, selectAllId) {
+    const selectAllCheckbox = document.getElementById(selectAllId);
+    const checkboxes = document.querySelectorAll(checkboxGroup);
+    selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+}
 
-        document.getElementById('select-all-areas').addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('.area-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+// Event listeners para los "select all" - SOLO UNA VEZ CADA UNO
+document.getElementById('select-all-estados').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.estado-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
 
-        document.getElementById('select-all-carreras').addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('.carrera-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+document.getElementById('select-all-areas').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.area-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
 
-        document.getElementById('select-all-instituciones').addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('.institucion-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+document.getElementById('select-all-carreras').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.carrera-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
 
-        document.getElementById('select-all-ciclos').addEventListener('change', function () {
-            let checkboxes = document.querySelectorAll('.ciclo-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+document.getElementById('select-all-instituciones').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.institucion-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
 
-        //sedes
-        document.getElementById('select-all-sedes').addEventListener('change', function () {
-            let checkboxes = document.querySelectorAll('.sede-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+document.getElementById('select-all-ciclos').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.ciclo-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
 
-        //computadoras
-        document.getElementById('select-all-computadoras').addEventListener('change', function () {
-            let checkboxes = document.querySelectorAll('.computadora-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+document.getElementById('select-all-sedes').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.sede-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
 
-        function updateSelectAll(checkboxGroup, selectAllId) {
-            const selectAllCheckbox = document.getElementById(selectAllId);
-            const checkboxes = document.querySelectorAll(checkboxGroup);
-            selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        }
+document.getElementById('select-all-computadoras').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.computadora-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
 
-        document.getElementById('select-all-areas').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-areas-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
+// Event listeners para actualizar los "select all" cuando cambian los checkboxes individuales
+document.querySelectorAll('.estado-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        updateSelectAll('.estado-checkbox', 'select-all-estados');
+    });
+});
 
-        document.getElementById('select-all-estados').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-estados-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
+document.querySelectorAll('.area-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        updateSelectAll('.area-checkbox', 'select-all-areas');
+    });
+});
 
-        document.getElementById('select-all-carreras').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-carreras-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
+document.querySelectorAll('.carrera-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        updateSelectAll('.carrera-checkbox', 'select-all-carreras');
+    });
+});
 
-        document.getElementById('select-all-ciclos').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-ciclos-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
+document.querySelectorAll('.institucion-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        updateSelectAll('.institucion-checkbox', 'select-all-instituciones');
+    });
+});
 
-        document.getElementById('select-all-instituciones').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-institucion-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
+document.querySelectorAll('.ciclo-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        updateSelectAll('.ciclo-checkbox', 'select-all-ciclos');
+    });
+});
 
-        // sedes
-        document.getElementById('select-all-sedes').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-sedes-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
+document.querySelectorAll('.sede-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        updateSelectAll('.sede-checkbox', 'select-all-sedes');
+    });
+});
 
-        // computadoras
-        document.getElementById('select-all-computadoras').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('input[id^="checkbox-computadoras-"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-        document.querySelectorAll('input[id^="checkbox-areas-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-areas-"]', 'select-all-areas');
-            });
-        });
-
-        document.querySelectorAll('input[id^="checkbox-estados-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-estados-"]', 'select-all-estados');
-            });
-        });
-
-        document.querySelectorAll('input[id^="checkbox-carreras-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-carreras-"]', 'select-all-carreras');
-            });
-        });
-
-        document.querySelectorAll('input[id^="checkbox-ciclos-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-ciclos-"]', 'select-all-ciclos');
-            });
-        });
-
-        document.querySelectorAll('input[id^="checkbox-institucion-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-institucion-"]', 'select-all-instituciones');
-            });
-        });
-
-        // sedes
-        document.querySelectorAll('input[id^="checkbox-sedes-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-sedes-"]', 'select-all-sedes');
-            });
-        });
-
-        // computadoras
-        document.querySelectorAll('input[id^="checkbox-computadoras-"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateSelectAll('input[id^="checkbox-computadoras-"]', 'select-all-computadoras');
-            });
-        });
+document.querySelectorAll('.computadora-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        updateSelectAll('.computadora-checkbox', 'select-all-computadoras');
+    });
+});
     </script>
 </body>
 
