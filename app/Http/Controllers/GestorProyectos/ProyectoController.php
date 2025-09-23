@@ -48,7 +48,7 @@ class ProyectoController extends Controller
                 'estado' => 1,
                 'area_id' => $areaPerteneciente->id,
                 // estado en default => 1
-                // 'user_id' => DESCOMENTAR LINEAR y poner el id del usuario autenticado
+                'user_id' => Auth::id(),
             ]);
 
             DB::commit();
