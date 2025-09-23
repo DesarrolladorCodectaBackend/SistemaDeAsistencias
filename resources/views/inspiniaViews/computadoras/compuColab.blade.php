@@ -121,6 +121,17 @@
                                                                                     name="almacenamiento" required />
                                                                             </div>
                                                                         </dl>
+                                                                        <dl class="row mb-0">
+                                                                            <div class="col-sm-12 text-sm-left">
+                                                                                <dt>Estado de la PC:</dt>
+                                                                                <select name="estado_pc" class="form-control" required>
+                                                                                    <option value="">Seleccione el estado</option>
+                                                                                    <option value="apto">Apto</option>
+                                                                                    <option value="medio">Medio</option>
+                                                                                    <option value="mal">Mal</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </dl>
 
                                                                         <div><br><br>
                                                                             <div>

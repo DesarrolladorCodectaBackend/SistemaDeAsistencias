@@ -67,7 +67,8 @@ class Computadora_colaboradorController extends Controller
                 "ram" => $request->ram,
                 "almacenamiento" => $request->almacenamiento,
                 "es_laptop" => $request->es_laptop,
-                "codigo_serie" => $request->codigo_serie
+                "codigo_serie" => $request->codigo_serie,
+                "estado_pc" => $request->estado_pc
             ]);
 
             DB::commit();
