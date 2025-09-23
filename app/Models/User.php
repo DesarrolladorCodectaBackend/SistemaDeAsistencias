@@ -47,4 +47,8 @@ class User extends Authenticatable
     public function colaboradores() {
         return $this->hasMany(Colaboradores::class);
     }
+
+    public function proyectos() {
+        return $this->hasMany(Proyecto::class, 'user_id', 'id');
+    }
 }
