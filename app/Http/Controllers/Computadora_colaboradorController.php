@@ -56,6 +56,7 @@ class Computadora_colaboradorController extends Controller
                 'memoria_grafica' =>  'required|string',
                 'ram' =>  'required|string',
                 'almacenamiento' =>  'required|string',
+                'estado_pc' => 'required|integer',
             ]);
 
 
@@ -71,14 +72,13 @@ class Computadora_colaboradorController extends Controller
                 "estado_pc" => $request->estado_pc
             ]);
 
-            DB::commit();
-            return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
-
-        } catch(Exception $e) {
-            DB::rollBack();
-            // return $e;
-            return redirect()->route('colaboradores.getComputadora', $request->colaborador_id);
-        }
+                DB::commit();
+                return back()->with('success', 'La computadora se creó');
+            } catch (Exception $e) {
+                DB::rollBack();
+                return $e;
+                return back()->with('error', 'No se pudo crear la computadora');
+            }
 
 
     }
@@ -113,6 +113,8 @@ class Computadora_colaboradorController extends Controller
                 'ram' =>  'required|string|min:1|max:255',
                 // 'estado' => 'required|boolean',
                 'almacenamiento' =>  'required|string|min:1|max:255',
+                'estado_pc' => 'required|integer|in:0,1,2',
+                
             ]);
             $estado = false;
             if($request->estado){
@@ -132,7 +134,8 @@ class Computadora_colaboradorController extends Controller
                     "almacenamiento" => $request->almacenamiento,
                     "es_laptop" => $request->es_laptop,
                     "codigo_serie" => $request->codigo_serie,
-                    "estado" => $estado
+                    "estado" => $estado,
+                    "estado_pc" => $request->estado_pc,
                 ]);
             }
 
