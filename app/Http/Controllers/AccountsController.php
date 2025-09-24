@@ -91,6 +91,23 @@ class AccountsController extends Controller
         }
         //Usuarios
         $usersEmails = User::get()->pluck('email');
+
+        // traer al area de administracion
+        $areaAdministracion = Area::where('especializacion', 'Administración')->first();
+
+        // traer a los pertenecientes al area de administracion
+        $areasColaboradores = Colaboradores_por_Area::where('area_id', $areaAdministracion->id)->get();
+
+
+        $colaboradores = Colaboradores::whereIn('id', $areasColaboradores->pluck('colaborador_id'))->where('estado', 1)->get();
+
+        // return $colaboradores;
+
+        foreach($colaboradores as $colaborador){
+            $candidato = Candidatos::where('id', $colaborador->candidato_id)->first();
+            $colaborador->candidato = $candidato;
+        }
+        // return $colaboradores;
         //Colaboradores jefes de area
         // $colabsCandUsuariosId = Candidatos::whereIn('correo', $usersEmails)->get()->pluck('id');
         // $colaboradoresJefesId = Colaboradores_por_Area::where('estado', 1)->where('jefe_area', 1)->get()->pluck('colaborador_id')->unique();
@@ -102,7 +119,7 @@ class AccountsController extends Controller
         // }
         // return $colaboradores;
         // $areas = Area::where(["estado" => 1])->get();
-        return view('inspiniaViews.accounts.create');
+        return view('inspiniaViews.accounts.create', ['colaboradores' => $colaboradores]);
     }
 
     public function store(Request $request){
@@ -246,8 +263,8 @@ class AccountsController extends Controller
             return redirect()->route('accounts.index')->with('success', 'Usuario creado exitosamente.');
 
         } catch(Exception $e){
-            // return $e;
             DB::rollback();
+            // return $e;
             return redirect()->route('accounts.create')->with('error', 'Ocurrió un error al realizar la acción. Si el error persiste comuniquese con su equipo de soporte.');
         }
     }
