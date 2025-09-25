@@ -82,9 +82,8 @@
                 <div class="ibox-content d-flex flex-column gap-5">
                     <div class="d-flex justify-content-between">
                         <h2>Agregar Nuevo Usuario</h2>
-                        {{-- <button id="btnModalColaboradores" type="button" href="#modalColaboradores"
-                            class="btn btn-secondary btn-sm text-white d-flex align-items-center" data-toggle="modal"
-                            disabled>Crear a base de colaborador</button> --}}
+                        <button id="btnModalColaboradores" type="button" href="#modalColaboradores"
+                            class="btn btn-secondary btn-sm text-white d-flex align-items-center" data-toggle="modal">Crear a base de colaborador</button>
                     </div>
                     <div>
                         <form method="POST" action="{{route('accounts.store')}}">
@@ -109,7 +108,7 @@
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <label>Contraseña</label>
                                         <div class="input-container">
                                             <input class="form-control input-password" onchange="verifyCorrectInputs()"
@@ -121,7 +120,7 @@
                                         @error('password')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group" id="areasJefe">
 
                                     </div>
@@ -146,7 +145,7 @@
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <label>Confirmar Contraseña</label>
                                         <div class="input-container">
                                             <input class="form-control input-password" onchange="verifySamePassword()"
@@ -161,10 +160,10 @@
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                         <span id="errorMessage" class="text-danger" hidden></span>
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group d-flex justify-content-end">
-                                        <button class="btn btn-primary" id="submitButton" disabled>Crear
-                                            Usuario</button>
+                                        <button class="btn btn-primary" id="submitButton" disabled>
+                                            Asignar rol administrador</button>
                                     </div>
                                 </div>
                             </div>
@@ -172,29 +171,40 @@
                     </div>
                 </div>
 
-                {{-- <div class="modal fade" id="modalColaboradores" aria-hidden="true">
+                <div class="modal fade" id="modalColaboradores" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title" id="modalColaboradoresLabel">Selecciona a un colaborador</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
                             <div class="modal-body d-flex flex-column gap-20">
-                                <select class="form-control" id="colaboradorSelectedId">
-                                    <option value="" disabled selected>Busca un colaborador</option>
-                                    @foreach($colaboradores as $colaborador)
-                                    <option value="{{$colaborador->id}}">{{$colaborador->candidato->nombre}}
-                                        {{$colaborador->candidato->apellido}}</option>
-                                    @endforeach
-                                </select>
-                                <button onclick="handleColabSelect()" class="btn btn-info">Seleccionar</button>
+                                <div class="form-group">
+                                    <label>Buscar colaborador:</label>
+                                    <select class="form-control" id="colaboradorSelectedId">
+                                        <option value="" disabled selected>Busca un colaborador</option>
+                                        @foreach($colaboradores as $colaborador)
+                                            <option value="{{$colaborador->id}}"
+                                                    data-email="{{$colaborador->candidato->correo ?? ''}}"
+                                                    data-nombre="{{$colaborador->candidato->nombre}}"
+                                                    data-apellido="{{$colaborador->candidato->apellido}}">
+                                                {{$colaborador->candidato->nombre}} {{$colaborador->candidato->apellido}}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button onclick="handleColabSelect()" class="btn btn-info" id="btnSelectColab" disabled>
+                                        Seleccionar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div> --}}
-
-
-
-
+                </div>
             </div>
         </div>
 
@@ -225,6 +235,172 @@
     }
 </style>
 
-<script src="{{ asset('js/asistencia/cuentas/create.js') }}"></script>
 
+
+<script>
+    const deleteAlert = (id) => {
+        let alertError = document.getElementById(id);
+        if (alertError) {
+            alertError.remove();
+        }
+    }
+
+    let cacheEmail = '';
+    let cacheNombre = '';
+    let cacheApellido = ''
+    let cacheColabId = null;
+    let cacheAreas = [];
+
+    const handleColabSelect = () => {
+        const colaboradorSelect = document.getElementById('colaboradorSelectedId');
+        const selectedColaboradorId = colaboradorSelect.value;
+
+        if (!selectedColaboradorId) {
+            alert('Por favor selecciona un colaborador');
+            return;
+        }
+
+        const selectedOption = colaboradorSelect.options[colaboradorSelect.selectedIndex];
+
+        const nombre = selectedOption.dataset.nombre || '';
+        const apellido = selectedOption.dataset.apellido || '';
+        const email = selectedOption.dataset.email || '';
+
+        document.getElementById('email').value = email;
+        document.getElementById('name').value = nombre;
+        document.getElementById('apellido').value = apellido;
+
+        document.getElementById('email').removeAttribute('readonly');
+        document.getElementById('name').removeAttribute('readonly');
+        document.getElementById('apellido').removeAttribute('readonly');
+
+        cacheEmail = email;
+        cacheNombre = nombre;
+        cacheApellido = apellido;
+        cacheColabId = selectedColaboradorId;
+
+        // Mantener como administrador
+        const selectUserType = document.getElementById('selectUserType');
+        selectUserType.value = '1';
+
+        handleTypeChange();
+
+        $('#modalColaboradores').modal('hide');
+
+        verifyCorrectInputs();
+
+        setTimeout(() => {
+            if (window.colaboradorChoices) {
+                window.colaboradorChoices.setChoiceByValue('');
+            }
+            document.getElementById('btnSelectColab').disabled = true;
+        }, 500);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectElement = document.getElementById('colaboradorSelectedId');
+        const btnSelect = document.getElementById('btnSelectColab');
+
+        window.colaboradorChoices = new Choices(selectElement, {
+            searchEnabled: true,
+            itemSelectText: '',
+            noResultsText: 'No se encontraron colaboradores',
+            placeholder: true,
+            placeholderValue: 'Busca un colaborador'
+        });
+
+        selectElement.addEventListener('change', function(event) {
+            const selectedValue = event.target.value;
+            btnSelect.disabled = !selectedValue;
+        });
+
+        $('#modalColaboradores').on('show.bs.modal', function () {
+            if (window.colaboradorChoices) {
+                window.colaboradorChoices.setChoiceByValue('');
+            }
+            btnSelect.disabled = true;
+        });
+
+        verifyCorrectInputs();
+    });
+
+    const handleTypeChange = () => {
+        const selectType = document.getElementById('selectUserType');
+        const btnColabs = document.getElementById('btnModalColaboradores');
+        const selectedValue = selectType.value;
+
+        let email = document.getElementById('email');
+        let name = document.getElementById('name');
+        let apellido = document.getElementById('apellido');
+
+        if(selectedValue == 1){
+            btnColabs.disabled = false;
+
+            if(cacheEmail || cacheNombre || cacheApellido) {
+                email.value = cacheEmail;
+                name.value = cacheNombre;
+                apellido.value = cacheApellido;
+            }
+
+            if(typeof renderAreas === 'function') {
+                renderAreas();
+            }
+
+            if(cacheAreas.length > 0){
+                let selectAreas = document.getElementById('selectAreas');
+                if(selectAreas) {
+                    Array.from(selectAreas.options).forEach(option => {
+                        option.selected = false;
+                    });
+
+                    Array.from(selectAreas.options).forEach(option => {
+                        cacheAreas.forEach(areaJefe => {
+                            if(areaJefe.id == option.value) option.selected = true;
+                        });
+                    });
+
+                    if(typeof $ !== 'undefined' && $('.multiple_areas_select').length) {
+                        $('.multiple_areas_select').trigger('change');
+                    }
+                }
+            }
+
+            if(cacheColabId != null && typeof renderColabInput === 'function') {
+                renderColabInput(cacheColabId);
+            }
+        }
+
+        verifyCorrectInputs();
+    }
+
+    const verifyCorrectInputs = () => {
+        const submitButton = document.getElementById('submitButton');
+        const email = document.getElementById('email').value;
+        const name = document.getElementById('name').value;
+        const apellido = document.getElementById('apellido').value;
+        const selectAreas = document.getElementById('selectAreas');
+
+        console.log('Verificando inputs:', {
+            email: email,
+            name: name,
+            apellido: apellido
+        });
+
+        if(email != '' && name != '' && apellido != '') {
+            if(selectAreas != null){
+                // verificar que no esté vacío
+                const selectedOptions = Array.from(selectAreas.selectedOptions)
+                if(selectedOptions.length > 0) {
+                    submitButton.disabled = false
+                } else{
+                    submitButton.disabled = true
+                }
+            } else{
+                submitButton.disabled = false
+            }
+        } else{
+            submitButton.disabled = true
+        }
+    }
+</script>
 </html>
