@@ -206,24 +206,24 @@
                                                                             @enderror
                                                                         </div>
                                                                         @if($user->rol === 'Jefe de Área')
-                                                                        <div class="form-group">
-                                                                            <label>Áreas:</label>
-                                                                            <select required
-                                                                                class='form-control multiple_areas_select'
-                                                                                multiple name="areas_id[]">
-                                                                                @foreach($areas as $area)
-                                                                                <option value="{{$area->id}}"
-                                                                                    @foreach($user->areas as $areaJefe)
-                                                                                    @if($areaJefe->id === $area->id)
-                                                                                    selected
-                                                                                    @endif
-                                                                                    @endforeach
-                                                                                    >
+                                                                            <div class="form-group">
+                                                                                <label>Áreas:</label>
+                                                                                <select required
+                                                                                    class='form-control multiple_areas_select'
+                                                                                    multiple name="areas_id[]">
+                                                                                    @foreach($areas as $area)
+                                                                                    <option value="{{$area->id}}"
+                                                                                        @foreach($user->areas as $areaJefe)
+                                                                                        @if($areaJefe->id === $area->id)
+                                                                                        selected
+                                                                                        @endif
+                                                                                        @endforeach
+                                                                                        >
 
-                                                                                    {{$area->especializacion}}</option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
+                                                                                        {{$area->especializacion}}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
                                                                         @endif
                                                                         <div class="d-flex justify-content-end">
                                                                             <button type="submit"

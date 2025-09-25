@@ -30,23 +30,34 @@ class AccountsController extends Controller
             $areas = Area::get();
             $areasUsuarios = [];
             foreach ($users as $user) {
+
+                // encuentra a jefe_area
                 $jefe = UsuarioJefeArea::where('user_id', $user->id)->first();
+
+                // encuentra a colaborador
+                $colaborador = UsuarioColaborador::where('user_id', $user->id)->first();
+
+                // encuentra a admin
+                $admin = UsuarioAdministrador::where('user_id', $user->id)->first();
+
+                // si no tiene ninguna, no tiene rol
                 $rol = 'Sin rol';
 
-                $admin = UsuarioAdministrador::where('user_id', $user->id)->first();
-                if ($admin) {
-                    $rol = 'Administrador';
-                }
-
-
-                $colaborador = UsuarioColaborador::where('user_id', $user->id)->first();
+                // si encontró a colaborador, tiene rol colaborador
                 if($colaborador) {
                     $rol = 'Colaborador';
                 }
 
+                // si encontró a jefe_area, tiene rol jefe_area
                 if ($jefe) {
                     $rol = 'Jefe de Área';
                 }
+
+                // si encontró a admin, tiene rol admin
+                if ($admin) {
+                    $rol = 'Administrador';
+                }
+
                 $user->rol = $rol;
                 $user->clave = UsuariosPasswordsController::showPassword($user->id);
 
@@ -89,37 +100,37 @@ class AccountsController extends Controller
         if (!$access) {
             return redirect('dashboard')->with('error', 'No tiene permisos para ejecutar esta acción. No lo intente denuevo o puede ser baneado.');
         }
-        //Usuarios
-        $usersEmails = User::get()->pluck('email');
 
-        // traer al area de administracion
+        // traer al área de administración
         $areaAdministracion = Area::where('especializacion', 'Administración')->first();
 
-        // traer a los pertenecientes al area de administracion
+        // traer a los pertenecientes al área de administración
         $areasColaboradores = Colaboradores_por_Area::where('area_id', $areaAdministracion->id)->get();
 
-
+        // traer a los colaboradores y compararlos con los pertenecientes
         $colaboradores = Colaboradores::whereIn('id', $areasColaboradores->pluck('colaborador_id'))->where('estado', 1)->get();
 
-        // return $colaboradores;
+        // colaboradores que aun no son admin
+        $colaboradoresFiltrados = [];
 
         foreach($colaboradores as $colaborador){
             $candidato = Candidatos::where('id', $colaborador->candidato_id)->first();
             $colaborador->candidato = $candidato;
+
+            $user = User::where('email', $candidato->correo)->first();
+
+            if($user) {
+                $usuarioAdmin = UsuarioAdministrador::where('user_id', $user->id)->first();
+
+                if(!$usuarioAdmin) {
+                    $colaboradoresFiltrados[] = $colaborador;
+                }
+            } else {
+                $colaboradoresFiltrados[] = $colaborador;
+            }
         }
-        // return $colaboradores;
-        //Colaboradores jefes de area
-        // $colabsCandUsuariosId = Candidatos::whereIn('correo', $usersEmails)->get()->pluck('id');
-        // $colaboradoresJefesId = Colaboradores_por_Area::where('estado', 1)->where('jefe_area', 1)->get()->pluck('colaborador_id')->unique();
-        // $colaboradores = Colaboradores::with('candidato')->whereIn('id', $colaboradoresJefesId)->whereNotIn('candidato_id', $colabsCandUsuariosId)->get();
-        //Agregarles sus areas que lideran
-        // foreach($colaboradores as $colaborador){
-        //     $areasJefe = Colaboradores_por_Area::with('area')->where('estado', 1)->where('jefe_area', 1)->where('colaborador_id', $colaborador->id)->get()->pluck('area');
-        //     $colaborador->areas = $areasJefe;
-        // }
-        // return $colaboradores;
-        // $areas = Area::where(["estado" => 1])->get();
-        return view('inspiniaViews.accounts.create', ['colaboradores' => $colaboradores]);
+
+        return view('inspiniaViews.accounts.create', ['colaboradores' => $colaboradoresFiltrados]);
     }
 
     public function store(Request $request){
@@ -144,12 +155,13 @@ class AccountsController extends Controller
                     $errors['email'] = 'El email debe tener al menos 3 caracteres.';
                 } elseif (strlen($request->email) > 100) {
                     $errors['email'] = 'El email no debe tener más de 100 caracteres.';
-                } else{
-                    $userEmail = User::where('email', $request->email)->first();
-                    if ($userEmail) {
-                        $errors['email'] = 'El email ya se encuentra registrado.';
-                    }
                 }
+                // else{
+                //     $userEmail = User::where('email', $request->email)->first();
+                //     if ($userEmail) {
+                //         $errors['email'] = 'El email ya se encuentra registrado.';
+                //     }
+                // }
             }
             //Name (Required, min: 1, max:100)
             if(!isset($request->name)) {
@@ -171,30 +183,31 @@ class AccountsController extends Controller
                     $errors['apellido'] = 'El apellido no debe tener más de 100 caracteres.';
                 }
             }
-            //Contraseña (Required, min: 8, max:100)
-            if(!isset($request->password)) {
-                $errors['password'] = 'La contraseña es requerida.';
-            } else{
-                if(strlen($request->password) < 8) {
-                    $errors['password'] = 'La contraseña debe tener al menos 8 caracter.';
-                } else if (strlen($request->password) > 100) {
-                    $errors['password'] = 'La contraseña no debe tener más de 100 caracteres.';
-                }
-            }
-            //Confirmacion de Contraseña(Required, min: 8, max:100, igual a contraseña)
-            if(!isset($request->confirm_password)) {
-                $errors['confirm_password'] = 'La contraseña de confirmación es requerida.';
-            } else{
-                if(strlen($request->confirm_password) < 8) {
-                    $errors['confirm_password'] = 'La contraseña de confirmación debe tener al menos 8 caracter.';
-                } else if (strlen($request->confirm_password) > 100) {
-                    $errors['confirm_password'] = 'La contraseña de confirmación no debe tener más de 100 caracteres.';
-                }else{
-                    if($request->password != $request->confirm_password) {
-                        $errors['confirm_password'] = 'Las contraseñas no coinciden.';
-                    }
-                }
-            }
+            // //Contraseña (Required, min: 8, max:100)
+            // if(!isset($request->password)) {
+            //     $errors['password'] = 'La contraseña es requerida.';
+            // } else{
+            //     if(strlen($request->password) < 8) {
+            //         $errors['password'] = 'La contraseña debe tener al menos 8 caracter.';
+            //     } else if (strlen($request->password) > 100) {
+            //         $errors['password'] = 'La contraseña no debe tener más de 100 caracteres.';
+            //     }
+            // }
+            // //Confirmacion de Contraseña(Required, min: 8, max:100, igual a contraseña)
+            // if(!isset($request->confirm_password)) {
+            //     $errors['confirm_password'] = 'La contraseña de confirmación es requerida.';
+            // } else{
+            //     if(strlen($request->confirm_password) < 8) {
+            //         $errors['confirm_password'] = 'La contraseña de confirmación debe tener al menos 8 caracter.';
+            //     } else if (strlen($request->confirm_password) > 100) {
+            //         $errors['confirm_password'] = 'La contraseña de confirmación no debe tener más de 100 caracteres.';
+            //     }else{
+            //         if($request->password != $request->confirm_password) {
+            //             $errors['confirm_password'] = 'Las contraseñas no coinciden.';
+            //         }
+            //     }
+            // }
+
             //ColaboradorId (Puede ser usado solo si el tipo es igual a 2, pero no es requerido, integer, existe en la tabla colaboradores)
             // $SelectedColaborador = null;
             // $colaboradorExists = false;
@@ -223,13 +236,16 @@ class AccountsController extends Controller
                 return redirect()->route('accounts.create')->withErrors($errors)->withInput();
             }
 
-            //Se crea el usuario Base
-            $user = User::create([
-                'name' => $request->name,
-                'apellido' => $request->apellido,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
+            // //Se crea el usuario Base
+            // $user = User::create([
+            //     'name' => $request->name,
+            //     'apellido' => $request->apellido,
+            //     'email' => $request->email,
+            //     'password' => Hash::make($request->password),
+            // ]);
+
+            // encuentra el usuario comparando con el de colaborador
+            $user = User::where('email', $request->email)->first();
 
             //Si el type es 1 se crea un administrador, si es 2 se crea como jefe de área
             if($request->type == 1) {
@@ -254,10 +270,10 @@ class AccountsController extends Controller
                 // }
                 return redirect()->back()->with('error', 'Error al crear el usuario. Si el problema persite, contacte a su equipo de soporte.');
             }
-            //Crear Usuario con clave mostrable\
-            UsuariosPasswordsController::registrar($user->id, $request->password);
-            //Enviar email
-            Mail::to($request->email)->send(new UsuarioCreadoMailable($request->email, $request->password, $request->name." ".$request->apellido, $request->type));
+            // //Crear Usuario con clave mostrable\
+            // UsuariosPasswordsController::registrar($user->id, $request->password);
+            // //Enviar email
+            // Mail::to($request->email)->send(new UsuarioCreadoMailable($request->email, $request->password, $request->name." ".$request->apellido, $request->type));
 
             DB::commit();
             return redirect()->route('accounts.index')->with('success', 'Usuario creado exitosamente.');

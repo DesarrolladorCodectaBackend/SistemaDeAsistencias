@@ -28,9 +28,9 @@
     $userData = FunctionHelperController::getUserRol();
     $user = $userData['user'];
     $rol = '';
-    if($userData['isAdmin']) $rol = 'Administrador';
     if($userData['isColab']) $rol = 'Colaborador';
     if($userData['isBoss']) $rol = 'Jefe de Área';
+    if($userData['isAdmin']) $rol = 'Administrador';
 @endphp
 
 
@@ -126,10 +126,11 @@
                     <a href="{{ route('bibliotecaColab.index') }}"><i class="fa fa-list-alt"></i> <span
                             class="nav-label">Biblioteca</span></a>
                 </li>
-                <li>
+                {{-- en proceso --}}
+                {{-- <li>
                     <a href="#"><i class="fa fa-list-alt"></i> <span
                             class="nav-label">Horarios</span></a>
-                </li>
+                </li> --}}
             @endif
 
             @if($userData['isAdmin'])
