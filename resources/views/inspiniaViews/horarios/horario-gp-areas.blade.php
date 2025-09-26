@@ -46,100 +46,103 @@
                     <h1 class="titulo">Horario General Presencial - Áreas</h1>
                     <br>
                     <div class="container">
-                        <table>
-
-                            <tr class="m1">
-                                <th class="hm">Hora / Área</th>
-                                <th id="A1">Domingo</th>
-                                <th id="A2">Lunes</th>
-                                <th id="A3">Martes</th>
-                                <th id="A4">Miércoles</th>
-                                <th id="A5">Jueves</th>
-                                <th id="A6">Viernes</th>
-                                <th id="A7">Sábado</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="celdas">
-                                    <th rowspan="4" >8:30 am - 12:30 pm</th>
-                                    <td id="c1"></td>
-                                    <td id="c2"></td>
-                                    <td id="c3"></td>
-                                    <td id="c4"></td>
-                                    <td id="c5"></td>
-                                    <td id="c6"></td>
-                                    <td id="c7"></td>
-                                </tr>
-                                <tr class="celdas">
-                                    <td id="c8"></td>
-                                    <td id="c9"></td>
-                                    <td id="c10"></td>
-                                    <td id="c11"></td>
-                                    <td id="c12"></td>
-                                    <td id="c13"></td>
-                                    <td id="c14"></td>
-                                </tr>
-                                <tr class="celdas">
-                                    <td id="c15"></td>
-                                    <td id="c16"></td>
-                                    <td id="c17"></td>
-                                    <td id="c18"></td>
-                                    <td id="c19"> </td>
-                                    <td id="c20"> </td>
-                                    <td id="c21"> </td>
-                                </tr>
-                                <tr class="celdas">
-                                    <td id="c22"></td>
-                                    <td id="c23"></td>
-                                    <td id="c24"></td>
-                                    <td id="c25"></td>
-                                    <td id="c26"> </td>
-                                    <td id="c27"> </td>
-                                    <td id="c28"> </td>
-                                </tr>
-                                <tr>
-                                    <th>12:30 pm - 2:00 pm</th>
-                                    <td class="receso" colspan="8">RECESO</td>
-                                </tr>
-                                <tr class="celdas">
-                                    <th rowspan="4" >2:00 pm - 6:00 pm</th>
-                                    <td id="c29" ></td>
-                                    <td id="c30" ></td>
-                                    <td id="c31" > </td>
-                                    <td id="c32" > </td>
-                                    <td id="c33"> </td>
-                                    <td id="c34"> </td>
-                                    <td id="c35"> </td>
-                                </tr>
-                                <tr class="celdas">
-                                    <td id="c36" ></td>
-                                    <td id="c37" ></td>
-                                    <td id="c38" ></td>
-                                    <td id="c39" ></td>
-                                    <td id="c40"> </td>
-                                    <td id="c41"> </td>
-                                    <td id="c42"> </td>
-                                </tr>
-                                <tr class="celdas">
-                                    <td id="c43" ></td>
-                                    <td id="c44" ></td>
-                                    <td id="c45" ></td>
-                                    <td id="c46" ></td>
-                                    <td id="c47"></td>
-                                    <td id="c48"></td>
-                                    <td id="c49"></td>
-                                </tr>
-                                <tr class="celdas">
-                                    <td id="c50" ></td>
-                                    <td id="c51" ></td>
-                                    <td id="c52" ></td>
-                                    <td id="c53" ></td>
-                                    <td id="c54"></td>
-                                    <td id="c55"> </td>
-                                    <td id="c56"> </td>
-                                </tr>
-                            </tbody>
-                        </table >
+                        <div class="visible-scrollbar" style="height:32em; overflow:auto;">
+                            <div class="tablecontainer">
+                                <table>
+                                    <tr class="m1">
+                                        <th class="hm">Hora / Área</th>
+                                        <th id="A1">Domingo</th>
+                                        <th id="A2">Lunes</th>
+                                        <th id="A3">Martes</th>
+                                        <th id="A4">Miércoles</th>
+                                        <th id="A5">Jueves</th>
+                                        <th id="A6">Viernes</th>
+                                        <th id="A7">Sábado</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="celdas">
+                                            <th rowspan="4" >8:30 am - 12:30 pm</th>
+                                            <td id="c1"></td>
+                                            <td id="c2"></td>
+                                            <td id="c3"></td>
+                                            <td id="c4"></td>
+                                            <td id="c5"></td>
+                                            <td id="c6"></td>
+                                            <td id="c7"></td>
+                                        </tr>
+                                        <tr class="celdas">
+                                            <td id="c8"></td>
+                                            <td id="c9"></td>
+                                            <td id="c10"></td>
+                                            <td id="c11"></td>
+                                            <td id="c12"></td>
+                                            <td id="c13"></td>
+                                            <td id="c14"></td>
+                                        </tr>
+                                        <tr class="celdas">
+                                            <td id="c15"></td>
+                                            <td id="c16"></td>
+                                            <td id="c17"></td>
+                                            <td id="c18"></td>
+                                            <td id="c19"> </td>
+                                            <td id="c20"> </td>
+                                            <td id="c21"> </td>
+                                        </tr>
+                                        <tr class="celdas">
+                                            <td id="c22"></td>
+                                            <td id="c23"></td>
+                                            <td id="c24"></td>
+                                            <td id="c25"></td>
+                                            <td id="c26"> </td>
+                                            <td id="c27"> </td>
+                                            <td id="c28"> </td>
+                                        </tr>
+                                        <tr>
+                                            <th>12:30 pm - 2:00 pm</th>
+                                            <td class="receso" colspan="8">RECESO</td>
+                                        </tr>
+                                        <tr class="celdas">
+                                            <th rowspan="4" >2:00 pm - 6:00 pm</th>
+                                            <td id="c29" ></td>
+                                            <td id="c30" ></td>
+                                            <td id="c31" > </td>
+                                            <td id="c32" > </td>
+                                            <td id="c33"> </td>
+                                            <td id="c34"> </td>
+                                            <td id="c35"> </td>
+                                        </tr>
+                                        <tr class="celdas">
+                                            <td id="c36" ></td>
+                                            <td id="c37" ></td>
+                                            <td id="c38" ></td>
+                                            <td id="c39" ></td>
+                                            <td id="c40"> </td>
+                                            <td id="c41"> </td>
+                                            <td id="c42"> </td>
+                                        </tr>
+                                        <tr class="celdas">
+                                            <td id="c43" ></td>
+                                            <td id="c44" ></td>
+                                            <td id="c45" ></td>
+                                            <td id="c46" ></td>
+                                            <td id="c47"></td>
+                                            <td id="c48"></td>
+                                            <td id="c49"></td>
+                                        </tr>
+                                        <tr class="celdas">
+                                            <td id="c50" ></td>
+                                            <td id="c51" ></td>
+                                            <td id="c52" ></td>
+                                            <td id="c53" ></td>
+                                            <td id="c54"></td>
+                                            <td id="c55"> </td>
+                                            <td id="c56"> </td>
+                                        </tr>
+                                    </tbody>
+                                </table >
+                            </div>
+                        </div>
                     </div>
                     <style>
                     .container {
@@ -233,6 +236,45 @@
                         height: 40px;
                     }
 
+                    .visible-scrollbar {
+                        overflow: auto;
+                        -webkit-overflow-scrolling: touch;
+                    }
+                    .visible-scrollbar::-webkit-scrollbar {
+                        height: 10px;
+                        width: 10px;
+                    }
+                    .visible-scrollbar::-webkit-scrollbar-track {
+                        background: #f1f1f1;
+                    }
+                    .visible-scrollbar::-webkit-scrollbar-thumb {
+                        background: #c1c1c1;
+                        border-radius: 6px;
+                    }
+                    .visible-scrollbar {
+                        scrollbar-width: 10em;
+                        scrollbar-color: #c1c1c1 #f1f1f1;
+                    }
+
+                    div.tablecontainer {
+                        overflow-x: auto;
+                    }
+
+                     @media (max-width: 1024px) {
+                        .container { width: 100%; padding: 0 10px; }
+                        .visible-scrollbar { max-width: 100%; overflow-x: auto; }
+                        table { min-width: 1100px; }
+                        th, td { padding: 6px 8px; font-size: 13px; }
+                        .hm { width: 160px; }
+                    }
+
+                    @media (max-width: 640px) {
+                        .container { width: 100%; padding: 0 6px; }
+                        .visible-scrollbar { max-width: 100%; overflow-x: auto; }
+                        table { min-width: 1000px; }
+                        th, td { padding: 4px 6px; font-size: 12px; }
+                        .hm { width: 140px; }
+                    }
                     </style>
 
             </div>

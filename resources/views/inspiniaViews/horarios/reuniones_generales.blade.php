@@ -46,7 +46,8 @@
                                                     <h1 class="titulo">Reuniones Generales - Áreas</h1>
                                                     <br>
                                                     <div class="container">
-                                                        <table>
+                                                        <div class="visible-scrollbar" style="height:30em; overflow:auto;">
+                                                            <table>
                                                             <thead>
                                                                 <tr class="m1">
                                                                     <th class="hm">Hora / Área</th>
@@ -204,7 +205,8 @@
                                                                     <td id="c105"></td>
                                                                 </tr>
                                                             </tbody>
-                                                        </table>
+                                                            </table>
+                                                        </div>
                                                     </div>
                                                     <style>
                                                     .container {
@@ -296,6 +298,43 @@
                                                     .celdas{
                                                         background-color: hsla(0, 0%, 100%, 0.884);
                                                         height: 40px;
+                                                    }
+
+                                                    .visible-scrollbar {
+                                                        overflow: auto;
+                                                        -webkit-overflow-scrolling: touch;
+                                                    }
+                                                    .visible-scrollbar::-webkit-scrollbar {
+                                                        height: 10px;
+                                                        width: 10px;
+                                                    }
+                                                    .visible-scrollbar::-webkit-scrollbar-track {
+                                                        background: #f1f1f1;
+                                                    }
+                                                    .visible-scrollbar::-webkit-scrollbar-thumb {
+                                                        background: #c1c1c1;
+                                                        border-radius: 6px;
+                                                    }
+                                                    .visible-scrollbar {
+                                                        scrollbar-width: auto;
+                                                        scrollbar-color: #c1c1c1 #f1f1f1;
+                                                    }
+
+                                                    /* Responsive: permitir scroll horizontal en pantallas pequeñas */
+                                                    @media (max-width: 1024px) {
+                                                        .container { width: 100%; padding: 0 10px; }
+                                                        .visible-scrollbar { max-width: 100%; overflow-x: auto; }
+                                                        table { min-width: 1100px; }
+                                                        th, td { padding: 6px 8px; font-size: 13px; }
+                                                        .hm { width: 160px; }
+                                                    }
+
+                                                    @media (max-width: 640px) {
+                                                        .container { width: 100%; padding: 0 6px; }
+                                                        .visible-scrollbar { max-width: 100%; overflow-x: auto; }
+                                                        table { min-width: 1000px; }
+                                                        th, td { padding: 4px 6px; font-size: 12px; }
+                                                        .hm { width: 140px; }
                                                     }
 
                                                     </style>
