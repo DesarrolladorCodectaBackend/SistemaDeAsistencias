@@ -288,11 +288,11 @@
                                                             @if($computerColab->estado_pc === null)
                                                                 No tiene estado
                                                             @elseif($computerColab->estado_pc === 0)
-                                                                Apto
+                                                                Mal
                                                             @elseif($computerColab->estado_pc === 1)
                                                                 Medio
                                                             @elseif($computerColab->estado_pc === 2)
-                                                                Mal
+                                                                Apto
                                                             @endif
                                                         </dd>
                                                     </div>
