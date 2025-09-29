@@ -121,6 +121,17 @@
                                                                                     name="almacenamiento" required />
                                                                             </div>
                                                                         </dl>
+                                                                        <dl class="row mb-0">
+                                                                            <div class="col-sm-12 text-sm-left">
+                                                                                <dt>Estado de la PC:</dt>
+                                                                                <select name="estado_pc" class="form-control" required>
+                                                                                    <option value="">Seleccione el estado</option>
+                                                                                    <option value="2">Apto</option>
+                                                                                    <option value="1">Medio</option>
+                                                                                    <option value="0">Mal</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </dl>
 
                                                                         <div><br><br>
                                                                             <div>
@@ -139,6 +150,24 @@
                                                                     </div>
                                                                 </div>
                                                             </form>
+                                                            @if(session('success'))
+                                                                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                                                                    {{ session('success') }}
+                                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                            @endif
+
+                                                            @if(session('error'))
+                                                                <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                                                                    {{ session('error') }}
+                                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                            @endif
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -252,6 +281,23 @@
                                                             style="font-size: 20px;" href="#modalIncidencias"></a>
                                                     </div>
                                                 </dl>
+                                                <dl class="row mb-4">
+                                                    <div class="col-sm-6 text-sm-left">
+                                                        <dt>Estado PC:</dt>
+                                                        <dd class="sm-2">
+                                                            @if($computerColab->estado_pc === null)
+                                                                No tiene estado
+                                                            @elseif($computerColab->estado_pc === 0)
+                                                                Mal
+                                                            @elseif($computerColab->estado_pc === 1)
+                                                                Medio
+                                                            @elseif($computerColab->estado_pc === 2)
+                                                                Apto
+                                                            @endif
+                                                        </dd>
+                                                    </div>
+                                                </dl>
+
                                             </div>
                                         </div>
                                         <div class="text-right">
@@ -538,6 +584,18 @@
                                                                                     required></input>
                                                                             </div>
                                                                         </dl>
+                                                                        <dl class="row mb-0">
+                                                                            <div class="col-sm-12 text-sm-left">
+                                                                                <dt>Estado de la PC:</dt>
+                                                                                <select name="estado_pc" class="form-control" required>
+                                                                                    <option value="">Seleccione el estado</option>
+                                                                                    <option value="2" @if($computerColab->estado_pc == 2) selected @endif>Apto</option>
+                                                                                    <option value="1" @if($computerColab->estado_pc == 1) selected @endif>Medio</option>
+                                                                                    <option value="0" @if($computerColab->estado_pc == 0) selected @endif>Mal</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </dl>
+
 
                                                                         <div><br><br>
                                                                             <div>

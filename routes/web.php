@@ -198,6 +198,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/computadora/storeComputadoraColab', [Computadora_colaboradorController::class, 'store'])->name('computadora.storeComputadoraColab');
     Route::put('/computadora/updateComputadoraColab/{computadora_colaborador_id}', [Computadora_colaboradorController::class, 'update'])->name('computadora.updateComputadoraColab');
     Route::put('/computadora/activarInactivar/{colaborador_id}/{computadora_id}', [Computadora_colaboradorController::class, 'activarInactivar'])->name('computadora.activarInactivar');
+    Route::post('/computadora_colaborador/store', [Computadora_colaboradorController::class, 'store'])->name('computadora.storeComputadoraColab');
 
     //REGISTRO MANTENIMIENTO
     Route::post('/computadora/mantenimientoStore', [Registro_MantenimientoController::class, 'store'])->name('computadora.mantenimientoStore');

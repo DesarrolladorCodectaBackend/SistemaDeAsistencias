@@ -890,7 +890,8 @@ class AreaController extends Controller
                 'porcentaje' => $request->porcentaje,
                 'estado' => 1,
                 'area_id' => $request->area_id,
-                // 'user_id' => DESCOMENTAR LINEAR y poner el id del usuario autenticado
+                'user_id' => Auth::id(),
+
             ]);
 
             DB::commit();
