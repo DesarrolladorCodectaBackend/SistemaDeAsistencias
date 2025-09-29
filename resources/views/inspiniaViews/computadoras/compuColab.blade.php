@@ -285,19 +285,15 @@
                                                     <div class="col-sm-6 text-sm-left">
                                                         <dt>Estado PC:</dt>
                                                         <dd class="sm-2">
-                                                            @switch($computerColab->estado_pc)
-                                                                @case(2)
-                                                                    Apto
-                                                                    @break
-                                                                @case(1)
-                                                                    Medio
-                                                                    @break
-                                                                @case(0)
-                                                                    Mal
-                                                                    @break
-                                                                @default
-                                                                    Null
-                                                            @endswitch
+                                                            @if($computerColab->estado_pc === null)
+                                                                No tiene estado
+                                                            @elseif($computerColab->estado_pc === 0)
+                                                                Apto
+                                                            @elseif($computerColab->estado_pc === 1)
+                                                                Medio
+                                                            @elseif($computerColab->estado_pc === 2)
+                                                                Mal
+                                                            @endif
                                                         </dd>
                                                     </div>
                                                 </dl>
