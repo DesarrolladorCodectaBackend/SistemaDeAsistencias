@@ -46,7 +46,8 @@
                                                     <h1 class="titulo">Reuniones Generales - Áreas</h1>
                                                     <br>
                                                     <div class="container">
-                                                        <table>
+                                                        <div class="visible-scrollbar" style="height:30em; overflow:auto;">
+                                                            <table>
                                                             <thead>
                                                                 <tr class="m1">
                                                                     <th class="hm">Hora / Área</th>
@@ -144,7 +145,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <th>12:30 pm - 2:00 pm</th>
-                                                                    <td class="receso" colspan="8">RECESO</td>
+                                                                    <td class="receso" colspan="7">RECESO</td>
                                                                 </tr>
                                                                 <tr class="celdas" >
                                                                     <th rowspan="6">2:00 pm - 9:00 pm</th>
@@ -204,14 +205,15 @@
                                                                     <td id="c105"></td>
                                                                 </tr>
                                                             </tbody>
-                                                        </table>
+                                                            </table>
+                                                        </div>
                                                     </div>
                                                     <style>
                                                     .container {
-                                                    width: 1400px;
-
-                                                    margin: 0 auto;
-                                                    font-family: sans-serif;
+                                                        max-width: 1400px; /* Ancho máximo para pantallas grandes */
+                                                        width: 100%; /* Ocupa el ancho disponible */
+                                                        margin: 0 auto;
+                                                        font-family: sans-serif;
                                                     }
 
                                                     h1 {
@@ -226,6 +228,7 @@
                                                     table {
                                                         width: 100%;
                                                         border-collapse: collapse;
+                                                        table-layout: fixed; /* Ayuda a que las columnas se comporten mejor */
                                                     }
 
                                                     th, td {
@@ -248,7 +251,7 @@
                                                     }
                                                     .hm{
                                                         background-color: #4e7bbf;
-                                                        width: 200px;
+                                                        width: 15%; /* Ancho relativo para la primera columna */
                                                         color: white;
                                                     }
                                                     .titulo{
@@ -296,6 +299,43 @@
                                                     .celdas{
                                                         background-color: hsla(0, 0%, 100%, 0.884);
                                                         height: 40px;
+                                                    }
+
+                                                    .visible-scrollbar {
+                                                        overflow: auto;
+                                                        -webkit-overflow-scrolling: touch;
+                                                    }
+                                                    .visible-scrollbar::-webkit-scrollbar {
+                                                        height: 10px;
+                                                        width: 10px;
+                                                    }
+                                                    .visible-scrollbar::-webkit-scrollbar-track {
+                                                        background: #f1f1f1;
+                                                    }
+                                                    .visible-scrollbar::-webkit-scrollbar-thumb {
+                                                        background: #c1c1c1;
+                                                        border-radius: 6px;
+                                                    }
+                                                    .visible-scrollbar {
+                                                        scrollbar-width: auto;
+                                                        scrollbar-color: #c1c1c1 #f1f1f1;
+                                                    }
+
+                                                    /* Responsive: permitir scroll horizontal en pantallas pequeñas */
+                                                    @media (max-width: 1024px) {
+                                                        .visible-scrollbar { max-width: 100%; overflow-x: auto; }
+                                                        table { min-width: 900px; } /* Reducimos el ancho mínimo */
+                                                        th, td { padding: 6px 8px; font-size: 13px; }
+                                                        .hm { width: 140px; } /* Ancho fijo para la primera columna en tabletas */
+                                                    }
+
+                                                    @media (max-width: 640px) {
+                                                        .visible-scrollbar { max-width: 100%; overflow-x: auto; }
+                                                        table { min-width: 1000px; }
+                                                        table { min-width: 800px; } /* Un ancho mínimo aún menor para móviles */
+                                                        th, td { padding: 4px 6px; font-size: 12px; }
+                                                        .hm { width: 140px; }
+                                                        .hm { width: 120px; } /* Ancho fijo en móviles */
                                                     }
 
                                                     </style>
