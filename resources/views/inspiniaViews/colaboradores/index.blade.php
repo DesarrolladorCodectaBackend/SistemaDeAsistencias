@@ -823,11 +823,11 @@
                                         </div>
 
 
-                                        {{-- MODAL UPDATE --}}
+                                        <!-- modal update -->
                                         <div id="modal-form-update{{$colaborador->id}}" class="modal fade"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-custom">
-                                                <div style="min-width: 750px" class="modal-content">
+                                                <div style="min-width: 760px" class="modal-content">
                                                     <div class="modal-body">
                                                         <form role="form" method="POST"
                                                             action="{{ route('colaboradores.update', $colaborador->id) }}"
@@ -837,7 +837,35 @@
                                                             {{-- Campo oculto para identificar el tipo de formulario --}}
                                                             <input type="hidden" name="form_type" value="edit">
                                                             <input type="hidden" name="colaborador_id" value="{{ $colaborador->id }}">
+                                                            <style>
+                                                                #modal-form-update{{$colaborador->id}} .modal-dialog {
+                                                                    max-height: 95vh; /* Limita la altura máxima del diálogo */
+                                                                    overflow-x: hidden;
+                                                                    overflow-y: auto;
+                                                                    scrollbar-width: thin;
+                                                                    scrollbar-color: grid;
+                                                                }
 
+                                                                #modal-form-update{{$colaborador->id}} .modal-dialog::-webkit-scrollbar {
+                                                                    width: 8px;
+                                                                }
+
+                                                                #modal-form-update{{$colaborador->id}} .modal-dialog::-webkit-scrollbar-track {
+                                                                    background: #f5f5f5;
+                                                                }
+
+                                                                #modal-form-update{{$colaborador->id}} .modal-dialog::-webkit-scrollbar-thumb {
+                                                                    background-color: #1ab394;
+                                                                    border-radius: 6px;
+                                                                    border: 2px solid #f5f5f5;
+                                                                }
+                                                            </style>
+                                                            <style>
+                                                                #modal-form-view{{$colaborador->id}} .modal-body{
+                                                                    max-height: 85vh;
+                                                                    overflow-y: auto;
+                                                                }
+                                                            </style>    
                                                             <style>
                                                                 .form-group {
                                                                     margin-bottom: 0rem;
@@ -851,6 +879,7 @@
                                                                 <div class="col-sm-4 b-r">
                                                                     <h3 class="m-t-none m-b">Información Personal
                                                                     </h3>
+                                                                    
                                                                     <div class="form-group"><label>
                                                                             <h5 class="m-t-none">Nombres:</h5>
                                                                         </label><input type="text" placeholder="....."
