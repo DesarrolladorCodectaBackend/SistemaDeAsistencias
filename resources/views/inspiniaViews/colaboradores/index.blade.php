@@ -292,6 +292,8 @@
                     <button onclick="deleteAlert()" type="button" class="btn btn-outline-dark btn-xs" style="position: absolute; top: 10px; right: 10px;" data-bs-dismiss="alert" aria-label="Close"><i class="fa fa-close"></i></button>
                 </div>
             @endif
+
+            <!-- ver los colaboradores -->
             <div class="row">
                 @foreach($colaboradores->data as $index => $colaborador)
 
@@ -300,9 +302,14 @@
                         <div class="modal-content">
                             <div class="modal-body">
                                 <div class="row">
-
-                                    <div style='padding: 3px' class="col-sm-6 b-r">
+                                    <div style='padding: 1em' class="col-sm-6 b-r">
                                         <h3 style="font-size: 1.1rem; font-weight: bold; border-bottom: 1px solid currentColor;" class="m-t-none m-b pb-1">Información Personal </h3>
+                                        <style>
+                                            #modal-form-view{{$colaborador->id}} .modal-body{
+                                                max-height: 85vh;
+                                                overflow-y: auto;
+                                            }
+                                        </style>
                                         <style>
                                             .form-group {
                                                 margin: 0rem;
@@ -1898,4 +1905,3 @@ function abrirModalEdicion(colaboradorId) {
 </body>
 
 </html>
-

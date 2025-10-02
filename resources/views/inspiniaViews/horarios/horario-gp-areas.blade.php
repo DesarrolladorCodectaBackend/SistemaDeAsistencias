@@ -100,7 +100,7 @@
                                         </tr>
                                         <tr>
                                             <th>12:30 pm - 2:00 pm</th>
-                                            <td class="receso" colspan="8">RECESO</td>
+                                            <td class="receso" colspan="7">RECESO</td>
                                         </tr>
                                         <tr class="celdas">
                                             <th rowspan="4" >2:00 pm - 6:00 pm</th>
@@ -146,10 +146,10 @@
                     </div>
                     <style>
                     .container {
-                    width: 1400px;
-
-                    margin: 0 auto;
-                    font-family: sans-serif;
+                        max-width: 1400px; /* Ancho máximo para pantallas grandes */
+                        width: 100%;      /* Ocupa el ancho disponible */
+                        margin: 0 auto;
+                        font-family: sans-serif;
                     }
 
                     h1 {
@@ -164,6 +164,7 @@
                     table {
                         width: 100%;
                         border-collapse: collapse;
+                        table-layout: fixed; /* Ayuda a que las columnas se comporten mejor */
                     }
 
                     th, td {
@@ -175,8 +176,6 @@
 
                     th {
                         text-align: center;
-                        min-width: 100px;
-
 
                     }
                     .m1{
@@ -186,7 +185,7 @@
                     }
                     .hm{
                         background-color: #4e7bbf;
-                        width: 200px;
+                        width: 15%; /* Ancho relativo para la primera columna */
                         color: white;
                     }
                     .titulo{
@@ -261,19 +260,19 @@
                     }
 
                      @media (max-width: 1024px) {
-                        .container { width: 100%; padding: 0 10px; }
                         .visible-scrollbar { max-width: 100%; overflow-x: auto; }
-                        table { min-width: 1100px; }
+                        table { min-width: 900px; }
                         th, td { padding: 6px 8px; font-size: 13px; }
-                        .hm { width: 160px; }
+                        .hm { width: 140px; }
+                        .receso { font-size: 20px; height: 80px; }
                     }
 
                     @media (max-width: 640px) {
-                        .container { width: 100%; padding: 0 6px; }
                         .visible-scrollbar { max-width: 100%; overflow-x: auto; }
-                        table { min-width: 1000px; }
+                        table { min-width: 800px; }
                         th, td { padding: 4px 6px; font-size: 12px; }
-                        .hm { width: 140px; }
+                        .hm { width: 120px; }
+                        .receso { font-size: 16px; height: 60px; }
                     }
                     </style>
 
@@ -412,4 +411,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 </html>
-
