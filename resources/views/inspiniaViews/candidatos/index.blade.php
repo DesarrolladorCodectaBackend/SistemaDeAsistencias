@@ -218,6 +218,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
+                                
                                 <form role="form" method="POST" action="{{ route('candidatos.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
