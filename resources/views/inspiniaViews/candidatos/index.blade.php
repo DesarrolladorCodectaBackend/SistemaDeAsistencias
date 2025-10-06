@@ -218,6 +218,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
+                                
                                 <form role="form" method="POST" action="{{ route('candidatos.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
@@ -437,7 +438,12 @@
                         <div class="modal-content">
                             <div class="modal-body">
                                 <div class="row">
-
+                                    <style>
+                                        #modal-form-view{{$candidato->id}} .modal-body{
+                                            max-height: 85vh;
+                                            overflow-y: auto;
+                                        }
+                                    </style>
                                     <div class="col-sm-6 b-r">
                                         <h3 class="m-t-none m-b">Información Personal </h3>
 
@@ -682,7 +688,29 @@
 
                                                             <input type="hidden" name="form_type" value="edit">
                                                             <input type="hidden" name="candidato_id" value="{{ $candidato->id }}">
+                                                            <style>
+                                                                #modal-form{{$candidato->id}} .modal-dialog {
+                                                                    max-height: 90vh; /* Limita la altura máxima del diálogo */
+                                                                    overflow-x: hidden;
+                                                                    overflow-y: auto;
+                                                                    scrollbar-width: thin;
+                                                                    scrollbar-color: grid;
+                                                                }
 
+                                                                #modal-form{{$candidato->id}} .modal-dialog::-webkit-scrollbar {
+                                                                    width: 8px;
+                                                                }
+
+                                                                #modal-form{{$candidato->id}} .modal-dialog::-webkit-scrollbar-track {
+                                                                    background: #f5f5f5;
+                                                                }
+
+                                                                #modal-form{{$candidato->id}} .modal-dialog::-webkit-scrollbar-thumb {
+                                                                    background-color: #1ab394;
+                                                                    border-radius: 6px;
+                                                                    border: 2px solid #f5f5f5;
+                                                                }
+                                                            </style>
                                                             <div class="row">
                                                                 <div class="col-sm-6 b-r">
                                                                     <h3 class="m-t-none m-b">Ingrese los Datos</h3>
