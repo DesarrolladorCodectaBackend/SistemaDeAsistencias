@@ -30,6 +30,7 @@
                     <div class="ibox ">
                         <div class="ibox-content">
                             <div class="table-responsive table-scroll">
+                                
                                 <table class="table table-striped table-bordered table-hover dataTables-example" >
                                     <thead>
                                         <tr>

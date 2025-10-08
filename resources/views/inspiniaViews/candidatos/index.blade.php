@@ -50,17 +50,28 @@
 
             <div class="col-lg-2">
                 <div class="py-3">
-                    {{-- abrir modal agregar --}}
+                    <!-- {{-- abrir modal agregar --}} -->
                     <button class="btn btn-success dim float-right" href="#modal-form-add" data-toggle="modal"
                         type="button">Agregar</button>
                     <button data-toggle="modal" class="btn btn-primary dim float-right" href="#modal-filtrar"> Filtrar </button>
+                    
                 </div>
 
                 <div id="modal-filtrar" class="modal fade" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
-
+                                <style>
+                                    #modal-filtrar .modal-body{
+                                        max-height: 80vh;
+                                        overflow-y: auto;
+                                    }
+                                    #modal-filtrar .modal-body::-webkit-scrollbar {
+                                        width: 8px;
+                                        background: #f1f1f1;
+                                        border-radius: 4px;
+                                    }
+                                </style>
                                 <form id="filtrarCandidatos" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                     <h2 class="m-t-none m-b font-bold text-center">Filtrar Candidatos</h2>
 
@@ -218,6 +229,17 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body">
+                                <style>
+                                    #modal-form-add .modal-body {
+                                        max-height: 80vh;
+                                        overflow-y: auto;
+                                    }
+                                    #modal-form-add .modal-body::-webkit-scrollbar {
+                                        width: 8px;
+                                        background: #f1f1f1;
+                                        border-radius: 4px;
+                                    }
+                                </style>
                                 
                                 <form role="form" method="POST" action="{{ route('candidatos.store') }}"
                                     enctype="multipart/form-data">

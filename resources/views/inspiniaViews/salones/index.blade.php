@@ -152,6 +152,18 @@
                                             <div class="modal-dialog modal-custom">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
+                                                        <!-- se agregara un scroball -->
+                                                         <style>
+                                                            #modal-form-view-{{ $salon->id }} .modal-body{
+                                                                max-height: 80vh;
+                                                                overflow-y: auto;
+                                                            }
+                                                            #modal-form-view-{{ $salon->id }} .modal-body::-webkit-scrollbar {
+                                                                width: 8px;
+                                                                background: #f1f1f1;
+                                                                border-radius: 4px;
+                                                            }
+                                                         </style>
                                                         <div class="row text-center">
                                                             <div class="product-name col-sm-4">
                                                                 <h3>ID: {{ $salon->id }}</h3>

@@ -374,10 +374,21 @@
                                                             Desactivar Evaluaciones - <span id="areaNombre{{$area->id}}">{{$area->especializacion}}</span>
                                                         </h5>
                                                     </div>
-
                                                     <form method="POST" id="formDesactivarEvaluaciones{{$area->id}}" action="{{ route('desactivarEvaluacionUpdate.area', $area->id) }}">
                                                         @csrf
                                                         <div class="modal-body">
+                                                            <!-- agregar un scroball -->
+                                                             <style>
+                                                                #modalDesactivarEvaluaciones{{$area->id}} .modal-body {
+                                                                    max-height: 80vh;
+                                                                    overflow-y: auto;
+                                                                }
+                                                                #modalDesactivarEvaluaciones{{$area->id}} .modal-body::-webkit-scrollbar {
+                                                                    width: 8px;
+                                                                    background: #f1f1f1;
+                                                                    border-radius: 4px;
+                                                                }
+                                                            </style>
                                                             <div class="alert alert-info">
                                                                 Seleccione el período durante el cual las evaluaciones estarán desactivadas para esta área.
                                                             </div>

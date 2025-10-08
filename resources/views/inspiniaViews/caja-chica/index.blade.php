@@ -97,7 +97,7 @@
                     @else
                         <button onclick="abrirCaja()" class="btn btn-primary">Abrir Caja</button>
                     @endif
-                </div>
+                </div> 
             </div>
 
             {{-- modal registro transaccion --}}
@@ -108,6 +108,17 @@
                             <h5 class="modal-title" id="transaccionModalLabel">Pagos Depósito-Caja</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                         </div>
+                        <style>
+                            #transaccionModal .modal-body {
+                                max-height: 80vh;
+                                overflow-y: auto;
+                            }
+                            #transaccionModal .modal-body::-webkit-scrollbar {
+                                width: 8px;
+                                background: #f1f1f1;
+                                border-radius: 4px;
+                            }
+                        </style>
                         <form method="POST" action="{{ route('caja.registroTransaccion') }}">
                             @csrf
                             <div class="registro-content">
@@ -209,7 +220,8 @@
                 </div>
             </div>
 
-            <table class="table table-bordered" cellpadding="10" cellspacing="0" id="tabla-colaboradores">
+            <div class="table-responsive">
+                <table class="table table-bordered" cellpadding="10" cellspacing="0" id="tabla-transacciones">
                 <thead>
                     <tr>
                         <th>NRO. PAGO</th>
@@ -634,6 +646,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </main>
     </div>
 
