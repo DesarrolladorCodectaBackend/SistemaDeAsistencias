@@ -38,8 +38,8 @@
         <form method="GET" action="{{ route('buscar.responsabilidades') }}" class="d-flex form-content">
             <div class="search-container">
                 <form method="GET" action="">
-                    <input id="ls-buscar" class="search-input" type="text" name="buscar_area"
-                        placeholder="Buscar Responsabilidad..." autocomplete="off" value="{{ request('buscar_area') }}">
+                    <input id="ls-buscar" class="search-input" type="text" name="buscar_responsabilidad"
+                        placeholder="Buscar Responsabilidad..." autocomplete="off">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                 </form>
                 {{-- <form>
