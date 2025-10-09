@@ -59,7 +59,17 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-body">
-
+                                    <style>
+                                    #modal-filtrar .modal-body{
+                                        max-height: 80vh;
+                                        overflow-y: auto;
+                                    }
+                                    #modal-filtrar .modal-body::-webkit-scrollbar {
+                                        width: 8px;
+                                        background: #f1f1f1;
+                                        border-radius: 4px;
+                                    }
+                                </style>
                                     <form id="filtrarColaboradores" role="form" method="GET" action="" enctype="multipart/form-data" onsubmit="return prepareFilterActionURL()">
                                         <h2 class="m-t-none m-b font-bold text-center">Filtrar Colaboradores</h2>
                                         <div class="accordion" id="accordionExample">
@@ -777,6 +787,17 @@
                                             <div class="modal-dialog modal-custom">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
+                                                        <style>
+                                                            #modal-form-gasto{{ $colaborador->id }} .modal-body {
+                                                                max-height: 80vh;
+                                                                overflow-y: auto;
+                                                            }
+                                                            #modal-form-gasto{{ $colaborador->id }} .modal-body::-webkit-scrollbar {
+                                                                width: 8px;
+                                                                background: #f1f1f1;
+                                                                border-radius: 4px;
+                                                            }
+                                                        </style>
                                                         <form action="{{ route('colaboradores.pagos', $colaborador->id) }}" method="POST">
                                                             @csrf
                                                             @method('POST')
