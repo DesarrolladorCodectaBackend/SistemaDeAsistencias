@@ -228,7 +228,16 @@
                                                             <i class="fa fa-laptop modal-icon"></i>
                                                             <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
                                                             <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
+                                                            <div style="display: flex; justify-content: center;">
+                                                                <button type="button"
+                                                                        class="btn btn-info ml-2 open-another-modal"
+                                                                        data-current="#proyectosModal{{ $area->id }}"
+                                                                        data-target="#nuevoModal-{{ $area->id }}">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
+                                                        
                                                         <div class="modal-body">
                                                             @if($area->proyectos->count() > 0)
                                                                 <div class="table-responsive">
@@ -240,6 +249,7 @@
                                                                             <th>Fecha Inicio</th>
                                                                             <th>Fecha Fin</th>
                                                                             <th>Progreso</th>
+                                                                            <th>Editar</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -254,6 +264,15 @@
                                                                                     <div class="progress-bar" role="progressbar" style="width: {{ $proyecto->porcentaje }}%; color: black;" aria-valuenow="{{ $proyecto->porcentaje }}" aria-valuemin="0" aria-valuemax="100" >{{ $proyecto->porcentaje }}%</div>
                                                                                 </div>
                                                                             </td>
+                                                                            <td>{{ $proyecto->editar }}
+                                                                                <button
+                                                                                    class="btn btn-info" type="button"
+                                                                                    href="#modal-form{{ $area->id }}"
+                                                                                    data-toggle="modal"><i
+                                                                                    class="fa fa-paste"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                        </div>
                                                                         </tr>
                                                                         @endforeach
                                                                         </tbody>
@@ -265,14 +284,7 @@
                                                                 </div>
                                                             @endif
                                                         </div>
-                                                        <div style="display: flex; justify-content: center;">
-                                                            <button type="button"
-                                                                    class="btn btn-info ml-2 open-another-modal"
-                                                                    data-current="#proyectosModal{{ $area->id }}"
-                                                                    data-target="#nuevoModal-{{ $area->id }}">
-                                                                <i class="fa fa-plus"></i>
-                                                            </button>
-                                                        </div>
+                                                        
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                                                         </div>
@@ -344,7 +356,9 @@
                                                                 @error('porcentaje')
                                                                     <span class="text-danger">{{ $message }}</span>
                                                                 @enderror
+                                                                
                                                             </div>
+                                                            
                                                         </div>
 
                                                         <div class="modal-footer">
