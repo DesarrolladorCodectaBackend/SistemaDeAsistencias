@@ -255,6 +255,7 @@
                                                                         <tbody>
                                                                         @foreach($area->proyectos as $proyecto)
                                                                         <tr>
+                                                                            
                                                                             <td>{{ $proyecto->nombre }}</td>
                                                                             <td>{{ $proyecto->descripcion }}</td>
                                                                             <td>{{ $proyecto->fecha_inicio }}</td>
