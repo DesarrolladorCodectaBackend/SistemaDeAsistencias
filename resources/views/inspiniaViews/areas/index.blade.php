@@ -218,77 +218,83 @@
                                         </x-uiverse.tooltip>
 
                                         <!-- Modal Proyectos -->
-                                        <div>
-                                            <div class="modal inmodal" id="proyectosModal{{ $area->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content animated bounceInRight">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <div class="modal inmodal" id="proyectosModal{{ $area->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content animated bounceInRight">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">
+                                                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                                        </button>
 
-                                                            <i class="fa fa-laptop modal-icon"></i>
-                                                            <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
-                                                            <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
-                                                            <div style="display: flex; justify-content: center;">
-                                                                <button type="button"
-                                                                        class="btn btn-info ml-2 open-another-modal"
-                                                                        data-current="#proyectosModal{{ $area->id }}"
-                                                                        data-target="#nuevoModal-{{ $area->id }}">
-                                                                    <i class="fa fa-plus"></i>
-                                                                </button>
-                                                            </div>
+                                                        <i class="fa fa-laptop modal-icon"></i>
+                                                        <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
+                                                        <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
+                                                        <div style="display: flex; justify-content: center;">
+                                                            <button type="button"
+                                                                    class="btn btn-info ml-2 open-another-modal"
+                                                                    data-current="#proyectosModal{{ $area->id }}"
+                                                                    data-target="#nuevoModal-{{ $area->id }}">
+                                                                <i class="fa fa-plus"></i>
+                                                            </button>
                                                         </div>
-                                                        
-                                                        <div class="modal-body">
-                                                            @if($area->proyectos->count() > 0)
-                                                                <div class="table-responsive">
-                                                                    <table class="table table-striped">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th>Nombre</th>
-                                                                            <th>Descripción</th>
-                                                                            <th>Fecha Inicio</th>
-                                                                            <th>Fecha Fin</th>
-                                                                            <th>Progreso</th>
-                                                                            <th>Editar</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        @foreach($area->proyectos as $proyecto)
-                                                                        <tr>
-                                                                            
-                                                                            <td>{{ $proyecto->nombre }}</td>
-                                                                            <td>{{ $proyecto->descripcion }}</td>
-                                                                            <td>{{ $proyecto->fecha_inicio }}</td>
-                                                                            <td>{{ $proyecto->fecha_fin }}</td>
-                                                                            <td>
-                                                                                <div class="progress">
-                                                                                    <div class="progress-bar" role="progressbar" style="width: {{ $proyecto->porcentaje }}%; color: black;" aria-valuenow="{{ $proyecto->porcentaje }}" aria-valuemin="0" aria-valuemax="100" >{{ $proyecto->porcentaje }}%</div>
+                                                    </div>
+                                                    
+                                                    <div class="modal-body">
+                                                        @if($area->proyectos->count() > 0)
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>Nombre</th>
+                                                                        <th>Descripción</th>
+                                                                        <th>Fecha Inicio</th>
+                                                                        <th>Fecha Fin</th>
+                                                                        <th>Progreso</th>
+                                                                        <th>Editar</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    @foreach($area->proyectos as $proyecto)
+                                                                    <tr>
+                                                                        <td>{{ $proyecto->nombre }}</td>
+                                                                        <td>{{ $proyecto->descripcion }}</td>
+                                                                        <td>{{ $proyecto->fecha_inicio }}</td>
+                                                                        <td>{{ $proyecto->fecha_fin }}</td>
+                                                                        <td>
+                                                                            <div class="progress">
+                                                                                <div class="progress-bar" 
+                                                                                    role="progressbar" 
+                                                                                    style="width: {{ $proyecto->porcentaje }}%;" 
+                                                                                    aria-valuenow="{{ $proyecto->porcentaje }}" 
+                                                                                    aria-valuemin="0" 
+                                                                                    aria-valuemax="100">
+                                                                                    {{ $proyecto->porcentaje }}%
                                                                                 </div>
-                                                                            </td>
-                                                                            <td>{{ $proyecto->editar }}
-                                                                                <button
-                                                                                    class="btn btn-info" type="button"
-                                                                                    href="#modal-form{{ $area->id }}"
-                                                                                    data-toggle="modal"><i
-                                                                                    class="fa fa-paste"></i>
-                                                                                </button>
-                                                                            </td>
-                                                                        </div>
-                                                                        </tr>
-                                                                        @endforeach
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            @else
-                                                                <div class="text-center">
-                                                                    <p>Esta área no tiene proyectos registrados.</p>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                        
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                                                        </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <button
+                                                                                class="btn btn-info"
+                                                                                type="button"
+                                                                                data-toggle="modal"
+                                                                                data-target="#editarProyectoModal-{{ $proyecto->id }}">
+                                                                                <i class="fa fa-edit"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        @else
+                                                            <div class="text-center">
+                                                                <p>Esta área no tiene proyectos registrados.</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -300,8 +306,7 @@
                                                 <div class="modal-content animated bounceInRight">
                                                     <div class="modal-header">
                                                         <button type="button" class="close" data-dismiss="modal">
-                                                            <span aria-hidden="true">&times;</span>
-                                                            <span class="sr-only">Close</span>
+                                                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                                                         </button>
                                                         <i class="fa fa-info-circle modal-icon"></i>
                                                         <h4 class="modal-title">Nuevo Proyecto</h4>
@@ -341,25 +346,18 @@
                                                                     max="100"
                                                                     step="1"
                                                                     name="porcentaje"
-                                                                    value="{{ old('porcentaje', 0) }}"
+                                                                    value="0"
                                                                     class="form-control-range"
-                                                                    data-target="progressBar-{{ $area->id }}"
-                                                                    oninput="updateProgress(this)">
+                                                                    oninput="updateProgress(this, 'progressBar-{{ $area->id }}')">
 
                                                                 <div class="progress mt-2">
-                                                                    <div id="progressBar"
-                                                                        class="progress-bar bg-info progressBar-{{ $area->id }}"
+                                                                    <div id="progressBar-{{ $area->id }}"
+                                                                        class="progress-bar bg-info"
                                                                         style="width: 0%;">
                                                                         0%
                                                                     </div>
                                                                 </div>
-
-                                                                @error('porcentaje')
-                                                                    <span class="text-danger">{{ $message }}</span>
-                                                                @enderror
-                                                                
                                                             </div>
-                                                            
                                                         </div>
 
                                                         <div class="modal-footer">
@@ -371,7 +369,76 @@
                                             </div>
                                         </div>
 
+                                        <!-- Editar Proyecto -->
+                                        @foreach($area->proyectos as $proyecto)
+                                        <div class="modal inmodal" id="editarProyectoModal-{{ $proyecto->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content animated bounceInRight">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">
+                                                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                                        </button>
+                                                        <i class="fa fa-edit modal-icon"></i>
+                                                        <h4 class="modal-title">Editar Proyecto</h4>
+                                                        <small class="font-bold">Área {{ $area->especializacion }}</small>
+                                                    </div>
 
+                                                    <form action="{{ route('proyectos.actualizar', $proyecto->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+
+                                                        <div class="modal-body modal-scroll">
+                                                            <div class="form-group">
+                                                                <label for="nombre">Nombre del proyecto</label>
+                                                                <input type="text" class="form-control" name="nombre" value="{{ $proyecto->nombre }}" required>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="descripcion">Descripción</label>
+                                                                <textarea class="form-control" name="descripcion" rows="3">{{ $proyecto->descripcion }}</textarea>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="fecha_inicio">Fecha de inicio</label>
+                                                                <input type="date" class="form-control" name="fecha_inicio" value="{{ $proyecto->fecha_inicio }}">
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="fecha_fin">Fecha de fin</label>
+                                                                <input type="date" class="form-control" name="fecha_fin" value="{{ $proyecto->fecha_fin }}">
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>Porcentaje:</label>
+                                                                <input
+                                                                    type="range"
+                                                                    min="0"
+                                                                    max="100"
+                                                                    step="1"
+                                                                    name="porcentaje"
+                                                                    value="{{ $proyecto->porcentaje }}"
+                                                                    class="form-control-range"
+                                                                    oninput="updateEditProgress(this, 'editProgressBar-{{ $proyecto->id }}')">
+
+                                                                <div class="progress mt-2">
+                                                                    <div id="editProgressBar-{{ $proyecto->id }}"
+                                                                        class="progress-bar bg-info"
+                                                                        style="width: {{ $proyecto->porcentaje }}%;">
+                                                                        {{ $proyecto->porcentaje }}%
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                                                            <button type="submit" class="btn btn-primary">Actualizar Proyecto</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endforeach
 
                                         {{-- modal desactivar evaluaciones --}}
                                         <div class="modal fade"
@@ -995,6 +1062,14 @@ function validarFechas(areaId) {
     }
 </script>
 
+<script>
+function updateEditProgress(input, barId) {
+    const progressBar = document.getElementById(barId);
+    const value = input.value;
+    progressBar.style.width = value + '%';
+    progressBar.textContent = value + '%';
+}
+</script>
 
 
 <style>

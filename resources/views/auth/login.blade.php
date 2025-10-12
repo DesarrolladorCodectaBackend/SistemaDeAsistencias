@@ -74,7 +74,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center" id="submit-button-cvr ">
-                            <button class="button">
+                            <button type="submit" class="button">
                                 <p>Ingresar</p>
                               </button>
                         </div>
