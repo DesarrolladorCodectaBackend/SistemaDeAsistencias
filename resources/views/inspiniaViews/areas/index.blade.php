@@ -238,7 +238,7 @@
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="modal-body">
                                                         @if($area->proyectos->count() > 0)
                                                             <div class="table-responsive">
@@ -262,11 +262,11 @@
                                                                         <td>{{ $proyecto->fecha_fin }}</td>
                                                                         <td>
                                                                             <div class="progress">
-                                                                                <div class="progress-bar" 
-                                                                                    role="progressbar" 
-                                                                                    style="width: {{ $proyecto->porcentaje }}%;" 
-                                                                                    aria-valuenow="{{ $proyecto->porcentaje }}" 
-                                                                                    aria-valuemin="0" 
+                                                                                <div class="progress-bar"
+                                                                                    role="progressbar"
+                                                                                    style="width: {{ $proyecto->porcentaje }}%;"
+                                                                                    aria-valuenow="{{ $proyecto->porcentaje }}"
+                                                                                    aria-valuemin="0"
                                                                                     aria-valuemax="100">
                                                                                     {{ $proyecto->porcentaje }}%
                                                                                 </div>
@@ -292,7 +292,7 @@
                                                             </div>
                                                         @endif
                                                     </div>
-                                                    
+
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                                                     </div>
@@ -346,17 +346,22 @@
                                                                     max="100"
                                                                     step="1"
                                                                     name="porcentaje"
-                                                                    value="0"
+                                                                    value="{{ old('porcentaje', 0) }}"
                                                                     class="form-control-range"
-                                                                    oninput="updateProgress(this, 'progressBar-{{ $area->id }}')">
+                                                                    data-target="progressBar-{{ $area->id }}"
+                                                                    oninput="updateProgress(this)">
 
                                                                 <div class="progress mt-2">
-                                                                    <div id="progressBar-{{ $area->id }}"
-                                                                        class="progress-bar bg-info"
+                                                                    <div id="progressBar"
+                                                                        class="progress-bar bg-info progressBar-{{ $area->id }}"
                                                                         style="width: 0%;">
                                                                         0%
                                                                     </div>
                                                                 </div>
+
+                                                                @error('porcentaje')
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
                                                             </div>
                                                         </div>
 
@@ -1056,6 +1061,8 @@ function validarFechas(areaId) {
     function updateProgress(inputElement) {
         var target = $(inputElement).data('target');
         var progressBar = $('.' + target);
+        console.log(target);
+        console.log(progressBar);
 
         progressBar.css('width', inputElement.value + '%');
         progressBar.text(inputElement.value + '%');
