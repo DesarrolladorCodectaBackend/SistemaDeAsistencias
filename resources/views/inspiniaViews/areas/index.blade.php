@@ -105,11 +105,11 @@
         <!-- From Uiverse.io by themrsami -->
         <form method="GET" action="{{ route('areas.buscar') }}" class="d-flex form-content">
             <div class="search-container">
-                <form method="GET" action="">
+
                     <input id="input-buscar" class="search-input" type="text" name="buscar_area"
                         placeholder="Buscar Área..." autocomplete="off" value="{{ request('buscar_area') }}">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-                </form>
+
                 {{-- <form>
                     <button id="btn-limpiar" class="btn btn-outline-success my-2 my-sm-0" type="button">Limpiar</button>
                 </form> --}}
@@ -721,8 +721,6 @@
             const area = document.getElementById('areas');
             if (area) {
                 area.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'areas' no se encontró en el DOM.");
             }
         });
     </script>
@@ -862,7 +860,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const fechaFin = document.getElementById(`fecha_fin${areaId}`)?.value;
 
         if (!fechaInicio || !fechaFin) {
-            console.log('Fechas incompletas');
+            // console.log('Fechas incompletas');
             return;
         }
 
@@ -870,7 +868,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const fin = new Date(fechaFin);
 
         if (fin <= inicio) {
-            console.log('Error: La fecha fin debe ser posterior a la fecha de inicio');
+            // console.log('Error: La fecha fin debe ser posterior a la fecha de inicio');
             return;
         }
 
@@ -939,7 +937,7 @@ function hideModal(areaId) {
     } else if (typeof $ !== 'undefined' && $.fn.modal) {
         $(modalElement).modal('hide');
     } else {
-        console.error('Bootstrap no encontrado');
+        // console.error('Bootstrap no encontrado');
         modalElement.style.display = 'none';
         modalElement.classList.remove('show');
         document.body.classList.remove('modal-open');
@@ -960,7 +958,7 @@ function validarFechas(areaId) {
     const fechaFinInput = document.getElementById('fecha_fin' + areaId);
 
     if (!btnConfirmar || !resumen) {
-        console.error('No se encontraron elementos necesarios para validación');
+        // console.error('No se encontraron elementos necesarios para validación');
         return;
     }
 
@@ -1017,13 +1015,12 @@ function validarFechas(areaId) {
 
 <script>
     const buscador = document.getElementById("input-buscar");
-    const btnLimpiar = document.getElementById("btn-limpiar");
+    // const btnLimpiar = document.getElementById("btn-limpiar");
 
     function limpiarBuscador(){
-    buscador.value = "";
+        buscador.value = "";
     }
 
-    btnLimpiar.addEventListener("click",limpiarBuscador)
 </script>
 
 <script>
@@ -1061,8 +1058,8 @@ function validarFechas(areaId) {
     function updateProgress(inputElement) {
         var target = $(inputElement).data('target');
         var progressBar = $('.' + target);
-        console.log(target);
-        console.log(progressBar);
+        // console.log(target);
+        // console.log(progressBar);
 
         progressBar.css('width', inputElement.value + '%');
         progressBar.text(inputElement.value + '%');
