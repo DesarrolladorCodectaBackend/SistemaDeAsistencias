@@ -105,11 +105,11 @@
         <!-- From Uiverse.io by themrsami -->
         <form method="GET" action="{{ route('areas.buscar') }}" class="d-flex form-content">
             <div class="search-container">
-                <form method="GET" action="">
+
                     <input id="input-buscar" class="search-input" type="text" name="buscar_area"
                         placeholder="Buscar Área..." autocomplete="off" value="{{ request('buscar_area') }}">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-                </form>
+
                 {{-- <form>
                     <button id="btn-limpiar" class="btn btn-outline-success my-2 my-sm-0" type="button">Limpiar</button>
                 </form> --}}
@@ -218,53 +218,17 @@
                                         </x-uiverse.tooltip>
 
                                         <!-- Modal Proyectos -->
-                                        <div>
-                                            <div class="modal inmodal" id="proyectosModal{{ $area->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content animated bounceInRight">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <div class="modal inmodal" id="proyectosModal{{ $area->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content animated bounceInRight">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">
+                                                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                                        </button>
 
-                                                            <i class="fa fa-laptop modal-icon"></i>
-                                                            <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
-                                                            <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            @if($area->proyectos->count() > 0)
-                                                                <div class="table-responsive">
-                                                                    <table class="table table-striped">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th>Nombre</th>
-                                                                            <th>Descripción</th>
-                                                                            <th>Fecha Inicio</th>
-                                                                            <th>Fecha Fin</th>
-                                                                            <th>Progreso</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        @foreach($area->proyectos as $proyecto)
-                                                                        <tr>
-                                                                            <td>{{ $proyecto->nombre }}</td>
-                                                                            <td>{{ $proyecto->descripcion }}</td>
-                                                                            <td>{{ $proyecto->fecha_inicio }}</td>
-                                                                            <td>{{ $proyecto->fecha_fin }}</td>
-                                                                            <td>
-                                                                                <div class="progress">
-                                                                                    <div class="progress-bar" role="progressbar" style="width: {{ $proyecto->porcentaje }}%; color: black;" aria-valuenow="{{ $proyecto->porcentaje }}" aria-valuemin="0" aria-valuemax="100" >{{ $proyecto->porcentaje }}%</div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        @endforeach
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            @else
-                                                                <div class="text-center">
-                                                                    <p>Esta área no tiene proyectos registrados.</p>
-                                                                </div>
-                                                            @endif
-                                                        </div>
+                                                        <i class="fa fa-laptop modal-icon"></i>
+                                                        <h4 class="modal-title">Proyectos del Área: {{ $area->especializacion }}</h4>
+                                                        <small class="font-bold">Aquí se muestran los últimos 3 proyectos del área.</small>
                                                         <div style="display: flex; justify-content: center;">
                                                             <button type="button"
                                                                     class="btn btn-info ml-2 open-another-modal"
@@ -273,9 +237,64 @@
                                                                 <i class="fa fa-plus"></i>
                                                             </button>
                                                         </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-                                                        </div>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        @if($area->proyectos->count() > 0)
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>Nombre</th>
+                                                                        <th>Descripción</th>
+                                                                        <th>Fecha Inicio</th>
+                                                                        <th>Fecha Fin</th>
+                                                                        <th>Progreso</th>
+                                                                        <th>Editar</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    @foreach($area->proyectos as $proyecto)
+                                                                    <tr>
+                                                                        <td>{{ $proyecto->nombre }}</td>
+                                                                        <td>{{ $proyecto->descripcion }}</td>
+                                                                        <td>{{ $proyecto->fecha_inicio }}</td>
+                                                                        <td>{{ $proyecto->fecha_fin }}</td>
+                                                                        <td>
+                                                                            <div class="progress">
+                                                                                <div class="progress-bar"
+                                                                                    role="progressbar"
+                                                                                    style="width: {{ $proyecto->porcentaje }}%;"
+                                                                                    aria-valuenow="{{ $proyecto->porcentaje }}"
+                                                                                    aria-valuemin="0"
+                                                                                    aria-valuemax="100">
+                                                                                    {{ $proyecto->porcentaje }}%
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <button
+                                                                                class="btn btn-info"
+                                                                                type="button"
+                                                                                data-toggle="modal"
+                                                                                data-target="#editarProyectoModal-{{ $proyecto->id }}">
+                                                                                <i class="fa fa-edit"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    @endforeach
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        @else
+                                                            <div class="text-center">
+                                                                <p>Esta área no tiene proyectos registrados.</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -287,8 +306,7 @@
                                                 <div class="modal-content animated bounceInRight">
                                                     <div class="modal-header">
                                                         <button type="button" class="close" data-dismiss="modal">
-                                                            <span aria-hidden="true">&times;</span>
-                                                            <span class="sr-only">Close</span>
+                                                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                                                         </button>
                                                         <i class="fa fa-info-circle modal-icon"></i>
                                                         <h4 class="modal-title">Nuevo Proyecto</h4>
@@ -356,7 +374,76 @@
                                             </div>
                                         </div>
 
+                                        <!-- Editar Proyecto -->
+                                        @foreach($area->proyectos as $proyecto)
+                                        <div class="modal inmodal" id="editarProyectoModal-{{ $proyecto->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content animated bounceInRight">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">
+                                                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                                        </button>
+                                                        <i class="fa fa-edit modal-icon"></i>
+                                                        <h4 class="modal-title">Editar Proyecto</h4>
+                                                        <small class="font-bold">Área {{ $area->especializacion }}</small>
+                                                    </div>
 
+                                                    <form action="{{ route('proyectos.actualizar', $proyecto->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+
+                                                        <div class="modal-body modal-scroll">
+                                                            <div class="form-group">
+                                                                <label for="nombre">Nombre del proyecto</label>
+                                                                <input type="text" class="form-control" name="nombre" value="{{ $proyecto->nombre }}" required>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="descripcion">Descripción</label>
+                                                                <textarea class="form-control" name="descripcion" rows="3">{{ $proyecto->descripcion }}</textarea>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="fecha_inicio">Fecha de inicio</label>
+                                                                <input type="date" class="form-control" name="fecha_inicio" value="{{ $proyecto->fecha_inicio }}">
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="fecha_fin">Fecha de fin</label>
+                                                                <input type="date" class="form-control" name="fecha_fin" value="{{ $proyecto->fecha_fin }}">
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label>Porcentaje:</label>
+                                                                <input
+                                                                    type="range"
+                                                                    min="0"
+                                                                    max="100"
+                                                                    step="1"
+                                                                    name="porcentaje"
+                                                                    value="{{ $proyecto->porcentaje }}"
+                                                                    class="form-control-range"
+                                                                    oninput="updateEditProgress(this, 'editProgressBar-{{ $proyecto->id }}')">
+
+                                                                <div class="progress mt-2">
+                                                                    <div id="editProgressBar-{{ $proyecto->id }}"
+                                                                        class="progress-bar bg-info"
+                                                                        style="width: {{ $proyecto->porcentaje }}%;">
+                                                                        {{ $proyecto->porcentaje }}%
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                                                            <button type="submit" class="btn btn-primary">Actualizar Proyecto</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endforeach
 
                                         {{-- modal desactivar evaluaciones --}}
                                         <div class="modal fade"
@@ -634,8 +721,6 @@
             const area = document.getElementById('areas');
             if (area) {
                 area.classList.add('active');
-            } else {
-                console.error("El elemento con el id 'areas' no se encontró en el DOM.");
             }
         });
     </script>
@@ -775,7 +860,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const fechaFin = document.getElementById(`fecha_fin${areaId}`)?.value;
 
         if (!fechaInicio || !fechaFin) {
-            console.log('Fechas incompletas');
+            // console.log('Fechas incompletas');
             return;
         }
 
@@ -783,7 +868,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const fin = new Date(fechaFin);
 
         if (fin <= inicio) {
-            console.log('Error: La fecha fin debe ser posterior a la fecha de inicio');
+            // console.log('Error: La fecha fin debe ser posterior a la fecha de inicio');
             return;
         }
 
@@ -852,7 +937,7 @@ function hideModal(areaId) {
     } else if (typeof $ !== 'undefined' && $.fn.modal) {
         $(modalElement).modal('hide');
     } else {
-        console.error('Bootstrap no encontrado');
+        // console.error('Bootstrap no encontrado');
         modalElement.style.display = 'none';
         modalElement.classList.remove('show');
         document.body.classList.remove('modal-open');
@@ -873,7 +958,7 @@ function validarFechas(areaId) {
     const fechaFinInput = document.getElementById('fecha_fin' + areaId);
 
     if (!btnConfirmar || !resumen) {
-        console.error('No se encontraron elementos necesarios para validación');
+        // console.error('No se encontraron elementos necesarios para validación');
         return;
     }
 
@@ -930,13 +1015,12 @@ function validarFechas(areaId) {
 
 <script>
     const buscador = document.getElementById("input-buscar");
-    const btnLimpiar = document.getElementById("btn-limpiar");
+    // const btnLimpiar = document.getElementById("btn-limpiar");
 
     function limpiarBuscador(){
-    buscador.value = "";
+        buscador.value = "";
     }
 
-    btnLimpiar.addEventListener("click",limpiarBuscador)
 </script>
 
 <script>
@@ -974,12 +1058,22 @@ function validarFechas(areaId) {
     function updateProgress(inputElement) {
         var target = $(inputElement).data('target');
         var progressBar = $('.' + target);
+        // console.log(target);
+        // console.log(progressBar);
 
         progressBar.css('width', inputElement.value + '%');
         progressBar.text(inputElement.value + '%');
     }
 </script>
 
+<script>
+function updateEditProgress(input, barId) {
+    const progressBar = document.getElementById(barId);
+    const value = input.value;
+    progressBar.style.width = value + '%';
+    progressBar.textContent = value + '%';
+}
+</script>
 
 
 <style>

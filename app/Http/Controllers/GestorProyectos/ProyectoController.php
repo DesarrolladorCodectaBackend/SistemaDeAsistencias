@@ -57,7 +57,7 @@ class ProyectoController extends Controller
         } catch (Exception $e) {
 
             DB::rollBack();
-            // return $e;
+            return $e;
             return redirect()->route('proyectos.index')->with('error', 'Ocurrió un error, inténtelo más tarde o contacte con el equipo de soporte');
 
         }
@@ -160,7 +160,8 @@ class ProyectoController extends Controller
 
         }
     }
-
+    
+    
 }
 
 

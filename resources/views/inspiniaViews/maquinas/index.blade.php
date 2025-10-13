@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>INSPINIA | MÁQUINAS</title>
+
+    
+</head>
+
+
 </head>
 
 <body>
@@ -153,12 +158,11 @@
                                 </div>
                                 <div class="m-t text-righ">
 
-                                    <a href="#" data-toggle="model"> <i></i> </a>
                                     <div class="ibox-content">
                                         <div class="text-right">
                                             <x-uiverse.tooltip nameTool="Editar">
                                                 <a data-toggle="modal" class="btn btn-primary fa fa-edit"
-                                                    style="font-size: 20px;"
+                                                    style="font-size: 20px; color: white;"
                                                     href="#modal-form{{ $maquina->id }}"></a>
                                             </x-uiverse.tooltip>
                                         </div>
@@ -234,7 +238,8 @@
 
                                                                     </div>
                                                                 </div>
-
+                                                                
+                                                                </style>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -331,6 +336,18 @@
         }
     </script>
 
+    <style>
+        .modal form {
+        pointer-events: none;
+        }
+
+        .modal .modal-dialog,
+        .modal .modal-content,
+        .modal .form-control,
+        .modal button {
+        pointer-events: all;
+        }
+    </style>
 
 </body>
 

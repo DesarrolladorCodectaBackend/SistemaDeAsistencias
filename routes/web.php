@@ -254,11 +254,11 @@ Route::middleware('auth')->group(function () {
     // INFORMESSEMANALES
     Route::resource('/InformeSemanal', InformesSemanalesController::class);
 
-    //PROYECTOS ÁREAS
+    // PROYECTOS ÁREAS
     Route::get('/proyectos', [ProyectoController::class, 'index'])->name('proyectos.index');
     Route::post('/proyecto/store', [ProyectoController::class, 'store'])->name('proyectos.store');
     Route::patch('/proyecto/change-state/{proyecto_id}', [ProyectoController::class, 'changeState'])->name('proyectos.changeState');
-    Route::patch('/proyecto/update/{proyecto_id}', [ProyectoController::class, 'update'])->name('proyectos.update');
+    Route::put('/proyectos/{id}/actualizar', [ProyectoController::class, 'update'])->name('proyectos.actualizar');
     Route::post('/areas/crear-proyecto', [AreaController::class, 'crearproyecto'])->name('proyectos.crear');
 
     //TutoSeguimiento
