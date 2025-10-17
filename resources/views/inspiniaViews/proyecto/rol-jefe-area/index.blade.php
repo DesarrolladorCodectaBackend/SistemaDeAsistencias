@@ -203,9 +203,9 @@
                                                         <div class="col-sm-11 b-r">
                                                             <h3 class="m-t-none m-b">Editar</h3>
                                                             <form role="form" method="POST"
-                                                                action="{{ route('proyectos.update', $proyecto->id) }}">
+                                                                action="{{ route('proyectos.actualizar', $proyecto->id) }}">
                                                                 @csrf
-                                                                @method('PATCH')
+                                                                @method('PUT')
                                                                 <div class="form-group">
                                                                     <label>Nombre: </label>
                                                                     <input type="text" placeholder="Ingrese un nombre" name="nombre" autocomplete="off"

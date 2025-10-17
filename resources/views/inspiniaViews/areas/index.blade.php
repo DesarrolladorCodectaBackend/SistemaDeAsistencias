@@ -276,8 +276,7 @@
                                                                             <button
                                                                                 class="btn btn-info"
                                                                                 type="button"
-                                                                                data-toggle="modal"
-                                                                                data-target="#editarProyectoModal-{{ $proyecto->id }}">
+                                                                                onclick="abrirModalEdicion('{{ $area->id }}', '{{ $proyecto->id }}')">
                                                                                 <i class="fa fa-edit"></i>
                                                                             </button>
                                                                         </td>
@@ -438,9 +437,9 @@
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                                                             <button type="submit" class="btn btn-primary">Actualizar Proyecto</button>
-                                                        </div>
+                                                        </div>  
                                                     </form>
-                                                </div>
+                                                </div>  
                                             </div>
                                         </div>
                                         @endforeach
@@ -1052,6 +1051,14 @@ function validarFechas(areaId) {
 </script>
 
 
+<script>
+    function abrirModalEdicion(areaId, proyectoId) {
+        $('#proyectosModal' + areaId).modal('hide');
+        setTimeout(function () {
+            $('#editarProyectoModal-' + proyectoId).modal('show');
+        }, 400); // espera 400ms por la animación
+    }
+</script>
 
 
 <script>
