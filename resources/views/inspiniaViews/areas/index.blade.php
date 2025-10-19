@@ -276,8 +276,7 @@
                                                                             <button
                                                                                 class="btn btn-info"
                                                                                 type="button"
-                                                                                data-toggle="modal"
-                                                                                data-target="#editarProyectoModal-{{ $proyecto->id }}">
+                                                                                onclick="abrirModalEdicion('{{ $area->id }}', '{{ $proyecto->id }}')">
                                                                                 <i class="fa fa-edit"></i>
                                                                             </button>
                                                                         </td>
@@ -1052,6 +1051,14 @@ function validarFechas(areaId) {
 </script>
 
 
+<script>
+    function abrirModalEdicion(areaId, proyectoId) {
+        $('#proyectosModal' + areaId).modal('hide');
+        setTimeout(function () {
+            $('#editarProyectoModal-' + proyectoId).modal('show');
+        }, 400); // espera 400ms por la animación
+    }
+</script>
 
 
 <script>
@@ -1073,6 +1080,33 @@ function updateEditProgress(input, barId) {
     progressBar.style.width = value + '%';
     progressBar.textContent = value + '%';
 }
+</script>
+
+
+<script>
+    $(document).on('show.bs.modal', '[id^="editarProyectoModal-"]', function () {
+
+        $('.modal.show[id^="nuevoModal-"]').each(function () {
+            $(this).modal('hide');
+        });
+
+        $('.modal.show').not(this).modal('hide');
+    });
+
+    $(document).on('hidden.bs.modal', '[id^="editarProyectoModal-"]', function () {
+
+        if ($('.modal.show').length === 0) {
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+    });
+
+    $(document).on('show.bs.modal', '[id^="nuevoModal-"]', function () {
+        $('.modal.show[id^="editarProyectoModal-"]').each(function () {
+            $(this).modal('hide');
+        });
+    });
+
 </script>
 
 

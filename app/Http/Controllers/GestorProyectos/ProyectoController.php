@@ -43,9 +43,9 @@ class ProyectoController extends Controller
                 'nombre' => $request->nombre,
                 'descripcion' => $request->descripcion,
                 'fecha_inicio' => $request->fecha_inicio,
-                'fecha_fin' => $request->fecha_fin,
+                'fecha_fin' => $request->fecha_fin, 
                 'porcentaje' => $request->porcentaje,
-                'estado' => 1,
+                'estado' => 1, 
                 'area_id' => $areaPerteneciente->id,
                 // estado en default => 1
                 'user_id' => Auth::id(),
