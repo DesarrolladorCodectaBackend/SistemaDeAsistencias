@@ -78,6 +78,14 @@
                                 <p>Ingresar</p>
                               </button>
                         </div>
+                        @if ($errors->any())
+                            <div class="alert alert-danger mt-3 text-center" id="error-message"
+                                style="border-radius: 10px;">
+                                @foreach ($errors->all() as $error)
+                                    <p class="mb-0">{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
 
                     </div>
                 </form>
@@ -104,6 +112,24 @@
             }
         }
 
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.querySelector('input[name="password"]');
+            const eyeIcon = document.getElementById('eye-icon');
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            }
+        }
     </script>
 
 </body>
