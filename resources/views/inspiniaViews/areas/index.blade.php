@@ -437,9 +437,9 @@
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
                                                             <button type="submit" class="btn btn-primary">Actualizar Proyecto</button>
-                                                        </div>  
+                                                        </div>
                                                     </form>
-                                                </div>  
+                                                </div>
                                             </div>
                                         </div>
                                         @endforeach
@@ -1080,6 +1080,33 @@ function updateEditProgress(input, barId) {
     progressBar.style.width = value + '%';
     progressBar.textContent = value + '%';
 }
+</script>
+
+
+<script>
+    $(document).on('show.bs.modal', '[id^="editarProyectoModal-"]', function () {
+
+        $('.modal.show[id^="nuevoModal-"]').each(function () {
+            $(this).modal('hide');
+        });
+
+        $('.modal.show').not(this).modal('hide');
+    });
+
+    $(document).on('hidden.bs.modal', '[id^="editarProyectoModal-"]', function () {
+
+        if ($('.modal.show').length === 0) {
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+    });
+
+    $(document).on('show.bs.modal', '[id^="nuevoModal-"]', function () {
+        $('.modal.show[id^="editarProyectoModal-"]').each(function () {
+            $(this).modal('hide');
+        });
+    });
+
 </script>
 
 
