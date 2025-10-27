@@ -331,10 +331,8 @@
 
                                                     @media (max-width: 640px) {
                                                         .visible-scrollbar { max-width: 100%; overflow-x: auto; }
-                                                        table { min-width: 1000px; }
                                                         table { min-width: 800px; } /* Un ancho mínimo aún menor para móviles */
                                                         th, td { padding: 4px 6px; font-size: 12px; }
-                                                        .hm { width: 140px; }
                                                         .hm { width: 120px; } /* Ancho fijo en móviles */
                                                     }
 
@@ -361,7 +359,7 @@
                                                                 var hora = parseInt(r.horario_modificado.hora_inicial, 10);
                                                                 var bloqueIdx = null;
                                                                 if (hora >= 8 && hora < 13) bloqueIdx = 0;
-                                                                else if (hora >= 14 && hora < 19) bloqueIdx = 1;
+                                                                else if (hora >= 14 && hora < 21) bloqueIdx = 1;
                                                                 if (bloqueIdx !== null && diasCol[dia]) {
                                                                     var key = dia + '_' + bloqueIdx;
                                                                     if (!agrupadas[key]) agrupadas[key] = [];
@@ -443,7 +441,6 @@
             </div>
         </div>
         @include('components.inspinia.footer-inspinia')
-    </div>
     </div>
     <style>
         .fc-toolbar {
