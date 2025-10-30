@@ -1099,6 +1099,56 @@ function updateEditProgress(input, barId) {
 
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('form[action*="proyectos"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            const fechaInicioInput = form.querySelector('input[name="fecha_inicio"]');
+            const fechaFinInput = form.querySelector('input[name="fecha_fin"]');
+
+            if (!fechaInicioInput || !fechaFinInput) return;
+
+            const fechaInicio = fechaInicioInput.value ? new Date(fechaInicioInput.value) : null;
+            const fechaFin = fechaFinInput.value ? new Date(fechaFinInput.value) : null;
+
+            if (fechaInicio && fechaFin) {
+                if (fechaFin <= fechaInicio) {
+                    e.preventDefault(); 
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Fechas inválidas',
+                        text: 'La fecha de fin debe ser posterior a la fecha de inicio.',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Entendido'
+                    });
+                    fechaFinInput.classList.add('is-invalid');
+                    return false;
+                } else {
+                    fechaFinInput.classList.remove('is-invalid');
+                }
+            }
+        });
+
+        const fechaInicioInput = form.querySelector('input[name="fecha_inicio"]');
+        const fechaFinInput = form.querySelector('input[name="fecha_fin"]');
+
+        if (fechaInicioInput && fechaFinInput) {
+            fechaInicioInput.addEventListener('change', function() {
+                if (this.value) {
+                    fechaFinInput.min = this.value;
+                } else {
+                    fechaFinInput.removeAttribute('min');
+                }
+            });
+        }
+    });
+});
+</script>
+
+
+
 
 <style>
 
