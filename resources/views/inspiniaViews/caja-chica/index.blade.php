@@ -89,13 +89,13 @@
 
                 <div class="btns-transaccion-content">
                     @if($cajaAbierta)
-                        <button class="btn btn-danger" onclick="cerrarCaja()">Cerrar Caja</button>
+                        <button class="btn btn-outline-danger" onclick="cerrarCaja()"><i class="fa fa-lock"></i> Cerrar Caja</button>
                         <!-- CORREGIDO: Bootstrap 5 sintaxis -->
-                        <button type="button" class="btn btn-primary btn-add-registro" data-bs-toggle="modal" data-bs-target="#transaccionModal">
-                            Agregar
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transaccionModal">
+                            <i class="fa fa-plus"></i> Agregar Registro
                         </button>
                     @else
-                        <button onclick="abrirCaja()" class="btn btn-primary">Abrir Caja</button>
+                        <button onclick="abrirCaja()" class="btn btn-primary"><i class="fa fa-unlock"></i> Abrir Caja</button>
                     @endif
                 </div> 
             </div>
@@ -246,10 +246,10 @@
                             <td>0</td>
                             <td>
                                 <button class="btn btn-secondary btn-sm" disabled>Pagado</button>
-                                <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#verdepositoModal{{ $deposito->id }}"
                                 >
-                                    Ver
+                                    <i class="fa fa-eye"></i> Ver
                                 </button>
                             </td>
                         </tr>
@@ -320,11 +320,11 @@
                             <td>{{ $caja->monto}}</td>
                             <td>
                                 <button class="btn btn-secondary btn-sm" disabled>Pagado</button>
-                                <button class="btn btn-success btn-sm"
+                                <button class="btn btn-outline-info btn-sm"
                                         data-bs-toggle="modal"
                                         data-bs-target="#vercajaModal{{ $caja->id }}"
                                 >
-                                    Ver
+                                    <i class="fa fa-eye"></i> Ver
                                 </button>
                             </td>
                         </tr>
@@ -419,26 +419,22 @@
                                     <button class="btn btn-secondary btn-sm" disabled>Anulado</button>
                                 @elseif($colaborador->pagado)
                                     <button class="btn btn-secondary btn-sm" disabled>Pagado</button>
-                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                    <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#verpagoModal{{ $colaborador->id }}"
                                             data-descripcion="{{ implode(' - ', $colaborador->pago_colaborador->pluck('descripcion')->toArray()) }}">
-                                        Ver
+                                        <i class="fa fa-eye"></i> Ver
                                     </button>
                                 @else
-                                    <div class="btn-">
-                                        <button class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#pagoModal{{ $colaborador->id }}"
-                                            data-descripcion="{{ implode(' - ', $colaborador->pago_colaborador->pluck('descripcion')->toArray()) }}">
-                                            Pagar
-                                        </button>
-                                            <button
-                                                class="btn btn-danger btn-sm"
-                                                type="submit"
-                                                onclick="confirmAnular({{ $colaborador->id }})"
-                                            >
-                                                Anular
-                                            </button>
-                                   </div>
+                                    <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#pagoModal{{ $colaborador->id }}"
+                                        data-descripcion="{{ implode(' - ', $colaborador->pago_colaborador->pluck('descripcion')->toArray()) }}">
+                                        <i class="fa fa-dollar-sign"></i> Pagar
+                                    </button>
+                                    <button
+                                        class="btn btn-outline-danger btn-sm"
+                                        onclick="confirmAnular({{ $colaborador->id }})">
+                                        <i class="fa fa-times"></i> Anular
+                                    </button>
                                 @endif
                             </td>
                         </tr>
