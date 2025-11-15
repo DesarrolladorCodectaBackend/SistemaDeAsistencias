@@ -107,15 +107,16 @@
             @if($userData['isAdmin'] || $userData['isBoss'])
                 <li>
                     <a href="{{route('responsabilidades.index')}}"><i class="fa fa-list-alt"></i> <span
-                            class="nav-label">Responsabilidades</span></a>
+                            class="nav-label">Responsabilidades</span>
+                    </a>
                 </li>
             @endif
 
             {{-- jefe de area --}}
             @if($userData['isBoss'])
                 <li>
-                    <a href="{{ route('proyectos.index') }}">
-                        <i class="fa fa-folder-open"></i> Proyectos
+                    <a href="{{ route('proyectos.index') }}"><i class="fa fa-folder-open"></i> <span
+                    class="nav-label"> Proyectos </span>
                     </a>
                 </li>
             @endif
@@ -182,7 +183,7 @@
 position: absolute;
 top: 13px; /* Ajusta la posición arriba */
 right: 176px;
-width: 5px
+width: 5px;
 line-height: 1;
 }
                     </style>

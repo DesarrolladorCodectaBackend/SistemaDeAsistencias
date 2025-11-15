@@ -8,6 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- SweetAlert2 para confirmaciones -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        #tabla-transacciones,
+        #tabla-transacciones th,
+        #tabla-transacciones td {
+            border: 1px solid black !important;
+        }
+    </style>
     <title>Editar Colaborador</title>
 </head>
 
@@ -235,6 +242,20 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if(!$cajaAbierta)
+                        @for ($i = 0; $i < 6; $i++)
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        @endfor
+                    @endif
                     @foreach ($depositos as $deposito)
                         <tr>
                             <td>{{ str_pad($deposito->nro_pago, 4, '0', STR_PAD_LEFT) }}</td>
