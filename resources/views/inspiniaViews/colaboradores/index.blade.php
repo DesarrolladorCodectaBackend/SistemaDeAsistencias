@@ -45,14 +45,14 @@
                     </form>
                 </div>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-2 d-flex align-items-center justify-content-center">
 
                 <div class="ibox-content">
-                    <div class="text-center flex-centered gap-20">
+                    <div class="d-flex flex-wrap justify-content-center" style="gap: 10px;">
                         <a class="btn btn-primary" href="{{route('candidatos.index')}}">
                             <i class="fa fa-long-arrow-left"></i> Agregar
                         </a>
-                        <a data-toggle="modal" class="btn btn-success " href="#modal-filtrar"> Filtrar </a>
+                        <a data-toggle="modal" class="btn btn-success" href="#modal-filtrar">Filtrar</a>
                         <a href="#" class="btn btn-warning" onclick="confirmEditAll()">Activar Edición</a>
                     </div>
                     <div id="modal-filtrar" class="modal fade" aria-hidden="true">
