@@ -11,6 +11,71 @@
     <title>Editar Colaborador</title>
 </head>
 
+<style>
+
+table thead th {
+    border-bottom: none !important;
+    background-color: #f8f9fa !important;
+    font-weight: 600;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.tabla-transacciones {
+    margin-top: 25px !important;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    padding: 10px 12px;
+}
+
+.table thead th.text-center,
+.table tbody td.text-center {
+    text-align: center !important;
+}
+
+.table thead th.text-end,
+.table tbody td.text-end {
+    text-align: right !important;
+}
+
+.btn-tabla {
+    padding: 3px 12px !important;
+    font-size: 14px !important;
+}
+
+.total-ingresos-box {
+    background-color: #363f4e !important;
+    border-radius: 6px;
+    padding: 18px;
+    color: white !important;
+}
+
+.total-egresos-box {
+    background-color: #000000 !important;
+    border-radius: 6px;
+    padding: 18px;
+    color: white !important;
+}
+
+.saldo-box {
+    background: #f1f3f5;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.saldo-box span {
+    font-size: 24px;
+    font-weight: bold;
+}
+</style>
+
 <body>
     <div id="wrapper">
         @include('components.inspinia.side_nav_bar-inspinia')
@@ -53,54 +118,76 @@
                 @endif
             </section>
 
-            <div class="transaccion-content m-3">
-                <div class="saldo-content col-2 d-flex" readonly>
-                    <label class="saldo-text">Saldo Actual:</label>
-                    <label class="saldo-text"> S/{{ $saldoActual->saldo_actual ?? 0 }} </label>
+            <div class="container-fluid px-4">
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-light border rounded p-3 col-md-3 text-center">
+                        <label class="fw-bold d-block">Saldo Actual:</label>
+                        <span class="fs-4 fw-bold text-success">S/ {{ $saldoActual->saldo_actual ?? 0 }}</span>
+                    </div>
                 </div>
 
                 <form id="filtrar-form">
-                    <div class="filter-fecha-caja-content">
-                        <div>
-                            <label for="fecha_inicio">Fecha Inicio:</label>
-                            <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" required>
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-4">
+                            <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio"
+                                value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"
+                                class="form-control" required>
                         </div>
 
-                        <div>
-                            <label for="fecha_fin">Fecha Fin:</label>
-                            <input type="date" id="fecha_fin" name="fecha_fin" required>
+                        <div class="col-md-4">
+                            <label for="fecha_fin" class="form-label">Fecha Fin:</label>
+                            <input type="date" id="fecha_fin" name="fecha_fin"
+                                class="form-control" required>
                         </div>
 
-                        <div class="btn-filter-content">
-                            <button type="submit" class="btn-filter-montos btn-success">Filtrar</button>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-success w-100">
+                                Filtrar
+                            </button>
                         </div>
+
                     </div>
                 </form>
 
-                <div class="total-ingresos-egresos-content row">
-                    <div class="text-center total-in-content">
-                        <h3>Total de Ingresos: S/<span id="total-ingresos">0</span></h3>
+                <div class="row text-center mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 border rounded bg-success text-white">
+                            <h5>Total de Ingresos</h5>
+                            <h3>S/ <span id="total-ingresos">0</span></h3>
+                        </div>
                     </div>
-
-                    <div class="text-center total-e-content">
-                        <h3>Total de Egresos: S/<span id="total-egresos">0</span></h3>
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 border rounded bg-danger text-white">
+                            <h5>Total de Egresos</h5>
+                            <h3>S/ <span id="total-egresos">0</span></h3>
+                        </div>
                     </div>
                 </div>
 
-                <div class="btns-transaccion-content">
+                <div class="d-flex justify-content-end mt-4">
+
                     @if($cajaAbierta)
-                        <button class="btn btn-danger" onclick="cerrarCaja()">Cerrar Caja</button>
-                        <!-- CORREGIDO: Bootstrap 5 sintaxis -->
-                        <button type="button" class="btn btn-primary btn-add-registro" data-bs-toggle="modal" data-bs-target="#transaccionModal">
-                            Agregar
+                        <button class="btn btn-danger me-2" onclick="cerrarCaja()">
+                            <i class="fa-solid fa-lock"></i> Cerrar Caja
+                        </button>
+
+                        <button type="button" class="btn btn-primary"
+                                data-bs-toggle="modal" data-bs-target="#transaccionModal">
+                            <i class="fa-solid fa-plus"></i> Agregar
                         </button>
                     @else
-                        <button onclick="abrirCaja()" class="btn btn-primary">Abrir Caja</button>
+                        <button onclick="abrirCaja()" class="btn btn-primary">
+                            <i class="fa-solid fa-unlock"></i> Abrir Caja
+                        </button>
                     @endif
-                </div> 
+
+                </div>
+
             </div>
 
-            {{-- modal registro transaccion --}}
             <div class="modal fade" id="transaccionModal" tabindex="-1" aria-labelledby="transaccionModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
@@ -222,16 +309,16 @@
 
             <div class="table-responsive">
                 <table class="table table-bordered" cellpadding="10" cellspacing="0" id="tabla-transacciones">
-                <thead>
+                <thead class="table-light">
                     <tr>
-                        <th>NRO. PAGO</th>
-                        <th>FECHA</th>
-                        <th>DNI</th>
+                        <th class="text-center">NRO. PAGO</th>
+                        <th class="text-center">FECHA</th>
+                        <th class="text-center">DNI</th>
                         <th>NOMBRES</th>
-                        <th>TIPO</th>
-                        <th>INGRESOS</th>
-                        <th>EGRESOS</th>
-                        <th>ACCIONES</th>
+                        <th class="text-center">TIPO</th>
+                        <th class="text-end">INGRESOS</th>
+                        <th class="text-end">EGRESOS</th>
+                        <th class="text-center">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody>

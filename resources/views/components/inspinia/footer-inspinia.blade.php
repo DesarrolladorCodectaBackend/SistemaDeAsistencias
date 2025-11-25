@@ -16,7 +16,6 @@
         codectaperu@gmail.com
       </a>
     </div>
-
     <div class="d-flex justify-content-end align-items-center" style="gap: 15px;">
       <a href="https://wa.me/51922546863" target="_blank" class="text-light">
         <i class="fab fa-whatsapp fa-lg"></i>
@@ -25,11 +24,9 @@
       <a href="https://www.facebook.com/codectaperu/" target="_blank" class="text-light">
         <i class="fab fa-facebook fa-lg"></i>
       </a>
-
       <a href="mailto:codectaperu@gmail.com" class="text-light">
         <i class="fas fa-envelope fa-lg"></i>
       </a>
-
       <a href="https://www.instagram.com/codectaperu/" target="_blank" class="text-light">
         <i class="fab fa-instagram fa-lg"></i>
       </a>
