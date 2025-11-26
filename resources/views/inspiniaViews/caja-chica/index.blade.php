@@ -118,15 +118,25 @@ table thead th {
                 @endif
             </section>
 
-            <div class="container-fluid px-4">
+            <div class="container-fluid px-9">
 
-                <div class="d-flex align-items-center mb-4">
-                    <div class="bg-light border rounded p-3 col-md-3 text-center">
-                        <label class="fw-bold d-block">Saldo Actual:</label>
-                        <span class="fs-4 fw-bold text-success">S/ {{ $saldoActual->saldo_actual ?? 0 }}</span>
-                    </div>
+            <div class="d-flex gap-3"> 
+                <div class="bg-light border rounded p-3 text-center flex-fill">
+                    <label class="fw-bold d-block">Saldo Actual:</label>
+                    <span class="fs-4 fw-bold text-success">S/ {{ $saldoActual->saldo_actual ?? 0 }}</span>
                 </div>
 
+                <div class="p-3 border rounded bg-success text-white text-center flex-fill">
+                    <h5>Total de Ingresos</h5>
+                    <h3>S/ <span id="total-ingresos">0</span></h3>
+                </div>
+                
+                <div class="p-3 border rounded bg-danger text-white text-center flex-fill">
+                    <h5>Total de Egresos</h5>
+                    <h3>S/ <span id="total-egresos">0</span></h3>
+                </div>
+            </div>
+            <br> 
                 <form id="filtrar-form">
                     <div class="row g-3 mb-4">
 
@@ -152,39 +162,26 @@ table thead th {
                     </div>
                 </form>
 
-                <div class="row text-center mt-4">
-                    <div class="col-md-6 mb-3">
-                        <div class="p-3 border rounded bg-success text-white">
-                            <h5>Total de Ingresos</h5>
-                            <h3>S/ <span id="total-ingresos">0</span></h3>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="p-3 border rounded bg-danger text-white">
-                            <h5>Total de Egresos</h5>
-                            <h3>S/ <span id="total-egresos">0</span></h3>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="d-flex justify-content-end mt-4">
 
                     @if($cajaAbierta)
                         <button class="btn btn-danger me-2" onclick="cerrarCaja()">
-                            <i class="fa-solid fa-lock"></i> Cerrar Caja
+                            Cerrar Caja
                         </button>
 
                         <button type="button" class="btn btn-primary"
                                 data-bs-toggle="modal" data-bs-target="#transaccionModal">
-                            <i class="fa-solid fa-plus"></i> Agregar
+                            Agregar
                         </button>
                     @else
                         <button onclick="abrirCaja()" class="btn btn-primary">
-                            <i class="fa-solid fa-unlock"></i> Abrir Caja
+                            Abrir Caja
                         </button>
                     @endif
 
                 </div>
+                <br>
 
             </div>
 
