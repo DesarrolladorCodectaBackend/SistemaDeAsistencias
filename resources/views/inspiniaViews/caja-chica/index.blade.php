@@ -127,12 +127,12 @@ table thead th {
                 </div>
 
                 <div class="p-3 border rounded bg-success text-white text-center flex-fill">
-                    <h5>Total de Ingresos</h5>
+                    <h4>Total de Ingresos</h4>
                     <h3>S/ <span id="total-ingresos">0</span></h3>
                 </div>
                 
                 <div class="p-3 border rounded bg-danger text-white text-center flex-fill">
-                    <h5>Total de Egresos</h5>
+                    <h4>Total de Egresos</h4>
                     <h3>S/ <span id="total-egresos">0</span></h3>
                 </div>
             </div>
