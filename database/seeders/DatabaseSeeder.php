@@ -16,34 +16,34 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            // UserSeeder::class,
-            // CarreraSeeder::class, //Reemplazar con los de sql
-            // InstitucionSeeder::class, // Reemplazar con los de sql
-            // SalonesSeeder::class,
-            // AreaSeeder::class, // Reemplazar con los de sql
-            // MaquinasSeeder::class, // Reemplazar con los de sql
-            // HorariosPresencialesSeeder::class, // Reemplazar con los de sql
-            // CursoSeeder::class,
-            // ProgramaSeeder::class,
-            // SemanaSeeder::class,
-            // ResponsabilidadSemanalSeeder::class, // Reemplazar con los de sql
-            // SedeSeeder::class,
-            // CandidatosSeeder::class, // Reemplazar con los de sql
-            // HorarioPresencialAsignadoSeeder::class, // Reemplazar con los de sql
-            // ColaboradoresSeeder::class, // Reemplazar con los de sql
-            // ColaboradoresPorAreaSeeder::class, // Reemplazar con los de sql
-            // HorarioDeClasesSeeder::class, // Reemplazar con los de sql
-            // UsuarioAdministradorSeeder::class,
-            // UsuarioJefeAreaSeeder::class,
-            // UsuariosPasswordSeeder::class
-            // TipoTransaccionSeeder::class
+            UserSeeder::class,
+            CarreraSeeder::class, //Reemplazar con los de sql
+            InstitucionSeeder::class, // Reemplazar con los de sql
+            SalonesSeeder::class,
+            AreaSeeder::class, // Reemplazar con los de sql
+            MaquinasSeeder::class, // Reemplazar con los de sql
+            HorariosPresencialesSeeder::class, // Reemplazar con los de sql
+            CursoSeeder::class,
+            ProgramaSeeder::class,
+            SemanaSeeder::class,
+            ResponsabilidadSemanalSeeder::class, // Reemplazar con los de sql
+            SedeSeeder::class,
+            CandidatosSeeder::class, // Reemplazar con los de sql
+            HorarioPresencialAsignadoSeeder::class, // Reemplazar con los de sql
+            ColaboradoresSeeder::class, // Reemplazar con los de sql
+            ColaboradoresPorAreaSeeder::class, // Reemplazar con los de sql
+            HorarioDeClasesSeeder::class, // Reemplazar con los de sql
+            UsuarioAdministradorSeeder::class,
+            UsuarioJefeAreaSeeder::class,
+            UsuariosPasswordSeeder::class,
+            TipoTransaccionSeeder::class,
             DistritosSeeder::class
         ]);
-            \App\Models\User::factory(10)->create();
+        //     \App\Models\User::factory(10)->create();
 
-            \App\Models\User::factory()->create([
-               'name' => 'Test User',
-               'email' => 'test@example.com',
-           ]);
+        //     \App\Models\User::factory()->create([
+        //        'name' => 'Test User',
+        //        'email' => 'test@example.com',
+        //    ]);
     }
 }

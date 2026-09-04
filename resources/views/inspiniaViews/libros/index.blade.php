@@ -237,8 +237,8 @@
                     </table>
                 </div>
             </div>
-            @include('components.inspinia.footer-inspinia')
         </div>
+            @include('components.inspinia.footer-inspinia')
             @if ($errors->any())
                 <script>
                     // Reabrir el modal de creación si el error proviene del formulario de creación

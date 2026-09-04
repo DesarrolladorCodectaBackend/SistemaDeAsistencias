@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('computadora_colaboradors', function (Blueprint $table) {
+        Schema::table('computadora_colaborador', function (Blueprint $table) {
             $table->boolean('estado_pc')->nullable();
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('computadora_colaboradors', function (Blueprint $table) {
+        Schema::table('computadora_colaborador', function (Blueprint $table) {
             $table->dropColumn('estado_pc');
         });
     }

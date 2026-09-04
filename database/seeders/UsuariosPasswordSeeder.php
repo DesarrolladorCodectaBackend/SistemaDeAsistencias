@@ -23,14 +23,14 @@ class UsuariosPasswordSeeder extends Seeder
             "user_id" => 2,
             "password" => '@G^e^Fet&VGTsUBqLekW'
         ]);
-        UsuariosPasswords::create([
-            "user_id" => 3,
-            "password" => 'password'
-        ]);
-        UsuariosPasswords::create([
-            "user_id" => 4,
-            "password" => 'P$$$0824'
-        ]);
+        // UsuariosPasswords::create([
+        //     "user_id" => 3,
+        //     "password" => 'password'
+        // ]);
+        // UsuariosPasswords::create([
+        //     "user_id" => 4,
+        //     "password" => 'P$$$0824'
+        // ]);
         
     }
 }

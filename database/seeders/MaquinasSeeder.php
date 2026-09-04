@@ -57,17 +57,17 @@ class MaquinasSeeder extends Seeder
             "num_identificador" => 7,
             "salon_id" => 2
         ]);
-        Maquinas::create([
-            "nombre" => "Maquina N°8",
-            "detalles_tecnicos" => "Detalle N°8",
-            "num_identificador" => 8,
-            "salon_id" => 3
-        ]);
-        Maquinas::create([
-            "nombre" => "Maquina N°9",
-            "detalles_tecnicos" => "Detalle N°9",
-            "num_identificador" => 9,
-            "salon_id" => 3
-        ]);
+        // Maquinas::create([
+        //     "nombre" => "Maquina N°8",
+        //     "detalles_tecnicos" => "Detalle N°8",
+        //     "num_identificador" => 8,
+        //     "salon_id" => 3
+        // ]);
+        // Maquinas::create([
+        //     "nombre" => "Maquina N°9",
+        //     "detalles_tecnicos" => "Detalle N°9",
+        //     "num_identificador" => 9,
+        //     "salon_id" => 3
+        // ]);
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('registro__mantenimientos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('computadora_id');
-            $table->foreign('computadora_id')->references('id')->on('computadora_colaboradors');
+            $table->foreign('computadora_id')->references('id')->on('computadora_colaborador');
             $table->date('fecha');
             $table->string('registro_incidencia');
             $table->boolean('estado')->default(true);

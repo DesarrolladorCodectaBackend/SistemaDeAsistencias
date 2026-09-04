@@ -209,7 +209,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/computadora/programasInstalados/Inactivate/{colaborador_id}/{id}', [Programas_instaladosController::class, 'inactivate'])->name('computadora.ProgramaInactivate');
 
     //AJUSTES
-    Route::resource('ajustes', AjusteController::class);
+    Route::get('/ajustes', [AjusteController::class,'index'])->name('ajustes.index');
 
     //RESPONSABILIDADES
     Route::get('responsabilidades/buscar', [Cumplio_Responsabilidad_SemanalController::class, 'index'])->name('buscar.responsabilidades');

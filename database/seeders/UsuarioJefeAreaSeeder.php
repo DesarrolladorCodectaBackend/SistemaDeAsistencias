@@ -15,9 +15,9 @@ class UsuarioJefeAreaSeeder extends Seeder
      */
     public function run()
     {
-        UsuarioJefeArea::create([
-            'user_id' => 3,
-            'area_id' => 1,
-        ]);
+        // UsuarioJefeArea::create([
+        //     'user_id' => 3,
+        //     'area_id' => 1,
+        // ]);
     }
 }

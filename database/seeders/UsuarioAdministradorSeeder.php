@@ -22,7 +22,7 @@ class UsuarioAdministradorSeeder extends Seeder
 
         UsuarioAdministrador::create([
             'user_id' => 2,
-            'super_admin' => false,
+            'super_admin' => true,
         ]);
     }
 }
